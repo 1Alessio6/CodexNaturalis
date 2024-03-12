@@ -4,14 +4,21 @@ title: Model
 ---
 classDiagram
     class Card {
-        - front
+        - Front front
+        - Back back
+        - List~Corner~ cornerList
     }
 
 
-    class Front
-    class Back
-        Back: - int Score
-        Back: - Color color
+    class Front {
+        - int points
+    }
+    class Back {
+        - int Score
+        - Color color
+        + getters()
+        + setters()
+    }
 
     class Color{
         <<enumeration>>
@@ -22,3 +29,11 @@ classDiagram
         PURPLE
     }
 ```
+
+---
+
+### Todo
+
+- [ ] add interfaces
+- [ ] refactor methods in specialized classes
+- [ ] check availability of specialized methods in base class
