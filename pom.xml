@@ -16,9 +16,11 @@
 
   <dependencies>
     <dependency>
+      <!-- enable junit5 -->
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
-      <version>5.10.1</version>
+      <version>RELEASE</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>
