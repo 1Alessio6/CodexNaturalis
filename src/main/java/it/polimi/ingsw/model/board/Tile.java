@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.board;
 
+import it.polimi.ingsw.model.card.Face;
+
 public class Tile {
     private Face face;
     //private boolean isUsed; a variable used to check if the card has been already used for redeeming the points of an objective card
@@ -21,6 +23,7 @@ public class Tile {
     public Face getFace() {
         return face;
     }
+
     public Availability getAvailability() {
         return availability;
     }

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.card;
 
-public class Objective {
+public class ObjectiveCard {
     String objective; /* may be implemented in a different way? */
     int multiplier;
 

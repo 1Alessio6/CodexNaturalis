@@ -1,6 +1,11 @@
-package it.polimi.ingsw.model.board;
+package it.polimi.ingsw.model.player;
+
+import it.polimi.ingsw.model.board.*;
+import it.polimi.ingsw.model.card.*;
+
 import javax.smartcardio.Card;
 import java.util.*;
+
 
 public class Player implements InterfacePlayerScoreTrack{
 
@@ -10,10 +15,10 @@ public class Player implements InterfacePlayerScoreTrack{
     private String id;
     private Playground playground;
     private boolean isActive;
-    private Colour colour;
+    private Color colour;
     private int player_points;
-    private boolean network_status;
-    private List<ObjectiveCard> objectiveCard=new List<ObjectiveCard>();
+    private boolean networkStatus;
+    private List<ObjectiveCard> objectiveCard = new ArrayList<>();
 
     @Override
     public int getPoints() {
@@ -43,16 +48,12 @@ public class Player implements InterfacePlayerScoreTrack{
     }
 
     public ArrayList<Position> getAvailablePositions(){
-        private ArrayList<Position> positions=new ArrayList<>();   //I've added an array to save the positions where the selected card can be positioned
-
-
+        ArrayList<Position> positions = new ArrayList<>();   //I've added an array to save the positions where the selected card can be positioned
+        return positions;
     }
 
-    public void setStatus(boolean network_status){
-        this.network_status=network_status;
+    public void setStatus(boolean networkStatus){
+        this.networkStatus = networkStatus;
     }
-
-
-
 }
 
