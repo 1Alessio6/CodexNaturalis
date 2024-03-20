@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.board;
 
-import java.util.Map;
+import java.util.*;
 
 public class Playground {
     private final Map<Position, Tile> area;

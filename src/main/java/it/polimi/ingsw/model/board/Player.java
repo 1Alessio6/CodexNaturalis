@@ -2,7 +2,7 @@ package it.polimi.ingsw.model.board;
 import javax.smartcardio.Card;
 import java.util.*;
 
-public class Player {
+public class Player implements InterfacePlayerScoreTrack{
 
     //attributes
 
@@ -15,7 +15,10 @@ public class Player {
     private boolean network_status;
     private List<ObjectiveCard> objectiveCard=new List<ObjectiveCard>();
 
-
+    @Override
+    public int getPoints() {
+        return player_points;
+    }
 
     //methods
 
@@ -31,7 +34,7 @@ public class Player {
 
     } //temporarily empty
 
-    public void placeCard(Back back,Position position){
+    public void placeCard(Back back, Position position){
 
     } //temporarily empty
 
