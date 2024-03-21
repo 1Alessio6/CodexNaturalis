@@ -3,7 +3,6 @@ package it.polimi.ingsw.model.player;
 import it.polimi.ingsw.model.board.*;
 import it.polimi.ingsw.model.card.*;
 
-import javax.smartcardio.Card;
 import java.util.*;
 
 
@@ -11,8 +10,8 @@ public class Player implements InterfacePlayerScoreTrack{
 
     //attributes
 
-    private ArrayList<Card> cards=new ArrayList<>();
-    private String id;
+    private ArrayList<Card> cards = new ArrayList<>();
+    private String username;
     private Playground playground;
     private boolean isActive;
     private Color colour;
@@ -26,6 +25,10 @@ public class Player implements InterfacePlayerScoreTrack{
     }
 
     //methods
+
+    public String getUsername() {
+        return username;
+    }
 
     public void addCard(Card card){
 
