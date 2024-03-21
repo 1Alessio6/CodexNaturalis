@@ -4,5 +4,5 @@ import java.util.List;
 
 /* could be named in another way */
 public class ObjectiveDeck {
-    List<Objective> objectives;
+    List<ObjectiveCard> objectives;
 }

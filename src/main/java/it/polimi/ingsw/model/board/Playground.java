@@ -12,7 +12,7 @@ public class Playground {
         //area.clear(); area needs to be empty and needs to have stored only the key (0,0)
         Position origin = new Position(0,0);
         Availability s = Availability.EMPTY;
-        area.put(origin,s);
+        area.put(origin, new Tile(s));
         this.area = area;
     }
 
