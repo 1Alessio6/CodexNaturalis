@@ -30,13 +30,11 @@ public class Player implements InterfacePlayerScoreTrack{
         return username;
     }
 
-    public void addCard(Card card){
+    public void addCard(Card card){cards.add(card);}
 
-    }
+    public void addCard(ObjectiveCard card){objectiveCard.add(card);}
 
-    public void addPoints(int points){
-
-    }
+    public void addPoints(int points){ player_points+=points;}
 
     public void placeCard(Front front, Position position){
 
