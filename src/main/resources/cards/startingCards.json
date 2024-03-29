@@ -18,6 +18,21 @@
                 ]
             },
             "back": {
+                "cornerList": [
+                    {
+                        "symbol": null
+                    },
+                    {
+                        "symbol": "PLANT"
+                    },
+                    {
+                        "symbol": null
+                    },
+                    {
+                        "symbol": "INSECT"
+                    }
+                ],
+                "center": ["INSECT"]
             }
         },
         {
@@ -37,7 +52,23 @@
                     }
                 ]
             },
-            "back": {}
+            "back": {
+                "cornerList": [
+                    {
+                        "symbol": null
+                    },
+                    {
+                        "symbol": null
+                    },
+                    {
+                        "symbol": null
+                    },
+                    {
+                        "symbol": null
+                    }
+                ],
+                "center":["PLANT","FUNGI"]
+            }
         },
         {
             "front": {
@@ -57,7 +88,23 @@
                 ]
 
             },
-            "back": {}
+            "back": {
+                "cornerList": [
+                    {
+                        "symbol": "ANIMAL"
+                    },
+                    {
+                        "symbol": null
+                    },
+                    {
+                        "symbol": "FUNGI"
+                    },
+                    {
+                        "symbol": null
+                    }
+                ],
+                "center":["FUNGI"]
+            }
         },
         {
             "front": {
@@ -76,7 +123,23 @@
                     }
                 ]
             },
-            "back": {}
+            "back": {
+                "cornerList": [
+                    {
+                        "symbol": null
+                    },
+                    {
+                        "symbol": null
+                    },
+                    {
+                        "symbol": null
+                    },
+                    {
+                        "symbol": null
+                    }
+                ],
+                "center":["ANIMAL","INSECT"]
+            }
         },
         {
             "front": {
@@ -95,7 +158,19 @@
                     }
                 ]
             },
-            "back": {}
+            "back": {
+                "cornerList": [
+                    {
+                        "symbol": null
+                    },
+                    {
+                        "symbol": null
+                    },
+                    {},
+                    {}
+                ],
+                "center":["PLANT","ANIMAL","FUNGI"]
+            }
         },
         {
             "front": {
@@ -114,7 +189,19 @@
                     }
                 ]
             },
-            "back":{}
+            "back":{
+                "cornerList": [
+                    {
+                        "symbol": null
+                    },
+                    {
+                        "symbol": null
+                    },
+                    {},
+                    {}
+                ],
+                "center":["ANIMAL","INSECT","PLANT"]
+            }
         }
     ]
 }

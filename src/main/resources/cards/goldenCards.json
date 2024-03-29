@@ -7,10 +7,10 @@
                     "symbol": null
                 },
                 {
-                    "symbol": null
+                    "symbol": "INKWELL"
                 },
                 {
-                    "symbol": "INKWELL"
+                    "symbol": null
                 }
             ],
             "conditions": [
@@ -18,6 +18,8 @@
                 "FUNGI",
                 "ANIMAL"
             ],
+            "multiplier": 1,
+            "pointsCondition":"QUILL",
             "color": "RED"
         },
         {
@@ -176,122 +178,174 @@
         },
         {
             "cornerList": [
-                {},
-                {},
-                {},
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": "MANUSCRIPT"
+                },
+                {
+                    "symbol": null
+                },
                 {}
             ],
-            "conditions": [],
-            "multiplier": 0,
-            "pointsCondition": "",
+            "conditions": ["PLANT","PLANT","FUNGI"],
+            "multiplier": 1,
+            "pointsCondition": "MANUSCRIPT",
+            "color": "GREEN"
+        },
+        {
+            "cornerList": [
+                {
+                    "symbol": null
+                },
+                {},
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": "INKWELL"
+                }
+            ],
+            "conditions": ["PLANT","PLANT","ANIMAL"],
+            "multiplier": 1,
+            "pointsCondition": "INKWELL",
             "color": "GREEN"
         },
         {
             "cornerList": [
                 {},
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": null
+                }
+            ],
+            "conditions": ["PLANT","PLANT","PLANT","INSECT"],
+            "multiplier": 2,
+            "pointsCondition": "CORNER",
+            "color": "GREEN"
+        },
+        {
+            "cornerList": [
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": null
+                },
                 {},
+                {
+                    "symbol": null
+                }
+            ],
+            "conditions": ["PLANT","PLANT","PLANT","ANIMAL"],
+            "multiplier": 2,
+            "pointsCondition": "CORNER",
+            "color": "GREEN"
+        },
+        {
+            "cornerList": [
+                {
+                    "symbol": null
+                },
+                {},
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": null
+                }
+            ],
+            "conditions": ["PLANT","PLANT","PLANT","FUNGI"],
+            "multiplier": 2,
+            "pointsCondition": "CORNER",
+            "color": "GREEN"
+        },
+        {
+            "cornerList": [
+                {
+                    "symbol": null
+                },
+                {},
+                {},
+                {
+                    "symbol": "INKWELL"
+                }
+            ],
+            "conditions": ["PLANT","PLANT","PLANT"],
+            "multiplier": 3,
+            "pointsCondition": null,
+            "color": "GREEN"
+        },
+        {
+            "cornerList": [
+                {
+                    "symbol": "MANUSCRIPT"
+                },
+                {
+                    "symbol": null
+                },
                 {},
                 {}
             ],
-            "conditions": [],
-            "multiplier": 0,
-            "pointsCondition": "",
+            "conditions": ["PLANT","PLANT","PLANT"],
+            "multiplier": 3,
+            "pointsCondition": null,
             "color": "GREEN"
         },
         {
             "cornerList": [
                 {},
-                {},
-                {},
+                {
+                    "symbol": "INKWELL"
+                },
+                {
+                    "symbol": null
+                },
                 {}
             ],
-            "conditions": [],
-            "multiplier": 0,
-            "pointsCondition": "",
+            "conditions": ["PLANT","PLANT","PLANT"],
+            "multiplier": 3,
+            "pointsCondition": null,
             "color": "GREEN"
         },
         {
             "cornerList": [
-                {},
-                {},
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": null
+                },
                 {},
                 {}
             ],
-            "conditions": [],
-            "multiplier": 0,
-            "pointsCondition": "",
+            "conditions": ["PLANT","PLANT","PLANT","PLANT","PLANT"],
+            "multiplier": 5,
+            "pointsCondition": null,
             "color": "GREEN"
         },
         {
             "cornerList": [
+                {
+                    "symbol": "QUILL"
+                },
+                {
+                    "symbol": null
+                },
                 {},
-                {},
-                {},
-                {}
+                {
+                    "symbol": null
+                }
             ],
-            "conditions": [],
-            "multiplier": 0,
-            "pointsCondition": "",
-            "color": "GREEN"
-        },
-        {
-            "cornerList": [
-                {},
-                {},
-                {},
-                {}
-            ],
-            "conditions": [],
-            "multiplier": 0,
-            "pointsCondition": "",
-            "color": "GREEN"
-        },
-        {
-            "cornerList": [
-                {},
-                {},
-                {},
-                {}
-            ],
-            "conditions": [],
-            "multiplier": 0,
-            "pointsCondition": "",
-            "color": "GREEN"
-        },
-        {
-            "cornerList": [
-                {},
-                {},
-                {},
-                {}
-            ],
-            "conditions": [],
-            "multiplier": 0,
-            "pointsCondition": "",
-            "color": "GREEN"
-        },
-        {
-            "cornerList": [
-                {},
-                {},
-                {},
-                {}
-            ],
-            "conditions": [],
-            "multiplier": 0,
-            "pointsCondition": "",
-            "color": "GREEN"
-        },
-        {
-            "cornerList": [
-                {},
-                {},
-                {},
-                {}
-            ],
-            "conditions": [],
-            "multiplier": 0,
-            "pointsCondition": "",
+            "conditions": ["PLANT","PLANT","INSECT"],
+            "multiplier": 1,
+            "pointsCondition": "QUILL",
             "color": "GREEN"
         },
         {
@@ -361,7 +415,7 @@
                 },
                 {}
             ],
-            "conditions": ["ANIMAL", "ANIMAL", "INSECT"],
+            "conditions": ["ANIMAL", "ANIMAL","ANIMAL", "INSECT"],
             "multiplier": 2,
             "pointsCondition": "CORNER",
             "color": "BLUE"
@@ -447,7 +501,7 @@
             ],
             "conditions": ["ANIMAL", "ANIMAL", "ANIMAL"],
             "multiplier": 3,
-            "pointsCondition": "",
+            "pointsCondition": null,
             "color": "BLUE"
         },
         {
@@ -468,122 +522,174 @@
         },
         {
             "cornerList": [
-                {},
-                {},
-                {},
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": "QUILL"
+                },
+                {
+                    "symbol": null
+                },
                 {}
             ],
-            "conditions": [],
-            "multiplier": 0,
-            "pointsCondition": "",
+            "conditions": ["INSECT","INSECT","PLANT"],
+            "multiplier": 1,
+            "pointsCondition": "QUILL",
             "color": "PURPLE"
         },
         {
             "cornerList": [
                 {},
                 {},
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": "QUILL"
+                }
+            ],
+            "conditions": ["INSECT","INSECT","INSECT"],
+            "multiplier": 3,
+            "pointsCondition": null,
+            "color": "PURPLE"
+        },
+        {
+            "cornerList": [
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": null
+                },
                 {},
                 {}
             ],
-            "conditions": [],
-            "multiplier": 0,
-            "pointsCondition": "",
+            "conditions": ["INSECT","INSECT","INSECT","INSECT","INSECT"],
+            "multiplier": 5,
+            "pointsCondition": null,
+            "color": "PURPLE"
+        },
+        {
+            "cornerList": [
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": "MANUSCRIPT"
+                },
+                {},
+                {}
+            ],
+            "conditions": ["INSECT","INSECT","INSECT"],
+            "multiplier": 3,
+            "pointsCondition": null,
+            "color": "PURPLE"
+        },
+        {
+            "cornerList": [
+                {
+                    "symbol": "INKWELL"
+                },
+                {},
+                {},
+                {
+                    "symbol": null
+                }
+            ],
+            "conditions": ["INSECT","INSECT","INSECT"],
+            "multiplier": 3,
+            "pointsCondition": null,
+            "color": "PURPLE"
+        },
+        {
+            "cornerList": [
+                {
+                    "symbol": null
+                },
+                {},
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": "MANUSCRIPT"
+                }
+            ],
+            "conditions": ["INSECT","INSECT","ANIMAL"],
+            "multiplier": 1,
+            "pointsCondition": "MANUSCRIPT",
             "color": "PURPLE"
         },
         {
             "cornerList": [
                 {},
-                {},
-                {},
-                {}
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": "INKWELL"
+                },
+                {
+                    "symbol": null
+                }
             ],
-            "conditions": [],
-            "multiplier": 0,
-            "pointsCondition": "",
+            "conditions": ["INSECT","INSECT","FUNGI"],
+            "multiplier": 1,
+            "pointsCondition": "INKWELL",
             "color": "PURPLE"
         },
         {
             "cornerList": [
-                {},
-                {},
-                {},
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": null
+                },
                 {}
             ],
-            "conditions": [],
-            "multiplier": 0,
-            "pointsCondition": "",
+            "conditions": ["INSECT","INSECT","INSECT","ANIMAL"],
+            "multiplier": 2,
+            "pointsCondition": "CORNER",
             "color": "PURPLE"
         },
         {
             "cornerList": [
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": null
+                },
                 {},
-                {},
-                {},
-                {}
+                {
+                    "symbol": null
+                }
             ],
-            "conditions": [],
-            "multiplier": 0,
-            "pointsCondition": "",
+            "conditions": ["INSECT","INSECT","INSECT","PLANT"],
+            "multiplier": 2,
+            "pointsCondition": "CORNER",
             "color": "PURPLE"
         },
         {
             "cornerList": [
+                {
+                    "symbol": null
+                },
                 {},
-                {},
-                {},
-                {}
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": null
+                }
             ],
-            "conditions": [],
-            "multiplier": 0,
-            "pointsCondition": "",
-            "color": "PURPLE"
-        },
-        {
-            "cornerList": [
-                {},
-                {},
-                {},
-                {}
-            ],
-            "conditions": [],
-            "multiplier": 0,
-            "pointsCondition": "",
-            "color": "PURPLE"
-        },
-        {
-            "cornerList": [
-                {},
-                {},
-                {},
-                {}
-            ],
-            "conditions": [],
-            "multiplier": 0,
-            "pointsCondition": "",
-            "color": "PURPLE"
-        },
-        {
-            "cornerList": [
-                {},
-                {},
-                {},
-                {}
-            ],
-            "conditions": [],
-            "multiplier": 0,
-            "pointsCondition": "",
-            "color": "PURPLE"
-        },
-        {
-            "cornerList": [
-                {},
-                {},
-                {},
-                {}
-            ],
-            "conditions": [],
-            "multiplier": 0,
-            "pointsCondition": "",
+            "conditions": ["INSECT","INSECT","INSECT","FUNGI"],
+            "multiplier": 2,
+            "pointsCondition": "CORNER",
             "color": "PURPLE"
         }
     ]
