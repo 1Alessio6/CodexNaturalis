@@ -1,0 +1,120 @@
+{
+    "startingCards": [
+        {
+            "front": {
+                "cornerList": [
+                    {
+                        "symbol": "FUNGI"
+                    },
+                    {
+                        "symbol": "PLANT"
+                    },
+                    {
+                        "symbol": "ANIMAL"
+                    },
+                    {
+                        "symbol": "INSECT"
+                    }
+                ]
+            },
+            "back": {
+            }
+        },
+        {
+            "front": {
+                "cornerList": [
+                    {
+                        "symbol": "INSECT"
+                    },
+                    {
+                        "symbol": "ANIMAL"
+                    },
+                    {
+                        "symbol": "PLANT"
+                    },
+                    {
+                        "symbol": "FUNGI"
+                    }
+                ]
+            },
+            "back": {}
+        },
+        {
+            "front": {
+                "cornerList": [
+                    {
+                        "symbol": "PLANT"
+                    },
+                    {
+                        "symbol": "ANIMAL"
+                    },
+                    {
+                        "symbol": "INSECT"
+                    },
+                    {
+                        "symbol": "FUNGI"
+                    }
+                ]
+
+            },
+            "back": {}
+        },
+        {
+            "front": {
+                "cornerList": [
+                    {
+                        "symbol": "PLANT"
+                    },
+                    {
+                        "symbol": "INSECT"
+                    },
+                    {
+                        "symbol": "FUNGI"
+                    },
+                    {
+                        "symbol": "ANIMAL"
+                    }
+                ]
+            },
+            "back": {}
+        },
+        {
+            "front": {
+                "cornerList": [
+                    {
+                        "symbol": "FUNGI"
+                    },
+                    {
+                        "symbol": "ANIMAL"
+                    },
+                    {
+                        "symbol": "INSECT"
+                    },
+                    {
+                        "symbol": "PLANT"
+                    }
+                ]
+            },
+            "back": {}
+        },
+        {
+            "front": {
+                "cornerList": [
+                    {
+                        "symbol": "INSECT"
+                    },
+                    {
+                        "symbol": "FUNGI"
+                    },
+                    {
+                        "symbol": "ANIMAL"
+                    },
+                    {
+                        "symbol": "PLANT"
+                    }
+                ]
+            },
+            "back":{}
+        }
+    ]
+}

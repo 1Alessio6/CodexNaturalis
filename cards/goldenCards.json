@@ -1,0 +1,590 @@
+{
+    "goldenCards": [
+        {
+            "cornerList": [
+                {},
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": "INKWELL"
+                }
+            ],
+            "conditions": [
+                "FUNGI",
+                "FUNGI",
+                "ANIMAL"
+            ],
+            "color": "RED"
+        },
+        {
+            "cornerList": [
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": "INKWELL"
+                },
+                {
+                    "symbol": null
+                },
+                {}
+            ],
+            "conditions": [ "FUNGI", "FUNGI", "PLANT"],
+            "multiplier": 1,
+            "pointsCondition": "INKWELL",
+            "color": "RED"
+        },
+        {
+            "cornerList": [
+                {
+                    "symbol": "MANUSCRIPT"
+                },
+                {
+                    "symbol": null
+                },
+                {},
+                {
+                    "symbol": null
+                }
+            ],
+            "conditions": ["FUNGI", "FUNGI", "INSECT"],
+            "multiplier": 1,
+            "pointsCondition": "MANUSCRIPT",
+            "color": "RED"
+        },
+        {
+            "cornerList": [
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": null
+                },
+                {}
+            ],
+            "conditions": ["FUNGI", "FUNGI", "FUNGI", "ANIMAL"],
+            "multiplier": 2,
+            "pointsCondition": "CORNER",
+            "color": "RED"
+        },
+        {
+            "cornerList": [
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": null
+                },
+                {},
+                {
+                    "symbol": null
+                }
+            ],
+            "conditions": ["FUNGI", "FUNGI", "FUNGI", "PLANT"],
+            "multiplier": 2,
+            "pointsCondition": "CORNER",
+            "color": "RED"
+        },
+        {
+            "cornerList": [
+                {
+                    "symbol": null
+                },
+                {},
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": null
+                }
+            ],
+            "conditions": ["FUNGI", "FUNGI", "FUNGI", "INSECT"],
+            "multiplier": 2,
+            "pointsCondition": "CORNER",
+            "color": "RED"
+        },
+        {
+            "cornerList": [
+                {
+                    "symbol": null
+                },
+                {},
+                {},
+                {
+                    "symbol": "INKWELL"
+                }
+            ],
+            "conditions": ["FUNGI", "FUNGI", "FUNGI"],
+            "multiplier": 3,
+            "pointsCondition": null,
+            "color": "RED"
+        },
+        {
+            "cornerList": [
+                {
+                    "symbol": "QUILL"
+                },
+                {
+                    "symbol": null
+                },
+                {},
+                {}
+            ],
+            "conditions": ["FUNGI", "FUNGI", "FUNGI"],
+            "multiplier": 3,
+            "pointsCondition": null,
+            "color": "RED"
+        },
+        {
+            "cornerList": [
+                {},
+                {
+                    "symbol": "MANUSCRIPT"
+                },
+                {
+                    "symbol": null
+                },
+                {}
+            ],
+            "conditions": ["FUNGI", "FUNGI", "FUNGI"],
+            "multiplier": 3,
+            "pointsCondition": null,
+            "color": "RED"
+        },
+        {
+            "cornerList": [
+                {
+                    "symbol": null
+                },
+                {},
+                {},
+                {
+                    "symbol": null
+                }
+            ],
+            "conditions": ["FUNGI", "FUNGI", "FUNGI", "FUNGI", "FUNGI"],
+            "multiplier": 5,
+            "pointsCondition": null,
+            "color": "RED"
+        },
+        {
+            "cornerList": [
+                {},
+                {},
+                {},
+                {}
+            ],
+            "conditions": [],
+            "multiplier": 0,
+            "pointsCondition": "",
+            "color": "GREEN"
+        },
+        {
+            "cornerList": [
+                {},
+                {},
+                {},
+                {}
+            ],
+            "conditions": [],
+            "multiplier": 0,
+            "pointsCondition": "",
+            "color": "GREEN"
+        },
+        {
+            "cornerList": [
+                {},
+                {},
+                {},
+                {}
+            ],
+            "conditions": [],
+            "multiplier": 0,
+            "pointsCondition": "",
+            "color": "GREEN"
+        },
+        {
+            "cornerList": [
+                {},
+                {},
+                {},
+                {}
+            ],
+            "conditions": [],
+            "multiplier": 0,
+            "pointsCondition": "",
+            "color": "GREEN"
+        },
+        {
+            "cornerList": [
+                {},
+                {},
+                {},
+                {}
+            ],
+            "conditions": [],
+            "multiplier": 0,
+            "pointsCondition": "",
+            "color": "GREEN"
+        },
+        {
+            "cornerList": [
+                {},
+                {},
+                {},
+                {}
+            ],
+            "conditions": [],
+            "multiplier": 0,
+            "pointsCondition": "",
+            "color": "GREEN"
+        },
+        {
+            "cornerList": [
+                {},
+                {},
+                {},
+                {}
+            ],
+            "conditions": [],
+            "multiplier": 0,
+            "pointsCondition": "",
+            "color": "GREEN"
+        },
+        {
+            "cornerList": [
+                {},
+                {},
+                {},
+                {}
+            ],
+            "conditions": [],
+            "multiplier": 0,
+            "pointsCondition": "",
+            "color": "GREEN"
+        },
+        {
+            "cornerList": [
+                {},
+                {},
+                {},
+                {}
+            ],
+            "conditions": [],
+            "multiplier": 0,
+            "pointsCondition": "",
+            "color": "GREEN"
+        },
+        {
+            "cornerList": [
+                {},
+                {},
+                {},
+                {}
+            ],
+            "conditions": [],
+            "multiplier": 0,
+            "pointsCondition": "",
+            "color": "GREEN"
+        },
+        {
+            "cornerList": [
+                {
+                    "symbol":"INKWELL"
+                },
+                {
+                    "symbol": null
+                },
+                {},
+                {
+                    "symbol":null
+                }
+            ],
+            "conditions": ["ANIMAL", "ANIMAL", "INSECT"],
+            "multiplier": 1,
+            "pointsCondition": "INKWELL",
+            "color": "BLUE"
+        },
+        {
+            "cornerList": [
+                {},
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol":"MANUSCRIPT"
+                },
+                {
+                    "symbol":null
+                }
+            ],
+            "conditions": ["ANIMAL", "ANIMAL", "PLANT"],
+            "multiplier": 1,
+            "pointsCondition": "MANUSCRIPT",
+            "color": "BLUE"
+        },
+        {
+            "cornerList": [
+                {
+                    "symbol":null
+                },
+                {},
+                {
+                    "symbol":null
+                },
+                {
+                    "symbol": "QUILL"
+                }
+            ],
+            "conditions": ["ANIMAL", "ANIMAL", "FUNGI"],
+            "multiplier": 1,
+            "pointsCondition": "QUILL",
+            "color": "BLUE"
+        },
+        {
+            "cornerList": [
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": null
+                },
+                {}
+            ],
+            "conditions": ["ANIMAL", "ANIMAL", "INSECT"],
+            "multiplier": 2,
+            "pointsCondition": "CORNER",
+            "color": "BLUE"
+        },
+        {
+            "cornerList": [
+                {
+                    "symbol":null
+                },
+                {},
+                {
+                    "symbol":null
+                },
+                {
+                    "symbol":null
+                }
+            ],
+            "conditions": ["ANIMAL","ANIMAL","ANIMAL","FUNGI"],
+            "multiplier": 2,
+            "pointsCondition": "CORNER",
+            "color": "BLUE"
+        },
+        {
+            "cornerList": [
+                {},
+                {
+                    "symbol":null
+                },
+                {
+                    "symbol":null
+                },
+                {
+                    "symbol":null
+                }
+            ],
+            "conditions": ["ANIMAL", "ANIMAL", "ANIMAL", "PLANT"],
+            "multiplier": 2,
+            "pointsCondition": "CORNER",
+            "color": "BLUE"
+        },
+        {
+            "cornerList": [
+                {
+                    "symbol": null
+                },
+                {},
+                {},
+                {
+                    "symbol": "MANUSCRIPT"
+                }
+            ],
+            "conditions": ["ANIMAL","ANIMAL", "ANIMAL"],
+            "multiplier": 3,
+            "pointsCondition": null,
+            "color": "BLUE"
+        },
+        {
+            "cornerList": [
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": "INKWELL"
+                },
+                {},
+                {}
+            ],
+            "conditions": ["ANIMAL", "ANIMAL", "ANIMAL"],
+            "multiplier": 3,
+            "pointsCondition": null,
+            "color": "BLUE"
+        },
+        {
+            "cornerList": [
+                {},
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol": "QUILL"
+                },
+                {}
+            ],
+            "conditions": ["ANIMAL", "ANIMAL", "ANIMAL"],
+            "multiplier": 3,
+            "pointsCondition": "",
+            "color": "BLUE"
+        },
+        {
+            "cornerList": [
+                {},
+                {
+                    "symbol": null
+                },
+                {
+                    "symbol":null
+                },
+                {}
+            ],
+            "conditions": ["ANIMAL", "ANIMAL", "ANIMAL", "ANIMAL", "ANIMAL"],
+            "multiplier": 5,
+            "pointsCondition": null,
+            "color": "BLUE"
+        },
+        {
+            "cornerList": [
+                {},
+                {},
+                {},
+                {}
+            ],
+            "conditions": [],
+            "multiplier": 0,
+            "pointsCondition": "",
+            "color": "PURPLE"
+        },
+        {
+            "cornerList": [
+                {},
+                {},
+                {},
+                {}
+            ],
+            "conditions": [],
+            "multiplier": 0,
+            "pointsCondition": "",
+            "color": "PURPLE"
+        },
+        {
+            "cornerList": [
+                {},
+                {},
+                {},
+                {}
+            ],
+            "conditions": [],
+            "multiplier": 0,
+            "pointsCondition": "",
+            "color": "PURPLE"
+        },
+        {
+            "cornerList": [
+                {},
+                {},
+                {},
+                {}
+            ],
+            "conditions": [],
+            "multiplier": 0,
+            "pointsCondition": "",
+            "color": "PURPLE"
+        },
+        {
+            "cornerList": [
+                {},
+                {},
+                {},
+                {}
+            ],
+            "conditions": [],
+            "multiplier": 0,
+            "pointsCondition": "",
+            "color": "PURPLE"
+        },
+        {
+            "cornerList": [
+                {},
+                {},
+                {},
+                {}
+            ],
+            "conditions": [],
+            "multiplier": 0,
+            "pointsCondition": "",
+            "color": "PURPLE"
+        },
+        {
+            "cornerList": [
+                {},
+                {},
+                {},
+                {}
+            ],
+            "conditions": [],
+            "multiplier": 0,
+            "pointsCondition": "",
+            "color": "PURPLE"
+        },
+        {
+            "cornerList": [
+                {},
+                {},
+                {},
+                {}
+            ],
+            "conditions": [],
+            "multiplier": 0,
+            "pointsCondition": "",
+            "color": "PURPLE"
+        },
+        {
+            "cornerList": [
+                {},
+                {},
+                {},
+                {}
+            ],
+            "conditions": [],
+            "multiplier": 0,
+            "pointsCondition": "",
+            "color": "PURPLE"
+        },
+        {
+            "cornerList": [
+                {},
+                {},
+                {},
+                {}
+            ],
+            "conditions": [],
+            "multiplier": 0,
+            "pointsCondition": "",
+            "color": "PURPLE"
+        }
+    ]
+}
