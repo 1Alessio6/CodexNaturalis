@@ -21,4 +21,23 @@ public class Position {
         return y;
     }
 
+    //nd compare
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj){
+            return true;
+        }
+        if(obj == null || this.getClass() != obj.getClass()){
+            return false;
+        }
+
+        return this.getX() == ((Position) obj).getX() && this.getY() == ((Position) obj).getY();
+    }
+
+    @Override
+    public int hashCode() { //it doesn't unify a unique hashcode for all couples, but it's not necessary, eventually the conflicts are solved with equals method
+        return this.x * this.y;
+    }
 }

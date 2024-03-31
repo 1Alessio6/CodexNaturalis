@@ -6,7 +6,7 @@ import it.polimi.ingsw.model.card.*;
 import java.util.*;
 
 
-public class Player implements InterfacePlayerScoreTrack{
+public class Player{
 
     //attributes
 

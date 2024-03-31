@@ -48,19 +48,23 @@ public class Playground {
         this.points = points;
     }
 
-    public Optional<List<Position>> getAvailablePositions(){   //It's not required to return an optional because the map has always at least one available position
-        return Optional.of(this.area.keySet().stream().filter(x -> this.area.get(x).getAvailability() == Availability.EMPTY).collect(Collectors.toList()));
+    public List<Position> getAvailablePositions(){   //It's not required to return an optional because the map has always at least one available position
+        return this.area.keySet().stream().filter(x -> this.area.get(x).getAvailability() == Availability.EMPTY).collect(Collectors.toList());
     }
 
     //hypothesis all the card have in the arraylist the value in clockwise order starting from the top left corner at position zero
 
-    public void placeCard(Front c, Position p){
+    public void placeCard(Front c, Position p) throws UnavailablePositionException, NotEnoughResourcesException{
+
+        if(this.area.get(p).getAvailability() == Availability.OCCUPIED || this.area.get(p).getAvailability() == Availability.NOTAVAILABLE){
+            throw new UnavailablePositionException("This Position it's not available");
+        }
 
         //requirements check
         Map<Symbol, Integer> req = c.requiredResources();
         for(Symbol s : req.keySet()){
             if(this.resources.get(s) < req.get(s)){
-                return; //insert exceptions
+                throw new NotEnoughResourcesException("Insufficient resources");
             }
         }
 
@@ -140,7 +144,11 @@ public class Playground {
     //hypothesis all the card have in the arraylist the value in clockwise order starting from the top left corner at position zero
 
     //this is the implementation when it's placed a back in an available tile, add an exception for other cases
-    public void placeCard(Back c, Position p){
+    public void placeCard(Back c, Position p) throws UnavailablePositionException{
+
+        if(this.area.get(p).getAvailability() == Availability.OCCUPIED || this.area.get(p).getAvailability() == Availability.NOTAVAILABLE){
+            throw new UnavailablePositionException("This Position it's not available");
+        }
 
         int x = p.getX();
         int y = p.getY();
@@ -208,4 +216,18 @@ public class Playground {
             this.resources.put(s, this.resources.get(s) + x.get(s));
         }
     }
+
+    public static class NotEnoughResourcesException extends Exception{
+        public NotEnoughResourcesException(String message){
+            super(message);
+        }
+    }
+
+    public static class UnavailablePositionException extends Exception{
+
+        public UnavailablePositionException(String message){
+            super(message);
+        }
+    }
+
 }
