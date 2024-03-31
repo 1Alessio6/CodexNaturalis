@@ -2,7 +2,7 @@ package it.polimi.ingsw.model.card;
 
 import java.util.Set;
 
-public class Back {
+public class Back extends Face{
     private Set<Symbol> resources;
 
     public Set<Symbol> getResources() {

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.card;
 
-import java.util.List;
+import java.util.*;
 
 public class Face {
     private List<Corner> cornerList;
@@ -20,5 +20,9 @@ public class Face {
 
     public void setCornerList(List<Corner> cornerList) {
         this.cornerList = cornerList;
+    }
+
+    public Map<Symbol, Integer> getResources(){
+        return new HashMap<Symbol,Integer>();
     }
 }

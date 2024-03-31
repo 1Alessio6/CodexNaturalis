@@ -1,23 +1,211 @@
 package it.polimi.ingsw.model.board;
+import it.polimi.ingsw.model.card.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Playground {
     private final Map<Position, Tile> area;
+    private int points;
+    private final Map<Symbol, Integer> resources;
 
     //constructor
 
     //we could change Map with an HashMap and create the HashMap inside the constructor in order to have a Map with the position (0,0) and with the assurance of having an empty map
-    public Playground(Map<Position, Tile> area){
-        //area.clear(); area needs to be empty and needs to have stored only the key (0,0)
+    public Playground(){
+
+        this.area = new HashMap<>();
         Position origin = new Position(0,0);
         Availability s = Availability.EMPTY;
         area.put(origin, new Tile(s));
-        this.area = area;
+
+        this.points = 0;
+
+        this.resources = new HashMap<>();
+        resources.put(Symbol.ANIMAL, 0);
+        resources.put(Symbol.FUNGI, 0);
+        resources.put(Symbol.INKWELL, 0);
+        resources.put(Symbol.INSECT, 0);
+        resources.put(Symbol.PLANT, 0);
+        resources.put(Symbol.MANUSCRIPT, 0);
+        resources.put(Symbol.QUILL, 0);
     }
 
     //getter methods
-    public Map<Position, Tile> getArea() {
+    public Map<Position, Tile> getArea() { //it's not useful to return the exact map that could be edited outside the class
         return area;
+    }
+
+    public Map<Symbol, Integer> getResources(){
+        return resources;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points){
+        this.points = points;
+    }
+
+    public Optional<List<Position>> getAvailablePositions(){   //It's not required to return an optional because the map has always at least one available position
+        return Optional.of(this.area.keySet().stream().filter(x -> this.area.get(x).getAvailability() == Availability.EMPTY).collect(Collectors.toList()));
+    }
+
+    //hypothesis all the card have in the arraylist the value in clockwise order starting from the top left corner at position zero
+
+    public void placeCard(Front c, Position p){
+
+        //requirements check
+        Map<Symbol, Integer> req = c.requiredResources();
+        for(Symbol s : req.keySet()){
+            if(this.resources.get(s) < req.get(s)){
+                return; //insert exceptions
+            }
+        }
+
+        int x = p.getX();
+        int y = p.getY();
+
+        //update the current tile
+        this.area.get(p).setAvailability(Availability.OCCUPIED);
+        this.area.get(p).setFace(c);
+
+        int j,k;
+        int corner_pos = 0;
+
+        //update for every corner the disposition
+        for(int i = 0; i < 4; i++){
+
+            if(i < 2){ //first 2 iteration check the top corners => we're checking position at height y + 1
+                j = y + 1;
+            }
+            else{
+                j = y - 1;
+            }
+
+            if(i == 1 || i == 2){
+                k = x + 1;
+            }
+            else{
+                k = x - 1;
+            }
+
+            Position pos = new Position(k, j);
+
+            if(this.area.get(pos).getAvailability() == Availability.OCCUPIED){
+                switch(i){ //for each iteration the corner occupied in the card we are covering it is different
+                    //corner_pos represents the occupied corner position in the list
+                    case 0: //rx low
+                        corner_pos = 2;
+                        break;
+                    case 1: //sx low
+                        corner_pos = 3;
+                        break;
+                    case 2: //sx high
+                        corner_pos = 0;
+                        break;
+                    case 3: //rx high
+                        corner_pos = 1;
+                        break;
+                }
+                this.area.get(pos).getFace().getCornerList().get(corner_pos).setCovered(true);
+                Symbol s = this.area.get(pos).getFace().getCornerList().get(corner_pos).getSymbol();
+                this.resources.put(s, this.resources.get(s) - 1);
+            }
+
+            if(c.getCornerList().get(i) != null) { //null if the corner it's not an empty corner??
+                if(!this.area.containsKey(pos)){
+                    this.area.put(pos, new Tile(Availability.EMPTY));
+                }
+            }
+            else{
+                if(this.area.containsKey(pos)){
+                    if(this.area.get(pos).getAvailability() == Availability.EMPTY){
+                        this.area.get(pos).setAvailability(Availability.NOTAVAILABLE);
+                    }
+                }
+                else{
+                    this.area.put(pos, new Tile(Availability.NOTAVAILABLE));
+                }
+            }
+        }
+
+        updateResources(c);
+        this.points = this.points + c.calcPoints(this);
+
+    }
+
+    //all the back of the cards generate only available positions because they haven't hidden corner
+    //hypothesis all the card have in the arraylist the value in clockwise order starting from the top left corner at position zero
+
+    //this is the implementation when it's placed a back in an available tile, add an exception for other cases
+    public void placeCard(Back c, Position p){
+
+        int x = p.getX();
+        int y = p.getY();
+
+        this.area.get(p).setAvailability(Availability.OCCUPIED);
+        this.area.get(p).setFace(c);
+
+        int j,k;
+        int corner_pos = 0;
+
+        for(int i = 0; i < 4; i++){
+
+            if(i < 2){ //first 2 iteration check the top corners => we're checking position at height y + 1
+                j = y + 1;
+            }
+            else{
+                j = y - 1;
+            }
+
+            if(i == 1 || i == 2){
+                k = x + 1;
+            }
+            else{
+                k = x - 1;
+            }
+
+            Position pos = new Position(k, j);
+
+            //check of old card corner occupied by the new card
+            //update of resources covered by the new card
+
+            if(this.area.get(pos).getAvailability() == Availability.OCCUPIED){
+                switch(i){ //for each iteration the corner occupied in the card we are covering it is different
+                    //corner_pos represents the occupied corner position in the list
+                    case 0: //rx low
+                        corner_pos = 2;
+                        break;
+                    case 1: //sx low
+                        corner_pos = 3;
+                        break;
+                    case 2: //sx high
+                        corner_pos = 0;
+                        break;
+                    case 3: //rx high
+                        corner_pos = 1;
+                        break;
+                }
+                this.area.get(pos).getFace().getCornerList().get(corner_pos).setCovered(true);
+                Symbol s = this.area.get(pos).getFace().getCornerList().get(corner_pos).getSymbol();
+                this.resources.put(s, this.resources.get(s) - 1);
+            }
+
+            //generation of new position in the hashmap
+
+            if(!this.area.containsKey(pos)){
+                this.area.put(pos, new Tile(Availability.EMPTY));
+            }
+        }
+
+        updateResources(c);
+    }
+    private void updateResources(Face f){
+        Map<Symbol, Integer> x = f.getResources(); //needs to be implemented in face
+        for(Symbol s : x.keySet()){
+            this.resources.put(s, this.resources.get(s) + x.get(s));
+        }
     }
 }

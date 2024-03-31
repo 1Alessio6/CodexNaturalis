@@ -1,6 +1,10 @@
 package it.polimi.ingsw.model.card;
 
-public class Front {
+import it.polimi.ingsw.model.board.Playground;
+
+import java.util.Map;
+
+public class Front extends Face{
     private int score;
 
     public int getScore() {
@@ -9,5 +13,14 @@ public class Front {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    @Override
+    public Map<Symbol, Integer> requiredResources() {
+        return null;
+    }
+
+    public int calcPoints(Playground p){
+        return 0;
     }
 }
