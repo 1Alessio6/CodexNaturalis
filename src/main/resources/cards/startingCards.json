@@ -32,7 +32,7 @@
                         "symbol": "INSECT"
                     }
                 ],
-                "center": ["INSECT"]
+                "resources": ["INSECT"]
             }
         },
         {
@@ -67,7 +67,7 @@
                         "symbol": null
                     }
                 ],
-                "center":["PLANT","FUNGI"]
+                "resources":["PLANT","FUNGI"]
             }
         },
         {
@@ -103,7 +103,7 @@
                         "symbol": null
                     }
                 ],
-                "center":["FUNGI"]
+                "resources":["FUNGI"]
             }
         },
         {
@@ -138,7 +138,7 @@
                         "symbol": null
                     }
                 ],
-                "center":["ANIMAL","INSECT"]
+                "resources":["ANIMAL","INSECT"]
             }
         },
         {
@@ -169,7 +169,7 @@
                     {},
                     {}
                 ],
-                "center":["PLANT","ANIMAL","FUNGI"]
+                "resources":["PLANT","ANIMAL","FUNGI"]
             }
         },
         {
@@ -200,7 +200,7 @@
                     {},
                     {}
                 ],
-                "center":["ANIMAL","INSECT","PLANT"]
+                "resources":["ANIMAL","INSECT","PLANT"]
             }
         }
     ]
