@@ -1,7 +1,14 @@
 package it.polimi.ingsw.model.card;
 
 public abstract class ObjectiveCard {
-    int multiplier;
+    private int multiplier;
+
+    public ObjectiveCard(int multiplier) throws IllegalArgumentException {
+        if (multiplier < 0) {
+            throw new IllegalArgumentException("Multiplier cannot be negative");
+        }
+        this.multiplier = multiplier;
+    }
 
     public void getObjective() {
     }
@@ -9,10 +16,4 @@ public abstract class ObjectiveCard {
     public int getMultiplier() {
         return multiplier;
     }
-
-    public void setMultiplier(int multiplier) {
-        this.multiplier = multiplier;
-    }
-
-
 }
