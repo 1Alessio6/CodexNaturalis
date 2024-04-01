@@ -1,4 +1,5 @@
 package it.polimi.ingsw.model.board;
+
 import it.polimi.ingsw.model.card.*;
 
 import java.util.*;
@@ -12,10 +13,10 @@ public class Playground {
     //constructor
 
     //we could change Map with an HashMap and create the HashMap inside the constructor in order to have a Map with the position (0,0) and with the assurance of having an empty map
-    public Playground(){
+    public Playground() {
 
         this.area = new HashMap<>();
-        Position origin = new Position(0,0);
+        Position origin = new Position(0, 0);
         Availability s = Availability.EMPTY;
         area.put(origin, new Tile(s));
 
@@ -36,7 +37,7 @@ public class Playground {
         return area;
     }
 
-    public Map<Symbol, Integer> getResources(){
+    public Map<Symbol, Integer> getResources() {
         return resources;
     }
 
@@ -44,26 +45,26 @@ public class Playground {
         return points;
     }
 
-    public void setPoints(int points){
+    public void setPoints(int points) {
         this.points = points;
     }
 
-    public List<Position> getAvailablePositions(){   //It's not required to return an optional because the map has always at least one available position
+    public List<Position> getAvailablePositions() {   //It's not required to return an optional because the map has always at least one available position
         return this.area.keySet().stream().filter(x -> this.area.get(x).getAvailability() == Availability.EMPTY).collect(Collectors.toList());
     }
 
     //hypothesis all the card have in the arraylist the value in clockwise order starting from the top left corner at position zero
 
-    public void placeCard(Front c, Position p) throws UnavailablePositionException, NotEnoughResourcesException{
+    public void placeCard(Front c, Position p) throws UnavailablePositionException, NotEnoughResourcesException {
 
-        if(this.area.get(p).getAvailability() == Availability.OCCUPIED || this.area.get(p).getAvailability() == Availability.NOTAVAILABLE){
+        if (this.area.get(p).getAvailability() == Availability.OCCUPIED || this.area.get(p).getAvailability() == Availability.NOTAVAILABLE) {
             throw new UnavailablePositionException("This Position it's not available");
         }
 
         //requirements check
-        Map<Symbol, Integer> req = c.requiredResources();
-        for(Symbol s : req.keySet()){
-            if(this.resources.get(s) < req.get(s)){
+        Map<Symbol, Integer> req = c.getRequiredResources();
+        for (Symbol s : req.keySet()) {
+            if (this.resources.get(s) < req.get(s)) {
                 throw new NotEnoughResourcesException("Insufficient resources");
             }
         }
@@ -75,30 +76,28 @@ public class Playground {
         this.area.get(p).setAvailability(Availability.OCCUPIED);
         this.area.get(p).setFace(c);
 
-        int j,k;
+        int j, k;
         int corner_pos = 0;
 
         //update for every corner the disposition
-        for(int i = 0; i < 4; i++){
+        for (int i = 0; i < 4; i++) {
 
-            if(i < 2){ //first 2 iteration check the top corners => we're checking position at height y + 1
+            if (i < 2) { //first 2 iteration check the top corners => we're checking position at height y + 1
                 j = y + 1;
-            }
-            else{
+            } else {
                 j = y - 1;
             }
 
-            if(i == 1 || i == 2){
+            if (i == 1 || i == 2) {
                 k = x + 1;
-            }
-            else{
+            } else {
                 k = x - 1;
             }
 
             Position pos = new Position(k, j);
 
-            if(this.area.get(pos).getAvailability() == Availability.OCCUPIED){
-                switch(i){ //for each iteration the corner occupied in the card we are covering it is different
+            if (this.area.get(pos).getAvailability() == Availability.OCCUPIED) {
+                switch (i) { //for each iteration the corner occupied in the card we are covering it is different
                     //corner_pos represents the occupied corner position in the list
                     case 0: //rx low
                         corner_pos = 2;
@@ -113,23 +112,21 @@ public class Playground {
                         corner_pos = 1;
                         break;
                 }
-                this.area.get(pos).getFace().getCornerList().get(corner_pos).setCovered(true);
-                Symbol s = this.area.get(pos).getFace().getCornerList().get(corner_pos).getSymbol();
+                this.area.get(pos).getFace().getCorners().get(corner_pos).setCovered();
+                Symbol s = this.area.get(pos).getFace().getCorners().get(corner_pos).getSymbol();
                 this.resources.put(s, this.resources.get(s) - 1);
             }
 
-            if(c.getCornerList().get(i) != null) { //null if the corner it's not an empty corner??
-                if(!this.area.containsKey(pos)){
+            if (c.getCorners().get(i) != null) { //null if the corner it's not an empty corner??
+                if (!this.area.containsKey(pos)) {
                     this.area.put(pos, new Tile(Availability.EMPTY));
                 }
-            }
-            else{
-                if(this.area.containsKey(pos)){
-                    if(this.area.get(pos).getAvailability() == Availability.EMPTY){
+            } else {
+                if (this.area.containsKey(pos)) {
+                    if (this.area.get(pos).getAvailability() == Availability.EMPTY) {
                         this.area.get(pos).setAvailability(Availability.NOTAVAILABLE);
                     }
-                }
-                else{
+                } else {
                     this.area.put(pos, new Tile(Availability.NOTAVAILABLE));
                 }
             }
@@ -144,9 +141,9 @@ public class Playground {
     //hypothesis all the card have in the arraylist the value in clockwise order starting from the top left corner at position zero
 
     //this is the implementation when it's placed a back in an available tile, add an exception for other cases
-    public void placeCard(Back c, Position p) throws UnavailablePositionException{
+    public void placeCard(Back c, Position p) throws UnavailablePositionException {
 
-        if(this.area.get(p).getAvailability() == Availability.OCCUPIED || this.area.get(p).getAvailability() == Availability.NOTAVAILABLE){
+        if (this.area.get(p).getAvailability() == Availability.OCCUPIED || this.area.get(p).getAvailability() == Availability.NOTAVAILABLE) {
             throw new UnavailablePositionException("This Position it's not available");
         }
 
@@ -156,22 +153,20 @@ public class Playground {
         this.area.get(p).setAvailability(Availability.OCCUPIED);
         this.area.get(p).setFace(c);
 
-        int j,k;
+        int j, k;
         int corner_pos = 0;
 
-        for(int i = 0; i < 4; i++){
+        for (int i = 0; i < 4; i++) {
 
-            if(i < 2){ //first 2 iteration check the top corners => we're checking position at height y + 1
+            if (i < 2) { //first 2 iteration check the top corners => we're checking position at height y + 1
                 j = y + 1;
-            }
-            else{
+            } else {
                 j = y - 1;
             }
 
-            if(i == 1 || i == 2){
+            if (i == 1 || i == 2) {
                 k = x + 1;
-            }
-            else{
+            } else {
                 k = x - 1;
             }
 
@@ -180,8 +175,8 @@ public class Playground {
             //check of old card corner occupied by the new card
             //update of resources covered by the new card
 
-            if(this.area.get(pos).getAvailability() == Availability.OCCUPIED){
-                switch(i){ //for each iteration the corner occupied in the card we are covering it is different
+            if (this.area.get(pos).getAvailability() == Availability.OCCUPIED) {
+                switch (i) { //for each iteration the corner occupied in the card we are covering it is different
                     //corner_pos represents the occupied corner position in the list
                     case 0: //rx low
                         corner_pos = 2;
@@ -196,36 +191,37 @@ public class Playground {
                         corner_pos = 1;
                         break;
                 }
-                this.area.get(pos).getFace().getCornerList().get(corner_pos).setCovered(true);
-                Symbol s = this.area.get(pos).getFace().getCornerList().get(corner_pos).getSymbol();
+                this.area.get(pos).getFace().getCorners().get(corner_pos).setCovered();
+                Symbol s = this.area.get(pos).getFace().getCorners().get(corner_pos).getSymbol();
                 this.resources.put(s, this.resources.get(s) - 1);
             }
 
             //generation of new position in the hashmap
 
-            if(!this.area.containsKey(pos)){
+            if (!this.area.containsKey(pos)) {
                 this.area.put(pos, new Tile(Availability.EMPTY));
             }
         }
 
         updateResources(c);
     }
-    private void updateResources(Face f){
+
+    private void updateResources(Face f) {
         Map<Symbol, Integer> x = f.getResources(); //needs to be implemented in face
-        for(Symbol s : x.keySet()){
+        for (Symbol s : x.keySet()) {
             this.resources.put(s, this.resources.get(s) + x.get(s));
         }
     }
 
-    public static class NotEnoughResourcesException extends Exception{
-        public NotEnoughResourcesException(String message){
+    public static class NotEnoughResourcesException extends Exception {
+        public NotEnoughResourcesException(String message) {
             super(message);
         }
     }
 
-    public static class UnavailablePositionException extends Exception{
+    public static class UnavailablePositionException extends Exception {
 
-        public UnavailablePositionException(String message){
+        public UnavailablePositionException(String message) {
             super(message);
         }
     }
