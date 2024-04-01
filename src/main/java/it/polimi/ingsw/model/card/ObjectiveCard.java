@@ -1,15 +1,9 @@
 package it.polimi.ingsw.model.card;
 
-public class ObjectiveCard {
-    String objective; /* may be implemented in a different way? */
+public abstract class ObjectiveCard {
     int multiplier;
 
-    public String getObjective() {
-        return objective;
-    }
-
-    public void setObjective(String objective) {
-        this.objective = objective;
+    public void getObjective() {
     }
 
     public int getMultiplier() {
@@ -19,4 +13,6 @@ public class ObjectiveCard {
     public void setMultiplier(int multiplier) {
         this.multiplier = multiplier;
     }
+
+
 }
