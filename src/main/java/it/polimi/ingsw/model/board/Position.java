@@ -40,4 +40,9 @@ public class Position {
     public int hashCode() { //it doesn't unify a unique hashcode for all couples, but it's not necessary, eventually the conflicts are solved with equals method
         return this.x * this.y;
     }
+
+    @Override
+    public String toString() {
+        return this.x + "," + this.y;
+    }
 }
