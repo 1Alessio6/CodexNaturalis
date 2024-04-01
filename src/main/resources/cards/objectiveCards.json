@@ -1,258 +1,119 @@
 {
     "objectiveCards": [
         {
-            "objective": {
-                "positions": [
-                    {
-                        "color": "RED",
-                        "x": 0,
-                        "y": 0
-                    },
-                    {
-                        "color": "RED",
-                        "x": 1,
-                        "y": 1
-                    },
-                    {
-                        "color": "RED",
-                        "x": 2,
-                        "y": 2
-                    }
-                ]
+            "condition": {
+                "0,0":"RED",
+                "1,1":"RED",
+                "2,2":"RED"
             },
             "multiplier": 2
         },
         {
-            "objective": {
-                "positions": [
-                    {
-                        "color": "GREEN",
-                        "x": 0,
-                        "y": 0
-                    },
-                    {
-                        "color": "GREEN",
-                        "x": 1,
-                        "y": -1
-                    },
-                    {
-                        "color": "GREEN",
-                        "x": 2,
-                        "y": -2
-                    }
-                ]
+            "condition": {
+                "0,0": "GREEN",
+                "1,-1": "GREEN",
+                "2,-2": "GREEN"
             },
             "multiplier": 2
         },
         {
-            "objective": {
-                "positions": [
-                    {
-                        "color": "BLUE",
-                        "x": 0,
-                        "y": 0
-                    },
-                    {
-                        "color": "BLUE",
-                        "x": 1,
-                        "y": 1
-                    },
-                    {
-                        "color": "BLUE",
-                        "x": 2,
-                        "y": 2
-                    }
-                ]
+            "condition": {
+                "0,0": "BLUE",
+                "1,1": "BLUE",
+                "2,2": "BLUE"
             },
             "multiplier": 2
         },
         {
-            "objective": {
-                "positions": [
-                    {
-                        "color": "PURPLE",
-                        "x": 0,
-                        "y": 0
-                    },
-                    {
-                        "color": "PURPLE",
-                        "x": 1,
-                        "y": -1
-                    },
-                    {
-                        "color": "PURPLE",
-                        "x": 2,
-                        "y": -2
-                    }
-                ]
+            "condition": {
+                "0,0": "PURPLE",
+                "1,-1": "PURPLE",
+                "2,-2": "PURPLE"
             },
             "multiplier": 2
         },
         {
-            "objective": {
-                "positions": [
-                    {
-                        "color": "RED",
-                        "x": 0,
-                        "y": 0
-                    },
-                    {
-                        "color": "RED",
-                        "x": 0,
-                        "y": -2
-                    },
-                    {
-                        "color": "GREEN",
-                        "x": 1,
-                        "y": -3
-                    }
-                ]
+            "condition": {
+                "0,0": "RED",
+                "0,-2": "RED",
+                "1,-3": "GREEN"
             },
             "multiplier": 2
         },
         {
-            "objective": {
-                "positions": [
-                    {
-                        "color": "BLUE",
-                        "x": 0,
-                        "y": 0
-                    },
-                    {
-                        "color": "PURPLE",
-                        "x": 1,
-                        "y": -1
-                    },
-                    {
-                        "color": "PURPLE",
-                        "x": 1,
-                        "y": -3
-                    }
-                ]
+            "condition": {
+                "0,0":"BLUE",
+                "1,-1": "PURPLE",
+                "1,-3": "PURPLE"
             },
             "multiplier": 3
         },
         {
-            "objective": {
-                "positions": [
-                    {
-                        "color": "BLUE",
-                        "x": 0,
-                        "y": 0
-                    },
-                    {
-                        "color": "BLUE",
-                        "x": 0,
-                        "y": 2
-                    },
-                    {
-                        "color": "RED",
-                        "x": 1,
-                        "y": 3
-                    }
-                ]
+            "condition": {
+                "0,0":"BLUE",
+                "0,2":"BLUE",
+                "1,3":"RED"
             },
             "multiplier": 3
         },
         {
-            "objective": {
-                "positions": [
-                    {
-                        "color": "PURPLE",
-                        "x": 0,
-                        "y": 0
-                    },
-                    {
-                        "color": "GREEN",
-                        "x": 1,
-                        "y": 1
-                    },
-                    {
-                        "color": "GREEN",
-                        "x": 1,
-                        "y": 3
-                    }
-                ]
+            "condition": {
+                "0,0":"PURPLE",
+                "1,1":"GREEN",
+                "1,3":"GREEN"
             },
             "multiplier": 3
         },
         {
-            "objective": {
-                "resources": [
-                    "QUILL",
-                    "INKWELL",
-                    "MANUSCRIPT"
-                ]
+            "condition": {
+                "QUILL": 1,
+                "INKWELL": 1,
+                "MANUSCRIPT": 1
             },
             "multiplier": 3
         },
         {
-            "objective": {
-                "resources": [
-                    "INKWELL",
-                    "INKWELL"
-                ]
+            "condition": {
+                "INKWELL": 2
             },
             "multiplier": 2
         },
         {
-            "objective": {
-                "resources": [
-                    "FUNGI",
-                    "FUNGI",
-                    "FUNGI"
-                ]
+            "condition": {
+                "FUNGI": 3
             },
             "multiplier": 2,
             "color": "RED"
         },
         {
-            "objective": {
-                "resources": [
-                    "MANUSCRIPT",
-                    "MANUSCRIPT"
-                ]
+            "condition": {
+                "MANUSCRIPT": 2
             },
             "multiplier": 2
         },
         {
-            "objective": {
-                "resources": [
-                    "INSECT",
-                    "INSECT",
-                    "INSECT"
-                ]
+            "condition": {
+                "INSECT": 3
             },
             "multiplier": 2,
             "color": "PURPLE"
         },
         {
-            "objective": {
-                "resources": [
-                    "PLANT",
-                    "PLANT",
-                    "PLANT"
-                ]
+            "condition": {
+                "PLANT": 3
             },
             "multiplier": 2,
             "color": "GREEN"
         },
         {
-            "objective": {
-                "resources": [
-                    "QUILL",
-                    "QUILL"
-                ]
+            "condition": {
+                "QUILL": 2
             },
             "multiplier": 2
         },
         {
-            "objective": {
-                "resources": [
-                    "ANIMAL",
-                    "ANIMAL",
-                    "ANIMAL"
-                ]
+            "condition": {
+                "ANIMAL": 3
             },
             "multiplier": 2,
             "color": "BLUE"
