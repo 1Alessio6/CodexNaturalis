@@ -11,43 +11,39 @@ import static java.util.Arrays.asList;
 abstract public class Face {
     private final Color color;
 
-    public static final int NUM_CORNERS = 4;
-    private final List<Corner> corners;
+    //public static final int NUM_CORNERS = 4;
+    private final Map<CornerPosition, Corner> corners;
 
     /**
      * Constructs a face card with the color and corners provided.
      *
      * @param color   of the card.
-     * @param cornerList contains corners to be inserted as card's corner.
+     * @param corners contains corners to be inserted as card's corner.
      * @throws IllegalArgumentException if any argument is null or <code>cornerList</code> has not 4 corners or any of them is null.
      */
-    Face(Color color, List<Corner> cornerList) throws IllegalArgumentException {
+    public Face(Color color, Map<CornerPosition, Corner> corners) throws IllegalArgumentException {
         if (color == null) {
             throw new IllegalArgumentException("Color cannot be null");
         }
 
-        if (cornerList == null) {
+        if (corners == null) {
             throw new IllegalArgumentException("cornerList cannot be null");
         }
 
-        if (cornerList.size() != NUM_CORNERS) {
-            throw new IllegalArgumentException("There must be exactly " + NUM_CORNERS + " corners");
-        }
-
-        if (cornerList.contains(null)) {
+        if (corners.containsValue(null)) {
             throw new IllegalArgumentException("No null Corner objects are allowed in corners");
         }
 
         this.color = color;
 
-        this.corners = Collections.unmodifiableList(cornerList);
+        this.corners = Collections.unmodifiableMap(corners);
     }
 
     public Color getColor() {
         return color;
     }
 
-    public List<Corner> getCorners() {
+    public Map<CornerPosition, Corner> getCorners() {
         return corners;
     }
 

@@ -33,12 +33,12 @@ public class Playground {
     }
 
     //getter methods
-    public Map<Position, Tile> getArea() { //it's not useful to return the exact map that could be edited outside the class
-        return area;
+    public Map<Position, Tile> getArea() { //returns a copy of the original map
+        return new HashMap<>(area);
     }
 
     public Map<Symbol, Integer> getResources() {
-        return resources;
+        return new HashMap<>(resources);
     }
 
     public int getPoints() {
@@ -77,18 +77,18 @@ public class Playground {
         this.area.get(p).setFace(c);
 
         int j, k;
-        int corner_pos = 0;
+        CornerPosition corner_pos = null;
 
         //update for every corner the disposition
-        for (int i = 0; i < 4; i++) {
+        for (CornerPosition current_corner : CornerPosition.values()) {
 
-            if (i < 2) { //first 2 iteration check the top corners => we're checking position at height y + 1
+            if (current_corner == CornerPosition.TOP_LEFT || current_corner == CornerPosition.TOP_RIGHT) { //first 2 iteration check the top corners => we're checking position at height y + 1
                 j = y + 1;
             } else {
                 j = y - 1;
             }
 
-            if (i == 1 || i == 2) {
+            if (current_corner == CornerPosition.TOP_RIGHT || current_corner == CornerPosition.LOWER_RIGHT) {
                 k = x + 1;
             } else {
                 k = x - 1;
@@ -97,27 +97,28 @@ public class Playground {
             Position pos = new Position(k, j);
 
             if (this.area.get(pos).getAvailability() == Availability.OCCUPIED) {
-                switch (i) { //for each iteration the corner occupied in the card we are covering it is different
+                switch (current_corner) { //for each iteration the corner occupied in the card we are covering it is different
                     //corner_pos represents the occupied corner position in the list
-                    case 0: //rx low
-                        corner_pos = 2;
+                    case TOP_LEFT: //rx low
+                        corner_pos = CornerPosition.LOWER_RIGHT;
                         break;
-                    case 1: //sx low
-                        corner_pos = 3;
+                    case TOP_RIGHT: //sx low
+                        corner_pos = CornerPosition.LOWER_LEFT;
                         break;
-                    case 2: //sx high
-                        corner_pos = 0;
+                    case LOWER_RIGHT: //sx high
+                        corner_pos = CornerPosition.TOP_LEFT;
                         break;
-                    case 3: //rx high
-                        corner_pos = 1;
+                    case LOWER_LEFT: //rx high
+                        corner_pos = CornerPosition.TOP_RIGHT;
                         break;
                 }
+
                 this.area.get(pos).getFace().getCorners().get(corner_pos).setCovered();
                 Symbol s = this.area.get(pos).getFace().getCorners().get(corner_pos).getSymbol();
                 this.resources.put(s, this.resources.get(s) - 1);
             }
 
-            if (c.getCorners().get(i) != null) { //null if the corner it's not an empty corner??
+            if (c.getCorners().containsKey(current_corner)) { //null if the corner it's not an empty corner??
                 if (!this.area.containsKey(pos)) {
                     this.area.put(pos, new Tile(Availability.EMPTY));
                 }
@@ -154,17 +155,17 @@ public class Playground {
         this.area.get(p).setFace(c);
 
         int j, k;
-        int corner_pos = 0;
+        CornerPosition corner_pos = null;
 
-        for (int i = 0; i < 4; i++) {
+        for(CornerPosition current_corner : CornerPosition.values()) {
 
-            if (i < 2) { //first 2 iteration check the top corners => we're checking position at height y + 1
+            if (current_corner == CornerPosition.TOP_LEFT || current_corner == CornerPosition.TOP_RIGHT) { //first 2 iteration check the top corners => we're checking position at height y + 1
                 j = y + 1;
             } else {
                 j = y - 1;
             }
 
-            if (i == 1 || i == 2) {
+            if (current_corner == CornerPosition.TOP_RIGHT || current_corner == CornerPosition.LOWER_RIGHT) {
                 k = x + 1;
             } else {
                 k = x - 1;
@@ -176,19 +177,19 @@ public class Playground {
             //update of resources covered by the new card
 
             if (this.area.get(pos).getAvailability() == Availability.OCCUPIED) {
-                switch (i) { //for each iteration the corner occupied in the card we are covering it is different
+                switch (current_corner) { //for each iteration the corner occupied in the card we are covering it is different
                     //corner_pos represents the occupied corner position in the list
-                    case 0: //rx low
-                        corner_pos = 2;
+                    case TOP_LEFT: //rx low
+                        corner_pos = CornerPosition.LOWER_RIGHT;
                         break;
-                    case 1: //sx low
-                        corner_pos = 3;
+                    case TOP_RIGHT: //sx low
+                        corner_pos = CornerPosition.LOWER_LEFT;
                         break;
-                    case 2: //sx high
-                        corner_pos = 0;
+                    case LOWER_RIGHT: //sx high
+                        corner_pos = CornerPosition.TOP_LEFT;
                         break;
-                    case 3: //rx high
-                        corner_pos = 1;
+                    case LOWER_LEFT: //rx high
+                        corner_pos = CornerPosition.TOP_RIGHT;
                         break;
                 }
                 this.area.get(pos).getFace().getCorners().get(corner_pos).setCovered();
