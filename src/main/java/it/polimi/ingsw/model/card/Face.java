@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.card;
 
+import it.polimi.ingsw.model.board.Playground;
+
 import java.util.*;
 
 import static java.util.Arrays.asList;
@@ -67,5 +69,9 @@ abstract public class Face {
      */
     public Map<Symbol, Integer> getRequiredResources() {
         return new HashMap<Symbol, Integer>();
+    }
+
+    public int calcPoints(Playground p) {
+        return 0;
     }
 }
