@@ -12,12 +12,12 @@ public class Front extends Face {
      * Constructs a front card with the color, score and corners provided.
      *
      * @param color   of the card.
-     * @param cornerList of the card.
+     * @param corners of the card.
      * @param score   obtained after positioning the card.
      * @throws IllegalArgumentException if any argument is null or there are not 4 corners or the score is negative.
      */
-    Front(Color color, List<Corner> cornerList, int score) throws IllegalArgumentException {
-        super(color, cornerList);
+    Front(Color color, Map<CornerPosition, Corner> corners, int score) throws IllegalArgumentException {
+        super(color, corners);
 
         if (score < 0) {
             throw new IllegalArgumentException("Score cannot be negative");
@@ -31,6 +31,6 @@ public class Front extends Face {
     }
 
     public int calcPoints(Playground p) {
-        return 0;
+        return score;
     }
 }

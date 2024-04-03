@@ -12,7 +12,7 @@ public class Back extends Face {
      * @param corners of the card.
      * @param resources provided by the card.
      */
-    public Back (Color color, List<Corner> corners, Map<Symbol,Integer> resources) throws IllegalArgumentException {
+    public Back (Color color, Map<CornerPosition, Corner> corners, Map<Symbol,Integer> resources) throws IllegalArgumentException {
         super(color, corners);
 
         if (resources == null) {
