@@ -5,26 +5,26 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 class FrontTest {
-    private List<Corner> cornerList;
+    private Map<CornerPosition, Corner> corners;
 
     @BeforeEach
     void setUp() {
         Corner generic_corner = new Corner(Symbol.ANIMAL);
 
-        cornerList = new ArrayList<>();
+        corners = new HashMap<>();
 
-        for (int i = 0; i < Face.NUM_CORNERS; ++i) {
-            cornerList.add(generic_corner);
-        }
+        corners.put(CornerPosition.LOWER_LEFT, new Corner(Symbol.FUNGI));
     }
 
     @Test
     public void passNullColor_throwsException() {
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> new Front(null, cornerList, 0)
+                () -> new Front(null, corners, 0)
         );
     }
 
@@ -35,35 +35,31 @@ class FrontTest {
         );
     }
 
-
     @Test
-    public void nullCornerInCornerList_throwsException() {
-        cornerList.set(0, null);
-        Assertions.assertThrows(IllegalArgumentException.class,
-                () -> new Front(Color.BLUE, cornerList, 0)
+    public void nullCornerPosition_throwsException() {
+        corners.put(null, new Corner(Symbol.ANIMAL));
+
+         Assertions.assertThrows(IllegalArgumentException.class,
+                () -> new Front(Color.BLUE, corners, 0)
         );
+
+         corners.remove(null);
     }
 
     @Test
-    public void passLongerCornerList_throwsException() {
-        cornerList.add(new Corner(Symbol.FUNGI));
+    public void nullCornerInCorners_throwsException() {
+        corners.put(CornerPosition.LOWER_LEFT, null);
+
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> new Front(Color.BLUE, cornerList, 0)
+                () -> new Front(Color.BLUE, corners, 0)
         );
     }
 
-    @Test
-    public void passSmallerCornerList_throwsException() {
-        cornerList.remove(0);
-        Assertions.assertThrows(IllegalArgumentException.class,
-                () -> new Front(Color.BLUE, cornerList, 0)
-        );
-    }
 
     @Test
     public void passNegativeScore_throwsException() {
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> new Front(Color.BLUE, cornerList, -1)
+                () -> new Front(Color.BLUE, corners, -1)
         );
     }
 
@@ -71,7 +67,7 @@ class FrontTest {
     public void passCorrectParameters_doesNotThrow() {
         Assertions.assertDoesNotThrow(
                 () -> {
-                    new Front(Color.BLUE, cornerList, 0);
+                    new Front(Color.BLUE, corners, 0);
                 }
         );
     }
