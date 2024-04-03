@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.card;
 
+import it.polimi.ingsw.model.card.strategies.CalculatePoints;
+
 import java.util.*;
 
 import static java.util.Arrays.asList;
@@ -11,6 +13,8 @@ import static java.util.Arrays.asList;
 abstract public class Face {
     private final Color color;
 
+    private final CalculatePoints calculator;
+
     //public static final int NUM_CORNERS = 4;
     private final Map<CornerPosition, Corner> corners;
 
@@ -21,7 +25,7 @@ abstract public class Face {
      * @param corners contains corners to be inserted as card's corner.
      * @throws IllegalArgumentException if any argument is null or <code>cornerList</code> has not 4 corners or any of them is null.
      */
-    public Face(Color color, Map<CornerPosition, Corner> corners) throws IllegalArgumentException {
+    public Face(Color color, Map<CornerPosition, Corner> corners, CalculatePoints calculator) throws IllegalArgumentException {
         if (color == null) {
             throw new IllegalArgumentException("Color cannot be null");
         }
@@ -41,6 +45,8 @@ abstract public class Face {
         this.color = color;
 
         this.corners = Collections.unmodifiableMap(corners);
+
+        this.calculator = calculator;
     }
 
     public Color getColor() {
@@ -67,5 +73,9 @@ abstract public class Face {
      */
     public Map<Symbol, Integer> getRequiredResources() {
         return new HashMap<Symbol, Integer>();
+    }
+
+    public CalculatePoints getCalculator(){
+        return this.calculator;
     }
 }

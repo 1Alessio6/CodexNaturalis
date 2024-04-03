@@ -134,7 +134,7 @@ public class Playground {
         }
 
         updateResources(c);
-        this.points = this.points + c.calcPoints(this);
+        this.points = this.points + c.getCalculator().calculatePoints(p,this);
 
     }
 

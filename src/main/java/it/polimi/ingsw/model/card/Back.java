@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.card;
 
+import it.polimi.ingsw.model.card.strategies.CalculatePoints;
+
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +15,7 @@ public class Back extends Face {
      * @param resources provided by the card.
      */
     public Back (Color color, Map<CornerPosition, Corner> corners, Map<Symbol,Integer> resources) throws IllegalArgumentException {
-        super(color, corners);
+        super(color, corners, null);
 
         if (resources == null) {
             throw new IllegalArgumentException("Resources cannot be null");
