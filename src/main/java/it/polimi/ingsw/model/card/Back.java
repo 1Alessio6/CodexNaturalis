@@ -34,5 +34,9 @@ public class Back extends Face {
         return resources;
     }
 
+    @Override
+    public int getScore() {
+        return 0;
+    }
 
 }

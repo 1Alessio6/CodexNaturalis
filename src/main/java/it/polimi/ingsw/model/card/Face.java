@@ -78,4 +78,6 @@ abstract public class Face {
     public CalculatePoints getCalculator(){
         return this.calculator;
     }
+
+    public abstract int getScore();
 }
