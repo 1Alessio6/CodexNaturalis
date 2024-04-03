@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.card;
 
+import it.polimi.ingsw.model.board.Playground;
+
 public abstract class ObjectiveCard {
     int multiplier;
 
@@ -13,5 +15,7 @@ public abstract class ObjectiveCard {
     public int getMultiplier() {
         return multiplier;
     }
+
+    public abstract int calculatePoints(Playground p);
 
 }
