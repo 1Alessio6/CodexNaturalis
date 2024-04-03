@@ -19,7 +19,6 @@ public class Player{
     private boolean networkStatus;
     private List<ObjectiveCard> objectiveCard = new ArrayList<>();
 
-    @Override
     public int getPoints() {
         return player_points;
     }
