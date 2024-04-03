@@ -20,6 +20,7 @@ public class StrategyCorners implements CalculatePoints {
                 .stream()
                 .filter(p -> (Math.abs(p.getX()) <= 1)
                         && (Math.abs(p.getY()) <= 1)
+                        && !p.equals(pos)
                         && area.get(p).getAvailability()
                         .equals(Availability.OCCUPIED))
                 .count()) * multiplier;
