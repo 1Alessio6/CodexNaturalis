@@ -15,12 +15,12 @@ public class Player{
     private Playground playground;
     private boolean isActive;
     private Color colour;
-    private int player_points;
+    private int playerPoints;
     private boolean networkStatus;
     private List<ObjectiveCard> objectiveCard = new ArrayList<>();
 
     public int getPoints() {
-        return player_points;
+        return playerPoints;
     }
 
     //methods
@@ -33,7 +33,7 @@ public class Player{
 
     public void addCard(ObjectiveCard card){objectiveCard.add(card);}
 
-    public void addPoints(int points){ player_points+=points;}
+    public void addPoints(int points){ playerPoints +=points;}
 
     public void placeCard(Front front, Position position){
 
