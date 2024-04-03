@@ -22,6 +22,6 @@ public class StrategyCorners implements CalculatePoints {
                         && (Math.abs(p.getY()) <= 1)
                         && area.get(p).getAvailability()
                         .equals(Availability.OCCUPIED))
-                .count());
+                .count()) * multiplier;
     }
 }
