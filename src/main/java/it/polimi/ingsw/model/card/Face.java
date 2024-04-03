@@ -27,7 +27,11 @@ abstract public class Face {
         }
 
         if (corners == null) {
-            throw new IllegalArgumentException("cornerList cannot be null");
+            throw new IllegalArgumentException("corners cannot be null");
+        }
+
+        if (corners.containsKey(null)) {
+            throw new IllegalArgumentException("No null position for corners are allowed");
         }
 
         if (corners.containsValue(null)) {
