@@ -23,10 +23,6 @@ public final class GoldenFront extends Front {
         return requirements;
     }
 
-    public void setRequirements(List<Symbol> requirements) {
-        this.requirements = requirements;
-    }
-
     public Condition getPointsCondition() {
         return pointsCondition;
     }
