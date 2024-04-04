@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.card;
 
+import it.polimi.ingsw.model.board.Playground;
+
 import java.util.List;
 import java.util.Set;
 
@@ -14,5 +16,10 @@ public final class ObjectiveResourceCard extends ObjectiveCard {
         }
 
         this.condition = condition;
+    }
+
+    @Override
+    public int calculatePoints(Playground p) {
+        return 0;
     }
 }

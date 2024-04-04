@@ -54,6 +54,7 @@ public class Playground {
     }
 
     //hypothesis all the card have in the arraylist the value in clockwise order starting from the top left corner at position zero
+    //check if all the methods are called on existing elements of the map
 
     public void placeCard(Front c, Position p) throws UnavailablePositionException, NotEnoughResourcesException {
 
@@ -134,7 +135,7 @@ public class Playground {
         }
 
         updateResources(c);
-        this.points = this.points + c.calcPoints(this);
+        this.points = this.points + c.getCalculator().calculatePoints(p,this);
 
     }
 
