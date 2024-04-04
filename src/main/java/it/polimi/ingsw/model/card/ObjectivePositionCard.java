@@ -4,9 +4,10 @@ import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.board.Tile;
 
+import java.util.HashMap;
 import java.util.Map;
 
-public final class ObjectivePositionCard extends ObjectiveCard {
+public class ObjectivePositionCard extends ObjectiveCard {
     private final Map<Position, Color> condition;
 
     public ObjectivePositionCard(Map<Position, Color> condition, int multiplier) throws IllegalArgumentException {
@@ -18,6 +19,9 @@ public final class ObjectivePositionCard extends ObjectiveCard {
         this.condition = condition;
     }
 
+    public Map<Position, Color> getCondition(){
+        return new HashMap<>(condition);
+    }
 
     @Override
     public int calculatePoints(Playground p) {
@@ -63,6 +67,6 @@ public final class ObjectivePositionCard extends ObjectiveCard {
             }
         }
 
-        return 0;
+        return count;
     }
 }
