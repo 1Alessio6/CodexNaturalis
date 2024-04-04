@@ -28,12 +28,7 @@ public class ObjectiveLPositionCard extends ObjectivePositionCard{
             Color col2 = this.getCondition().get(new Position(1,3));
 
             if(area.containsKey(pos1) && area.containsKey(pos2)){
-                if(area.get(i).getFace().getColor() == col0 && area.get(pos1).getFace().getColor() == col1 && area.get(pos2).getFace().getColor() == col2) {
-                    count++;
-                    area.remove(i);
-                    area.remove(pos1);
-                    area.remove(pos2);
-                }
+                count = this.updateCount(area, count, i, pos1, pos2, col0, col1, col2);
             }
         }
 

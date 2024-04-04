@@ -26,4 +26,15 @@ public abstract class ObjectivePositionCard extends ObjectiveCard {
     @Override
     public abstract int calculatePoints(Playground p);
 
+    int updateCount(Map<Position, Tile> area, int count, Position pos0, Position pos1, Position pos2, Color col0, Color col1, Color col2){
+        if(area.get(pos0).getFace().getColor() == col0 && area.get(pos1).getFace().getColor() == col1 && area.get(pos2).getFace().getColor() == col2) {
+            count++;
+            area.remove(pos0);
+            area.remove(pos1);
+            area.remove(pos2);
+        }
+
+        return count;
+    }
+
 }
