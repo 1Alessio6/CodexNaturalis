@@ -38,5 +38,7 @@ public class ObjectiveLPositionCard extends ObjectivePositionCard{
         }
 
         return count;
+
     }
 }
+
