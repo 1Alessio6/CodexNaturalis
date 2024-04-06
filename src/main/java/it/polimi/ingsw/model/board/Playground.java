@@ -71,7 +71,7 @@ public class Playground {
     }
 
     public List<Position> getAvailablePositions() {   //It's not required to return an optional because the map has always at least one available position
-        return this.area.keySet().stream().filter(x -> this.area.get(x).getAvailability() == Availability.EMPTY).collect(Collectors.toList());
+        return this.area.keySet().stream().filter(x -> this.area.get(x).sameAvailability(Availability.EMPTY)).collect(Collectors.toList());
     }
 
     //hypothesis all the card have in the arraylist the value in clockwise order starting from the top left corner at position zero
@@ -79,7 +79,7 @@ public class Playground {
 
     public void placeCard(Front c, Position p) throws UnavailablePositionException, NotEnoughResourcesException {
 
-        if (this.area.get(p).getAvailability() == Availability.OCCUPIED || this.area.get(p).getAvailability() == Availability.NOTAVAILABLE) {
+        if (this.area.get(p).sameAvailability(Availability.OCCUPIED) || this.area.get(p).sameAvailability(Availability.NOTAVAILABLE)) {
             throw new UnavailablePositionException("This Position it's not available");
         }
 
@@ -118,7 +118,7 @@ public class Playground {
 
             Position pos = new Position(k, j);
 
-            if (this.area.get(pos).getAvailability() == Availability.OCCUPIED) {
+            if (this.area.get(pos).sameAvailability(Availability.OCCUPIED)) {
                 switch (current_corner) { //for each iteration the corner occupied in the card we are covering it is different
                     //corner_pos represents the occupied corner position in the list
                     case TOP_LEFT: //rx low
@@ -146,7 +146,7 @@ public class Playground {
                 }
             } else {
                 if (this.area.containsKey(pos)) {
-                    if (this.area.get(pos).getAvailability() == Availability.EMPTY) {
+                    if (this.area.get(pos).sameAvailability(Availability.EMPTY)) {
                         this.area.get(pos).setAvailability(Availability.NOTAVAILABLE);
                     }
                 } else {
@@ -166,7 +166,7 @@ public class Playground {
     //this is the implementation when it's placed a back in an available tile, add an exception for other cases
     public void placeCard(Back c, Position p) throws UnavailablePositionException {
 
-        if (this.area.get(p).getAvailability() == Availability.OCCUPIED || this.area.get(p).getAvailability() == Availability.NOTAVAILABLE) {
+        if (this.area.get(p).sameAvailability(Availability.OCCUPIED) || this.area.get(p).sameAvailability(Availability.NOTAVAILABLE)) {
             throw new UnavailablePositionException("This Position it's not available");
         }
 
@@ -198,7 +198,7 @@ public class Playground {
             //check of old card corner occupied by the new card
             //update of resources covered by the new card
 
-            if (this.area.get(pos).getAvailability() == Availability.OCCUPIED) {
+            if (this.area.get(pos).sameAvailability(Availability.OCCUPIED)) {
                 switch (current_corner) { //for each iteration the corner occupied in the card we are covering it is different
                     //corner_pos represents the occupied corner position in the list
                     case TOP_LEFT: //rx low
