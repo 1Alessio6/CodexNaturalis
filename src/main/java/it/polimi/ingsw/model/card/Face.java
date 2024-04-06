@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.card;
 
+import it.polimi.ingsw.model.board.Playground;
+import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.strategies.CalculatePoints;
 
 import java.util.*;
@@ -42,6 +44,10 @@ abstract public class Face {
             throw new IllegalArgumentException("No null Corner objects are allowed in corners");
         }
 
+        if (calculator == null) {
+            throw new IllegalArgumentException("Calculator cannot be null");
+        }
+
         this.color = color;
 
         this.corners = Collections.unmodifiableMap(corners);
@@ -74,9 +80,8 @@ abstract public class Face {
     public Map<Symbol, Integer> getRequiredResources() {
         return new HashMap<Symbol, Integer>();
     }
-
-    public CalculatePoints getCalculator(){
-        return this.calculator;
+    public int calculatePoints(Position pos, Playground playground){
+        return calculator.calculatePoints(pos, playground);
     }
 
     public abstract int getScore();
