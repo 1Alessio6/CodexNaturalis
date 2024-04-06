@@ -24,8 +24,8 @@ public class Tile {
         return face;
     }
 
-    public Availability getAvailability() {
-        return availability;
+    public boolean sameAvailability(Availability availability) {
+        return this.availability == availability;
     }
 
     //setter methods
