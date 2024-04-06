@@ -4,8 +4,7 @@ import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.board.Tile;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public abstract class ObjectivePositionCard extends ObjectiveCard {
     private final Map<Position, Color> condition;
@@ -23,15 +22,43 @@ public abstract class ObjectivePositionCard extends ObjectiveCard {
         return new HashMap<>(condition);
     }
 
-    @Override
-    public abstract int calculatePoints(Playground p);
+    private boolean matchRequirement(Playground playground, Position requiredPosition, Color requiredColor) {
+        return playground.contains(requiredPosition)
+                && playground.getTile(requiredPosition).getFace().getColor().equals(requiredColor);
+    }
 
-    int updateCount(Map<Position, Tile> area, int count, Position pos0, Position pos1, Position pos2, Color col0, Color col1, Color col2){
-        if(area.get(pos0).getFace().getColor() == col0 && area.get(pos1).getFace().getColor() == col1 && area.get(pos2).getFace().getColor() == col2) {
-            count++;
-            area.remove(pos0);
-            area.remove(pos1);
-            area.remove(pos2);
+    @Override
+    public int calculatePoints(Playground playground) {
+        int count = 0;
+
+        Set<Position> alreadyVisitedPositions = new HashSet<>();
+
+        for(Position p : playground.getAllPositions()){
+
+            boolean isSatisfied = true;
+
+            List<Position> usedPositions = new ArrayList<>();
+
+            for (Map.Entry<Position, Color> entry : condition.entrySet()) {
+
+                Position requiredPosition = Position.sum(p, entry.getKey());
+                Color requiredColor = entry.getValue();
+
+                if (alreadyVisitedPositions.contains(requiredPosition)
+                        || !matchRequirement(playground, requiredPosition, requiredColor))
+                {
+                    isSatisfied = false;
+                    break;
+                } else {
+                    usedPositions.add(requiredPosition);
+                }
+            }
+
+            if (isSatisfied) {
+                count += 1;
+                alreadyVisitedPositions.addAll(usedPositions);
+            }
+
         }
 
         return count;
