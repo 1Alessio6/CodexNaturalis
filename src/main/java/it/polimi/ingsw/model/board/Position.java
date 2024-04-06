@@ -45,4 +45,8 @@ public class Position {
     public String toString() {
         return this.x + "," + this.y;
     }
+
+    public static Position sum(Position lhs, Position rhs) {
+        return new Position(lhs.x + rhs.x, lhs.y + rhs.y);
+    }
 }
