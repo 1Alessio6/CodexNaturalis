@@ -14,8 +14,8 @@ public class Back extends Face {
      * @param corners of the card.
      * @param resources provided by the card.
      */
-    public Back (Color color, Map<CornerPosition, Corner> corners, Map<Symbol,Integer> resources) throws IllegalArgumentException {
-        super(color, corners, null);
+    public Back (Color color, Map<CornerPosition, Corner> corners, Map<Symbol,Integer> resources, CalculatePoints calculator) throws IllegalArgumentException {
+        super(color, corners, calculator);
 
         if (resources == null) {
             throw new IllegalArgumentException("Resources cannot be null");
