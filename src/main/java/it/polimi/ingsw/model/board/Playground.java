@@ -32,9 +32,30 @@ public class Playground {
         resources.put(Symbol.QUILL, 0);
     }
 
-    //getter methods
-    public Map<Position, Tile> getArea() { //returns a copy of the original map
-        return new HashMap<>(area);
+    public Tile getTile(Position pos)  {
+        return area.get(pos);
+    }
+
+    /**
+     * Returns true if the tile at position <code>pos</code> has the same availability as <code>availability</code>.
+     * If <code>pos</code> is null, or it's not contained in area, the method returns false.
+     * @param pos of the Tile to check.
+     * @param availability to compare to the one in the Tile at position <code>pos</code>.
+     * @return true if the tile at position <code>pos</code> has the same availability as <code>availability</code>.
+     */
+    public boolean sameAvailability(Position pos, Availability availability) {
+        if (!area.containsKey(pos))
+            return false;
+
+        return area.get(pos).sameAvailability(availability);
+    }
+
+    public boolean contains(Position position) {
+        return area.containsKey(position);
+    }
+
+    public Set<Position> getAllPositions() {
+        return area.keySet();
     }
 
     public Map<Symbol, Integer> getResources() {
