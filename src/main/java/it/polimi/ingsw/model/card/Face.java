@@ -2,6 +2,8 @@ package it.polimi.ingsw.model.card;
 
 import it.polimi.ingsw.model.card.strategies.CalculatePoints;
 
+import it.polimi.ingsw.model.board.Playground;
+
 import java.util.*;
 
 import static java.util.Arrays.asList;
