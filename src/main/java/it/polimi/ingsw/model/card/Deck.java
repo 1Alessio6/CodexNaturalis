@@ -2,7 +2,7 @@ package it.polimi.ingsw.model.card;
 
 import java.util.Stack;
 
-public class NormalDeck {
+public class Deck {
     String type;
     Stack<Card> deck;
 
