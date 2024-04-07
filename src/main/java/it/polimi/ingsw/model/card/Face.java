@@ -4,6 +4,8 @@ import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.strategies.CalculatePoints;
 
+import it.polimi.ingsw.model.board.Playground;
+
 import java.util.*;
 
 import static java.util.Arrays.asList;
