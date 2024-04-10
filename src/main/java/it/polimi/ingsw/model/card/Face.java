@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.card.strategies.CalculatePoints;
 import it.polimi.ingsw.model.board.Playground;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 
@@ -19,7 +20,7 @@ abstract public class Face {
 
     private final CalculatePoints calculator;
 
-    //public static final int NUM_CORNERS = 4;
+    // public static final int NUM_CORNERS = 4;
     private final Map<CornerPosition, Corner> corners;
 
     /**
@@ -27,9 +28,12 @@ abstract public class Face {
      *
      * @param color   of the card.
      * @param corners contains corners to be inserted as card's corner.
-     * @throws IllegalArgumentException if any argument is null or <code>cornerList</code> has not 4 corners or any of them is null.
+     * @throws IllegalArgumentException if any argument is null or
+     *                                  <code>cornerList</code> has not 4 corners or
+     *                                  any of them is null.
      */
-    public Face(Color color, Map<CornerPosition, Corner> corners, CalculatePoints calculator) throws IllegalArgumentException {
+    public Face(Color color, Map<CornerPosition, Corner> corners, CalculatePoints calculator)
+            throws IllegalArgumentException {
         if (color == null) {
             throw new IllegalArgumentException("Color cannot be null");
         }
@@ -68,10 +72,12 @@ abstract public class Face {
     /**
      * Returns face resources.
      *
-     * @return empty map: by default a face has no resources.
+     * @return a map containing the resources of the face and their quantity.
      */
     public Map<Symbol, Integer> getResources() {
-        return new HashMap<Symbol, Integer>();
+        return corners.values().stream().map(Corner::getSymbol)
+                // group by symbol and increment by 1 for each occurrence
+                .collect(Collectors.groupingBy(s -> s, HashMap::new, Collectors.summingInt(s -> 1)));
     }
 
     /**
@@ -82,7 +88,7 @@ abstract public class Face {
     public Map<Symbol, Integer> getRequiredResources() {
         return new HashMap<Symbol, Integer>();
     }
-    public int calculatePoints(Position pos, Playground playground){
+    public int calculatePoints(Position pos, Playground playground) {
         return calculator.calculatePoints(pos, playground);
     }
 
