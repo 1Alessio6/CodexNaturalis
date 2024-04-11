@@ -21,11 +21,6 @@ public class Tile {
         availability = a;
     }
 
-    public Tile(Face f, Availability a){
-        face = f;
-        availability = a;
-    }
-
 
 
     /**
