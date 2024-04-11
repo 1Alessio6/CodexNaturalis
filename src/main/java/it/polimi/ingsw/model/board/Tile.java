@@ -25,7 +25,7 @@ public class Tile {
 
     /**
      * Returns the face contained in the tile.
-     * @return card's face placed in the tile.
+     * @return a face representing the card's face placed in the tile.
      */
     public Face getFace() {
         return face;
