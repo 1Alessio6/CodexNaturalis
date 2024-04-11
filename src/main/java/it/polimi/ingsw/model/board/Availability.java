@@ -6,6 +6,7 @@ package it.polimi.ingsw.model.board;
 
 public enum Availability {
 
+
     /**
      * Empty, when the tile it's available and a card's face can be placed in there.
      */

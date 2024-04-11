@@ -56,7 +56,7 @@ public class Playground {
      * Returns true if the tile at position <code>pos</code> has the same availability as <code>availability</code>.
      * If <code>pos</code> is null, or it's not contained in area, the method returns false.
      * @param pos the position of the Tile to check.
-     * @param availability to compare to the one in the Tile at position <code>pos</code>.
+     * @param availability the availability to compare to the one in the Tile at position <code>pos</code>.
      * @return true if the tile at position <code>pos</code> has the same availability as <code>availability</code>.
      */
     public boolean sameAvailability(Position pos, Availability availability) {
@@ -70,7 +70,7 @@ public class Playground {
 
     /**
      * Checks if there is a Tile in at specific position.
-     * @param position of the Tile to check.
+     * @param position the position of the Tile to check.
      * @return true if the playground contains a tile in that position.
      */
     public boolean contains(Position position) {
