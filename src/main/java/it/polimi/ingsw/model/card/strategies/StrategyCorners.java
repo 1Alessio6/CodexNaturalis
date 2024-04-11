@@ -9,6 +9,8 @@ import java.util.Map;
 
 public class StrategyCorners implements CalculatePoints {
 
+
+    //it's possible to change with an O(1) time complexity
     @Override
     public int calculatePoints(Position pos, Playground playground) {
         int multiplier = playground.getTile(pos).getFace().getScore();

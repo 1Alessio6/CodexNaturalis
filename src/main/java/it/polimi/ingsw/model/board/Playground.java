@@ -5,14 +5,20 @@ import it.polimi.ingsw.model.card.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Representation of the player's playground.
+ * The playground contains a representation of card's disposition and manages their positioning.
+ * It also saves and updates player's resources and score.
+ */
+
 public class Playground {
     private final Map<Position, Tile> area;
     private int points;
     private final Map<Symbol, Integer> resources;
 
-    //constructor
-
-    //we could change Map with an HashMap and create the HashMap inside the constructor in order to have a Map with the position (0,0) and with the assurance of having an empty map
+    /**
+     * Constructs a playground according to its condition at the beginning of the game.
+     */
     public Playground() {
 
         this.area = new HashMap<>();
@@ -32,14 +38,23 @@ public class Playground {
         resources.put(Symbol.QUILL, 0);
     }
 
+
+
+    /**
+     * Returns the tile at the position pos.
+     * @param pos the position of the tile.
+     * @return the tile at position pos or null if there isn't a tile in that position.
+     */
     public Tile getTile(Position pos)  {
         return area.get(pos);
     }
 
+
+
     /**
      * Returns true if the tile at position <code>pos</code> has the same availability as <code>availability</code>.
      * If <code>pos</code> is null, or it's not contained in area, the method returns false.
-     * @param pos of the Tile to check.
+     * @param pos the position of the Tile to check.
      * @param availability to compare to the one in the Tile at position <code>pos</code>.
      * @return true if the tile at position <code>pos</code> has the same availability as <code>availability</code>.
      */
@@ -50,36 +65,79 @@ public class Playground {
         return area.get(pos).sameAvailability(availability);
     }
 
+
+
+    /**
+     * Checks if there is a Tile in at specific position.
+     * @param position of the Tile to check.
+     * @return true if the playground contains a tile in that position.
+     */
     public boolean contains(Position position) {
         return area.containsKey(position);
     }
 
+
+
+    /**
+     * Returns all the position in the playground.
+     * @return a set which contains all the position in which there's a tile.
+     */
     public Set<Position> getAllPositions() {
         return area.keySet();
     }
 
+
+
+    /**
+     * Returns all the player's resources.
+     * @return a map containing for each resource symbol the specific amount owned by the player.
+     */
     public Map<Symbol, Integer> getResources() {
         return new HashMap<>(resources);
     }
 
+
+
+    /**
+     * Returns the player current score.
+     * @return an integer representing player's current score.
+     */
     public int getPoints() {
         return points;
     }
 
+
+
+    /**
+     * Sets the value of the points.
+     * @param points the updated value of the points owned by the player.
+     */
     public void setPoints(int points) {
         this.points = points;
     }
 
-    public List<Position> getAvailablePositions() {   //It's not required to return an optional because the map has always at least one available position
+
+
+    /**
+     * Returns all the available position.
+     * @return a list containing all the position stored in the playground associated to an empty tile.
+     */
+    public List<Position> getAvailablePositions(){
         return this.area.keySet().stream().filter(x -> this.area.get(x).sameAvailability(Availability.EMPTY)).collect(Collectors.toList());
     }
 
-    //hypothesis all the card have in the arraylist the value in clockwise order starting from the top left corner at position zero
-    //check if all the methods are called on existing elements of the map
 
+
+    /**
+     * Places a card's face in the playground.
+     * @param c the face that is placed in the playground.
+     * @param p the position where the face is placed.
+     * @throws UnavailablePositionException if the position it's unavailable or already occupied.
+     * @throws NotEnoughResourcesException if the player doesn't have enough resources to place the card's face.
+     */
     public void placeCard(Face c, Position p) throws UnavailablePositionException, NotEnoughResourcesException {
 
-        if (this.area.get(p).sameAvailability(Availability.OCCUPIED) || this.area.get(p).sameAvailability(Availability.NOTAVAILABLE)) {
+        if (!this.area.get(p).sameAvailability(Availability.EMPTY)) {
             throw new UnavailablePositionException("This Position it's not available");
         }
 
@@ -149,12 +207,22 @@ public class Playground {
         this.points = this.points + c.calculatePoints(p,this);
 
     }
+
+
+
+    /**
+     * Updates the resources of the player with the resources contained in the face.
+     * @param f the face containing the resources to add to player's resources.
+     */
     private void updateResources(Face f) {
         Map<Symbol, Integer> x = f.getResources(); //needs to be implemented in face
         for (Symbol s : x.keySet()) {
             this.resources.put(s, this.resources.get(s) + x.get(s));
         }
     }
+
+
+
 
     private void checkRequirements(Map<Symbol, Integer> req) throws NotEnoughResourcesException{
         for (Symbol s : req.keySet()) {
@@ -164,6 +232,15 @@ public class Playground {
         }
     }
 
+
+
+    /**
+     * Returns the position associated to the position of a corner on the face, given face's position.
+     * @param x the abscissa of face's position.
+     * @param y the ordinate of face's position.
+     * @param corner the corner position on the card's face.
+     * @return the position in the playground associated to the corner position on the face.
+     */
     private Position correspondingPosition(int x, int y, CornerPosition corner){
 
         int k,j;
@@ -183,14 +260,27 @@ public class Playground {
         return new Position(k, j);
     }
 
+
+
+    /**
+     * Exception thrown when the resource aren't enough.
+     * This exception indicates the player resources are less than resources needed to place the card's
+     * face he's trying to place.
+     */
     public static class NotEnoughResourcesException extends Exception {
         public NotEnoughResourcesException(String message) {
             super(message);
         }
     }
 
-    public static class UnavailablePositionException extends Exception {
 
+
+    /**
+     * Exception thrown when the position is unavailable.
+     * This exception indicates the position where the player is placing the card isn't contained in
+     * his playground, or it's not empty the tile.
+     */
+    public static class UnavailablePositionException extends Exception {
         public UnavailablePositionException(String message) {
             super(message);
         }
