@@ -1,646 +1,364 @@
-{
-    "resourceCards": [
-        {
-            "cornerList": [
-                {
-                    "symbol": "FUNGI"
-                },
-                {
-                    "symbol": null
-                },
-                {},
-                {
-                    "symbol": "FUNGI"
-                }
-            ],
-            "score": 0,
-            "color": "RED"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": "FUNGI"
-                },
-                {
-                    "symbol": "FUNGI"
-                },
-                {
-                    "symbol": null
-                },
-                {}
-            ],
-            "score": 0,
-            "color": "RED"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": null
-                },
-                {},
-                {
-                    "symbol": "FUNGI"
-                },
-                {
-                    "symbol": "FUNGI"
-                }
-            ],
-            "score": 0,
-            "color": "RED"
-        },
-        {
-            "cornerList": [
-                {},
-                {
-                    "symbol": "FUNGI"
-                },
-                {
-                    "symbol": "FUNGI"
-                },
-                {
-                    "symbol": null
-                }
-            ],
-            "score": 0,
-            "color": "RED"
-        },
-        {
-            "cornerList": [
-                {},
-                {
-                    "symbol": "QUILL"
-                },
-                {
-                    "symbol": "FUNGI"
-                },
-                {
-                    "symbol": "PLANT"
-                }
-            ],
-            "score": 0,
-            "color": "RED"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": "INKWELL"
-                },
-                {
-                    "symbol": "FUNGI"
-                },
-                {
-                    "symbol": "ANIMAL"
-                },
-                {}
-            ],
-            "score": 0,
-            "color": "RED"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": "FUNGI"
-                },
-                {
-                    "symbol": "INSECT"
-                },
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": "MANUSCRIPT"
-                }
-            ],
-            "score": 0,
-            "color": "RED"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": "FUNGI"
-                },
-                {},
-                {
-                    "symbol": null
-                }
-            ],
-            "score": 1,
-            "color": "RED"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": "FUNGI"
-                },
-                {},
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": null
-                }
-            ],
-            "score": 1,
-            "color": "RED"
-        },
-        {
-            "cornerList": [
-                {},
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": "FUNGI"
-                }
-            ],
-            "score": 1,
-            "color": "RED"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": "PLANT"
-                },
-                {
-                    "symbol": null
-                },
-                {},
-                {
-                    "symbol": "PLANT"
-                }
-            ],
-            "score": 0,
-            "color": "GREEN"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": "PLANT"
-                },
-                {
-                    "symbol": "PLANT"
-                },
-                {
-                    "symbol": null
-                },
-                {}
-            ],
-            "score": 0,
-            "color": "GREEN"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": null
-                },
-                {},
-                {
-                    "symbol": "PLANT"
-                },
-                {
-                    "symbol": "PLANT"
-                }
-            ],
-            "score": 0,
-            "color": "GREEN"
-        },
-        {
-            "cornerList": [
-                {},
-                {
-                    "symbol": "PLANT"
-                },
-                {
-                    "symbol": "PLANT"
-                },
-                {
-                    "symbol": null
-                }
-            ],
-            "score": 0,
-            "color": "GREEN"
-        },
-        {
-            "cornerList": [
-                {},
-                {
-                    "symbol": "INSECT"
-                },
-                {
-                    "symbol": "PLANT"
-                },
-                {
-                    "symbol": "QUILL"
-                }
-            ],
-            "score": 0,
-            "color": "GREEN"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": "FUNGI"
-                },
-                {
-                    "symbol": "PLANT"
-                },
-                {
-                    "symbol": "INKWELL"
-                },
-                {}
-            ],
-            "score": 0,
-            "color": "GREEN"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": "MANUSCRIPT"
-                },
-                {},
-                {
-                    "symbol": "ANIMAL"
-                },
-                {
-                    "symbol": "PLANT"
-                }
-            ],
-            "score": 0,
-            "color": "GREEN"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": null
-                },
-                {},
-                {
-                    "symbol": "PLANT"
-                }
-            ],
-            "score": 1,
-            "color": "GREEN"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": "PLANT"
-                },
-                {}
-            ],
-            "score": 1,
-            "color": "GREEN"
-        },
-        {
-            "cornerList": [
-                {},
-                {
-                    "symbol": "PLANT"
-                },
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": null
-                }
-            ],
-            "score": 1,
-            "color": "GREEN"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": "ANIMAL"
-                },
-                {
-                    "symbol": "ANIMAL"
-                },
-                {},
-                {
-                    "symbol": null
-                }
-            ],
-            "score": 0,
-            "color": "BLUE"
-        },
-        {
-            "cornerList": [
-                {},
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": "ANIMAL"
-                },
-                {
-                    "symbol": "ANIMAL"
-                }
-            ],
-            "score": 0,
-            "color": "BLUE"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": "ANIMAL"
-                },
-                {},
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": "ANIMAL"
-                }
-            ],
-            "score": 0,
-            "color": "BLUE"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": "ANIMAL"
-                },
-                {
-                    "symbol": "ANIMAL"
-                },
-                {}
-            ],
-            "score": 0,
-            "color": "BLUE"
-        },
-        {
-            "cornerList": [
-                {},
-                {
-                    "symbol": "INSECT"
-                },
-                {
-                    "symbol": "ANIMAL"
-                },
-                {
-                    "symbol": "INKWELL"
-                }
-            ],
-            "score": 0,
-            "color": "BLUE"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": "PLANT"
-                },
-                {
-                    "symbol": "ANIMAL"
-                },
-                {
-                    "symbol": "MANUSCRIPT"
-                },
-                {}
-            ],
-            "score": 0,
-            "color": "BLUE"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": "QUILL"
-                },
-                {},
-                {
-                    "symbol": "FUNGI"
-                },
-                {
-                    "symbol": "ANIMAL"
-                }
-            ],
-            "score": 0,
-            "color": "BLUE"
-        },
-        {
-            "cornerList": [
-                {},
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": "ANIMAL"
-                }
-            ],
-            "score": 1,
-            "color": "BLUE"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": null
-                },
-                {},
-                {
-                    "symbol": "ANIMAL"
-                },
-                {
-                    "symbol": null
-                }
-            ],
-            "score": 1,
-            "color": "BLUE"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": "ANIMAL"
-                },
-                {},
-                {
-                    "symbol": null
-                }
-            ],
-            "score": 1,
-            "color": "BLUE"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": "INSECT"
-                },
-                {
-                    "symbol": "INSECT"
-                },
-                {},
-                {
-                    "symbol": null
-                }
-            ],
-            "score": 0,
-            "color": "PURPLE"
-        },
-        {
-            "cornerList": [
-                {},
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": "INSECT"
-                },
-                {
-                    "symbol": "INSECT"
-                }
-            ],
-            "score": 0,
-            "color": "PURPLE"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": "INSECT"
-                },
-                {},
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": "INSECT"
-                }
-            ],
-            "score": 0,
-            "color": "PURPLE"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": "INSECT"
-                },
-                {
-                    "symbol": "INSECT"
-                },
-                {}
-            ],
-            "score": 0,
-            "color": "PURPLE"
-        },
-        {
-            "cornerList": [
-                {},
-                {
-                    "symbol": "QUILL"
-                },
-                {
-                    "symbol": "INSECT"
-                },
-                {
-                    "symbol": "ANIMAL"
-                }
-            ],
-            "score": 0,
-            "color": "PURPLE"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": "MANUSCRIPT"
-                },
-                {
-                    "symbol": "INSECT"
-                },
-                {
-                    "symbol": "FUNGI"
-                },
-                {}
-            ],
-            "score": 0,
-            "color": "PURPLE"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": "INSECT"
-                },
-                {
-                    "symbol": "PLANT"
-                },
-                {},
-                {
-                    "symbol": "INKWELL"
-                }
-            ],
-            "score": 0,
-            "color": "PURPLE"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": "INSECT"
-                },
-                {},
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": null
-                }
-            ],
-            "score": 1,
-            "color": "PURPLE"
-        },
-        {
-            "cornerList": [
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": "INSECT"
-                },
-                {}
-            ],
-            "score": 1,
-            "color": "PURPLE"
-        },
-        {
-            "cornerList": [
-                {},
-                {
-                    "symbol": "INSECT"
-                },
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": null
-                }
-            ],
-            "score": 1,
-            "color": "PURPLE"
-        }
-    ]
-}
+[
+  {
+      "cornerList": {
+          "TOP_LEFT": "FUNGI",
+          "TOP_RIGHT": null,
+          "BOTTOM_LEFT": "FUNGI"
+      },
+      "score": 0,
+      "color": "RED"
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": "FUNGI",
+          "TOP_RIGHT": "FUNGI",
+          "BOTTOM_RIGHT": null
+      },
+      "score": 0,
+      "color": "RED"
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": null,
+          "BOTTOM_RIGHT": "FUNGI",
+          "BOTTOM_LEFT": "FUNGI"
+      },
+      "score": 0,
+      "color": "RED"
+  },
+  {
+      "cornerList": {
+          "TOP_RIGHT": "FUNGI",
+          "BOTTOM_RIGHT": "FUNGI",
+          "BOTTOM_LEFT": null
+      },
+      "score": 0,
+      "color": "RED"
+  },
+  {
+      "cornerList": {
+          "TOP_RIGHT": "QUILL",
+          "BOTTOM_RIGHT": "FUNGI",
+          "BOTTOM_LEFT": "PLANT"
+      },
+      "score": 0,
+      "color": "RED"
+
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": "INKWELL",
+          "TOP_RIGHT": "FUNGI",
+          "BOTTOM_RIGHT": "ANIMAL"
+      },
+      "score": 0,
+      "color": "RED"
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": "FUNGI",
+          "TOP_RIGHT": "INSECT",
+          "BOTTOM_RIGHT": null,
+          "BOTTOM_LEFT": "MANUSCRIPT"
+      },
+      "score": 0,
+      "color": "RED"
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": null,
+          "TOP_RIGHT": "FUNGI",
+          "BOTTOM_LEFT": null
+      },
+      "score": 1,
+      "color": "RED"
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": "FUNGI",
+          "BOTTOM_RIGHT": null,
+          "BOTTOM_LEFT": null
+      },
+      "score": 1,
+      "color": "RED"
+  },
+  {
+      "cornerList": {
+          "TOP_RIGHT": null,
+          "BOTTOM_RIGHT": null,
+          "BOTTOM_LEFT": "FUNGI"
+      },
+      "score": 1,
+      "color": "RED"
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": "PLANT",
+          "TOP_RIGHT": null,
+          "BOTTOM_LEFT": "PLANT"
+      },
+      "score": 0,
+      "color": "GREEN"
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": "PLANT",
+          "TOP_RIGHT": "PLANT",
+          "BOTTOM_RIGHT": null
+      },
+      "score": 0,
+      "color": "GREEN"
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": null,
+          "BOTTOM_RIGHT": "PLANT",
+          "BOTTOM_LEFT": "PLANT"
+      },
+      "score": 0,
+      "color": "GREEN"
+  },
+  {
+      "cornerList": {
+          "TOP_RIGHT": "PLANT",
+          "BOTTOM_RIGHT": "PLANT",
+          "BOTTOM_LEFT": null
+      },
+      "score": 0,
+      "color": "GREEN"
+  },
+  {
+      "cornerList": {
+          "TOP_RIGHT": "INSECT",
+          "BOTTOM_RIGHT": "PLANT",
+          "BOTTOM_LEFT": "QUILL"
+      },
+      "score": 0,
+      "color": "GREEN"
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": "FUNGI",
+          "TOP_RIGHT": "PLANT",
+          "BOTTOM_RIGHT": "INKWELL"
+      },
+       "score": 0,
+       "color": "GREEN"
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": "MANUSCRIPT",
+          "BOTTOM_RIGHT": "ANIMAL",
+          "BOTTOM_LEFT": "PLANT"
+      },
+      "score": 0,
+      "color": "GREEN"
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": null,
+          "TOP_RIGHT": null,
+          "BOTTOM_LEFT": "PLANT"
+      },
+      "score": 1,
+      "color": "GREEN"
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": null,
+          "TOP_RIGHT": null,
+          "BOTTOM_RIGHT": "PLANT"
+      },
+      "score": 1,
+      "color": "GREEN"
+  },
+  {
+      "cornerList": {
+          "TOP_RIGHT": "PLANT",
+          "BOTTOM_RIGHT": null,
+          "BOTTOM_LEFT": null
+      },
+      "score": 1,
+      "color": "GREEN"
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": "ANIMAL",
+          "TOP_RIGHT": "ANIMAL",
+          "BOTTOM_LEFT": null
+      },
+      "score": 0,
+      "color": "BLUE"
+  },
+  {
+      "cornerList": {
+          "TOP_RIGHT": null,
+          "BOTTOM_RIGHT": "ANIMAL",
+          "BOTTOM_LEFT": "ANIMAL"
+      },
+      "score": 0,
+      "color": "BLUE"
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": "ANIMAL",
+          "BOTTOM_RIGHT": null,
+          "BOTTOM_LEFT": "ANIMAL"
+      },
+      "score": 0,
+      "color": "BLUE"
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": null,
+          "TOP_RIGHT": "ANIMAL",
+          "BOTTOM_RIGHT": "ANIMAL"
+      },
+      "score": 0,
+      "color": "BLUE"
+  },
+  {
+      "cornerList": {
+          "TOP_RIGHT": "INSECT",
+          "BOTTOM_RIGHT": "ANIMAL",
+          "BOTTOM_LEFT": "INKWELL"
+      },
+      "score": 0,
+      "color": "BLUE"
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": "PLANT",
+          "TOP_RIGHT": "ANIMAL",
+          "BOTTOM_RIGHT": "MANUSCRIPT"
+      },
+      "score": 0,
+      "color": "BLUE"
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": "QUILL",
+          "BOTTOM_RIGHT": "FUNGI",
+          "BOTTOM_LEFT": "ANIMAL"
+      },
+      "score": 0,
+      "color": "BLUE"
+  },
+  {
+      "cornerList": {
+          "TOP_RIGHT": null,
+          "BOTTOM_RIGHT": null,
+          "BOTTOM_LEFT": "ANIMAL"
+      },
+      "score": 1,
+      "color": "BLUE"
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": null,
+          "BOTTOM_RIGHT": "ANIMAL",
+          "BOTTOM_LEFT": null
+      },
+      "score": 1,
+      "color": "BLUE"
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": null,
+          "TOP_RIGHT": "ANIMAL",
+          "BOTTOM_LEFT": null
+      },
+      "score": 1,
+      "color": "BLUE"
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": "INSECT",
+          "TOP_RIGHT": "INSECT",
+          "BOTTOM_LEFT": null
+      },
+      "score": 0,
+      "color": "PURPLE"
+  },
+  {
+      "cornerList": {
+          "TOP_RIGHT": null,
+          "BOTTOM_RIGHT": "INSECT",
+          "BOTTOM_LEFT": "INSECT"
+      },
+      "score": 0,
+      "color": "PURPLE"
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": "INSECT",
+          "BOTTOM_RIGHT": null,
+          "BOTTOM_LEFT": "INSECT"
+      },
+      "score": 0,
+      "color": "PURPLE"
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": null,
+          "TOP_RIGHT": "INSECT",
+          "BOTTOM_RIGHT": "INSECT"
+      },
+      "score": 0,
+      "color": "PURPLE"
+  },
+  {
+      "cornerList": {
+          "TOP_RIGHT": "QUILL",
+          "BOTTOM_RIGHT": "INSECT",
+          "BOTTOM_LEFT": "ANIMAL"
+      },
+      "score": 0,
+      "color": "PURPLE"
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": "MANUSCRIPT",
+          "TOP_RIGHT": "INSECT",
+          "BOTTOM_RIGHT": "FUNGI"
+      },
+      "score": 0,
+      "color": "PURPLE"
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": "INSECT",
+          "TOP_RIGHT": "PLANT",
+          "BOTTOM_LEFT": "INKWELL"
+      },
+      "score": 0,
+      "color": "PURPLE"
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": "INSECT",
+          "BOTTOM_RIGHT": null,
+          "BOTTOM_LEFT": null
+      },
+      "score": 1,
+      "color": "PURPLE"
+  },
+  {
+      "cornerList": {
+          "TOP_LEFT": null,
+          "TOP_RIGHT": null,
+          "BOTTOM_RIGHT": "INSECT"
+      },
+      "score": 1,
+      "color": "PURPLE"
+  },
+  {
+      "cornerList": {
+          "TOP_RIGHT": "INSECT",
+          "BOTTOM_RIGHT": null,
+          "BOTTOM_LEFT": null
+      },
+      "score": 1,
+      "color": "PURPLE"
+  }
+]
