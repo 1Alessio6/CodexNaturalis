@@ -142,10 +142,8 @@ public class Playground {
         }
 
         //requirements check
-        try{
-            checkRequirements(c.getRequiredResources());
-        }catch(NotEnoughResourcesException e){
-            throw e;
+        if(!checkRequirements(c.getRequiredResources())){
+            throw new NotEnoughResourcesException("Insufficient resources");
         }
 
         int x = p.getX();
@@ -211,7 +209,7 @@ public class Playground {
 
 
     /**
-     * Updates the resources of the player with the resources contained in the face.
+     * Updates player's resources.
      * @param f the face containing the resources to add to player's resources.
      */
     private void updateResources(Face f) {
@@ -223,19 +221,24 @@ public class Playground {
 
 
 
-
-    private void checkRequirements(Map<Symbol, Integer> req) throws NotEnoughResourcesException{
+    /**
+     * Checks if the playground satisfies face's requirements.
+     * @param req the resources required by the face in order to be placed.
+     * @return true if the playground contains enough resource to place te card's face.
+     */
+    private boolean checkRequirements(Map<Symbol, Integer> req){
         for (Symbol s : req.keySet()) {
             if (this.resources.get(s) < req.get(s)) {
-                throw new NotEnoughResourcesException("Insufficient resources");
+                return false;
             }
         }
+        return true;
     }
 
 
 
     /**
-     * Returns the position associated to the position of a corner on the face, given face's position.
+     * Returns the position on the playground associated to the position of a corner on a card's face.
      * @param x the abscissa of face's position.
      * @param y the ordinate of face's position.
      * @param corner the corner position on the card's face.
