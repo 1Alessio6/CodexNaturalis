@@ -16,6 +16,7 @@ public class Playground {
     private int points;
     private final Map<Symbol, Integer> resources;
 
+
     /**
      * Constructs a playground according to its condition at the beginning of the game.
      */
