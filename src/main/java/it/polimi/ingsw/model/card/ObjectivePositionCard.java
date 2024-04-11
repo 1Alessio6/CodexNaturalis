@@ -6,7 +6,7 @@ import it.polimi.ingsw.model.board.Tile;
 
 import java.util.*;
 
-public abstract class ObjectivePositionCard extends ObjectiveCard {
+public class ObjectivePositionCard extends ObjectiveCard {
     private final Map<Position, Color> condition;
 
     public ObjectivePositionCard(Map<Position, Color> condition, int multiplier) throws IllegalArgumentException {
