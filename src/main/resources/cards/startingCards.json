@@ -1,207 +1,131 @@
-{
-    "startingCards": [
-        {
-            "front": {
-                "cornerList": [
-                    {
-                        "symbol": "FUNGI"
-                    },
-                    {
-                        "symbol": "PLANT"
-                    },
-                    {
-                        "symbol": "ANIMAL"
-                    },
-                    {
-                        "symbol": "INSECT"
-                    }
-                ]
-            },
-            "back": {
-                "cornerList": [
-                    {
-                        "symbol": null
-                    },
-                    {
-                        "symbol": "PLANT"
-                    },
-                    {
-                        "symbol": null
-                    },
-                    {
-                        "symbol": "INSECT"
-                    }
-                ],
-                "resources": ["INSECT"]
+[
+    {
+        "front": {
+            "cornerList": {
+                "TOP_LEFT": "FUNGI",
+                "TOP_RIGHT": "PLANT",
+                "BOTTOM_RIGHT": "ANIMAL",
+                "BOTTOM_LEFT": "INSECT"
             }
         },
-        {
-            "front": {
-                "cornerList": [
-                    {
-                        "symbol": "INSECT"
-                    },
-                    {
-                        "symbol": "ANIMAL"
-                    },
-                    {
-                        "symbol": "PLANT"
-                    },
-                    {
-                        "symbol": "FUNGI"
-                    }
-                ]
+        "back": {
+            "cornerList": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": "PLANT",
+                "BOTTOM_RIGHT": null,
+                "BOTTOM_LEFT": "INSECT"
             },
-            "back": {
-                "cornerList": [
-                    {
-                        "symbol": null
-                    },
-                    {
-                        "symbol": null
-                    },
-                    {
-                        "symbol": null
-                    },
-                    {
-                        "symbol": null
-                    }
-                ],
-                "resources":["PLANT","FUNGI"]
-            }
-        },
-        {
-            "front": {
-                "cornerList": [
-                    {
-                        "symbol": "PLANT"
-                    },
-                    {
-                        "symbol": "ANIMAL"
-                    },
-                    {
-                        "symbol": "INSECT"
-                    },
-                    {
-                        "symbol": "FUNGI"
-                    }
-                ]
-
-            },
-            "back": {
-                "cornerList": [
-                    {
-                        "symbol": "ANIMAL"
-                    },
-                    {
-                        "symbol": null
-                    },
-                    {
-                        "symbol": "FUNGI"
-                    },
-                    {
-                        "symbol": null
-                    }
-                ],
-                "resources":["FUNGI"]
-            }
-        },
-        {
-            "front": {
-                "cornerList": [
-                    {
-                        "symbol": "PLANT"
-                    },
-                    {
-                        "symbol": "INSECT"
-                    },
-                    {
-                        "symbol": "FUNGI"
-                    },
-                    {
-                        "symbol": "ANIMAL"
-                    }
-                ]
-            },
-            "back": {
-                "cornerList": [
-                    {
-                        "symbol": null
-                    },
-                    {
-                        "symbol": null
-                    },
-                    {
-                        "symbol": null
-                    },
-                    {
-                        "symbol": null
-                    }
-                ],
-                "resources":["ANIMAL","INSECT"]
-            }
-        },
-        {
-            "front": {
-                "cornerList": [
-                    {
-                        "symbol": "FUNGI"
-                    },
-                    {
-                        "symbol": "ANIMAL"
-                    },
-                    {
-                        "symbol": "INSECT"
-                    },
-                    {
-                        "symbol": "PLANT"
-                    }
-                ]
-            },
-            "back": {
-                "cornerList": [
-                    {
-                        "symbol": null
-                    },
-                    {
-                        "symbol": null
-                    },
-                    {},
-                    {}
-                ],
-                "resources":["PLANT","ANIMAL","FUNGI"]
-            }
-        },
-        {
-            "front": {
-                "cornerList": [
-                    {
-                        "symbol": "INSECT"
-                    },
-                    {
-                        "symbol": "FUNGI"
-                    },
-                    {
-                        "symbol": "ANIMAL"
-                    },
-                    {
-                        "symbol": "PLANT"
-                    }
-                ]
-            },
-            "back":{
-                "cornerList": [
-                    {
-                        "symbol": null
-                    },
-                    {
-                        "symbol": null
-                    },
-                    {},
-                    {}
-                ],
-                "resources":["ANIMAL","INSECT","PLANT"]
+            "resources": {
+                "INSECT": 1
             }
         }
-    ]
-}
+    },
+    {
+        "front": {
+            "cornerList": {
+                "TOP_LEFT": "INSECT",
+                "TOP_RIGHT": "ANIMAL",
+                "BOTTOM_RIGHT": "PLANT",
+                "BOTTOM_LEFT": "FUNGI"
+            }
+        },
+        "back": {
+            "cornerList": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "BOTTOM_RIGHT": null,
+                "BOTTOM_LEFT": null
+            },
+            "resources": {
+                "PLANT": 1,
+                "FUNGI": 1
+            }
+        }
+    },
+    {
+        "front": {
+            "cornerList": {
+                "TOP_LEFT": "PLANT",
+                "TOP_RIGHT": "ANIMAL",
+                "BOTTOM_RIGHT": "INSECT",
+                "BOTTOM_LEFT": "FUNGI"
+            }
+        },
+        "back": {
+            "cornerList": {
+                "TOP_LEFT": "ANIMAL",
+                "TOP_RIGHT": null,
+                "BOTTOM_RIGHT": "FUNGI",
+                "BOTTOM_LEFT": null
+            },
+            "resources": {
+                "FUNGI": 1
+            }
+        }
+    },
+    {
+        "front": {
+            "cornerList": {
+                "TOP_LEFT": "PLANT",
+                "TOP_RIGHT": "INSECT",
+                "BOTTOM_RIGHT": "FUNGI",
+                "BOTTOM_LEFT": "ANIMAL"
+            }
+        },
+        "back": {
+            "cornerList": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "BOTTOM_RIGHT": null,
+                "BOTTOM_LEFT": null
+            },
+            "resources": {
+                "ANIMAL": 1,
+                "INSECT": 1
+            }
+        }
+    },
+    {
+        "front": {
+            "cornerList": {
+                "TOP_LEFT": "FUNGI",
+                "TOP_RIGHT": "ANIMAL",
+                "BOTTOM_RIGHT": "INSECT",
+                "BOTTOM_LEFT": "PLANT"
+            }
+        },
+        "back": {
+            "cornerList": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null
+            },
+            "resources":{
+                "PLANT": 1,
+                "ANIMAL": 1,
+                "FUNGI": 1
+            }
+        }
+    },
+    {
+        "front": {
+            "cornerList": {
+                "TOP_LEFT": "INSECT",
+                "TOP_RIGHT": "FUNGI",
+                "BOTTOM_RIGHT": "ANIMAL",
+                "BOTTOM_LEFT": "PLANT"
+            }
+        },
+        "back": {
+            "cornerList": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null
+            },
+            "resources":{
+                "ANIMAL": 1,
+                "INSECT": 1,
+                "PLANT": 1
+            }
+        }
+    }
+]
+
