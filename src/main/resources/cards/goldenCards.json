@@ -36,9 +36,9 @@
             "color": "RED"
         },
         "back": {
-            "resources": [
-                "FUNGI"
-            ]
+            "resources": {
+                "FUNGI": 1
+            }
         }
     },
     {
@@ -48,11 +48,10 @@
                 "TOP_RIGHT": null,
                 "BOTTOM_RIGHT": null
             },
-            "requirements": [
-                "FUNGI",
-                "FUNGI",
-                "INSECT"
-            ],
+            "requirements": {
+                "FUNGI": 2,
+                "INSECT": 1
+            },
             "score": 1,
             "pointsCondition": "NUM_MANUSCRIPT",
             "color": "RED"
@@ -79,7 +78,9 @@
             "color": "RED"
         },
         "back": {
-            "resources": "[ FUNGI ]"
+            "resources": {
+                "FUNGI": 1
+            }
         }
     },
     {
@@ -404,576 +405,406 @@
     },
     {
         "front": {
-            "cornerList": [
-                {
-                    "symbol": "INKWELL"
-                },
-                {
-                    "symbol": null
-                },
-                {},
-                {
-                    "symbol": null
-                }
-            ],
-            "requirements": [
-                "ANIMAL",
-                "ANIMAL",
-                "INSECT"
-            ],
+            "cornerList": {
+                "TOP_LEFT": "INKWELL",
+                "TOP_RIGHT": null,
+                "BOTTOM_LEFT":null
+            },
+            "requirements": {
+                "ANIMAL": 2,
+                "INSECT": 1
+            },
             "score": 1,
             "pointsCondition": "NUM_INKWELL",
             "color": "BLUE"
         },
         "back": {
-            "resources": [
-                "ANIMAL"
-            ]
+            "resources": {
+                "ANIMAL": 1
+            }
         }
     },
     {
         "front": {
-            "cornerList": [
-                {},
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": "MANUSCRIPT"
-                },
-                {
-                    "symbol": null
-                }
-            ],
-            "requirements": [
-                "ANIMAL",
-                "ANIMAL",
-                "PLANT"
-            ],
+            "cornerList": {
+                "TOP_RIGHT": null,
+                "BOTTOM_RIGHT": "MANUSCRIPT",
+                "BOTTOM_LEFT":null
+            },
+            "requirements": {
+                "ANIMAL": 2,
+                "PLANT": 1
+            },
             "score": 1,
             "pointsCondition": "NUM_MANUSCRIPT",
             "color": "BLUE"
         },
         "back": {
-            "resources": [
-                "ANIMAL"
-            ]
+            "resources": {
+                "ANIMAL": 1
+            }
         }
     },
     {
         "front": {
-            "cornerList": [
-                {
-                    "symbol": null
-                },
-                {},
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": "QUILL"
-                }
-            ],
-            "requirements": [
-                "ANIMAL",
-                "ANIMAL",
-                "FUNGI"
-            ],
+            "cornerList": {
+                "TOP_LEFT": null,
+                "BOTTOM_RIGHT": null,
+                "BOTTOM_LEFT":"QUILL"
+            },
+            "requirements": {
+                "ANIMAL": 2,
+                "FUNGI": 1
+            },
             "score": 1,
             "pointsCondition": "NUM_QUILL",
             "color": "BLUE"
         },
         "back": {
-            "resources": [
-                "ANIMAL"
-            ]
+            "resources": {
+                "ANIMAL": 1
+            }
         }
     },
     {
         "front": {
-            "cornerList": [
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": null
-                },
-                {}
-            ],
-            "requirements": [
-                "ANIMAL",
-                "ANIMAL",
-                "ANIMAL",
-                "INSECT"
-            ],
+            "cornerList": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "BOTTOM_RIGHT": null
+            },
+            "requirements": {
+                "ANIMAL": 3,
+                "INSECT": 1
+            },
             "score": 2,
             "pointsCondition": "NUM_CORNER",
             "color": "BLUE"
         },
         "back": {
-            "resources": [
-                "ANIMAL"
-            ]
+            "resources": {
+                "ANIMAL": 1
+            }
         }
     },
     {
         "front": {
-            "cornerList": [
-                {
-                    "symbol": null
-                },
-                {},
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": null
-                }
-            ],
-            "requirements": [
-                "ANIMAL",
-                "ANIMAL",
-                "ANIMAL",
-                "FUNGI"
-            ],
+            "cornerList": {
+                "TOP_LEFT": null,
+                "BOTTOM_RIGHT": null,
+                "BOTTOM_LEFT":null
+            },
+            "requirements": {
+                "ANIMAL": 3,
+                "FUNGI": 1
+            },
             "score": 2,
             "pointsCondition": "NUM_CORNER",
             "color": "BLUE"
         },
         "back": {
-            "resources": [
-                "ANIMAL"
-            ]
+            "resources": {
+                "ANIMAL": 1
+            }
         }
     },
     {
         "front": {
-            "cornerList": [
-                {},
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": null
-                }
-            ],
-            "requirements": [
-                "ANIMAL",
-                "ANIMAL",
-                "ANIMAL",
-                "PLANT"
-            ],
+            "cornerList": {
+                "TOP_RIGHT": null,
+                "BOTTOM_RIGHT": null,
+                "BOTTOM_LEFT":null
+            },
+            "requirements": {
+                "ANIMAL": 3,
+                "PLANT": 1
+            },
             "score": 2,
             "pointsCondition": "NUM_CORNER",
             "color": "BLUE"
         },
         "back": {
-            "resources": [
-                "ANIMAL"
-            ]
+            "resources": {
+                "ANIMAL": 1
+            }
         }
     },
     {
         "front": {
-            "cornerList": [
-                {
-                    "symbol": null
-                },
-                {},
-                {},
-                {
-                    "symbol": "MANUSCRIPT"
-                }
-            ],
-            "requirements": [
-                "ANIMAL",
-                "ANIMAL",
-                "ANIMAL"
-            ],
+            "cornerList": {
+                "TOP_LEFT": null,
+                "BOTTOM_LEFT":"MANUSCRIPT"
+            },
+            "requirements": {
+                "ANIMAL": 3
+            },
             "score": 3,
             "pointsCondition": null,
             "color": "BLUE"
         },
         "back": {
-            "resources": [
-                "ANIMAL"
-            ]
+            "resources": {
+                "ANIMAL": 1
+            }
         }
     },
     {
         "front": {
-            "cornerList": [
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": "INKWELL"
-                },
-                {},
-                {}
-            ],
-            "requirements": [
-                "ANIMAL",
-                "ANIMAL",
-                "ANIMAL"
-            ],
+            "cornerList": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": "INKWELL"
+            },
+            "requirements": {
+                "ANIMAL": 3
+            },
             "score": 3,
             "pointsCondition": null,
             "color": "BLUE"
         },
         "back": {
-            "resources": [
-                "ANIMAL"
-            ]
+            "resources": {
+                "ANIMAL": 1
+            }
         }
     },
     {
         "front": {
-            "cornerList": [
-                {},
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": "QUILL"
-                },
-                {}
-            ],
-            "requirements": [
-                "ANIMAL",
-                "ANIMAL",
-                "ANIMAL"
-            ],
+            "cornerList": {
+                "TOP_RIGHT": null,
+                "BOTTOM_RIGHT": "QUILL"
+            },
+            "requirements": {
+                "ANIMAL": 3
+            },
             "score": 3,
             "pointsCondition": null,
             "color": "BLUE"
         },
         "back": {
-            "resources": [
-                "ANIMAL"
-            ]
+            "resources": {
+                "ANIMAL": 1
+            }
         }
     },
     {
         "front": {
-            "cornerList": [
-                {},
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": null
-                },
-                {}
-            ],
-            "requirements": [
-                "ANIMAL",
-                "ANIMAL",
-                "ANIMAL",
-                "ANIMAL",
-                "ANIMAL"
-            ],
+            "cornerList": {
+                "TOP_RIGHT": null,
+                "BOTTOM_RIGHT": null
+            },
+            "requirements": {
+                "ANIMAL": 5
+            },
             "score": 5,
             "pointsCondition": null,
             "color": "BLUE"
         },
         "back": {
-            "resources": [
-                "ANIMAL"
-            ]
+            "resources": {
+                "ANIMAL": 1
+            }
         }
     },
     {
         "front": {
-            "cornerList": [
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": "QUILL"
-                },
-                {
-                    "symbol": null
-                },
-                {}
-            ],
-            "requirements": [
-                "INSECT",
-                "INSECT",
-                "PLANT"
-            ],
+            "cornerList": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": "QUILL",
+                "BOTTOM_RIGHT": null
+            },
+            "requirements": {
+                "INSECT": 2,
+                "PLANT": 1
+            },
             "score": 1,
             "pointsCondition": "NUM_QUILL",
             "color": "PURPLE"
         },
         "back": {
-            "resources": [
-                "INSECT"
-            ]
+            "resources": {
+                "INSECT": 1
+            }
         }
     },
     {
         "front": {
-            "cornerList": [
-                {},
-                {},
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": "QUILL"
-                }
-            ],
-            "requirements": [
-                "INSECT",
-                "INSECT",
-                "INSECT"
-            ],
+            "cornerList": {
+                "BOTTOM_RIGHT": null,
+                "BOTTOM_LEFT":"QUILL"
+            },
+            "requirements": {
+                "INSECT": 3
+            },
             "score": 3,
             "pointsCondition": null,
             "color": "PURPLE"
         },
         "back": {
-            "resources": [
-                "INSECT"
-            ]
+            "resources": {
+                "INSECT": 1
+            }
         }
     },
     {
         "front": {
-            "cornerList": [
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": null
-                },
-                {},
-                {}
-            ],
-            "requirements": [
-                "INSECT",
-                "INSECT",
-                "INSECT",
-                "INSECT",
-                "INSECT"
-            ],
+            "cornerList": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null
+            },
+            "requirements": {
+                "INSECT": 5
+            },
             "score": 5,
             "pointsCondition": null,
             "color": "PURPLE"
         },
         "back": {
-            "resources": [
-                "INSECT"
-            ]
+            "resources": {
+                "INSECT": 1
+            }
         }
     },
     {
         "front": {
-            "cornerList": [
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": "MANUSCRIPT"
-                },
-                {},
-                {}
-            ],
-            "requirements": [
-                "INSECT",
-                "INSECT",
-                "INSECT"
-            ],
+            "cornerList": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": "MANUSCRIPT"
+            },
+            "requirements": {
+                "INSECT": 3
+            },
             "score": 3,
             "pointsCondition": null,
             "color": "PURPLE"
         },
         "back": {
-            "resources": [
-                "INSECT"
-            ]
+            "resources": {
+                "INSECT": 1
+            }
         }
     },
     {
         "front": {
-            "cornerList": [
-                {
-                    "symbol": "INKWELL"
-                },
-                {},
-                {},
-                {
-                    "symbol": null
-                }
-            ],
-            "requirements": [
-                "INSECT",
-                "INSECT",
-                "INSECT"
-            ],
+            "cornerList": {
+                "TOP_LEFT": "INKWELL",
+                "BOTTOM_LEFT":null
+            },
+            "requirements": {
+                "INSECT": 3
+            },
             "score": 3,
             "pointsCondition": null,
-            "color": "[ PURPLE ]"
+            "color": "PURPLE"
         },
         "back": {
-            "resources": [
-                "INSECT"
-            ]
+            "resources": {
+                "INSECT": 1
+            }
         }
     },
     {
         "front": {
-            "cornerList": [
-                {
-                    "symbol": null
-                },
-                {},
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": "MANUSCRIPT"
-                }
-            ],
-            "requirements": [
-                "INSECT",
-                "INSECT",
-                "ANIMAL"
-            ],
+            "cornerList": {
+                "TOP_LEFT": null,
+                "BOTTOM_RIGHT": null,
+                "BOTTOM_LEFT": "MANUSCRIPT"
+            },
+            "requirements": {
+                "INSECT": 2,
+                "ANIMAL": 1
+            },
             "score": 1,
             "pointsCondition": "NUM_MANUSCRIPT",
             "color": "PURPLE"
         },
         "back": {
-            "resources": [
-                "INSECT"
-            ]
+            "resources": {
+                "INSECT": 1
+            }
         }
     },
     {
         "front": {
-            "cornerList": [
-                {},
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": "INKWELL"
-                },
-                {
-                    "symbol": null
-                }
-            ],
-            "requirements": [
-                "INSECT",
-                "INSECT",
-                "FUNGI"
-            ],
+            "cornerList": {
+                "TOP_RIGHT": null,
+                "BOTTOM_RIGHT": "INKWELL",
+                "BOTTOM_LEFT":null
+            },
+            "requirements": {
+                "INSECT": 2,
+                "FUNGI": 1
+            },
             "score": 1,
             "pointsCondition": "NUM_INKWELL",
             "color": "PURPLE"
         },
         "back": {
-            "resources": [
-                "INSECT"
-            ]
+            "resources": {
+                "INSECT": 1
+            }
         }
     },
     {
         "front": {
-            "cornerList": [
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": null
-                },
-                {}
-            ],
-            "requirements": [
-                "INSECT",
-                "INSECT",
-                "INSECT",
-                "ANIMAL"
-            ],
+            "cornerList": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "BOTTOM_RIGHT": null
+            },
+            "requirements": {
+                "INSECT": 3,
+                "ANIMAL": 1
+            },
             "score": 2,
             "pointsCondition": "NUM_CORNER",
             "color": "PURPLE"
         },
         "back": {
-            "resources": [
-                "INSECT"
-            ]
+            "resources": {
+                "INSECT": 1
+            }
         }
     },
     {
         "front": {
-            "cornerList": [
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": null
-                },
-                {},
-                {
-                    "symbol": null
-                }
-            ],
-            "requirements": [
-                "INSECT",
-                "INSECT",
-                "INSECT",
-                "PLANT"
-            ],
+            "cornerList": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "BOTTOM_LEFT":null
+            },
+            "requirements": {
+                "INSECT": 3,
+                "PLANT": 1
+            },
             "score": 2,
             "pointsCondition": "NUM_CORNER",
             "color": "PURPLE"
         },
         "back": {
-            "resources": [
-                "INSECT"
-            ]
+            "resources": {
+                "INSECT": 1
+            }
         }
     },
     {
         "front": {
-            "cornerList": [
-                {
-                    "symbol": null
-                },
-                {},
-                {
-                    "symbol": null
-                },
-                {
-                    "symbol": null
-                }
-            ],
-            "requirements": [
-                "INSECT",
-                "INSECT",
-                "INSECT",
-                "FUNGI"
-            ],
+            "cornerList": {
+                "TOP_LEFT": null,
+                "BOTTOM_RIGHT": null,
+                "BOTTOM_LEFT":null
+            },
+            "requirements": {
+                "INSECT": 3,
+                "FUNGI": 1
+            },
             "score": 2,
             "pointsCondition": "NUM_CORNER",
             "color": "PURPLE"
         },
         "back": {
-            "resources": [
-                "INSECT"
-            ]
+            "resources": {
+                "INSECT": 1
+            }
         }
     }
 ]
