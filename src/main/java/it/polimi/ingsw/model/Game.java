@@ -2,27 +2,13 @@ package it.polimi.ingsw.model;
 
 import java.io.*;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 
 import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.card.Card;
-import it.polimi.ingsw.model.card.Color;
-import it.polimi.ingsw.model.card.Deck;
-import it.polimi.ingsw.model.card.Face;
-import it.polimi.ingsw.model.card.Front;
-import it.polimi.ingsw.model.card.ObjectiveCard;
-import it.polimi.ingsw.model.card.ObjectivePositionCard;
-import it.polimi.ingsw.model.card.ObjectiveResourceCard;
+import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.chat.ChatDatabase;
 import it.polimi.ingsw.model.player.Player;
 
@@ -34,11 +20,13 @@ import it.polimi.ingsw.model.player.Player;
 public class Game {
     private final static String objectivePositionCardsPath = "/cards/objectivePositionCards.json";
     private final static String objectiveResourceCardsPath = "/cards/objectiveResourceCards.json";
+    private final static String startingCardsPath = "/cards/startingCards.json";
+    private final static String goldenCardsPath = "/cards/goldenCards.json";
 
     private Deck resourceCards;
     private Deck goldenCards;
     private List<ObjectiveCard> ObjectiveCardDeck;
-    private List<Card> starterCards;
+    private List<Card> startingCards;
     private List<ObjectiveCard> objectiveCards;
     private List<Front> faceUpCards; // todo. immutable
     private List<ObjectiveCard> commonObjects; // todo. immutable
@@ -65,6 +53,7 @@ public class Game {
 
     public Game(Player creator, int numPlayersToStart) throws IllegalArgumentException {
         this.objectiveCards = createObjectiveCards();
+        this.startingCards = createPlayableCard(startingCardsPath);
 
     }
 
@@ -148,10 +137,13 @@ public class Game {
                 .getResourceAsStream(objectiveResourceCardsPath);
         InputStream objectivePositionStream = this.getClass()
                 .getResourceAsStream(objectivePositionCardsPath);
+
+        //todo: handle null streams
         Reader objectiveResourceReader = new BufferedReader(new InputStreamReader(objectiveResourceStream));
         Reader objectivePositionReader = new BufferedReader(new InputStreamReader(objectivePositionStream));
 
         Gson gson = new GsonBuilder().registerTypeAdapter(Position.class, new PositionDeserializer()).create();
+
         List<ObjectiveResourceCard> objectiveResourceCards = gson.fromJson(objectiveResourceReader,
                 new TypeToken<List<ObjectiveResourceCard>>() {
                 }.getType());
@@ -161,8 +153,32 @@ public class Game {
 
         List<ObjectiveCard> result = new ArrayList<>(objectiveResourceCards);
         result.addAll(objectivePositionCards);
+        Collections.shuffle(result);
 
         return result;
+    }
+
+    /**
+     * Creates any Card list
+     * @param relativePath of the resource to instance
+     * @return the list of the cards created from resource's json
+     */
+    private List<Card> createPlayableCard(String relativePath){
+        /* json as streams, so even after jar build it can retrieve the correct file */
+        InputStream cardStream = this.getClass()
+                .getResourceAsStream(relativePath);
+        //todo: handle null streams
+        Reader cardReader = new BufferedReader(new InputStreamReader(cardStream));
+
+        Gson gson = new Gson();
+
+        List<Card> cards = gson.fromJson(cardReader,
+                new TypeToken<List<Card>>() {
+                }.getType());
+
+        Collections.shuffle(cards);
+
+        return cards;
     }
 
     // todo(needed). add method to know whether the client has disconnected and
@@ -180,5 +196,17 @@ class PositionDeserializer implements JsonDeserializer<Position> {
         String[] positionString = json.getAsString().split(",");
 
         return new Position(Integer.parseInt(positionString[0]), Integer.parseInt(positionString[1]));
+    }
+}
+
+/**
+ * Custom deserializer for Corner:
+ * uses Corner constructor because json only has kingdom as value
+ */
+class CornerDeserializer implements JsonDeserializer<Corner> {
+    @Override
+    public Corner deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+            throws JsonParseException {
+        return new Corner(Symbol.valueOf(json.getAsString()));
     }
 }
