@@ -1,19 +1,19 @@
 [
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": "FUNGI",
                 "TOP_RIGHT": "PLANT",
-                "BOTTOM_RIGHT": "ANIMAL",
-                "BOTTOM_LEFT": "INSECT"
+                "LOWER_RIGHT": "ANIMAL",
+                "LOWER_LEFT": "INSECT"
             }
         },
         "back": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": "PLANT",
-                "BOTTOM_RIGHT": null,
-                "BOTTOM_LEFT": "INSECT"
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": "INSECT"
             },
             "resources": {
                 "INSECT": 1
@@ -22,19 +22,19 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": "INSECT",
                 "TOP_RIGHT": "ANIMAL",
-                "BOTTOM_RIGHT": "PLANT",
-                "BOTTOM_LEFT": "FUNGI"
+                "LOWER_RIGHT": "PLANT",
+                "LOWER_LEFT": "FUNGI"
             }
         },
         "back": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": null,
-                "BOTTOM_RIGHT": null,
-                "BOTTOM_LEFT": null
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
             },
             "resources": {
                 "PLANT": 1,
@@ -44,19 +44,19 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": "PLANT",
                 "TOP_RIGHT": "ANIMAL",
-                "BOTTOM_RIGHT": "INSECT",
-                "BOTTOM_LEFT": "FUNGI"
+                "LOWER_RIGHT": "INSECT",
+                "LOWER_LEFT": "FUNGI"
             }
         },
         "back": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": "ANIMAL",
                 "TOP_RIGHT": null,
-                "BOTTOM_RIGHT": "FUNGI",
-                "BOTTOM_LEFT": null
+                "LOWER_RIGHT": "FUNGI",
+                "LOWER_LEFT": null
             },
             "resources": {
                 "FUNGI": 1
@@ -65,19 +65,19 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": "PLANT",
                 "TOP_RIGHT": "INSECT",
-                "BOTTOM_RIGHT": "FUNGI",
-                "BOTTOM_LEFT": "ANIMAL"
+                "LOWER_RIGHT": "FUNGI",
+                "LOWER_LEFT": "ANIMAL"
             }
         },
         "back": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": null,
-                "BOTTOM_RIGHT": null,
-                "BOTTOM_LEFT": null
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
             },
             "resources": {
                 "ANIMAL": 1,
@@ -87,19 +87,19 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": "FUNGI",
                 "TOP_RIGHT": "ANIMAL",
-                "BOTTOM_RIGHT": "INSECT",
-                "BOTTOM_LEFT": "PLANT"
+                "LOWER_RIGHT": "INSECT",
+                "LOWER_LEFT": "PLANT"
             }
         },
         "back": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": null
             },
-            "resources":{
+            "resources": {
                 "PLANT": 1,
                 "ANIMAL": 1,
                 "FUNGI": 1
@@ -108,19 +108,19 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": "INSECT",
                 "TOP_RIGHT": "FUNGI",
-                "BOTTOM_RIGHT": "ANIMAL",
-                "BOTTOM_LEFT": "PLANT"
+                "LOWER_RIGHT": "ANIMAL",
+                "LOWER_LEFT": "PLANT"
             }
         },
         "back": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": null
             },
-            "resources":{
+            "resources": {
                 "ANIMAL": 1,
                 "INSECT": 1,
                 "PLANT": 1
@@ -128,4 +128,3 @@
         }
     }
 ]
-

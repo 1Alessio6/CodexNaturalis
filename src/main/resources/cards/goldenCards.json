@@ -1,10 +1,10 @@
 [
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_RIGHT": null,
-                "BOTTOM_LEFT": "QUILL",
-                "BOTTOM_RIGHT": null
+                "LOWER_LEFT": "QUILL",
+                "LOWER_RIGHT": null
             },
             "requirements": {
                 "FUNGI": 2,
@@ -22,10 +22,10 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": "INKWELL",
-                "BOTTOM_LEFT": null
+                "LOWER_LEFT": null
             },
             "requirements": {
                 "FUNGI": 2,
@@ -43,10 +43,10 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": "MANUSCRIPT",
                 "TOP_RIGHT": null,
-                "BOTTOM_RIGHT": null
+                "LOWER_RIGHT": null
             },
             "requirements": {
                 "FUNGI": 2,
@@ -64,10 +64,10 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": null,
-                "BOTTOM_LEFT": "INKWELL"
+                "LOWER_LEFT": "INKWELL"
             },
             "requirements": {
                 "FUNGI": 3,
@@ -85,10 +85,10 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": null,
-                "BOTTOM_RIGHT": null
+                "LOWER_RIGHT": null
             },
             "requirements": {
                 "FUNGI": 3,
@@ -106,10 +106,10 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
-                "BOTTOM_LEFT": null,
-                "BOTTOM_RIGHT": null
+                "LOWER_LEFT": null,
+                "LOWER_RIGHT": null
             },
             "requirements": {
                 "FUNGI": 3,
@@ -127,9 +127,9 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
-                "BOTTOM_RIGHT": "INKWELL"
+                "LOWER_RIGHT": "INKWELL"
             },
             "requirements": {
                 "FUNGI": 3
@@ -146,7 +146,7 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": "QUILL",
                 "TOP_RIGHT": null
             },
@@ -165,9 +165,9 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_RIGHT": "MANUSCRIPT",
-                "BOTTOM_LEFT": null
+                "LOWER_LEFT": null
             },
             "requirements": {
                 "FUNGI": 3
@@ -184,9 +184,9 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
-                "BOTTOM_RIGHT": null
+                "LOWER_RIGHT": null
             },
             "requirements": {
                 "FUNGI": 5
@@ -203,10 +203,10 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": "MANUSCRIPT",
-                "BOTTOM_LEFT": null
+                "LOWER_LEFT": null
             },
             "requirements": {
                 "PLANT": 2,
@@ -224,10 +224,10 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
-                "BOTTOM_LEFT": null,
-                "BOTTOM_RIGHT": "INKWELL"
+                "LOWER_LEFT": null,
+                "LOWER_RIGHT": "INKWELL"
             },
             "requirements": {
                 "PLANT": 2,
@@ -245,10 +245,10 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_RIGHT": null,
-                "BOTTOM_LEFT": null,
-                "BOTTOM_RIGHT": null
+                "LOWER_LEFT": null,
+                "LOWER_RIGHT": null
             },
             "requirements": {
                 "PLANT": 3,
@@ -266,10 +266,10 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": null,
-                "BOTTOM_RIGHT": null
+                "LOWER_RIGHT": null
             },
             "requirements": {
                 "PLANT": 3,
@@ -287,10 +287,10 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
-                "BOTTOM_LEFT": null,
-                "BOTTOM_RIGHT": null
+                "LOWER_LEFT": null,
+                "LOWER_RIGHT": null
             },
             "requirements": {
                 "PLANT": 3,
@@ -308,9 +308,9 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
-                "BOTTOM_RIGHT": "INKWELL"
+                "LOWER_RIGHT": "INKWELL"
             },
             "requirements": {
                 "PLANT": 3
@@ -327,7 +327,7 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": "MANUSCRIPT",
                 "TOP_RIGHT": null
             },
@@ -346,9 +346,9 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_RIGHT": "INKWELL",
-                "BOTTOM_LEFT": null
+                "LOWER_LEFT": null
             },
             "requirements": {
                 "PLANT": 3
@@ -365,7 +365,7 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": null
             },
@@ -384,10 +384,10 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": "QUILL",
                 "TOP_RIGHT": null,
-                "BOTTOM_RIGHT": null
+                "LOWER_RIGHT": null
             },
             "requirements": {
                 "PLANT": 2,
@@ -405,10 +405,10 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": "INKWELL",
                 "TOP_RIGHT": null,
-                "BOTTOM_LEFT":null
+                "LOWER_LEFT":null
             },
             "requirements": {
                 "ANIMAL": 2,
@@ -426,10 +426,10 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_RIGHT": null,
-                "BOTTOM_RIGHT": "MANUSCRIPT",
-                "BOTTOM_LEFT":null
+                "LOWER_RIGHT": "MANUSCRIPT",
+                "LOWER_LEFT":null
             },
             "requirements": {
                 "ANIMAL": 2,
@@ -447,10 +447,10 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
-                "BOTTOM_RIGHT": null,
-                "BOTTOM_LEFT":"QUILL"
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT":"QUILL"
             },
             "requirements": {
                 "ANIMAL": 2,
@@ -468,10 +468,10 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": null,
-                "BOTTOM_RIGHT": null
+                "LOWER_RIGHT": null
             },
             "requirements": {
                 "ANIMAL": 3,
@@ -489,10 +489,10 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
-                "BOTTOM_RIGHT": null,
-                "BOTTOM_LEFT":null
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT":null
             },
             "requirements": {
                 "ANIMAL": 3,
@@ -510,10 +510,10 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_RIGHT": null,
-                "BOTTOM_RIGHT": null,
-                "BOTTOM_LEFT":null
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT":null
             },
             "requirements": {
                 "ANIMAL": 3,
@@ -531,9 +531,9 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
-                "BOTTOM_LEFT":"MANUSCRIPT"
+                "LOWER_LEFT":"MANUSCRIPT"
             },
             "requirements": {
                 "ANIMAL": 3
@@ -550,7 +550,7 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": "INKWELL"
             },
@@ -569,9 +569,9 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_RIGHT": null,
-                "BOTTOM_RIGHT": "QUILL"
+                "LOWER_RIGHT": "QUILL"
             },
             "requirements": {
                 "ANIMAL": 3
@@ -588,9 +588,9 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_RIGHT": null,
-                "BOTTOM_RIGHT": null
+                "LOWER_RIGHT": null
             },
             "requirements": {
                 "ANIMAL": 5
@@ -607,10 +607,10 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": "QUILL",
-                "BOTTOM_RIGHT": null
+                "LOWER_RIGHT": null
             },
             "requirements": {
                 "INSECT": 2,
@@ -628,9 +628,9 @@
     },
     {
         "front": {
-            "cornerList": {
-                "BOTTOM_RIGHT": null,
-                "BOTTOM_LEFT":"QUILL"
+            "corners": {
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT":"QUILL"
             },
             "requirements": {
                 "INSECT": 3
@@ -647,7 +647,7 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": null
             },
@@ -666,7 +666,7 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": "MANUSCRIPT"
             },
@@ -685,9 +685,9 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": "INKWELL",
-                "BOTTOM_LEFT":null
+                "LOWER_LEFT":null
             },
             "requirements": {
                 "INSECT": 3
@@ -704,10 +704,10 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
-                "BOTTOM_RIGHT": null,
-                "BOTTOM_LEFT": "MANUSCRIPT"
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": "MANUSCRIPT"
             },
             "requirements": {
                 "INSECT": 2,
@@ -725,10 +725,10 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_RIGHT": null,
-                "BOTTOM_RIGHT": "INKWELL",
-                "BOTTOM_LEFT":null
+                "LOWER_RIGHT": "INKWELL",
+                "LOWER_LEFT":null
             },
             "requirements": {
                 "INSECT": 2,
@@ -746,10 +746,10 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": null,
-                "BOTTOM_RIGHT": null
+                "LOWER_RIGHT": null
             },
             "requirements": {
                 "INSECT": 3,
@@ -767,10 +767,10 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": null,
-                "BOTTOM_LEFT":null
+                "LOWER_LEFT":null
             },
             "requirements": {
                 "INSECT": 3,
@@ -788,10 +788,10 @@
     },
     {
         "front": {
-            "cornerList": {
+            "corners": {
                 "TOP_LEFT": null,
-                "BOTTOM_RIGHT": null,
-                "BOTTOM_LEFT":null
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT":null
             },
             "requirements": {
                 "INSECT": 3,
