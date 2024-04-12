@@ -9,12 +9,12 @@ public class Card {
         this.back = back;
     }
 
-    public Back getBack() {
-        return back;
-    }
-
-    public Front getFront() {
-        return front;
+    public Face getFace(Side side)  {
+        if (side.equals(Side.FRONT))
+            return front;
+        else
+            return back;
     }
 
 }
+
