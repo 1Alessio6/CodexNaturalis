@@ -1,16 +1,13 @@
 package it.polimi.ingsw.model;
 
-import java.io.*;
-import java.util.*;
-
-import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
-
-import it.polimi.ingsw.model.JsonDeserializer.PositionDeserializer;
-import it.polimi.ingsw.model.board.Position;
+import it.polimi.ingsw.model.board.*;
 import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.chat.ChatDatabase;
+import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.player.Player;
+
+import java.util.*;
+
 
 /**
  * Representation of the game.
@@ -18,174 +15,239 @@ import it.polimi.ingsw.model.player.Player;
  */
 
 public class Game {
-    private final static String objectivePositionCardsPath = "/cards/objectivePositionCards.json";
-    private final static String objectiveResourceCardsPath = "/cards/objectiveResourceCards.json";
-    private final static String startingCardsPath = "/cards/startingCards.json";
-    private final static String goldenCardsPath = "/cards/goldenCards.json";
+    private Deck<Card> resourceCards;
+    private Deck<Card> goldenCards;
 
-    private Deck resourceCards;
-    private Deck goldenCards;
-    private List<ObjectiveCard> ObjectiveCardDeck;
-    private List<Card> startingCards;
-    private List<ObjectiveCard> objectiveCards;
-    private List<Front> faceUpCards; // todo. immutable
-    private List<ObjectiveCard> commonObjects; // todo. immutable
+    private Deck<Card> starterCards;
+    private Deck<ObjectiveCard> objectiveCards;
 
-    private enum GamePhase {
-        NOT_STARTED,
-        ONGOING,
-        LAST_TURN,
-        ENDED
-    }
+    private List<Card> faceUpCards;
 
-    GamePhase phase;
+    private List<ObjectiveCard> commonObjects;
 
     private int numRequiredPlayers;
-    private int currentPlayer; // index in the current player list.
+    private int currentPlayerIdx; // index in the current player list.
+    private boolean isFinished;
 
     private List<Player> players;
 
+    // replace using the state pattern
+    GameState gameState;
+
+    // Advanced Features
     private ChatDatabase chatDatabase;
 
     // persistence
-    // todo. define attribute to abstract access to the disk in order to save the
-    // current status
+    // todo. define attribute to abstract access to the disk in order to save the current status
 
-    public Game(Player creator, int numPlayersToStart) throws IllegalArgumentException {
-        this.objectiveCards = createObjectiveCards();
-        this.startingCards = createPlayableCard(startingCardsPath);
 
+    // todo. replace with specific observers
+    private List<Observer> observers;
+
+    // methods
+
+
+    // methods needed by the GameState's
+    void setStatus(GameState gameState) {
+        this.gameState = gameState;
     }
 
-    /**
-     * adds new player to the game, if possible.
-     * 
-     * @param newPlayer player to add
-     * @return false if <code>newPlayer</code> contains a valid reference but their
-     *         username has already in use or the game has already started.
-     * @throws IllegalArgumentException if <code>newPlayer</code> is a null
-     *                                  reference
+    int getCurrentPlayerIdx() {
+        return currentPlayerIdx;
+    }
+
+    void setCurrentPlayerIdx(int newCurrentPlayerIdx) {
+        assert (0 <= newCurrentPlayerIdx && newCurrentPlayerIdx < players.size());
+        currentPlayerIdx = newCurrentPlayerIdx;
+    }
+
+    private boolean isValidIdx(int idx) {
+        return 0 <= idx && idx < players.size();
+    }
+
+    int getNextPlayerIdx(int oldCurrentPlayerIdx) {
+        int numPlayers = players.size();
+
+        assert (isValidIdx(oldCurrentPlayerIdx));
+        int res = (oldCurrentPlayerIdx + 1) % numPlayers;
+        assert (isValidIdx(oldCurrentPlayerIdx));
+
+        return res;
+    }
+
+    List<Card> getFaceUpCards() {
+        return faceUpCards;
+    }
+
+    void setFinished() {
+        isFinished = true;
+    }
+
+    // todo. make it more readable
+    // Returns the deck containing the type of the card drawn by the player.
+    Deck<Card> getDeckForReplacement(int faceUpCardIdx) {
+        if (faceUpCardIdx <= 1) {
+            return resourceCards;
+        } else {
+            return goldenCards;
+        }
+    }
+
+    List<Player> getPlayers() {
+        return players;
+    }
+
+    Deck<Card> getResourceDeck() {
+        return resourceCards;
+    }
+
+    Deck<Card> getGoldenDeck() {
+        return goldenCards;
+    }
+
+
+    // Possible requests from outside
+
+    // todo. check correctness
+    public Game(List<String> usernames, List<Color> colors) {
+        // todo. add method to load cards
+
+
+        // rest of the code
+        numRequiredPlayers = usernames.size();
+
+        players = new ArrayList<>();
+        try {
+            commonObjects = Arrays.asList(objectiveCards.draw(), objectiveCards.draw());
+
+            for (int i = 0; i < numRequiredPlayers; ++i) {
+                players.add(
+                        new Player(
+                                usernames.get(i),
+                                colors.get(i),
+                                starterCards.draw(),
+                                Arrays.asList(resourceCards.draw(), resourceCards.draw(), goldenCards.draw()),
+                                Arrays.asList(objectiveCards.draw(), objectiveCards.draw())
+                        )
+                );
+            }
+
+        } catch (EmptyDeckException e) {
+            e.printStackTrace();
+        }
+
+        gameState = new Setup();
+        currentPlayerIdx = 0;
+        isFinished = false;
+        chatDatabase = new ChatDatabase();
+    }
+
+    /*
+        The currentPlayerIdx is updated every time a request from outside about the players' turn comes.
+        This function, whose return type needs to be defined, will check if the game is finished, if so it will send a notification to all players; otherwise
+        it will check  whether the oldCurrentPlayer has drawn a card. If the player has not done that, an automatic drawn is done for them and the new player is selected.
+        We're assuming the request has taken into account the requirements: no action when there's only one player
+        and the game stops when no one is active (a timer is created outside).
      */
-    // generic method to add new player. throws an exception for invalid players
-    public boolean addPlayer(Player newPlayer) throws IllegalArgumentException {
-        return true;
+
+    // todo. implement method to select the next current player. They must be a player whose status has set to active
+    // when the function was called. If the selected player disconnected after the request was sent, another query would be sent,
+    // but it's not something the Game has to consider: it only refers to the situation at the moment of the call.
+    int selectNextCurrentPlayer() {
+        // They may disconnect before drawing a card, an automatic draw is done for them
+        if (!players.get(currentPlayerIdx).isConnected()) {
+            // todo. choose randomly from which source draw a card.
+        }
+
+        // todo. while skipping inactive players call the skip function in gameState to let gameState know if an additional turn starts.
+
+        return -1;
     }
 
-    public void assignColor(String username, Color color) {
+    public void setNetworkStatus(String username, boolean networkStatus) {
 
+        players.stream()
+                .filter(p -> p.getUsername().equals(username))
+                .findFirst()
+                .ifPresent(p -> p.setNetworkStatus(networkStatus));
     }
 
-    /**
-     *
+    ///**
+    // * Connects a previously disconnected player with <code>username</code> to the game.
+    // *
+    // * @param username of the player to connect
+    // */
+    //public void connectPlayer(String username) {
+    //    setNetworkStatus(username, true);
+    //}
+
+    ///**
+    // * Disconnects the player with <code>username</code> to the game.
+    // *
+    // * @param username of the player to connect
+    // */
+    //public void disconnectPlayer(String username) {
+    //    setNetworkStatus(username, false);
+    //}
+
+
+    /*
+     *  NOTE. We're assuming all methods are called before having requested the list of active players, which in turns call the method to select the next currentPlayer.
      */
-    public void chooseObjectiveCard(ObjectiveCard chosenObjective) {
 
+    public void placeStarter(String username, Side side) {
+        try {
+            gameState.placeStarter(this, username, side);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    // todo. (maybe factor away if none need the information externally.
-    // the game status is controlled by the model only, the other components
-    // (Controller+View) receives information by the model
-    boolean canStart() {
-        return false;
+    public void placeObjectiveCard(String username, ObjectiveCard chosenObjective) {
+        try {
+            gameState.placeObjectiveCard(this, username, chosenObjective);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    // we can simply send a message containing the receiver and the event
-    private List<Player> activePlayers() {
-        return null;
+    public void placeCard(String username, Card card, Side side, Position position) {
+        try {
+            gameState.placeCard(this, username, card, side, position);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    // maybe done automatically by the model at the end of each turn
-    void placeFaceUpCards() {
-
+    public void drawFromResourceDeck(String username) {
+        try {
+            gameState.drawFromResourceDeck(this, username);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    // todo(better name)
-    public boolean isReachedTwenty() {
-        return false;
+    public void drawFromGoldenDeck(String username) {
+        try {
+            gameState.drawFromGoldenDeck(this, username);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public void drawFromRsourceDeck() {
-
+    public void drawFromFaceUpCards(String username, int faceUpCardIdx) {
+        try {
+            gameState.drawFromFaceUpCards(this, username, faceUpCardIdx);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public void drawFromGoldenDeck() {
-
+    public List<Player> getActivePlayers() {
+        return players.stream()
+                .filter(Player::isConnected)
+                .toList();
     }
 
-    // dynamic type passed by the controller
-    public void placeCard(Face face) {
-
-    }
-
-    // handle next turn, skipping inactive players
-    private void nextTurn() {
-
-    }
-
-    private void startLastTurn() {
-
-    }
-
-    /**
-     * Deserializes objective cards from resources
-     * 
-     * @return the list of objective cards
-     */
-    private List<ObjectiveCard> createObjectiveCards() {
-        /* json as streams, so even after jar build it can retrieve the correct file */
-        InputStream objectiveResourceStream = this.getClass()
-                .getResourceAsStream(objectiveResourceCardsPath);
-        InputStream objectivePositionStream = this.getClass()
-                .getResourceAsStream(objectivePositionCardsPath);
-
-        //todo: handle null streams
-        Reader objectiveResourceReader = new BufferedReader(new InputStreamReader(objectiveResourceStream));
-        Reader objectivePositionReader = new BufferedReader(new InputStreamReader(objectivePositionStream));
-
-        Gson gson = new GsonBuilder().registerTypeAdapter(Position.class, new PositionDeserializer()).create();
-
-        List<ObjectiveResourceCard> objectiveResourceCards = gson.fromJson(objectiveResourceReader,
-                new TypeToken<List<ObjectiveResourceCard>>() {
-                }.getType());
-        List<ObjectivePositionCard> objectivePositionCards = gson.fromJson(objectivePositionReader,
-                new TypeToken<List<ObjectivePositionCard>>() {
-                }.getType());
-
-        List<ObjectiveCard> result = new ArrayList<>(objectiveResourceCards);
-        result.addAll(objectivePositionCards);
-        Collections.shuffle(result);
-
-        return result;
-    }
-
-    /**
-     * Creates any Card list
-     * @param relativePath of the resource to instance
-     * @return the list of the cards created from resource's json
-     */
-    private List<Card> createPlayableCard(String relativePath){
-        /* json as streams, so even after jar build it can retrieve the correct file */
-        InputStream cardStream = this.getClass()
-                .getResourceAsStream(relativePath);
-        //todo: handle null streams
-        Reader cardReader = new BufferedReader(new InputStreamReader(cardStream));
-
-        Gson gson = new Gson();
-
-        List<Card> cards = gson.fromJson(cardReader,
-                new TypeToken<List<Card>>() {
-                }.getType());
-
-        Collections.shuffle(cards);
-
-        return cards;
-    }
-
-    // todo(needed). add method to know whether the client has disconnected and
-    // notify all clients
 }
 
-/**
- * Custom deserializer for Corner:
- * uses Corner constructor because json only has kingdom as value
- */
