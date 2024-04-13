@@ -13,18 +13,19 @@ public class Position {
 
     /**
      * Constructs a position at the coordinates x and y provided.
+     *
      * @param x the position's abscissa.
      * @param y the position's ordinate.
      */
-    public Position(int x, int y){
+    public Position(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
 
-
     /**
      * Returns position's abscissa.
+     *
      * @return an int value representing the abscissa of the position.
      */
     public int getX() {
@@ -32,9 +33,9 @@ public class Position {
     }
 
 
-
     /**
      * Returns position's ordinate.
+     *
      * @return an int value representing the ordinate of the position.
      */
     public int getY() {
@@ -42,18 +43,18 @@ public class Position {
     }
 
 
-
     /**
      * Checks if two objects are equal.
      * Overrides the equals() method in the Object class.
+     *
      * @return true if this object it's equal to obj, otherwise false.
      */
     @Override
     public boolean equals(Object obj) {
-        if(this == obj){
+        if (this == obj) {
             return true;
         }
-        if(obj == null || this.getClass() != obj.getClass()){
+        if (obj == null || this.getClass() != obj.getClass()) {
             return false;
         }
 
@@ -61,11 +62,11 @@ public class Position {
     }
 
 
-
     /**
      * Returns a hashcode depending on the attributes.
      * Given two instance with the same attributes this method returns the same hashcode.
      * Overrides the hashCode() method in the Object class.
+     *
      * @return an int value representing the hashcode of the object.
      */
     @Override
@@ -76,10 +77,10 @@ public class Position {
     reference, but with the same attributes */
 
 
-
     /**
      * Returns a string representation of Position.
      * Overrides the toString() method in the Object class.
+     *
      * @return a string representing the position.
      */
     @Override
@@ -88,9 +89,9 @@ public class Position {
     }
 
 
-
     /**
      * Sums two position's coordinates.
+     *
      * @param lhs the first position whose coordinates are summed
      * @param rhs the second position whose coordinates are summed
      * @return a position that has as coordinate the result of the two parameter's coordinates.
