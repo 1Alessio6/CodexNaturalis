@@ -1,12 +1,12 @@
 package it.polimi.ingsw.model;
 
 import java.io.*;
-import java.lang.reflect.Type;
 import java.util.*;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 
+import it.polimi.ingsw.model.JsonDeserializer.PositionDeserializer;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.chat.ChatDatabase;
@@ -183,20 +183,6 @@ public class Game {
 
     // todo(needed). add method to know whether the client has disconnected and
     // notify all clients
-}
-
-/**
- * Custom deserializer for Position:
- * assigns string values to x and y fields
- */
-class PositionDeserializer implements JsonDeserializer<Position> {
-    @Override
-    public Position deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-            throws JsonParseException {
-        String[] positionString = json.getAsString().split(",");
-
-        return new Position(Integer.parseInt(positionString[0]), Integer.parseInt(positionString[1]));
-    }
 }
 
 /**
