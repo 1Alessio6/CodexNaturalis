@@ -203,10 +203,3 @@ class PositionDeserializer implements JsonDeserializer<Position> {
  * Custom deserializer for Corner:
  * uses Corner constructor because json only has kingdom as value
  */
-class CornerDeserializer implements JsonDeserializer<Corner> {
-    @Override
-    public Corner deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-            throws JsonParseException {
-        return new Corner(Symbol.valueOf(json.getAsString()));
-    }
-}

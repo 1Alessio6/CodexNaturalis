@@ -40,22 +40,22 @@ public class Playground {
     }
 
 
-
     /**
      * Returns the tile at the position pos.
+     *
      * @param pos the position of the tile.
      * @return the tile at position pos or null if there isn't a tile in that position.
      */
-    public Tile getTile(Position pos)  {
+    public Tile getTile(Position pos) {
         return area.get(pos);
     }
-
 
 
     /**
      * Returns true if the tile at position <code>pos</code> has the same availability as <code>availability</code>.
      * If <code>pos</code> is null, or it's not contained in area, the method returns false.
-     * @param pos the position of the Tile to check.
+     *
+     * @param pos          the position of the Tile to check.
      * @param availability the availability to compare to the one in the Tile at position <code>pos</code>.
      * @return true if the tile at position <code>pos</code> has the same availability as <code>availability</code>.
      */
@@ -67,9 +67,9 @@ public class Playground {
     }
 
 
-
     /**
      * Checks if there is a Tile in at specific position.
+     *
      * @param position the position of the Tile to check.
      * @return true if the playground contains a tile in that position.
      */
@@ -78,9 +78,9 @@ public class Playground {
     }
 
 
-
     /**
      * Returns all the position in the playground.
+     *
      * @return a set which contains all the position in which there's a tile.
      */
     public Set<Position> getAllPositions() {
@@ -88,9 +88,9 @@ public class Playground {
     }
 
 
-
     /**
      * Returns all the player's resources.
+     *
      * @return a map containing for each resource symbol the specific amount owned by the player.
      */
     public Map<Symbol, Integer> getResources() {
@@ -98,9 +98,9 @@ public class Playground {
     }
 
 
-
     /**
      * Returns the player current score.
+     *
      * @return an integer representing player's current score.
      */
     public int getPoints() {
@@ -108,9 +108,9 @@ public class Playground {
     }
 
 
-
     /**
      * Sets the value of the points.
+     *
      * @param points the updated value of the points owned by the player.
      */
     public void setPoints(int points) {
@@ -118,23 +118,23 @@ public class Playground {
     }
 
 
-
     /**
      * Returns all the available position.
+     *
      * @return a list containing all the position stored in the playground associated to an empty tile.
      */
-    public List<Position> getAvailablePositions(){
+    public List<Position> getAvailablePositions() {
         return this.area.keySet().stream().filter(x -> this.area.get(x).sameAvailability(Availability.EMPTY)).collect(Collectors.toList());
     }
 
 
-
     /**
      * Places a card's face in the playground.
+     *
      * @param c the face that is placed in the playground.
      * @param p the position where the face is placed.
      * @throws UnavailablePositionException if the position it's unavailable or already occupied.
-     * @throws NotEnoughResourcesException if the player doesn't have enough resources to place the card's face.
+     * @throws NotEnoughResourcesException  if the player doesn't have enough resources to place the card's face.
      */
     public void placeCard(Face c, Position p) throws UnavailablePositionException, NotEnoughResourcesException {
 
@@ -143,7 +143,7 @@ public class Playground {
         }
 
         //requirements check
-        if(!checkRequirements(c.getRequiredResources())){
+        if (!checkRequirements(c.getRequiredResources())) {
             throw new NotEnoughResourcesException("Insufficient resources");
         }
 
@@ -203,14 +203,14 @@ public class Playground {
         }
 
         updateResources(c);
-        this.points = this.points + c.calculatePoints(p,this);
+        this.points = this.points + c.calculatePoints(p, this);
 
     }
 
 
-
     /**
      * Updates player's resources.
+     *
      * @param f the face containing the resources to add to player's resources.
      */
     private void updateResources(Face f) {
@@ -221,13 +221,13 @@ public class Playground {
     }
 
 
-
     /**
      * Checks if the playground satisfies face's requirements.
+     *
      * @param req the resources required by the face in order to be placed.
      * @return true if the playground contains enough resource to place te card's face.
      */
-    private boolean checkRequirements(Map<Symbol, Integer> req){
+    private boolean checkRequirements(Map<Symbol, Integer> req) {
         for (Symbol s : req.keySet()) {
             if (this.resources.get(s) < req.get(s)) {
                 return false;
@@ -237,17 +237,17 @@ public class Playground {
     }
 
 
-
     /**
      * Returns the position on the playground associated to the position of a corner on a card's face.
-     * @param x the abscissa of face's position.
-     * @param y the ordinate of face's position.
+     *
+     * @param x      the abscissa of face's position.
+     * @param y      the ordinate of face's position.
      * @param corner the corner position on the card's face.
      * @return the position in the playground associated to the corner position on the face.
      */
-    private Position correspondingPosition(int x, int y, CornerPosition corner){
+    private Position correspondingPosition(int x, int y, CornerPosition corner) {
 
-        int k,j;
+        int k, j;
 
         if (corner == CornerPosition.TOP_LEFT || corner == CornerPosition.TOP_RIGHT) {
             j = y + 1;
@@ -265,7 +265,6 @@ public class Playground {
     }
 
 
-
     /**
      * Exception thrown when the resource aren't enough.
      * This exception indicates the player resources are less than resources needed to place the card's
@@ -276,7 +275,6 @@ public class Playground {
             super(message);
         }
     }
-
 
 
     /**
