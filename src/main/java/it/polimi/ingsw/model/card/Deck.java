@@ -1,10 +1,17 @@
 package it.polimi.ingsw.model.card;
 
+import java.util.List;
 import java.util.Stack;
 
-public class Deck {
+public class Deck<T> {
+    // todo. type?
     String type;
-    Stack<Card> deck;
+    Stack<T> deck;
+
+    Deck(String type, Stack<T> deck) {
+        this.type = type;
+        this.deck = deck;
+    }
 
     public String getType() {
         return type;
@@ -14,11 +21,19 @@ public class Deck {
         this.type = type;
     }
 
-    public Stack<Card> getDeck() {
-        return deck;
+    public T draw() throws EmptyDeckException {
+        if (deck.isEmpty()) {
+            throw new EmptyDeckException("EMPTY DECK");
+        }
+
+        return deck.pop();
     }
 
-    public void setDeck(Stack<Card> deck) {
-        this.deck = deck;
+    public boolean isEmpty() {
+        return deck.isEmpty();
+    }
+
+    public void add(T obj) {
+        deck.push(obj);
     }
 }
