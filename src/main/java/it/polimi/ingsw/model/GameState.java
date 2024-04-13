@@ -6,12 +6,12 @@ import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.player.Player;
 
-import java.nio.channels.NoConnectionPendingException;
 import java.util.List;
 
 /**
  * Representation of a possible game's state.
  * It defines which operations are allowed based on the overall information.
+ * The fsm looks like Setup -> MatchStarted -> AdditionalTurn -> GameEnd
  */
 
 // todo. it will require synchronized to handle different users' requests at the same time.
@@ -23,91 +23,29 @@ import java.util.List;
  */
 public abstract class GameState {
 
-    // notify about impossible requests.
-    private void checkConsistency(Game game, String username) {
-        // the username must be valid
-        assert (!game.getPlayers().stream().filter(p -> p.getUsername().equals(username)).findFirst().isEmpty());
-    }
-
     /*
-     * For now, requests not allowed in the current state result in no action; it's like the request doesn't produce any change.
+      For now, requests not allowed in the current state result in no action; it's like the request doesn't produce any change.
      */
 
-    public void placeStarter(Game game, String username, Side side) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
-        checkConsistency(game, username);
-        Player player = game.getPlayers().stream().filter(p -> p.getUsername().equals(username)).findFirst().get();
-
-        placeStarter(game, player, side);
+    public void placeStarter(Game game, Player player, Side side) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
     }
 
-    protected void placeStarter(Game game, Player player, Side side) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
-
+    public void placeObjectiveCard(Game game, Player player, ObjectiveCard chosenObjective) throws InvalidPlayerActionException {
     }
 
-    public void placeObjectiveCard(Game game, String username, ObjectiveCard chosenObjective) throws InvalidPlayerActionException {
-        checkConsistency(game, username);
-        Player player = game.getPlayers().stream().filter(p -> p.getUsername().equals(username)).findFirst().get();
-
-        placeObjective(game, player, chosenObjective);
-    }
-
-    protected void placeObjective(Game game, Player player, ObjectiveCard chosenObjective) throws InvalidPlayerActionException {
+    public void placeCard(Game game, Player player, Card card, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
 
     }
 
-    public void placeCard(Game game, String username, Card card, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
-        checkConsistency(game, username);
-        Player player = game.getPlayers().stream().filter(p -> p.getUsername().equals(username)).findFirst().get();
-
-        placeCard(game, player, card, side, position);
-    }
-
-    protected void placeCard(Game game, Player player, Card card, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
-
-    }
-
-    public void drawFromResourceDeck(Game game, String username) throws InvalidPlayerActionException {
-        checkConsistency(game, username);
-        Player player = game.getPlayers().stream().filter(p -> p.getUsername().equals(username)).findFirst().get();
-
-        drawFromDeck(game, player, game.getResourceDeck());
+    public void drawFromResourceDeck(Game game, Player player) throws InvalidPlayerActionException, EmptyDeckException {
     }
 
 
-    public void drawFromGoldenDeck(Game game, String username) throws InvalidPlayerActionException {
-        checkConsistency(game, username);
-        Player player = game.getPlayers().stream().filter(p -> p.getUsername().equals(username)).findFirst().get();
-
-        drawFromDeck(game, player, game.getGoldenDeck());
-    }
-
-
-    protected void drawFromDeck(Game game, Player player, Deck<Card> deck) throws InvalidPlayerActionException {
+    public void drawFromGoldenDeck(Game game, Player player) throws InvalidPlayerActionException, EmptyDeckException {
 
     }
 
-    public void drawFromFaceUpCards(Game game, String username, int faceUpCardIdx) throws InvalidPlayerActionException {
-        checkConsistency(game, username);
-        Player player = game.getPlayers().stream().filter(p -> p.getUsername().equals(username)).findFirst().get();
-
-        drawFromFaceUpCards(game, player, faceUpCardIdx);
-    }
-
-    protected void drawFromFaceUpCards(Game game, Player player, int faceUpCardIdx) throws InvalidPlayerActionException {
-
-    }
-
-    // by default the player's network status is set to disconnected.
-    public void handleDisconnection(Game game, String username) {
-        checkConsistency(game, username);
-        Player player = game.getPlayers().stream().filter(p -> p.getUsername().equals(username)).findFirst().get();
-
-        player.setNetworkStatus(false);
-        completeDraw(game, player);
-    }
-
-    protected void completeDraw(Game game, Player player) {
-
+    public void drawFromFaceUpCards(Game game, Player player, int faceUpCardIdx) throws InvalidPlayerActionException {
     }
 
     public void skipTurn(Game game) {
@@ -123,7 +61,7 @@ public abstract class GameState {
 class Setup extends GameState {
 
     @Override
-    protected void placeStarter(Game game, Player player, Side side)
+    public void placeStarter(Game game, Player player, Side side)
             throws InvalidPlayerActionException,
             Playground.UnavailablePositionException,
             Playground.NotEnoughResourcesException {
@@ -131,7 +69,7 @@ class Setup extends GameState {
     }
 
     @Override
-    protected void placeObjective(Game game, Player player, ObjectiveCard chosenObjective) throws InvalidPlayerActionException {
+    public void placeObjectiveCard(Game game, Player player, ObjectiveCard chosenObjective) throws InvalidPlayerActionException {
         player.placeObjectiveCard(chosenObjective);
 
         for (Player p : game.getPlayers()) {
@@ -162,12 +100,12 @@ class Setup extends GameState {
 }
 
 class MatchStarted extends GameState {
-    private boolean reachedTwenty = false;
-    private int numPlaysAfterReachingTwenty = 0;
+    private boolean lastNormalTurn = false;
+    private int numPlayersPlayedLastTurn = 0;
     private final int maxPoint = 20;
 
     @Override
-    protected void placeCard(Game game, Player player, Card card, Side side, Position position)
+    public void placeCard(Game game, Player player, Card card, Side side, Position position)
             throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
 
         if (game.getPlayers().indexOf(player) != game.getCurrentPlayerIdx()) {
@@ -175,45 +113,64 @@ class MatchStarted extends GameState {
         }
 
         int score = player.placeCard(card, side, position);
-        if (score == maxPoint
-                && !reachedTwenty)  // no one has reached maxPoint yet
-        {
-            reachedTwenty = true;
+        if (score >= maxPoint) {
+            lastNormalTurn = true;
         }
     }
 
-    // todo. to improve: code repetition between drawFromDeck and DrawFromFaceUpCards
-    @Override
-    protected void drawFromDeck(Game game, Player player, Deck<Card> deck) throws InvalidPlayerActionException {
+    private void addCard(Game game, Player player, Card c) throws InvalidPlayerActionException {
+
+        player.addCard(c);
+
+        if (game.getGoldenDeck().isEmpty() && game.getResourceDeck().isEmpty()) {
+            lastNormalTurn = true;
+        }
+
+        if (lastNormalTurn) {
+            numPlayersPlayedLastTurn += 1;
+            if (numPlayersPlayedLastTurn == game.getPlayers().size()) {
+                game.setStatus(new AdditionalTurn());
+            }
+        }
+
+    }
+
+    private void drawFromDeck(Game game, Player player, Deck<Card> deck) throws InvalidPlayerActionException, EmptyDeckException {
         List<Player> players = game.getPlayers();
         if (players.indexOf(player) != game.getCurrentPlayerIdx()) {
             return;
         }
 
-        try {
-            player.addCard(deck.draw());
-        } catch (EmptyDeckException e) {
-            e.printStackTrace();
-        }
-
-        if (reachedTwenty) {
-            numPlaysAfterReachingTwenty += 1;
-            if (numPlaysAfterReachingTwenty == players.size()) {
-                game.setStatus(new AdditionalTurn());
-            }
-        }
+        Card newCard = deck.draw();
+        addCard(game, player, newCard);
     }
 
-    // todo. complete method. Refactoring is needed to avoid writing the same code as drawFromDeck twice
-    protected void drawFromFaceUpCards(Game game, Player player, int faceUpCardIdx) throws InvalidPlayerActionException {
+
+    public void drawFromResourceDeck(Game game, Player player) throws InvalidPlayerActionException, EmptyDeckException {
+        drawFromDeck(game, player, game.getResourceDeck());
+    }
+
+
+    public void drawFromGoldenDeck(Game game, Player player) throws InvalidPlayerActionException, EmptyDeckException {
+        drawFromDeck(game, player, game.getGoldenDeck());
+    }
+
+    public void drawFromFaceUpCards(Game game, Player player, int faceUpCardIdx) throws InvalidPlayerActionException {
+        List<Player> players = game.getPlayers();
+        if (players.indexOf(player) != game.getCurrentPlayerIdx()) {
+            return;
+        }
+
+        Card newCard = game.getFaceUpCard(faceUpCardIdx);
+        addCard(game, player, newCard);
     }
 
 
     @Override
     public void skipTurn(Game game) {
-        if (reachedTwenty) {
-            numPlaysAfterReachingTwenty += 1;
-            if (numPlaysAfterReachingTwenty == game.getPlayers().size()) {
+        if (lastNormalTurn) {
+            numPlayersPlayedLastTurn += 1;
+            if (numPlayersPlayedLastTurn == game.getPlayers().size()) {
                 game.setStatus(new AdditionalTurn());
             }
         }
@@ -226,7 +183,7 @@ class AdditionalTurn extends GameState {
     int numTurns = 0;
 
     @Override
-    protected void placeCard(Game game, Player player, Card card, Side side, Position position)
+    public void placeCard(Game game, Player player, Card card, Side side, Position position)
             throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
 
         player.placeCard(card, side, position);
