@@ -29,6 +29,10 @@ public class Deck<T> {
         return deck.pop();
     }
 
+    public boolean isEmpty() {
+        return deck.isEmpty();
+    }
+
     public void add(T obj) {
         deck.push(obj);
     }
