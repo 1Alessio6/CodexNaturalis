@@ -94,12 +94,6 @@ public class Game {
         return 0 <= idx && idx < players.size();
     }
 
-    /**
-     *
-     */
-    public void chooseObjectiveCard(ObjectiveCard chosenObjective) {
-
-    }
 
     // todo. (maybe factor away if none need the information externally.
     // the game status is controlled by the model only, the other components
