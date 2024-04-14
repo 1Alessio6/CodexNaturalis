@@ -34,9 +34,11 @@ abstract public class Face {
      */
     public Face(Color color, Map<CornerPosition, Corner> corners, CalculatePoints calculator)
             throws IllegalArgumentException {
+        /* TODO: what color do startCard have?
         if (color == null) {
             throw new IllegalArgumentException("Color cannot be null");
         }
+         */
 
         if (corners == null) {
             throw new IllegalArgumentException("corners cannot be null");
@@ -44,10 +46,6 @@ abstract public class Face {
 
         if (corners.containsKey(null)) {
             throw new IllegalArgumentException("No null position for corners are allowed");
-        }
-
-        if (corners.containsValue(null)) {
-            throw new IllegalArgumentException("No null Corner objects are allowed in corners");
         }
 
         if (calculator == null) {
