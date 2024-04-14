@@ -103,7 +103,7 @@ public class Player {
         return objectiveCards;
     }
 
-    List<Card> getCards() {
+    public List<Card> getCards() {
         return cards;
     }
 
