@@ -7,22 +7,20 @@ import it.polimi.ingsw.model.board.Tile;
 
 import java.util.Map;
 
+/**
+ * Strategy used for golden cards that add points based on number of corners covered after it's placement
+ */
 public class StrategyCorners implements CalculatePoints {
-
-
-    //it's possible to change with an O(1) time complexity
     @Override
     public int calculatePoints(Position pos, Playground playground) {
         int multiplier = playground.getTile(pos).getFace().getScore();
+        int count = 0;
 
-        return Math.toIntExact(
-                playground.getAllPositions()
-                .stream()
-                .filter(p -> (Math.abs(p.getX() - pos.getX()) <= 1)
-                        && (Math.abs(p.getY() - pos.getY()) <= 1)
-                        && !p.equals(pos)
-                        &&
-                        playground.getTile(pos).sameAvailability(Availability.OCCUPIED))
-                .count()) * multiplier;
+        /* checks for top/bottom left/right positions availabilities */
+        for (int i = pos.getX() - 1; i - pos.getX() <= 2; i += 2)
+            for (int j = pos.getY() - 1; j - pos.getY() <= 2; j += 2)
+                count += playground.getTile(new Position(i,j)).sameAvailability(Availability.OCCUPIED) ? 1 : 0;
+
+        return count;
     }
 }
