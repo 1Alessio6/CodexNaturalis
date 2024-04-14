@@ -4,6 +4,11 @@ public class Corner {
     private boolean isCovered;
     private final Symbol symbol;
 
+    public Corner() {
+        this.isCovered = false;
+        this.symbol = null;
+    }
+
     public Corner(Symbol symbol) {
         this.isCovered = false;
         this.symbol = symbol;
