@@ -74,7 +74,7 @@
                 "ANIMAL": 1
             },
             "score": 2,
-            "pointsCondition": "NUM_CORNER",
+            "pointsCondition": "CORNERS",
             "color": "RED"
         },
         "back": {
@@ -95,7 +95,7 @@
                 "PLANT": 1
             },
             "score": 2,
-            "pointsCondition": "NUM_CORNER",
+            "pointsCondition": "CORNERS",
             "color": "RED"
         },
         "back": {
@@ -116,7 +116,7 @@
                 "ANIMAL": 1
             },
             "score": 2,
-            "pointsCondition": "NUM_CORNER",
+            "pointsCondition": "CORNERS",
             "color": "RED"
         },
         "back": {
@@ -255,7 +255,7 @@
                 "INSECT": 1
             },
             "score": 2,
-            "pointsCondition": "NUM_CORNER",
+            "pointsCondition": "CORNERS",
             "color": "GREEN"
         },
         "back": {
@@ -276,7 +276,7 @@
                 "ANIMAL": 1
             },
             "score": 2,
-            "pointsCondition": "NUM_CORNER",
+            "pointsCondition": "CORNERS",
             "color": "GREEN"
         },
         "back": {
@@ -297,7 +297,7 @@
                 "FUNGI": 1
             },
             "score": 2,
-            "pointsCondition": "NUM_CORNER",
+            "pointsCondition": "CORNERS",
             "color": "GREEN"
         },
         "back": {
@@ -478,7 +478,7 @@
                 "INSECT": 1
             },
             "score": 2,
-            "pointsCondition": "NUM_CORNER",
+            "pointsCondition": "CORNERS",
             "color": "BLUE"
         },
         "back": {
@@ -499,7 +499,7 @@
                 "FUNGI": 1
             },
             "score": 2,
-            "pointsCondition": "NUM_CORNER",
+            "pointsCondition": "CORNERS",
             "color": "BLUE"
         },
         "back": {
@@ -520,7 +520,7 @@
                 "PLANT": 1
             },
             "score": 2,
-            "pointsCondition": "NUM_CORNER",
+            "pointsCondition": "CORNERS",
             "color": "BLUE"
         },
         "back": {
@@ -756,7 +756,7 @@
                 "ANIMAL": 1
             },
             "score": 2,
-            "pointsCondition": "NUM_CORNER",
+            "pointsCondition": "CORNERS",
             "color": "PURPLE"
         },
         "back": {
@@ -777,7 +777,7 @@
                 "PLANT": 1
             },
             "score": 2,
-            "pointsCondition": "NUM_CORNER",
+            "pointsCondition": "CORNERS",
             "color": "PURPLE"
         },
         "back": {
@@ -798,7 +798,7 @@
                 "FUNGI": 1
             },
             "score": 2,
-            "pointsCondition": "NUM_CORNER",
+            "pointsCondition": "CORNERS",
             "color": "PURPLE"
         },
         "back": {
