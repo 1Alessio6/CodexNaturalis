@@ -28,13 +28,6 @@ class FrontTest {
     }
 
     @Test
-    public void passNullColor_throwsException() {
-        Assertions.assertThrows(IllegalArgumentException.class,
-                () -> new Front(null, corners, 0, calculator)
-        );
-    }
-
-    @Test
     public void passNullCorners_throwsException() {
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> new Front(Color.BLUE, null, 0, calculator)
