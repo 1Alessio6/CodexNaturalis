@@ -56,4 +56,16 @@ public class Front extends Face {
         return score;
     }
 
+    public String toString(){
+
+        StringBuilder cornerString = null;
+
+        for(CornerPosition c : this.getCorners().keySet()){
+            cornerString.append(c + ": ").append(this.getCorners().get(c).toString()).append(" - ");
+        }
+        cornerString.append("END");
+
+        return "{ Color: " + this.getColor() + "| Points" + this.score + " ) " + "| Corners: [ " + cornerString + " ] ";
+    }
+
 }
