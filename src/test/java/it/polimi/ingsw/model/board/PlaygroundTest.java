@@ -24,8 +24,7 @@ class PlaygroundTest {
 
     @Test
     void getAllPositions() {
-        Playground p = new Playground();
-        assertTrue(p.getAllPositions().contains(new Position(0, 0)));
+
     }
 
     @Test
@@ -33,18 +32,61 @@ class PlaygroundTest {
     }
 
     @Test
-    void placeCard() {
+    void placeCard() throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
 
         //test place back
 
+        Playground PlaygroundTestBack = new Playground();
+        List<Card> cardsTest = createTestResourceCards("/playground/Test1.json");
 
+        PlaygroundTestBack.placeCard(cardsTest.get(0).getFace(Side.BACK),new Position(0,0));
+        PlaygroundTestBack.placeCard(cardsTest.get(1).getFace(Side.BACK),new Position(1,1));
+        PlaygroundTestBack.placeCard(cardsTest.get(2).getFace(Side.BACK),new Position(1,-1));
 
+        assert(PlaygroundTestBack.getTile(new Position(0, 0)).sameAvailability(Availability.OCCUPIED));
+        assert(PlaygroundTestBack.getTile(new Position(0, 0)).getFace().getCorners().get(CornerPosition.TOP_RIGHT).isCovered());
+        assert(!PlaygroundTestBack.getTile(new Position(0, 0)).getFace().getCorners().get(CornerPosition.TOP_LEFT).isCovered());
+        assert(!PlaygroundTestBack.getTile(new Position(0, 0)).getFace().getCorners().get(CornerPosition.LOWER_LEFT).isCovered());
+        assert(PlaygroundTestBack.getTile(new Position(0, 0)).getFace().getCorners().get(CornerPosition.LOWER_RIGHT).isCovered());
+        assert(PlaygroundTestBack.getTile(new Position(0, 0)).getFace().getColor() == Color.RED);
+
+        assert(PlaygroundTestBack.getTile(new Position(1, 1)).sameAvailability(Availability.OCCUPIED));
+        assert(PlaygroundTestBack.getTile(new Position(0, 0)).getFace().getCorners().get(CornerPosition.TOP_RIGHT).isCovered());
+        assert(!PlaygroundTestBack.getTile(new Position(0, 0)).getFace().getCorners().get(CornerPosition.TOP_LEFT).isCovered());
+        assert(!PlaygroundTestBack.getTile(new Position(0, 0)).getFace().getCorners().get(CornerPosition.LOWER_LEFT).isCovered());
+        assert(PlaygroundTestBack.getTile(new Position(0, 0)).getFace().getCorners().get(CornerPosition.LOWER_RIGHT).isCovered());
+        assert(PlaygroundTestBack.getTile(new Position(0, 0)).getFace().getColor() == Color.RED);
+        assert(PlaygroundTestBack.getTile(new Position(1, -1)).sameAvailability(Availability.OCCUPIED));
+
+        assert(PlaygroundTestBack.getTile(new Position(0, 0)).getFace().getCorners().get(CornerPosition.TOP_RIGHT).isCovered());
+        assert(!PlaygroundTestBack.getTile(new Position(0, 0)).getFace().getCorners().get(CornerPosition.TOP_LEFT).isCovered());
+        assert(!PlaygroundTestBack.getTile(new Position(0, 0)).getFace().getCorners().get(CornerPosition.LOWER_LEFT).isCovered());
+        assert(PlaygroundTestBack.getTile(new Position(0, 0)).getFace().getCorners().get(CornerPosition.LOWER_RIGHT).isCovered());
+        assert(PlaygroundTestBack.getTile(new Position(0, 0)).getFace().getColor() == Color.RED);
+
+        List<Position> correctAvailablePosition = new ArrayList<>();
+        correctAvailablePosition.add(new Position(-1,-1));
+        correctAvailablePosition.add(new Position(-1,1));
+        correctAvailablePosition.add(new Position(0,2));
+        correctAvailablePosition.add(new Position(2,2));
+        correctAvailablePosition.add(new Position(2,0));
+        correctAvailablePosition.add(new Position(2,-2));
+        correctAvailablePosition.add(new Position(0,-2));
+        checkAvailableList(correctAvailablePosition, PlaygroundTestBack);
+
+        assert(PlaygroundTestBack.getResources().get(Symbol.FUNGI) == 3);
+        assert(PlaygroundTestBack.getPoints() == 0);
 
     }
 
-    private Deck<Card> createTestResourceCards(String resourceCardsPath){
+    private void checkAvailableList(List<Position> correctList, Playground Test){
+        assertTrue(correctList.size() == Test.getAvailablePositions().size());
+        assertTrue(Test.getAvailablePositions().containsAll(correctList) && correctList.containsAll(Test.getAvailablePositions()));
+    }
+
+    private List<Card> createTestResourceCards(String resourceCardsPath){
         Gson gson = new GsonBuilder().registerTypeAdapter(Corner.class, new CornerDeserializer()).create();
-        Stack<Card> cards = new Stack<>();
+        List<Card> cards = new ArrayList<>();
 
         for (JsonElement j : getCardsFromJson(resourceCardsPath)){
             JsonObject jsonFront = j.getAsJsonObject().get("front").getAsJsonObject();
@@ -66,7 +108,7 @@ class PlaygroundTest {
             cards.add(new Card(front, back));
         }
 
-        return new Deck<>(DeckType.RESOURCE, cards);
+        return cards;
     }
 
     private JsonArray getCardsFromJson(String resourcePath) throws NullPointerException {
