@@ -1,0 +1,50 @@
+[
+  {
+    "front": {
+      "corners": {
+        "TOP_LEFT": "PLANT",
+        "TOP_RIGHT": "ANIMAL",
+        "LOWER_RIGHT": "MANUSCRIPT"
+      },
+      "score": 0,
+      "color": "BLUE"
+    },
+    "back": {
+      "resources": {
+        "FUNGI": 1
+      }
+    }
+  },
+  {
+    "front": {
+      "corners": {
+        "TOP_LEFT": null,
+        "TOP_RIGHT": "ANIMAL",
+        "LOWER_LEFT": null
+      },
+      "score": 1,
+      "color": "BLUE"
+    },
+    "back": {
+      "resources": {
+        "FUNGI": 1
+      }
+    }
+  },
+  {
+    "front": {
+      "corners": {
+        "TOP_LEFT": null,
+        "TOP_RIGHT": null,
+        "LOWER_RIGHT": "INSECT"
+      },
+      "score": 1,
+      "color": "PURPLE"
+    },
+    "back": {
+      "resources": {
+        "FUNGI": 1
+      }
+    }
+  }
+]
