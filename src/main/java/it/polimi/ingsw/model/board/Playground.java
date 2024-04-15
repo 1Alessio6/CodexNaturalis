@@ -267,6 +267,22 @@ public class Playground {
         return new Position(k, j);
     }
 
+    public String toString(){
+
+        return "Area: \n" + areaToString() + "\n\nResources:\n" + this.resources.toString() + "\n\nScore:\n" + points;
+
+    }
+
+    private String areaToString(){
+        StringBuilder areaString = new StringBuilder();
+
+        for(Position p : this.area.keySet()){
+            areaString.append("( ").append(p).append(" ) --> ").append(this.area.get(p)).append("\n");
+        }
+
+        return String.valueOf(areaString);
+    }
+
 
     /**
      * Exception thrown when the resource aren't enough.
