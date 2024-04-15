@@ -60,4 +60,12 @@ public class Tile {
     public void setFace(Face face) {
         this.face = face;
     }
+
+    public String toString(){
+        String face = "EmptyTile";
+        if(this.getFace() != null){
+            face = String.valueOf(this.getFace());
+        }
+        return availability + "  " + face;
+    }
 }
