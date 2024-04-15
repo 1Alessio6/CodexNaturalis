@@ -4,12 +4,8 @@ import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.strategies.CalculatePoints;
 
-import it.polimi.ingsw.model.board.Playground;
-
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static java.util.Arrays.asList;
 
 /**
  * Immutable class representing the Face card.
@@ -23,33 +19,28 @@ abstract public class Face {
     // public static final int NUM_CORNERS = 4;
     private final Map<CornerPosition, Corner> corners;
 
+    // representation invariant
+    private boolean isValid(Map<CornerPosition, Corner> corners, CalculatePoints calculator) {
+        return corners != null
+                && calculator != null
+                && !corners.containsKey(null)
+                && !corners.containsValue(null);
+    }
+
     /**
      * Constructs a face card with the color and corners provided.
      *
-     * @param color   of the card.
+     * @param color   the face's color. If null, it represents a face without a color, for example a starting card.
      * @param corners contains corners to be inserted as card's corner.
-     * @throws IllegalArgumentException if any argument is null or
-     *                                  <code>cornerList</code> has not 4 corners or
+     * @throws IllegalArgumentException if <code>cornerList</code> has not 4 corners or
      *                                  any of them is null.
+     *                                  or calculator is null.
      */
     public Face(Color color, Map<CornerPosition, Corner> corners, CalculatePoints calculator)
             throws IllegalArgumentException {
-        /* TODO: what color do startCard have?
-        if (color == null) {
-            throw new IllegalArgumentException("Color cannot be null");
-        }
-         */
 
-        if (corners == null) {
-            throw new IllegalArgumentException("corners cannot be null");
-        }
-
-        if (corners.containsKey(null)) {
-            throw new IllegalArgumentException("No null position for corners are allowed");
-        }
-
-        if (calculator == null) {
-            throw new IllegalArgumentException("Calculator cannot be null");
+        if (!isValid(corners, calculator)) {
+            throw new IllegalArgumentException("Illegal argument passed to the constructor");
         }
 
         this.color = color;
@@ -84,8 +75,9 @@ abstract public class Face {
      * @return empty map: by default a face has no required resources.
      */
     public Map<Symbol, Integer> getRequiredResources() {
-        return new HashMap<Symbol, Integer>();
+        return new HashMap<>();
     }
+
     public int calculatePoints(Position pos, Playground playground) {
         return calculator.calculatePoints(pos, playground);
     }
