@@ -112,7 +112,7 @@ public class Game {
             cards.add(new Card(front, back));
         }
 
-        return new Deck<>(DeckType.GOLDEN, cards);
+        return new Deck<>(cards);
     }
 
     private Deck<Card> createResourceCards(){
@@ -139,7 +139,7 @@ public class Game {
             cards.add(new Card(front, back));
         }
 
-        return new Deck<>(DeckType.RESOURCE, cards);
+        return new Deck<>(cards);
     }
 
     private Deck<Card> createStartingCards() {
@@ -164,7 +164,7 @@ public class Game {
             cards.add(new Card(front, back));
         }
 
-        return new Deck<>(DeckType.RESOURCE, cards);
+        return new Deck<>(cards);
     }
 
     private Deck<ObjectiveCard> createObjectiveCards() {
@@ -185,20 +185,21 @@ public class Game {
             cards.add(new ObjectiveResourceCard(condition, multiplier));
         }
 
-        return new Deck<>(null, cards);
+        return new Deck<>(cards);
     }
 
     /**
      * Creates game based on the lobby
      * @param users the map user:color of the lobby that wants to start the game
      */
+
     public Game(Map<String, Color> users) {
-        // TODO: add deck creation's methods
         this.resourceCards = createResourceCards();
         this.goldenCards = createGoldenCards();
         this.starterCards = createStartingCards();
         this.objectiveCards = createObjectiveCards();
 
+        // fix using a for loop
         try {
             List<ObjectiveCard> userObjectives = new ArrayList<>();
             userObjectives.add(objectiveCards.draw());

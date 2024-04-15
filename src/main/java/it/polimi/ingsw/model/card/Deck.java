@@ -1,21 +1,22 @@
 package it.polimi.ingsw.model.card;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
 public class Deck<T> {
-    // todo. type?
-    private final DeckType type;
     private final Stack<T> deck;
 
-    public Deck(DeckType type, Stack<T> deck) {
-        this.type = type;
+    public Deck(Stack<T> deck) {
         this.deck = deck;
     }
 
-    public DeckType getType() {
-        return type;
+    public Deck(List<T> list) {
+        Collections.shuffle(list);
+        deck = new Stack<>();
+        deck.addAll(list);
     }
+
 
     public T draw() throws EmptyDeckException {
         if (deck.isEmpty()) {
