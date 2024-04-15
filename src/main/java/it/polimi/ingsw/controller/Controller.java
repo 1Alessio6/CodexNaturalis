@@ -1,11 +1,9 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.model.AlreadyConnectedPlayerException;
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.card.EmptyDeckException;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.NonexistentPlayerException;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.Color;
 import it.polimi.ingsw.model.card.Side;
@@ -62,11 +60,8 @@ public class Controller implements EventListener {
     }
 
     public void joinLobby(String username, Color color){
-        try {
-            lobby.addPlayer(username, color);
-        } catch (AlreadyConnectedPlayerException e) {
-            // update view
-        }
+
+        lobby.addPlayer(username, color);
     }
 
     public void createGame() {

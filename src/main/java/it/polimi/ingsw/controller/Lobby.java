@@ -1,6 +1,5 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.model.AlreadyConnectedPlayerException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.card.Color;
 
@@ -24,9 +23,7 @@ public class Lobby {
         users.put(creator, creatorColor);
     }
 
-    protected void addPlayer (String username, Color color) throws AlreadyConnectedPlayerException, IndexOutOfBoundsException{
-        if(users.keySet().stream().anyMatch(username::equals))
-            throw new AlreadyConnectedPlayerException(username);
+    protected void addPlayer (String username, Color color) throws IndexOutOfBoundsException{
 
         if (users.size() == this.gameSize)
             throw new IndexOutOfBoundsException("Already reached " + gameSize + "players!");
