@@ -22,7 +22,7 @@ public abstract class PlayerAction {
         throw new InvalidPlayerActionException("Player cannot place a card");
     }
 
-    void placeObjectiveCard(Player player, ObjectiveCard objectiveCard) throws InvalidPlayerActionException {
+    void placeObjectiveCard(Player player, int chosenObjective) throws InvalidPlayerActionException {
         throw new InvalidPlayerActionException("Player has already choose an objective");
     }
 
@@ -62,11 +62,14 @@ class ChooseStarter extends PlayerAction {
 
 class ChooseObjective extends PlayerAction {
     @Override
-    void placeObjectiveCard(Player player, ObjectiveCard objectiveCard) throws InvalidPlayerActionException {
+    void placeObjectiveCard(Player player, int chosenObjective) throws InvalidPlayerActionException {
         List<ObjectiveCard> objectiveCards = player.getObjectives();
-        assert (objectiveCards.contains(objectiveCard));
+        assert 0 <= chosenObjective && chosenObjective < objectiveCards.size();
+
+        ObjectiveCard chosenObjectiveCard = objectiveCards.get(chosenObjective);
         objectiveCards.clear();
-        objectiveCards.add(objectiveCard);
+        // now only one objective card (the chosen objective) will be available.
+        objectiveCards.add(chosenObjectiveCard);
 
         nextAction(player, new Place());
     }

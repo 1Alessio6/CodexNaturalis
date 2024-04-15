@@ -433,7 +433,7 @@ public class Game {
      * @param chosenObjective the chosen objective.
      * @throws InvalidPlayerActionException if the player cannot perform the operation. For example the player has already chosen the objective.
      */
-    public void placeObjectiveCard(String username, ObjectiveCard chosenObjective) throws InvalidPlayerActionException {
+    public void placeObjectiveCard(String username, int chosenObjective) throws InvalidPlayerActionException {
         gameState.placeObjectiveCard(this, getUserByUsername(username), chosenObjective);
     }
 

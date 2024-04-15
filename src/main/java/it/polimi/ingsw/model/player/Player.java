@@ -110,11 +110,11 @@ public class Player {
     /**
      * Places the private player's objective.
      *
-     * @param objectiveCard to be added.
+     * @param chosenObjective to be added.
      * @throws InvalidPlayerActionException if the player has already chosen the secret objective.
      */
-    public void placeObjectiveCard(ObjectiveCard objectiveCard) throws InvalidPlayerActionException {
-        playerAction.placeObjectiveCard(this, objectiveCard);
+    public void placeObjectiveCard(int chosenObjective) throws InvalidPlayerActionException {
+        playerAction.placeObjectiveCard(this, chosenObjective);
     }
 
     /**

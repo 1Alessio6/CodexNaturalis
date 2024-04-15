@@ -30,7 +30,7 @@ public abstract class GameState {
     public void placeStarter(Game game, Player player, Side side) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
     }
 
-    public void placeObjectiveCard(Game game, Player player, ObjectiveCard chosenObjective) throws InvalidPlayerActionException {
+    public void placeObjectiveCard(Game game, Player player, int chosenObjective) throws InvalidPlayerActionException {
     }
 
     public void placeCard(Game game, Player player, Card card, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
@@ -69,7 +69,7 @@ class Setup extends GameState {
     }
 
     @Override
-    public void placeObjectiveCard(Game game, Player player, ObjectiveCard chosenObjective) throws InvalidPlayerActionException {
+    public void placeObjectiveCard(Game game, Player player, int chosenObjective) throws InvalidPlayerActionException {
         player.placeObjectiveCard(chosenObjective);
 
         for (Player p : game.getPlayers()) {
