@@ -6,6 +6,10 @@ import it.polimi.ingsw.model.JsonDeserializer.CornerDeserializer;
 import it.polimi.ingsw.model.JsonDeserializer.PositionDeserializer;
 import it.polimi.ingsw.model.board.*;
 import it.polimi.ingsw.model.card.*;
+import it.polimi.ingsw.model.card.strategies.CalculateCorners;
+import it.polimi.ingsw.model.card.strategies.CalculateNoCondition;
+import it.polimi.ingsw.model.card.strategies.CalculatePoints;
+import it.polimi.ingsw.model.card.strategies.CalculateResources;
 import it.polimi.ingsw.model.chat.ChatDatabase;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.player.Player;
@@ -81,12 +85,28 @@ public class Game {
             Map<CornerPosition, Corner> frontCorners = gson.fromJson(jsonFront.get("corners"), new TypeToken<>(){});
             Map<Symbol, Integer> requirements = gson.fromJson(jsonFront.get("requirements"), new TypeToken<>(){});
 
+            /* create calculator */
+            CalculatePoints calculator;
+            switch (pointsCondition) {
+                case CORNERS:
+                    calculator = new CalculateCorners();
+                    break;
+                case NUM_MANUSCRIPT:
+                case NUM_INKWKELL:
+                case NUM_QUILL:
+                    calculator = new CalculateResources();
+                    break;
+                case null:
+                    calculator = new CalculateNoCondition();
+                    break;
+            }
+
             /* back logic */
             Map<Symbol, Integer> backResources = gson.fromJson(jsonBack.get("resources"), new TypeToken<>(){});
             Map<CornerPosition, Corner> backCorners = new HashMap<>();
             Arrays.stream(CornerPosition.values()).forEach(cp -> backCorners.put(cp, new Corner()));
 
-            Front front = new GoldenFront(color, frontCorners, score, pointsCondition, requirements);
+            Front front = new GoldenFront(color, frontCorners, score, pointsCondition, calculator, requirements);
             Back back = new Back(color, backCorners, backResources);
 
             cards.add(new Card(front, back));
