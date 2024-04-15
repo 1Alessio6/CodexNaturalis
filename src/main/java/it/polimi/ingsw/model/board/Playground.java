@@ -138,7 +138,8 @@ public class Playground {
      */
     public void placeCard(Face c, Position p) throws UnavailablePositionException, NotEnoughResourcesException {
 
-        if (!this.area.get(p).sameAvailability(Availability.EMPTY)) {
+        //todo this excemption can be thrown by the game
+        if (!this.area.containsKey(p) || !this.area.get(p).sameAvailability(Availability.EMPTY)) {
             throw new UnavailablePositionException("This Position it's not available");
         }
 
@@ -161,7 +162,7 @@ public class Playground {
 
             Position pos = correspondingPosition(x, y, current_corner);
 
-            if (this.area.get(pos).sameAvailability(Availability.OCCUPIED)) {
+            if (this.area.containsKey(pos) && this.area.get(pos).sameAvailability(Availability.OCCUPIED)) {
                 switch (current_corner) { //for each iteration the corner occupied in the card we are covering it is different
                     //corner_pos represents the occupied corner position in the list
                     case TOP_LEFT: //rx low
@@ -181,7 +182,9 @@ public class Playground {
                 this.area.get(pos).getFace().getCorners().get(corner_pos).setCovered();
                 // the placement may cover a resource
                 Symbol s = this.area.get(pos).getFace().getCorners().get(corner_pos).getSymbol();
-                this.resources.put(s, this.resources.get(s) - 1);
+                if(s != null) {
+                    this.resources.put(s, this.resources.get(s) - 1);
+                }
             }
 
             if (c.getCorners().containsKey(current_corner)) {
