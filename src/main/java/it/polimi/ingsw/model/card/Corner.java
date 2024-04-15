@@ -26,4 +26,14 @@ public class Corner {
         this.isCovered = true;
     }
 
+    @Override
+    public String toString() {
+        if(this.isCovered){
+            return " Covered ";
+        }
+        if(symbol == null){
+            return " EmptyCorner";
+        }
+        return String.valueOf(symbol);
+    }
 }
