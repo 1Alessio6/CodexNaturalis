@@ -7,9 +7,8 @@ import java.util.*;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import it.polimi.ingsw.model.JsonDeserializer.CornerDeserializer;
 import it.polimi.ingsw.model.card.*;
-import org.junit.jupiter.api.Assertions;
+import it.polimi.ingsw.model.jsondeserializer.CornerDeserializer;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
