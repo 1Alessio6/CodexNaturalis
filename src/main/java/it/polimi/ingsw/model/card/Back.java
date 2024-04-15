@@ -40,4 +40,24 @@ public class Back extends Face {
         return 0;
     }
 
+    public String toString(){
+
+        StringBuilder symbolString  = new StringBuilder();
+        StringBuilder cornerString = new StringBuilder();
+
+        for(Symbol s : Symbol.values()){
+            if(resources.containsKey(s)){
+                symbolString.append(s).append(" - ");
+            }
+        }
+        symbolString.append("END");
+
+        for(CornerPosition c : this.getCorners().keySet()){
+            cornerString.append(c + ": ").append(this.getCorners().get(c).toString()).append(" - ");
+        }
+        cornerString.append("END");
+
+        return "{ Color: " + this.getColor() + "| Symbol: ( " + symbolString + " ) " + "| Corners: [ " + cornerString + " ] ";
+    }
+
 }
