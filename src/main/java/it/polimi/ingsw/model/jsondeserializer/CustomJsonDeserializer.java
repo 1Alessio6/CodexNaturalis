@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.JsonDeserializer;
+package it.polimi.ingsw.model.jsondeserializer;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;

@@ -2,8 +2,8 @@ package it.polimi.ingsw.model;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import it.polimi.ingsw.model.JsonDeserializer.CornerDeserializer;
-import it.polimi.ingsw.model.JsonDeserializer.PositionDeserializer;
+import it.polimi.ingsw.model.jsondeserializer.CornerDeserializer;
+import it.polimi.ingsw.model.jsondeserializer.PositionDeserializer;
 import it.polimi.ingsw.model.board.*;
 import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.card.strategies.CalculateCorners;
