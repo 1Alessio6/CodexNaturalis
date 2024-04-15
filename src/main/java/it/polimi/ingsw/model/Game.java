@@ -199,29 +199,37 @@ public class Game {
         this.starterCards = createStartingCards();
         this.objectiveCards = createObjectiveCards();
 
-        // fix using a for loop
         try {
-            List<ObjectiveCard> userObjectives = new ArrayList<>();
-            userObjectives.add(objectiveCards.draw());
-            userObjectives.add(objectiveCards.draw());
 
-            List<Card> userHand = new ArrayList<>();
-            userHand.add(resourceCards.draw());
-            userHand.add(resourceCards.draw());
-            userHand.add(goldenCards.draw());
+            players = new ArrayList<>();
+            for (Map.Entry<String, Color> entry : users.entrySet()) {
+                List<ObjectiveCard> userObjectives = new ArrayList<>();
+                userObjectives.add(objectiveCards.draw());
+                userObjectives.add(objectiveCards.draw());
 
-            Card startingCard = starterCards.draw();
+                List<Card> userHand = new ArrayList<>();
+                userHand.add(resourceCards.draw());
+                userHand.add(resourceCards.draw());
+                userHand.add(goldenCards.draw());
 
-            players = users.entrySet().stream().map(u -> new Player(u.getKey(),
-                    u.getValue(),
-                    startingCard,
-                    userHand,
-                    userObjectives)).toList();
+                Card startingCard = starterCards.draw();
+                players.add(new Player(
+                    entry.getKey(),
+                        entry.getValue(),
+                        startingCard,
+                        userHand,
+                        userObjectives
+                ));
+            }
         } catch (EmptyDeckException e) {
             e.printStackTrace();
         }
-    }
 
+        gameState = new Setup();
+        currentPlayerIdx = 0;
+        isFinished = false;
+        chatDatabase = new ChatDatabase();
+    }
 
     // methods
 
@@ -286,43 +294,6 @@ public class Game {
 
         return card;
     }
-
-
-
-    /*
-    public Game(List<String> usernames, List<Color> colors) {
-        // todo. add method to load cards
-
-        // rest of the code
-        numRequiredPlayers = usernames.size();
-
-        players = new ArrayList<>();
-        try {
-            commonObjects = Arrays.asList(objectiveCards.draw(), objectiveCards.draw());
-
-            for (int i = 0; i < numRequiredPlayers; ++i) {
-                players.add(
-                        new Player(
-                                usernames.get(i),
-                                colors.get(i),
-                                starterCards.draw(),
-                                Arrays.asList(resourceCards.draw(), resourceCards.draw(), goldenCards.draw()),
-                                Arrays.asList(objectiveCards.draw(), objectiveCards.draw())
-                        )
-                );
-            }
-
-        } catch (EmptyDeckException e) {
-            e.printStackTrace();
-        }
-
-        gameState = new Setup();
-        currentPlayerIdx = 0;
-        isFinished = false;
-        chatDatabase = new ChatDatabase();
-    }
-    */
-
 
     /**
      * Constructs a game using the information stored in <code>gameBeforeCrash</code>.
