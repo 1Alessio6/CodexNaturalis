@@ -5,10 +5,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.*;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.model.JsonDeserializer.CornerDeserializer;
 import it.polimi.ingsw.model.card.*;
@@ -45,7 +42,7 @@ class PlaygroundTest {
 
     }
 
-    private Deck<Card> createTestResourceCards(){
+    private Deck<Card> createTestResourceCards(String resourceCardsPath){
         Gson gson = new GsonBuilder().registerTypeAdapter(Corner.class, new CornerDeserializer()).create();
         Stack<Card> cards = new Stack<>();
 
@@ -70,5 +67,17 @@ class PlaygroundTest {
         }
 
         return new Deck<>(DeckType.RESOURCE, cards);
+    }
+
+    private JsonArray getCardsFromJson(String resourcePath) throws NullPointerException {
+        /* json as streams, so even after jar build it can retrieve the correct file */
+        InputStream resourceAsStream = this.getClass()
+                .getResourceAsStream(resourcePath);
+        if (resourceAsStream == null)
+            throw new NullPointerException("Empty resource!");
+
+        Reader cardReader = new BufferedReader(new InputStreamReader(resourceAsStream));
+
+        return JsonParser.parseReader(cardReader).getAsJsonArray();
     }
 }
