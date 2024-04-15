@@ -24,7 +24,6 @@ public class Lobby {
     }
 
     protected void addPlayer (String username, Color color) throws IndexOutOfBoundsException{
-
         if (users.size() == this.gameSize)
             throw new IndexOutOfBoundsException("Already reached " + gameSize + "players!");
 
