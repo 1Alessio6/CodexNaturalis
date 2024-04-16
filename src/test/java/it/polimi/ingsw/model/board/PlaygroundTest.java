@@ -64,6 +64,7 @@ class PlaygroundTest {
         assert(PlaygroundTestBack.getTile(new Position(0, 0)).getFace().getColor() == Color.RED);
 
         List<Position> correctAvailablePosition = new ArrayList<>();
+
         correctAvailablePosition.add(new Position(-1,-1));
         correctAvailablePosition.add(new Position(-1,1));
         correctAvailablePosition.add(new Position(0,2));
@@ -71,10 +72,35 @@ class PlaygroundTest {
         correctAvailablePosition.add(new Position(2,0));
         correctAvailablePosition.add(new Position(2,-2));
         correctAvailablePosition.add(new Position(0,-2));
+
         checkAvailableList(correctAvailablePosition, PlaygroundTestBack);
 
         assert(PlaygroundTestBack.getResources().get(Symbol.FUNGI) == 3);
         assert(PlaygroundTestBack.getPoints() == 0);
+
+        //System.out.println(PlaygroundTestBack);
+        //System.out.println(PlaygroundTestBack.getAvailablePositions());
+
+        //second test
+
+        cardsTest = createTestResourceCards("/playground/Test2.json");
+        //List<Card> StartingCardsTest = CustomJsonDeserializer.createStartingCards();
+
+        Playground PlaygroundSecondTest = new Playground();
+
+        PlaygroundSecondTest.placeCard(cardsTest.get(0).getFace(Side.BACK),new Position(0,0));
+        System.out.println(PlaygroundSecondTest);
+
+        PlaygroundSecondTest.placeCard(cardsTest.get(0).getFace(Side.FRONT),new Position(-1,1));
+        System.out.println(PlaygroundSecondTest);
+
+        PlaygroundSecondTest.placeCard(cardsTest.get(1).getFace(Side.FRONT),new Position(-1,-1));
+        System.out.println(PlaygroundSecondTest);
+
+        //PlaygroundSecondTest.placeCard(cardsTest.get(2).getFace(Side.FRONT),new Position(-2,0));
+        //System.out.println(PlaygroundSecondTest);
+
+
 
     }
 
