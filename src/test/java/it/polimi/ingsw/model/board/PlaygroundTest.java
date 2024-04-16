@@ -97,9 +97,9 @@ class PlaygroundTest {
         PlaygroundSecondTest.placeCard(cardsTest.get(1).getFace(Side.FRONT),new Position(-1,-1));
         System.out.println(PlaygroundSecondTest);
 
-        //PlaygroundSecondTest.placeCard(cardsTest.get(2).getFace(Side.FRONT),new Position(-2,0));
-        //System.out.println(PlaygroundSecondTest);
-
+        List<Card> finalCardsTest = cardsTest;
+        assertThrows(Playground.UnavailablePositionException.class, () -> { PlaygroundSecondTest.placeCard(finalCardsTest.get(2).getFace(Side.FRONT),new Position(-2,0));});
+        System.out.println(PlaygroundSecondTest);
 
 
     }
