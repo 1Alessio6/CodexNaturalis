@@ -58,7 +58,7 @@ public class Front extends Face {
 
     public String toString(){
 
-        StringBuilder cornerString = null;
+        StringBuilder cornerString = new StringBuilder();
 
         for(CornerPosition c : this.getCorners().keySet()){
             cornerString.append(c + ": ").append(this.getCorners().get(c).toString()).append(" - ");
