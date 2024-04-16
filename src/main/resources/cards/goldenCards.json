@@ -334,7 +334,7 @@
     },
     {
         "front": {
-            "calculator": "Calculate",
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": null,
                 "LOWER_RIGHT": "INKWELL"
