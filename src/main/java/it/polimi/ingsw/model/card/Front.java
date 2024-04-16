@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.card.strategies.CalculateNoCondition;
 import it.polimi.ingsw.model.card.strategies.CalculatePoints;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Front extends Face {
@@ -48,6 +49,24 @@ public class Front extends Face {
         this.score = 0;
     }
 
+    public Map<Symbol, Integer> getResources() {
+        Map<Symbol, Integer> resources = new HashMap<>();
+        for(CornerPosition c : this.getCorners().keySet()){
+            Symbol s = this.getCorners().get(c).getSymbol();
+
+            if(s != null){
+                if(resources.containsKey(s)){
+                    resources.put(s,resources.get(s) + 1);
+                }
+                else{
+                    resources.put(s,1);
+                }
+            }
+        }
+
+        return resources;
+    }
+
     public int getScore() {
         return score;
     }
@@ -60,8 +79,10 @@ public class Front extends Face {
 
         StringBuilder cornerString = new StringBuilder();
 
-        for(CornerPosition c : this.getCorners().keySet()){
-            cornerString.append(c + ": ").append(this.getCorners().get(c).toString()).append(" - ");
+        for(CornerPosition c : this.getCorners().keySet()){ //todo update when deserializer is fixed
+             if(this.getCorners().get(c) != null) {
+                 cornerString.append(c + ": ").append(this.getCorners().get(c).toString()).append(" - ");
+             }
         }
         cornerString.append("END");
 

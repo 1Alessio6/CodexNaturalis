@@ -63,11 +63,7 @@ abstract public class Face {
      *
      * @return a map containing the resources of the face and their quantity.
      */
-    public Map<Symbol, Integer> getResources() {
-        return corners.values().stream().map(Corner::getSymbol)
-                // group by symbol and increment by 1 for each occurrence
-                .collect(Collectors.groupingBy(s -> s, HashMap::new, Collectors.summingInt(s -> 1)));
-    }
+    public abstract Map<Symbol, Integer> getResources();
 
     /**
      * Returns required resources to place the card on the chosen side.
