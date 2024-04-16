@@ -54,6 +54,21 @@ public class JsonDeserializerTest {
     }
 
     @Test
+    void testDeSerializationBack() {
+        Back back = new Back(
+                Color.BLUE,
+                new HashMap<>(),
+                new HashMap<>()
+        );
+
+        String backJson = gson.toJson(back);
+
+        Back b = gson.fromJson(backJson, Back.class);
+        System.out.println(b);
+        Assertions.assertEquals(back.getColor(), b.getColor());
+    }
+
+    @Test
     void createCard() {
         Card c = new Card(
                 new GoldenFront(
@@ -96,9 +111,11 @@ public class JsonDeserializerTest {
         Reader reader = new BufferedReader(new InputStreamReader(objectiveResourceAsStream));
         ArrayList<ObjectiveResourceCard> objectiveResourceCards = gson.fromJson(reader, new TypeToken<ArrayList<ObjectiveResourceCard>>(){});
 
-        InputStream objectivePositionAsStream = Corner.class.getResourceAsStream(resourceCardsPath);
-        reader = new BufferedReader(new InputStreamReader(objectiveResourceAsStream));
+        InputStream objectivePositionAsStream = Corner.class.getResourceAsStream(objectivePositionCardsPath);
+        reader = new BufferedReader(new InputStreamReader(objectivePositionAsStream));
         ArrayList<ObjectivePositionCard> objectivePosition = gson.fromJson(reader, new TypeToken<ArrayList<ObjectivePositionCard>>(){});
+
+        System.out.println(objectivePosition.getFirst());
     }
 
 }
