@@ -17,6 +17,9 @@ public final class GoldenFront extends Front {
      * @param color   of the card.
      * @param corners of the card.
      * @param score   obtained after positioning the card.
+     * @param pointsCondition that trigger the calculator
+     * @param calculator the logic of calculate points
+     * @param requirements needed before playing the card
      * @throws IllegalArgumentException if any argument is null or there are not 4 corners or the score is negative.
      */
     public GoldenFront(Color color, Map<CornerPosition, Corner> corners, int score, Condition pointsCondition, CalculatePoints calculator, Map<Symbol, Integer> requirements) throws IllegalArgumentException {
