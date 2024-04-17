@@ -1,15 +1,10 @@
 package it.polimi.ingsw.model.card;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
 public class Deck<T> {
-    // todo. type?
-
-    /**
-     * Represents the type of the deck.
-     */
-    private final DeckType type;
 
     /**
      * Represents a deck of all types of cards.
@@ -17,30 +12,31 @@ public class Deck<T> {
     private final Stack<T> deck;
 
     /**
-     * Constructs a deck of any kind of cards using the type and the deck provided
+     * Constructs a deck of any kind of cards using the deck provided.
      *
-     * @param type of the deck.
-     * @param deck of objects.
+     * @param deck of cards.
      */
-    public Deck(DeckType type, Stack<T> deck) {
-        this.type = type;
+    public Deck(Stack<T> deck) {
         this.deck = deck;
     }
 
+
     /**
-     * Returns the type of the deck.
+     * Constructs a deck of any kind of cards using the list of cards provided.
      *
-     * @return deck's type
+     * @param list of cards.
      */
-    public DeckType getType() {
-        return type;
+    public Deck(List<T> list) {
+        Collections.shuffle(list);
+        deck = new Stack<>();
+        deck.addAll(list);
     }
 
     /**
      * Draw an object from the deck.
      *
-     * @return the new deck without the drawn card
-     * @throws EmptyDeckException if the deck is empty
+     * @return the new deck without the drawn card.
+     * @throws EmptyDeckException if the deck is empty.
      */
     public T draw() throws EmptyDeckException {
         if (deck.isEmpty()) {
@@ -51,16 +47,18 @@ public class Deck<T> {
     }
 
     /**
-     * Tests if the stack is empty
-     * @return true if the deck is empty, false otherwise
+     * Tests if the stack is empty.
+     *
+     * @return true if the deck is empty, false otherwise.
      */
     public boolean isEmpty() {
         return deck.isEmpty();
     }
 
     /**
-     * Adds a card in the deck
-     * @param obj referring to any type of card
+     * Adds a card in the deck.
+     *
+     * @param obj referring to any type of card.
      */
     public void add(T obj) {
         deck.push(obj);
