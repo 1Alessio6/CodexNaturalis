@@ -1,15 +1,10 @@
 package it.polimi.ingsw.model;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import it.polimi.ingsw.jsondeserializer.InterfaceAdaptor;
 import it.polimi.ingsw.model.board.*;
 import it.polimi.ingsw.model.card.*;
-import it.polimi.ingsw.model.card.strategies.CalculatePoints;
 import it.polimi.ingsw.model.chat.ChatDatabase;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.player.Player;
-import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.*;
 
@@ -51,40 +46,11 @@ public class Game {
      */
 
     public Game(Map<String, Color> users) {
-        // code for deserialization:
-        GsonBuilder builder = new GsonBuilder().enableComplexMapKeySerialization();
-
-        builder.registerTypeAdapter(CalculatePoints.class, new InterfaceAdaptor<>());
-        Gson gson = builder.create();
-
-        /*
-            pseudo code:
-                 List<GoldenFront> goldenFronts = createListOfGoldenCards();
-                 List<Back> listOfBack = createListOfBack();
-                 List<Front> fronsts = createListOfFront();
-                 goldenCards = []
-                 for i in range(0:41):
-                    goldenFront = goldenFronts.get(i);
-                    back = listOfBack.get(i);
-                    goldenCards.append(new Card(goldenFront, back))
-
-                 replace List<GoldenFront> to List<Front> and repeat the same algorithm for resource cards.
-
-                 replace List<GoldenFront> to List<ObjectivePositionCard> and repeat the same algorithm without considering back
-
-                 replace List<GoldenFront> to List<ObjectiveResourceCard> and repeat the same algorithm without considering back
-         */
-
-
-        //this.resourceCards = new Deck<>(Deck.getPlayableCardListFromJson(resourceCardsPath));
-        //this.goldenCards = new Deck<>(Deck.getPlayableCardListFromJson(goldenCardsPath));
-        //this.starterCards = new Deck<>(Deck.getPlayableCardListFromJson(startingCardsPath));
-
-        //ArrayList<ObjectiveCard> objectiveCardList = new ArrayList<>();
-        //objectiveCardList.addAll(Deck.getObjectiveResourceCardListFromJson(objectiveResourceCardsPath));
-        //objectiveCardList.addAll(Deck.getObjectivePositionCardListFromJson(objectivePositionCardsPath));
-
-        this.objectiveCards = new Deck<>(objectiveCardList);
+        // TODO: update methods to take correct files
+        this.resourceCards = new Deck<>(Deck.createCardList());
+        this.goldenCards = new Deck<>(Deck.createCardList());
+        this.starterCards = new Deck<>(Deck.createCardList());
+        this.objectiveCards = new Deck<>(Deck.createObjectiveCardList());
 
         try {
 
@@ -191,22 +157,14 @@ public class Game {
     public Game(Game gameBeforeCrash) {
         this.resourceCards = gameBeforeCrash.resourceCards;
         this.goldenCards = gameBeforeCrash.goldenCards;
-
         this.starterCards = gameBeforeCrash.starterCards;
-
         this.objectiveCards = gameBeforeCrash.objectiveCards;
-
         this.faceUpCards = gameBeforeCrash.faceUpCards;
-
         this.commonObjects = gameBeforeCrash.commonObjects;
-
-        // this.numRequiredPlayers = gameBeforeCrash.numRequiredPlayers;
         this.currentPlayerIdx = gameBeforeCrash.currentPlayerIdx;
         this.isFinished = gameBeforeCrash.isFinished;
-
         this.players = gameBeforeCrash.players;
         this.gameState = gameBeforeCrash.gameState;
-
     }
 
 
@@ -368,7 +326,7 @@ public class Game {
                     gameState.drawFromFaceUpCards(this, currentPlayer, rand.nextInt(5));
                 }
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
         }
     }
