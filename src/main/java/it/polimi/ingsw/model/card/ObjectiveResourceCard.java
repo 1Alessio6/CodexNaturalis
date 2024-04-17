@@ -56,6 +56,19 @@ public final class ObjectiveResourceCard extends ObjectiveCard {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        ObjectiveResourceCard that = (ObjectiveResourceCard) o;
+        return Objects.equals(condition, that.condition);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), condition);
+    }
 }
 
 

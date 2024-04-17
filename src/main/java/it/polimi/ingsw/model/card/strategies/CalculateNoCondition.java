@@ -8,4 +8,11 @@ public class CalculateNoCondition implements CalculatePoints{
     public int calculatePoints(Position pos, Playground playground) {
         return playground.getTile(pos).getFace().getScore();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        return true;
+    }
 }

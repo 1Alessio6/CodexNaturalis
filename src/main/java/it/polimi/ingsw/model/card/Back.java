@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.card.strategies.CalculatePoints;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Back extends Face {
     private Map<Symbol, Integer> resources;
@@ -60,4 +61,17 @@ public class Back extends Face {
         return "{ Color: " + this.getColor() + "| Symbol: ( " + symbolString + " ) " + "| Corners: [ " + cornerString + " ] ";
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Back back = (Back) o;
+        return Objects.equals(resources, back.resources);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), resources);
+    }
 }

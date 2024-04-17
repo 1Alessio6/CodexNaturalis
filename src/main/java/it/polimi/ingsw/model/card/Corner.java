@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.card;
 
+import java.util.Objects;
+
 public class Corner {
     private boolean isCovered;
     private final Symbol symbol;
@@ -35,5 +37,18 @@ public class Corner {
             return " EmptyCorner";
         }
         return String.valueOf(symbol);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Corner corner = (Corner) o;
+        return isCovered == corner.isCovered && symbol == corner.symbol;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(isCovered, symbol);
     }
 }
