@@ -12,14 +12,36 @@ import it.polimi.ingsw.model.card.Side;
 import java.util.EventListener;
 import java.util.Timer;
 
+/**
+ * The Controller class manages the entry of players through the use of a lobby, as well as their subsequent
+ * disconnection.
+ * It also allows the player to make moves in the playground and to choose his/her own username and token color
+ * before the start of a game.
+ */
 public class Controller implements EventListener {
+    /**
+     * Measures the time remaining before the proclamation of the only player present in the game as the winner
+     * in the event of a net collapse or client crash.
+     */
     private Timer timer;
+    /**
+     * Manage the entry of the players into the game.
+     */
     private Lobby lobby;
+    /**
+     * Representation of the game.
+     */
     private Game game;
 
+    /**
+     * Constructs the controller.
+     */
     public Controller() {
     }
 
+    /**
+     * Setting of the timer duration time written in milliseconds.
+     */
     private static final long countdown = 60000;
     // event listener
 
@@ -87,7 +109,7 @@ public class Controller implements EventListener {
     }
 
     /**
-     * Allows the player to join into the lobby
+     * Allows the player to join into the lobby.
      *
      * @param username of the player.
      * @param color    token color chosen for the player.
@@ -97,7 +119,7 @@ public class Controller implements EventListener {
     }
 
     /**
-     * Creates a new game with the players in the lobby
+     * Creates a new game with the players in the lobby.
      */
     public void createGame() {
         try {
@@ -116,11 +138,11 @@ public class Controller implements EventListener {
     }
 
     /**
-     * Creates a lobby
+     * Creates a lobby.
      *
-     * @param creator    of the lobby
-     * @param color      of the creator
-     * @param numPlayers required to start the game
+     * @param creator    of the lobby.
+     * @param color      of the creator.
+     * @param numPlayers required to start the game.
      */
     public void createLobby(String creator, Color color, int numPlayers) {
         this.lobby = new Lobby(creator, color, numPlayers);
@@ -129,8 +151,8 @@ public class Controller implements EventListener {
     /**
      * Places the secret objective from one of the two available.
      *
-     * @param objectiveIdx specifying the secret card
-     * @param username     of the player
+     * @param objectiveIdx specifying the secret card.
+     * @param username     of the player.
      */
     public void chooseObjectiveCard(int objectiveIdx, String username) throws InvalidPlayerActionException {
         try {
@@ -142,9 +164,9 @@ public class Controller implements EventListener {
     }
 
     /**
-     * Assigns a name to the player
+     * Assigns a name to the player.
      *
-     * @param username of the player
+     * @param username of the player.
      */
     public void nameUsername(String username) {
         lobby.addPlayer(username, null);
@@ -152,10 +174,10 @@ public class Controller implements EventListener {
     //assuming that a "NULL" value is going to be assigned in the color's enumeration
 
     /**
-     * Assigns a color for the player
+     * Assigns a color for the player.
      *
-     * @param username of the player
-     * @param color    token color chosen by the player
+     * @param username of the player.
+     * @param color    token color chosen by the player.
      */
     public void assignColor(String username, Color color) {
 
