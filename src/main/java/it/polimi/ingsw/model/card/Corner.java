@@ -1,37 +1,75 @@
 package it.polimi.ingsw.model.card;
 
+
 public class Corner {
+
+    /**
+     * Specifies whether the corner is covered or not.
+     */
     private boolean isCovered;
+
+    /**
+     * Specifies the symbol that is present in the corner.
+     */
     private final Symbol symbol;
 
+    /**
+     * Constructs a corner with no parameters provided.
+     */
     public Corner() {
         this.isCovered = false;
         this.symbol = null;
     }
 
+
+    /**
+     * Constructs a corner with the given symbol.
+     *
+     * @param symbol of the corner.
+     */
     public Corner(Symbol symbol) {
         this.isCovered = false;
         this.symbol = symbol;
     }
 
+    /**
+     * Returns the symbol present in a corner.
+     *
+     * @return the symbol in the corner.
+     */
     public Symbol getSymbol() {
         return symbol;
     }
 
+    /**
+     * Returns true if the corner is covered, false otherwise
+     *
+     * @return a boolean depending on the situation of the corner
+     */
     public boolean isCovered() {
         return isCovered;
     }
 
+    /**
+     * Change the state of the corner to 'covered'
+     */
     public void setCovered() {
         this.isCovered = true;
     }
 
+
+    /**
+     * Facilitates the deserialization of the cards.
+     *
+     * @return "covered" if the corner is covered,"empty corner" if the corner is empty and the symbol that is present
+     * in the corner otherwise.
+     */
     @Override
     public String toString() {
-        if(this.isCovered){
+        if (this.isCovered) {
             return " Covered ";
         }
-        if(symbol == null){
+        if (symbol == null) {
             return " EmptyCorner";
         }
         return String.valueOf(symbol);
