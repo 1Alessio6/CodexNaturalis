@@ -8,8 +8,15 @@ import it.polimi.ingsw.model.card.strategies.CalculateResources;
 import java.util.Map;
 
 public final class GoldenFront extends Front {
-   private final Condition pointsCondition; /* should be enum? */
-   private final Map<Symbol, Integer> requirements; /* set? */
+    /**
+     * Represents the condition to be fulfilled.
+     */
+    private final Condition pointsCondition; /* should be enum? */
+
+    /**
+     * Represents a map with the resources and their corresponding amounts required to place the card.
+     */
+    private final Map<Symbol, Integer> requirements; /* set? */
 
     /**
      * Constructs a front card with the color, score and corners provided.
@@ -28,10 +35,19 @@ public final class GoldenFront extends Front {
         this.requirements = requirements;
     }
 
+    /**
+     * Returns golden front required resources.
+     *
+     * @return a map containing the resources required by the golden front and their quantity.
+     */
     public Map<Symbol, Integer> getRequirements() {
         return requirements;
     }
 
+    /**
+     * Returns the required condition
+     * @return the required condition in order to get the points
+     */
     public Condition getPointsCondition() {
         return pointsCondition;
     }
