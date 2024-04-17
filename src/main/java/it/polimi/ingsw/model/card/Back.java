@@ -7,22 +7,27 @@ import java.util.List;
 import java.util.Map;
 
 public class Back extends Face {
+
+    /**
+     * Map containing the resources of the back and their quantity.
+     */
     private Map<Symbol, Integer> resources;
 
     /**
      * Constructs a front card with the color, corners and resources provided.
-     * @param color of the card.
-     * @param corners of the card.
+     *
+     * @param color     of the card.
+     * @param corners   of the card.
      * @param resources provided by the card.
      */
-    public Back (Color color, Map<CornerPosition, Corner> corners, Map<Symbol,Integer> resources) throws IllegalArgumentException {
+    public Back(Color color, Map<CornerPosition, Corner> corners, Map<Symbol, Integer> resources) throws IllegalArgumentException {
         super(color, corners, new CalculateBackPoints());
 
         if (resources == null) {
             throw new IllegalArgumentException("Resources cannot be null");
         }
 
-        for (Integer num  : resources.values()) {
+        for (Integer num : resources.values()) {
             if (num <= 0) {
                 throw new IllegalArgumentException("Symbol occurrences cannot be negative or zero, otherwise it wouldn't be a resource");
             }
@@ -31,15 +36,29 @@ public class Back extends Face {
         this.resources = resources;
     }
 
+    /**
+     * Returns a map with the resources present in the back.
+     *
+     * @return resoucers map
+     */
     public Map<Symbol, Integer> getResources() {
         return resources;
     }
 
+    /**
+     * Returns the score present in the back
+     *
+     * @return backs score
+     */
     @Override
     public int getScore() {
         return 0;
     }
 
+    /**
+     * Facilitates the deserialization of the different cards present in the json.
+     * @return modified string
+     */
     public String toString(){
 
         StringBuilder symbolString  = new StringBuilder();
