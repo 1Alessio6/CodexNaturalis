@@ -61,7 +61,11 @@ public class Controller implements EventListener {
     }
 
     public void joinLobby(String username, Color color){
-        lobby.addPlayer(username, color);
+        try {
+            lobby.addPlayer(username, color);
+        } catch (AlreadyConnectedPlayerException e) {
+            // update view
+        }
     }
 
     public void createGame() {
@@ -80,4 +84,29 @@ public class Controller implements EventListener {
     public void createLobby(String creator, Color color, int numPlayers) {
         this.lobby = new Lobby(creator, color, numPlayers);
     }
+
+    public void chooseObjectiveCard(int objectiveIdx, String username) throws InvalidPlayerActionException {
+        try{
+            game.placeObjectiveCard(username,objectiveIdx);
+        }catch (InvalidPlayerActionException e){
+            e.printStackTrace();
+        }
+
+    }
+
+    public void nameUsername(String username){
+        lobby.addPlayer(username,null);
+    }
+    //assuming that a "NULL" value is going to be assigned in the color's enumeration
+
+    public void assignColor(String username, Color color){
+
+        if(lobby.getRemainColors().stream().anyMatch(remainColor -> remainColor ==color)){
+            lobby.addPlayer(username,color);
+        }else{
+            System.out.println("Already assign color");
+        }
+    }
+    //another approach can be adopted, as it is the try-catch statement
+
 }
