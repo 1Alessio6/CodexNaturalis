@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.card;
 
+import it.polimi.ingsw.model.card.strategies.CalculateNoCondition;
 import it.polimi.ingsw.model.card.strategies.CalculatePoints;
 import it.polimi.ingsw.model.card.strategies.CalculateResources;
 import org.junit.jupiter.api.Assertions;
@@ -38,11 +39,11 @@ class FrontTest {
     public void nullCornerPosition_throwsException() {
         corners.put(null, new Corner(Symbol.ANIMAL));
 
-         Assertions.assertThrows(IllegalArgumentException.class,
+        Assertions.assertThrows(IllegalArgumentException.class,
                 () -> new Front(Color.BLUE, corners, 0, calculator)
         );
 
-         corners.remove(null);
+        corners.remove(null);
     }
 
     @Test
@@ -76,5 +77,84 @@ class FrontTest {
                     new Front(Color.BLUE, corners, 0, calculator);
                 }
         );
+    }
+
+    @Test
+    public void sameAttributes_equalsFronts() {
+        Front f1 = new Front(
+                Color.BLUE,
+                new HashMap<>(),
+                0,
+                new CalculateResources()
+        );
+
+        Front f2 = new Front(
+                Color.BLUE,
+                new HashMap<>(),
+                0,
+                new CalculateResources()
+        );
+
+        Assertions.assertEquals(f1, f2);
+    }
+
+    @Test
+    public void differentCalculators_differentFronts() {
+        Front f1 = new Front(
+                Color.BLUE,
+                new HashMap<>(),
+                0,
+                new CalculateResources()
+        );
+
+        Front f2 = new Front(
+                Color.BLUE,
+                new HashMap<>(),
+                0,
+                new CalculateNoCondition()
+        );
+
+        Assertions.assertNotEquals(f1, f2);
+    }
+
+    @Test
+    public void differentDynamicType_differentFronts() {
+        Front f1 = new Front(
+                Color.BLUE,
+                new HashMap<>(),
+                0,
+                new CalculateResources()
+        );
+
+        Front f2 = new GoldenFront(
+                Color.BLUE,
+                new HashMap<>(),
+                0,
+                Condition.CORNERS,
+                new CalculateNoCondition(),
+                new HashMap<>()
+        );
+
+        Assertions.assertNotEquals(f1, f2);
+    }
+
+    @Test
+    public void equalDynamicType_equalFronts() {
+
+        Front f1 = new Front(
+                Color.BLUE,
+                new HashMap<>(),
+                0,
+                new CalculateResources()
+        );
+
+        Face f2 = new Front(
+                Color.BLUE,
+                new HashMap<>(),
+                0,
+                new CalculateResources()
+        );
+
+        Assertions.assertEquals(f1, f2);
     }
 }
