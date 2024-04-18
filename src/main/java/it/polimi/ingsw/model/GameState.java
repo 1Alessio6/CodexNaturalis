@@ -27,39 +27,120 @@ public abstract class GameState {
       For now, requests not allowed in the current state result in no action; it's like the request doesn't produce any change.
      */
 
+
+    /**
+     * Allows the player to place a certain side of a card in a game.
+     *
+     * @param game   in which the action takes place.
+     * @param player who performs the placement.
+     * @param side   of the card.
+     * @throws InvalidPlayerActionException            if the player cannot perform the operation.
+     * @throws Playground.UnavailablePositionException if the position is not available.
+     * @throws Playground.NotEnoughResourcesException  if the player's resources are not enough to place the card.
+     */
     public void placeStarter(Game game, Player player, Side side) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
     }
 
+    /**
+     * Allows the player to place the secret objective in a game.
+     *
+     * @param game            in which the action takes place.
+     * @param player          who performs the placement.
+     * @param chosenObjective card.
+     * @throws InvalidPlayerActionException if the player cannot perform the operation.
+     */
     public void placeObjectiveCard(Game game, Player player, int chosenObjective) throws InvalidPlayerActionException {
     }
 
+
+    /**
+     * Allows the player to place kind of card in the side and position provided in a game.
+     *
+     * @param game     in which the action takes place.
+     * @param player   who performs the placement.
+     * @param card     to place.
+     * @param side     of the card.
+     * @param position in the playground.
+     * @throws InvalidPlayerActionException            if the player cannot perform the operation.
+     * @throws Playground.UnavailablePositionException if the position is not available.
+     * @throws Playground.NotEnoughResourcesException  if the player's resources are not enough to place the card.
+     */
     public void placeCard(Game game, Player player, Card card, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
 
     }
 
+
+    /**
+     * Draws from the resource cards deck.
+     *
+     * @param game   in which the action takes place.
+     * @param player who performs the placement.
+     * @throws InvalidPlayerActionException if the player cannot perform the operation.
+     * @throws EmptyDeckException           if the deck is empty.
+     */
     public void drawFromResourceDeck(Game game, Player player) throws InvalidPlayerActionException, EmptyDeckException {
     }
 
 
+    /**
+     * Draws from the golden cards deck.
+     *
+     * @param game   in which the action takes place.
+     * @param player who performs the placement.
+     * @throws InvalidPlayerActionException if the player cannot perform the operation.
+     * @throws EmptyDeckException           if the deck is empty.
+     */
     public void drawFromGoldenDeck(Game game, Player player) throws InvalidPlayerActionException, EmptyDeckException {
 
     }
 
+
+    /**
+     * Draws from one of the available face up cards.
+     *
+     * @param game          in which the action takes place.
+     * @param player        who performs the placement.
+     * @param faceUpCardIdx specifying the face up card.
+     * @throws InvalidPlayerActionException if the player cannot perform the operation.
+     */
     public void drawFromFaceUpCards(Game game, Player player, int faceUpCardIdx) throws InvalidPlayerActionException {
     }
 
+
+    /**
+     * Skips the player's turn if the net collapses or the client crashes.
+     *
+     * @param game in which the action takes place.
+     */
     public void skipTurn(Game game) {
 
     }
 
+
+    /**
+     * Update the state of a game.
+     *
+     * @param game      in which the action takes place.
+     * @param nextState of the game.
+     */
     protected void nextState(Game game, GameState nextState) {
         game.setStatus(nextState);
     }
 
 }
 
+
+/**
+ * In the Setup class, the players will have already chosen their username, the color of their token and their secret
+ * objective, apart from that, the common objectives will have already been selected, therefore, this class is
+ * responsible for the placement of the starter card and the objective card inside the player's cards.
+ */
 class Setup extends GameState {
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void placeStarter(Game game, Player player, Side side)
             throws InvalidPlayerActionException,
@@ -68,6 +149,10 @@ class Setup extends GameState {
         player.placeStarter(side);
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void placeObjectiveCard(Game game, Player player, int chosenObjective) throws InvalidPlayerActionException {
         player.placeObjectiveCard(chosenObjective);
@@ -99,11 +184,33 @@ class Setup extends GameState {
 
 }
 
+
+/**
+ * The MatchStarted class is responsible for managing all the actions that occur from the conclusion of the setup state
+ * to the beginning of the additional turn.
+ * In this class, you can find methods to place a card, draw a card, skip the turn and a method to manage state change.
+ */
 class MatchStarted extends GameState {
+
+    /**
+     * Specifies if it is the last turn or not
+     */
     private boolean lastNormalTurn = false;
+
+    /**
+     * Indicates the number of players that have played the last turn.
+     */
     private int numPlayersPlayedLastTurn = 0;
+
+    /**
+     * Indicates the limit of points needed to move on to the additional turn.
+     */
     private final int maxPoint = 20;
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void placeCard(Game game, Player player, Card card, Side side, Position position)
             throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
@@ -118,6 +225,16 @@ class MatchStarted extends GameState {
         }
     }
 
+
+    /**
+     * Adds a new card to the player's card list and checks whether the condition to start the additional turn has been
+     * filled.
+     *
+     * @param game   in which the action takes place.
+     * @param player to which the card is added.
+     * @param c      referring to the card.
+     * @throws InvalidPlayerActionException if the player cannot perform the operation.
+     */
     private void addCard(Game game, Player player, Card c) throws InvalidPlayerActionException {
 
         player.addCard(c);
@@ -135,6 +252,16 @@ class MatchStarted extends GameState {
 
     }
 
+
+    /**
+     * Draws a card from a generic kind of deck.
+     *
+     * @param game   in which the action is performed.
+     * @param player to which the card is added.
+     * @param deck   from which the card is drawn.
+     * @throws InvalidPlayerActionException if the player cannot perform the operation.
+     * @throws EmptyDeckException           if the deck is empty.
+     */
     private void drawFromDeck(Game game, Player player, Deck<Card> deck) throws InvalidPlayerActionException, EmptyDeckException {
         List<Player> players = game.getPlayers();
         if (players.indexOf(player) != game.getCurrentPlayerIdx()) {
@@ -146,15 +273,25 @@ class MatchStarted extends GameState {
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void drawFromResourceDeck(Game game, Player player) throws InvalidPlayerActionException, EmptyDeckException {
         drawFromDeck(game, player, game.getResourceDeck());
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void drawFromGoldenDeck(Game game, Player player) throws InvalidPlayerActionException, EmptyDeckException {
         drawFromDeck(game, player, game.getGoldenDeck());
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     public void drawFromFaceUpCards(Game game, Player player, int faceUpCardIdx) throws InvalidPlayerActionException {
         List<Player> players = game.getPlayers();
         if (players.indexOf(player) != game.getCurrentPlayerIdx()) {
@@ -166,6 +303,9 @@ class MatchStarted extends GameState {
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void skipTurn(Game game) {
         if (lastNormalTurn) {
@@ -178,10 +318,25 @@ class MatchStarted extends GameState {
 
 }
 
+
+/**
+ * Additional turn is a class that contains the necessary methods to direct the last phase of the game, that is, the
+ * last round, which takes place from the moment in which a player achieves 20 points until the moment in which the
+ * last player places a card.
+ *
+ */
 // using additional data I may include this state into GameState; this solution would decrease code repetitions.
 class AdditionalTurn extends GameState {
+
+    /**
+     * number of played turns
+     */
     int numTurns = 0;
 
+
+    /**
+     *{@inheritDoc}
+     */
     @Override
     public void placeCard(Game game, Player player, Card card, Side side, Position position)
             throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
@@ -194,6 +349,10 @@ class AdditionalTurn extends GameState {
         }
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void skipTurn(Game game) {
         numTurns += 1;
@@ -203,7 +362,16 @@ class AdditionalTurn extends GameState {
     }
 }
 
+
+/**
+ * Endgame is the class that looks after the ending of the game.
+ */
 class GameEnd extends GameState {
+
+    /**
+     * Establishes the end of the game.
+     * @param game that is over.
+     */
     GameEnd(Game game) {
         game.setFinished();
     }
