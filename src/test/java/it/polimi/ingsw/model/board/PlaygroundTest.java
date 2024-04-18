@@ -42,9 +42,11 @@ class PlaygroundTest {
         PlaygroundTestBack.placeCard(cardsTest.get(1).getFace(Side.BACK),new Position(1,1));
         PlaygroundTestBack.placeCard(cardsTest.get(2).getFace(Side.BACK),new Position(1,-1));
 
+        //current position we're checking
         Position pos = new Position(0,0);
 
-        assert(PlaygroundTestBack.getTile(new Position(0, 0)).sameAvailability(Availability.OCCUPIED));
+        //check tile availability
+        checkTileAvailability(PlaygroundTestBack,pos,Availability.OCCUPIED);
 
         //check if the corners are correctly covered
         checkCoveredCorner(PlaygroundTestBack,pos,CornerPosition.TOP_RIGHT,true);
@@ -56,9 +58,7 @@ class PlaygroundTest {
         checkFaceColor(PlaygroundTestBack,pos,Color.RED);
 
         pos = new Position(1,1);
-
-        assert(PlaygroundTestBack.getTile(new Position(1, 1)).sameAvailability(Availability.OCCUPIED));
-
+        checkTileAvailability(PlaygroundTestBack,pos,Availability.OCCUPIED);
         checkCoveredCorner(PlaygroundTestBack,pos,CornerPosition.TOP_RIGHT,false);
         checkCoveredCorner(PlaygroundTestBack,pos,CornerPosition.TOP_LEFT,false);
         checkCoveredCorner(PlaygroundTestBack,pos,CornerPosition.LOWER_LEFT,false);
@@ -66,9 +66,7 @@ class PlaygroundTest {
         checkFaceColor(PlaygroundTestBack,pos,Color.RED);
 
         pos = new Position(1,-1);
-
-        assert(PlaygroundTestBack.getTile(new Position(1, -1)).sameAvailability(Availability.OCCUPIED));
-
+        checkTileAvailability(PlaygroundTestBack,pos,Availability.OCCUPIED);
         checkCoveredCorner(PlaygroundTestBack,pos,CornerPosition.TOP_RIGHT,false);
         checkCoveredCorner(PlaygroundTestBack,pos,CornerPosition.TOP_LEFT,false);
         checkCoveredCorner(PlaygroundTestBack,pos,CornerPosition.LOWER_LEFT,false);
@@ -76,7 +74,6 @@ class PlaygroundTest {
         checkFaceColor(PlaygroundTestBack,pos,Color.RED);
 
         List<Position> correctAvailablePosition = new ArrayList<>();
-
         correctAvailablePosition.add(new Position(-1,-1));
         correctAvailablePosition.add(new Position(-1,1));
         correctAvailablePosition.add(new Position(0,2));
@@ -120,15 +117,19 @@ class PlaygroundTest {
     Status is true when the corner is covered otherwise is false
      */
     private void checkCoveredCorner(Playground test, Position position, CornerPosition cornerPosition, boolean status){
-        assert(test.getTile(position).getFace().getCorners().get(cornerPosition).isCovered() == status);
+        assertEquals(test.getTile(position).getFace().getCorners().get(cornerPosition).isCovered(), status);
     }
 
     private void checkFaceColor(Playground test, Position position, Color c){
-        assert(test.getTile(position).getFace().getColor() == c);
+        assertSame(test.getTile(position).getFace().getColor(), c);
+    }
+
+    private void checkTileAvailability(Playground test, Position position, Availability availability){
+        assertTrue(test.getTile(new Position(1, 1)).sameAvailability(availability));
     }
 
     private void checkAvailableList(List<Position> correctList, Playground Test){
-        assertTrue(correctList.size() == Test.getAvailablePositions().size());
+        assertEquals(correctList.size(), Test.getAvailablePositions().size());
         assertTrue(Test.getAvailablePositions().containsAll(correctList) && correctList.containsAll(Test.getAvailablePositions()));
     }
 
