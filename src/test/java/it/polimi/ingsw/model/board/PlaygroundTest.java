@@ -30,17 +30,44 @@ class PlaygroundTest {
     void getAvailablePositions() {
     }
 
+    /*
+    A simple test which simulate the situation where 3 red back are placed
+    */
     @Test
-    void placeCard() throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
+    void placeCardTest1() throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
 
         //test place back
 
         Playground PlaygroundTestBack = new Playground();
-        List<Card> cardsTest = createTestResourceCards("/playground/Test1.json");
 
-        PlaygroundTestBack.placeCard(cardsTest.get(0).getFace(Side.BACK),new Position(0,0));
-        PlaygroundTestBack.placeCard(cardsTest.get(1).getFace(Side.BACK),new Position(1,1));
-        PlaygroundTestBack.placeCard(cardsTest.get(2).getFace(Side.BACK),new Position(1,-1));
+        //cards creation
+        Map<CornerPosition, Corner> back1Corners = new HashMap<>();
+        for(CornerPosition c : CornerPosition.values()){
+            back1Corners.put(c,new Corner());
+        }
+
+        Map<CornerPosition, Corner> back2Corners = new HashMap<>();
+        for(CornerPosition c : CornerPosition.values()){
+            back2Corners.put(c,new Corner());
+        }
+
+        Map<CornerPosition, Corner> back3Corners = new HashMap<>();
+        for(CornerPosition c : CornerPosition.values()){
+            back3Corners.put(c,new Corner());
+        }
+
+        Map<Symbol, Integer> fungiResource = new HashMap<>();
+        fungiResource.put(Symbol.FUNGI, 1);
+
+        Back back1 = new Back(Color.RED, back1Corners, fungiResource);
+        Back back2 = new Back(Color.RED, back2Corners, fungiResource);
+        Back back3 = new Back(Color.RED, back3Corners, fungiResource);
+
+        //start of Test1
+
+        PlaygroundTestBack.placeCard(back1,new Position(0,0));
+        PlaygroundTestBack.placeCard(back2,new Position(1,1));
+        PlaygroundTestBack.placeCard(back3,new Position(1,-1));
 
         //current position we're checking
         Position pos = new Position(0,0);
@@ -87,12 +114,18 @@ class PlaygroundTest {
         checkResource(PlaygroundTestBack, Symbol.FUNGI, 3);
         checkPoints(PlaygroundTestBack, 0);
 
-        //System.out.println(PlaygroundTestBack);
-        //System.out.println(PlaygroundTestBack.getAvailablePositions());
+        /*
+        System.out.println(PlaygroundTestBack);
+        System.out.println(PlaygroundTestBack.getAvailablePositions());
+        */
 
+    }
+
+    @Test
+    void placeCardTest2() throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException{
         //second test
 
-        cardsTest = createTestResourceCards("/playground/Test2.json");
+        List<Card> cardsTest = createTestResourceCards("/playground/Test2.json");
         //List<Card> StartingCardsTest = CustomJsonDeserializer.createStartingCards();
 
         Playground PlaygroundSecondTest = new Playground();
@@ -109,8 +142,6 @@ class PlaygroundTest {
         List<Card> finalCardsTest = cardsTest;
         assertThrows(Playground.UnavailablePositionException.class, () -> { PlaygroundSecondTest.placeCard(finalCardsTest.get(2).getFace(Side.FRONT),new Position(-2,0));});
         System.out.println(PlaygroundSecondTest);
-
-
     }
 
     /*
