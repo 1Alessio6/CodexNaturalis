@@ -27,26 +27,85 @@ import java.util.*;
  */
 
 public class Game {
+
+    /**
+     * Indicates the path of the json file in which golden cards are found.
+     */
     private final static String goldenCardsPath = "/cards/goldenCards.json";
+
+    /**
+     * Indicates the path of the json file in which resource cards are found.
+     */
     private final static String resourceCardsPath = "/cards/resourceCards.json";
+
+    /**
+     * Indicates the path of the json file in which starting cards are found.
+     */
     private final static String startingCardsPath = "/cards/startingCards.json";
+
+    /**
+     * Indicates the path of the json file in which objective position cards are found.
+     */
     private final static String objectivePositionCardsPath = "/cards/objectivePositionCards.json";
+
+    /**
+     * Indicates the path of the json file in which objective resource cards are found.
+     */
     private final static String objectiveResourceCardsPath = "/cards/objectiveResourceCards.json";
 
+    /**
+     * Represents a deck of resources cards.
+     */
     private final Deck<Card> resourceCards;
+
+    /**
+     * Represents a deck of golden cards.
+     */
     private final Deck<Card> goldenCards;
+
+    /**
+     * Represents a deck of starter cards.
+     */
     private final Deck<Card> starterCards;
+
+    /**
+     * Represents a deck of objective cards.
+     */
     private final Deck<ObjectiveCard> objectiveCards;
 
+
+    /**
+     * Represents a list of face up cards.
+     */
     private List<Card> faceUpCards;
+
+    /**
+     * Represents a list of common objective cards.
+     */
     private List<ObjectiveCard> commonObjects;
 
     // private int numRequiredPlayers;
+
+    /**
+     * Represents the index that identifies the current player inside the list of players.
+     */
     private int currentPlayerIdx; // index in the current player list.
+
+    /**
+     * Specifies if the game has finished.
+     */
     private boolean isFinished;
 
+
+    /**
+     * Represents a list of players.
+     */
     private List<Player> players;
 
+
+    /**
+     * Represents the state of the game.
+     */
     GameState gameState;
 
     // Advanced Features
@@ -54,6 +113,7 @@ public class Game {
 
     /**
      * Converts the file to a parsable json array
+     *
      * @param resourcePath the resource to deserialize
      * @return the entire file as json array
      */
@@ -70,11 +130,11 @@ public class Game {
     }
 
     // TODO: few code repetition could be avoided
-    private Deck<Card> createGoldenCards(){
+    private Deck<Card> createGoldenCards() {
         Gson gson = new GsonBuilder().registerTypeAdapter(Corner.class, new CornerDeserializer()).create();
         Stack<Card> cards = new Stack<>();
 
-        for (JsonElement j : getCardsFromJson(goldenCardsPath)){
+        for (JsonElement j : getCardsFromJson(goldenCardsPath)) {
             JsonObject jsonFront = j.getAsJsonObject().get("front").getAsJsonObject();
             JsonObject jsonBack = j.getAsJsonObject().get("back").getAsJsonObject();
 
@@ -82,8 +142,10 @@ public class Game {
             Color color = gson.fromJson(jsonFront.get("color"), Color.class);
             int score = gson.fromJson(jsonFront.get("score"), Integer.class);
             Condition pointsCondition = gson.fromJson(jsonFront.get("pointsCondition"), Condition.class);
-            Map<CornerPosition, Corner> frontCorners = gson.fromJson(jsonFront.get("corners"), new TypeToken<>(){});
-            Map<Symbol, Integer> requirements = gson.fromJson(jsonFront.get("requirements"), new TypeToken<>(){});
+            Map<CornerPosition, Corner> frontCorners = gson.fromJson(jsonFront.get("corners"), new TypeToken<>() {
+            });
+            Map<Symbol, Integer> requirements = gson.fromJson(jsonFront.get("requirements"), new TypeToken<>() {
+            });
 
             /* create calculator */
             CalculatePoints calculator;
@@ -92,7 +154,7 @@ public class Game {
                     calculator = new CalculateCorners();
                     break;
                 case NUM_MANUSCRIPT:
-                case NUM_INKWKELL:
+                case NUM_INKWELL:
                 case NUM_QUILL:
                     calculator = new CalculateResources();
                     break;
@@ -102,7 +164,7 @@ public class Game {
             }
 
             /* back logic */
-            Map<Symbol, Integer> backResources = gson.fromJson(jsonBack.get("resources"), new TypeToken<>(){});
+            Map<Symbol, Integer> backResources = gson.fromJson(jsonBack.get("resources"), new TypeToken<>() {});
             Map<CornerPosition, Corner> backCorners = new HashMap<>();
             Arrays.stream(CornerPosition.values()).forEach(cp -> backCorners.put(cp, new Corner()));
 
@@ -115,21 +177,21 @@ public class Game {
         return new Deck<>(cards);
     }
 
-    private Deck<Card> createResourceCards(){
+    private Deck<Card> createResourceCards() {
         Gson gson = new GsonBuilder().registerTypeAdapter(Corner.class, new CornerDeserializer()).create();
         Stack<Card> cards = new Stack<>();
 
-        for (JsonElement j : getCardsFromJson(resourceCardsPath)){
+        for (JsonElement j : getCardsFromJson(resourceCardsPath)) {
             JsonObject jsonFront = j.getAsJsonObject().get("front").getAsJsonObject();
             JsonObject jsonBack = j.getAsJsonObject().get("back").getAsJsonObject();
 
             /* front logic */
             Color color = gson.fromJson(jsonFront.get("color"), Color.class);
             int score = gson.fromJson(jsonFront.get("score"), Integer.class);
-            Map<CornerPosition, Corner> frontCorners = gson.fromJson(jsonFront.get("corners"), new TypeToken<>(){});
+            Map<CornerPosition, Corner> frontCorners = gson.fromJson(jsonFront.get("corners"), new TypeToken<>() {});
 
             /* back logic */
-            Map<Symbol, Integer> backResources = gson.fromJson(jsonBack.get("resources"), new TypeToken<>(){});
+            Map<Symbol, Integer> backResources = gson.fromJson(jsonBack.get("resources"), new TypeToken<>() {});
             Map<CornerPosition, Corner> backCorners = new HashMap<>();
             Arrays.stream(CornerPosition.values()).forEach(cp -> backCorners.put(cp, new Corner()));
 
@@ -146,17 +208,17 @@ public class Game {
         Gson gson = new GsonBuilder().registerTypeAdapter(Corner.class, new CornerDeserializer()).create();
         Stack<Card> cards = new Stack<>();
 
-        for (JsonElement j : getCardsFromJson(startingCardsPath)){
+        for (JsonElement j : getCardsFromJson(startingCardsPath)) {
             JsonObject jsonFront = j.getAsJsonObject().get("front").getAsJsonObject();
             JsonObject jsonBack = j.getAsJsonObject().get("back").getAsJsonObject();
 
             /* front logic */
-            Map<CornerPosition, Corner> frontCorners = gson.fromJson(jsonFront.get("corners"), new TypeToken<>(){});
+            Map<CornerPosition, Corner> frontCorners = gson.fromJson(jsonFront.get("corners"), new TypeToken<>() {});
 
             /* back logic */
-            Map<Symbol, Integer> backResources = gson.fromJson(jsonBack.get("resources"), new TypeToken<>(){});
+            Map<Symbol, Integer> backResources = gson.fromJson(jsonBack.get("resources"), new TypeToken<>() {});
             /* starting cards are the only ones to have resources in back corners */
-            Map<CornerPosition, Corner> backCorners = gson.fromJson(jsonBack.get("corners"), new TypeToken<>(){});
+            Map<CornerPosition, Corner> backCorners = gson.fromJson(jsonBack.get("corners"), new TypeToken<>() {});
 
             Front front = new Front(frontCorners);
             Back back = new Back(null, backCorners, backResources);
@@ -171,15 +233,15 @@ public class Game {
         Gson gson = new GsonBuilder().registerTypeAdapter(Position.class, new PositionDeserializer()).create();
         Stack<ObjectiveCard> cards = new Stack<>();
 
-        for (JsonElement j : getCardsFromJson(objectivePositionCardsPath)){
-            Map<Position, Color> condition = gson.fromJson(j.getAsJsonObject().get("condition"), new TypeToken<>(){});
+        for (JsonElement j : getCardsFromJson(objectivePositionCardsPath)) {
+            Map<Position, Color> condition = gson.fromJson(j.getAsJsonObject().get("condition"), new TypeToken<>() {});
             int multiplier = gson.fromJson(j.getAsJsonObject().get("multiplier"), Integer.class);
 
             cards.add(new ObjectivePositionCard(condition, multiplier));
         }
 
-        for (JsonElement j : getCardsFromJson(objectiveResourceCardsPath)){
-            Map<Symbol, Integer> condition = gson.fromJson(j.getAsJsonObject().get("condition"), new TypeToken<>(){});
+        for (JsonElement j : getCardsFromJson(objectiveResourceCardsPath)) {
+            Map<Symbol, Integer> condition = gson.fromJson(j.getAsJsonObject().get("condition"), new TypeToken<>() {});
             int multiplier = gson.fromJson(j.getAsJsonObject().get("multiplier"), Integer.class);
 
             cards.add(new ObjectiveResourceCard(condition, multiplier));
@@ -190,6 +252,7 @@ public class Game {
 
     /**
      * Creates game based on the lobby
+     *
      * @param users the map user:color of the lobby that wants to start the game
      */
 
@@ -214,7 +277,7 @@ public class Game {
 
                 Card startingCard = starterCards.draw();
                 players.add(new Player(
-                    entry.getKey(),
+                        entry.getKey(),
                         entry.getValue(),
                         startingCard,
                         userHand,
@@ -234,41 +297,95 @@ public class Game {
     // methods
 
     // methods needed by the GameState's
+
+    /**
+     * Sets the status of the game.
+     *
+     * @param gameState to be set.
+     */
     void setStatus(GameState gameState) {
         this.gameState = gameState;
     }
 
+
+    /**
+     * Returns the index of the current player.
+     *
+     * @return current player index.
+     */
     int getCurrentPlayerIdx() {
         return currentPlayerIdx;
     }
 
+
+    /**
+     * Sets the index of the new current player.
+     *
+     * @param newCurrentPlayerIdx index of the new current player.
+     */
     void setCurrentPlayerIdx(int newCurrentPlayerIdx) {
         assert (0 <= newCurrentPlayerIdx && newCurrentPlayerIdx < players.size());
         currentPlayerIdx = newCurrentPlayerIdx;
     }
 
+
+    /**
+     * Specifies whether the index of a particular player is valid or not.
+     *
+     * @param idx index of the player to be evaluated.
+     * @return true if the index is greater than 0 and less than the total number of players present in the game, false
+     * otherwise.
+     */
     private boolean isValidIdx(int idx) {
         return 0 <= idx && idx < players.size();
     }
 
+
+    /**
+     * Sets the end of the game.
+     */
     void setFinished() {
         isFinished = true;
     }
 
 
+    /**
+     * Returns a list with the players in the game.
+     *
+     * @return a list of players.
+     */
     List<Player> getPlayers() {
         return players;
     }
 
+
+    /**
+     * Returns a deck containing the resource cards.
+     *
+     * @return a deck of resource cards.
+     */
     Deck<Card> getResourceDeck() {
         return resourceCards;
     }
 
+
+    /**
+     * Returns a deck containing the golden cards.
+     *
+     * @return a deck of golden cards.
+     */
     Deck<Card> getGoldenDeck() {
         return goldenCards;
     }
 
     // get and replace (if possible) the faceUp card at index faceUpCardIdx.
+
+    /**
+     * Gets and replaces (if possible) the face up card present at the faceUpCardIdx's index.
+     *
+     * @param faceUpCardIdx index of the face up card to be replaced.
+     * @return a face up card.
+     */
     Card getFaceUpCard(int faceUpCardIdx) {
         assert (isValidIdx(faceUpCardIdx));
 
@@ -363,7 +480,8 @@ public class Game {
 
     /**
      * Sets the player's network status to <code>networkStatus</code>.
-     * @param username of the player.
+     *
+     * @param username      of the player.
      * @param networkStatus of the player to be set.
      */
     public void setNetworkStatus(String username, boolean networkStatus) {
@@ -381,14 +499,23 @@ public class Game {
      * NOTE. Exceptions are handled by the controller
      */
 
+
+    /**
+     * Returns a player based on the username.
+     *
+     * @param username of the player.
+     * @return the player.
+     * @throws IllegalArgumentException if the user is not found.
+     */
     public Player getUserByUsername(String username) throws IllegalArgumentException {
         return getPlayers().stream().filter(p -> p.getUsername().equals(username)).findFirst().orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 
     /**
      * Places the starter on the specified side.
+     *
      * @param username of the player
-     * @param side of the starter
+     * @param side     of the starter
      * @throws InvalidPlayerActionException if the player cannot perform the operation. For example the player has already chosen the side.
      */
     public void placeStarter(String username, Side side) throws InvalidPlayerActionException {
@@ -401,7 +528,8 @@ public class Game {
 
     /**
      * Places the secret objective from one of the two available.
-     * @param username of the player.
+     *
+     * @param username        of the player.
      * @param chosenObjective the chosen objective.
      * @throws InvalidPlayerActionException if the player cannot perform the operation. For example the player has already chosen the objective.
      */
@@ -411,13 +539,14 @@ public class Game {
 
     /**
      * Places the card on the side and position specified.
+     *
      * @param username of the player.
-     * @param card to place.
-     * @param side of the card.
+     * @param card     to place.
+     * @param side     of the card.
      * @param position in the playground.
-     * @throws InvalidPlayerActionException if the player cannot perform the operation.
+     * @throws InvalidPlayerActionException            if the player cannot perform the operation.
      * @throws Playground.UnavailablePositionException if the position is not available. For example the player is trying to place the card in an already covered corner.
-     * @throws Playground.NotEnoughResourcesException if the player's resource are not enough to place the card.
+     * @throws Playground.NotEnoughResourcesException  if the player's resource are not enough to place the card.
      */
     public void placeCard(String username, Card card, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
         gameState.placeCard(this, getUserByUsername(username), card, side, position);
@@ -425,9 +554,10 @@ public class Game {
 
     /**
      * Draws from the resource cards deck
+     *
      * @param username of the player
      * @throws InvalidPlayerActionException if the player cannot perform the operation.
-     * @throws EmptyDeckException if the deck is empty.
+     * @throws EmptyDeckException           if the deck is empty.
      */
     public void drawFromResourceDeck(String username) throws InvalidPlayerActionException, EmptyDeckException {
         gameState.drawFromResourceDeck(this, getUserByUsername(username));
@@ -435,9 +565,10 @@ public class Game {
 
     /**
      * Draws from the golden cards deck
+     *
      * @param username of the player
      * @throws InvalidPlayerActionException if the player cannot perform the operation.
-     * @throws EmptyDeckException if the deck is empty.
+     * @throws EmptyDeckException           if the deck is empty.
      */
     public void drawFromGoldenDeck(String username) throws InvalidPlayerActionException, EmptyDeckException {
         gameState.drawFromGoldenDeck(this, getUserByUsername(username));
@@ -445,7 +576,8 @@ public class Game {
 
     /**
      * Draws from one of the available face up cards.
-     * @param username of the player.
+     *
+     * @param username      of the player.
      * @param faceUpCardIdx specifying the face up card.
      * @throws InvalidPlayerActionException if the player cannot perform the operation.
      */
@@ -456,6 +588,7 @@ public class Game {
     /**
      * Draws automatically to complete the current player's turn.
      * It may happen if the current player disconnects after placing a card but before drawing the new one.
+     *
      * @param username of the player.
      */
     public void automaticDraw(String username) {
@@ -486,6 +619,12 @@ public class Game {
         }
     }
 
+
+    /**
+     * Returns a list of active players.
+     *
+     * @return an active player's list.
+     */
     private List<Player> getActivePlayers() {
         return players.stream()
                 .filter(Player::isConnected)
