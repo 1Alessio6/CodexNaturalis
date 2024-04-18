@@ -84,7 +84,7 @@ class PlaygroundTest {
         correctAvailablePosition.add(new Position(0,-2));
         checkAvailableList(correctAvailablePosition, PlaygroundTestBack);
 
-        assert(PlaygroundTestBack.getResources().get(Symbol.FUNGI) == 3);
+        checkResource(PlaygroundTestBack, Symbol.FUNGI, 3);
         checkPoints(PlaygroundTestBack, 0);
 
         //System.out.println(PlaygroundTestBack);
@@ -129,10 +129,12 @@ class PlaygroundTest {
     }
 
     private void checkPoints(Playground test, int points){
-        assert(test.getPoints() == points);
+        assertEquals(test.getPoints(),points);
     }
 
-
+    private void checkResource(Playground test, Symbol resource, int expectedAmount){
+        assertEquals(test.getResources().get(resource),expectedAmount);
+    }
 
     private void checkAvailableList(List<Position> correctList, Playground Test){
         assertEquals(correctList.size(), Test.getAvailablePositions().size());
