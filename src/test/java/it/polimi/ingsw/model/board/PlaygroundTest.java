@@ -73,6 +73,7 @@ class PlaygroundTest {
         checkCoveredCorner(PlaygroundTestBack,pos,CornerPosition.LOWER_RIGHT,false);
         checkFaceColor(PlaygroundTestBack,pos,Color.RED);
 
+        //check available position
         List<Position> correctAvailablePosition = new ArrayList<>();
         correctAvailablePosition.add(new Position(-1,-1));
         correctAvailablePosition.add(new Position(-1,1));
@@ -81,11 +82,10 @@ class PlaygroundTest {
         correctAvailablePosition.add(new Position(2,0));
         correctAvailablePosition.add(new Position(2,-2));
         correctAvailablePosition.add(new Position(0,-2));
-
         checkAvailableList(correctAvailablePosition, PlaygroundTestBack);
 
         assert(PlaygroundTestBack.getResources().get(Symbol.FUNGI) == 3);
-        assert(PlaygroundTestBack.getPoints() == 0);
+        checkPoints(PlaygroundTestBack, 0);
 
         //System.out.println(PlaygroundTestBack);
         //System.out.println(PlaygroundTestBack.getAvailablePositions());
@@ -127,6 +127,12 @@ class PlaygroundTest {
     private void checkTileAvailability(Playground test, Position position, Availability availability){
         assertTrue(test.getTile(new Position(1, 1)).sameAvailability(availability));
     }
+
+    private void checkPoints(Playground test, int points){
+        assert(test.getPoints() == points);
+    }
+
+
 
     private void checkAvailableList(List<Position> correctList, Playground Test){
         assertEquals(correctList.size(), Test.getAvailablePositions().size());
