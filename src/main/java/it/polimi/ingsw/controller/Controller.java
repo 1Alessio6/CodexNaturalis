@@ -184,7 +184,7 @@ public class Controller implements EventListener {
         if (lobby.getRemainColors().stream().anyMatch(remainColor -> remainColor == color)) {
             lobby.addPlayer(username, color);
         } else {
-            System.out.println("Already assign color");
+            System.out.println("Already assigned color");
         }
     }
     //another approach can be adopted, as it is the try-catch statement
