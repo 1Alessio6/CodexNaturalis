@@ -11,6 +11,7 @@ public class Lobby {
     private final int gameSize;
     private final int MAX_NUMBER = 4;
     private final int MIN_NUMBER = 2;
+    private List<Color> remainColors;
 
     protected Lobby(String creator, Color creatorColor, int size) throws IllegalArgumentException {
         if (size > MAX_NUMBER || size < MIN_NUMBER)
@@ -38,5 +39,9 @@ public class Lobby {
         }
 
         return new Game(this.users);
+    }
+
+    public List<Color> getRemainColors(){
+        return remainColors;
     }
 }
