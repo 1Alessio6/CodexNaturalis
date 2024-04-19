@@ -43,6 +43,7 @@ public class Position {
     }
 
 
+    //todo check if getClass in equals method should be remove
     /**
      * Checks if two objects are equal.
      * Overrides the equals() method in the Object class.
