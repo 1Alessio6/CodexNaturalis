@@ -1,11 +1,14 @@
 package it.polimi.ingsw.model;
 
+import com.google.gson.reflect.TypeToken;
+import it.polimi.ingsw.jsondeserializer.DeserializationHandler;
 import it.polimi.ingsw.model.board.*;
 import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.chat.ChatDatabase;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.player.Player;
 
+import java.io.FileNotFoundException;
 import java.util.*;
 
 
@@ -15,51 +18,25 @@ import java.util.*;
  */
 
 public class Game {
-
-    /**
-     * Indicates the path of the json file in which golden cards are found.
-     */
-    private final static String goldenCardsPath = "/cards/goldenCards.json";
-
-    /**
-     * Indicates the path of the json file in which resource cards are found.
-     */
-    private final static String resourceCardsPath = "/cards/resourceCards.json";
-
-    /**
-     * Indicates the path of the json file in which starting cards are found.
-     */
-    private final static String startingCardsPath = "/cards/startingCards.json";
-
-    /**
-     * Indicates the path of the json file in which objective position cards are found.
-     */
-    private final static String objectivePositionCardsPath = "/cards/objectivePositionCards.json";
-
-    /**
-     * Indicates the path of the json file in which objective resource cards are found.
-     */
-    private final static String objectiveResourceCardsPath = "/cards/objectiveResourceCards.json";
-
     /**
      * Represents a deck of resources cards.
      */
-    private final Deck<Card> resourceCards;
+    private Deck<Card> resourceCards;
 
     /**
      * Represents a deck of golden cards.
      */
-    private final Deck<Card> goldenCards;
+    private Deck<Card> goldenCards;
 
     /**
      * Represents a deck of starter cards.
      */
-    private final Deck<Card> starterCards;
+    private Deck<Card> starterCards;
 
     /**
      * Represents a deck of objective cards.
      */
-    private final Deck<ObjectiveCard> objectiveCards;
+    private Deck<ObjectiveCard> objectiveCards;
 
 
     /**
@@ -99,18 +76,92 @@ public class Game {
     // Advanced Features
     private ChatDatabase chatDatabase; // todo. maybe implement it outside
 
+    private List<Card> createCardList(List<Front> fronts, List<Back> backs) {
+        assert fronts.size() == backs.size();
+
+        List<Card> cards = new ArrayList<>();
+
+        for (int i = 0; i < fronts.size(); ++i) {
+            cards.add(new Card(fronts.get(i), backs.get(i)));
+        }
+
+        return cards;
+    }
+
+    private List<ObjectiveCard> createObjectiveCardList(List<ObjectivePositionCard> objectivePositions, List<ObjectiveResourceCard> objectiveResources) {
+        List<ObjectiveCard> objectiveCards = new ArrayList<>();
+
+        objectiveCards.addAll(objectivePositions);
+
+        objectiveCards.addAll(objectiveResources);
+
+        return objectiveCards;
+    }
+
+    private List<Front> frontFromGoldenList(String goldenFrontCardsPath) throws FileNotFoundException {
+        List<GoldenFront> gFronts =
+                new DeserializationHandler<GoldenFront>().jsonToList(goldenFrontCardsPath, new TypeToken<>() {
+                });
+
+        List<Front> f = new ArrayList<>();
+
+        for (GoldenFront g : gFronts) {
+            f.add(g);
+        }
+
+        return f;
+    }
+
     /**
      * Creates game based on the lobby
      *
      * @param users the map user:color of the lobby that wants to start the game
      */
-
     public Game(Map<String, Color> users) {
-        // TODO: update methods to take correct files
-        this.resourceCards = new Deck<>(Deck.createCardList());
-        this.goldenCards = new Deck<>(Deck.createCardList());
-        this.starterCards = new Deck<>(Deck.createCardList());
-        this.objectiveCards = new Deck<>(Deck.createObjectiveCardList());
+        String backCardsPath = "src/main/resources/cards/backCards.json";
+        String goldenFrontCardsPath = "src/main/resources/cards/goldenFrontCards.json";
+        String resourceFrontCardsPath = "src/main/resources/cards/resourceFrontCards.json";
+        String startingFrontCardsPath = "src/main/resources/cards/startingFrontCards.json";
+        String startingBackCardsPath = "src/main/resources/cards/startingBackCards.json";
+        String objectivePositionFrontCardsPath = "src/main/resources/cards/objectivePositionFrontCards.json";
+        String objectiveResourceCardsPath = "src/main/resources/cards/objectiveResourceFrontCards.json";
+
+        try {
+            this.resourceCards = new Deck<>(createCardList(
+                    new DeserializationHandler<Front>().jsonToList(resourceFrontCardsPath, new TypeToken<>() {
+                    }),
+                    new DeserializationHandler<Back>().jsonToList(backCardsPath, new TypeToken<>() {
+                    })
+            ));
+
+            this.goldenCards = new Deck<>(
+                    createCardList(
+                            frontFromGoldenList(goldenFrontCardsPath),
+                            new DeserializationHandler<Back>().jsonToList(backCardsPath, new TypeToken<>() {
+                            })
+                    )
+            );
+
+            this.starterCards = new Deck<>(createCardList(
+                    new DeserializationHandler<Front>().jsonToList(startingFrontCardsPath, new TypeToken<>() {
+                    }),
+                    new DeserializationHandler<Back>().jsonToList(startingBackCardsPath, new TypeToken<>() {
+                    })
+            ));
+
+            this.objectiveCards = new Deck<>(
+                    createObjectiveCardList(
+                            new DeserializationHandler<ObjectivePositionCard>().jsonToList(objectivePositionFrontCardsPath, new TypeToken<>() {
+                            }),
+                            new DeserializationHandler<ObjectiveResourceCard>().jsonToList(objectiveResourceCardsPath, new TypeToken<>() {
+                            })
+                    )
+            );
+
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found");
+            e.printStackTrace();
+        }
 
         try {
 
