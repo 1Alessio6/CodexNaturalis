@@ -233,43 +233,4 @@ class PlaygroundTest {
 
         return corners;
     }
-
-    private List<Card> createTestResourceCards(String resourceCardsPath){
-        Gson gson = new GsonBuilder().registerTypeAdapter(Corner.class, new CornerDeserializer()).create();
-        List<Card> cards = new ArrayList<>();
-
-        for (JsonElement j : getCardsFromJson(resourceCardsPath)){
-            JsonObject jsonFront = j.getAsJsonObject().get("front").getAsJsonObject();
-            JsonObject jsonBack = j.getAsJsonObject().get("back").getAsJsonObject();
-
-            /* front logic */
-            Color color = gson.fromJson(jsonFront.get("color"), Color.class);
-            int score = gson.fromJson(jsonFront.get("score"), Integer.class);
-            Map<CornerPosition, Corner> frontCorners = gson.fromJson(jsonFront.get("corners"), new TypeToken<>(){});
-
-            /* back logic */
-            Map<Symbol, Integer> backResources = gson.fromJson(jsonBack.get("resources"), new TypeToken<>(){});
-            Map<CornerPosition, Corner> backCorners = new HashMap<>();
-            Arrays.stream(CornerPosition.values()).forEach(cp -> backCorners.put(cp, new Corner()));
-
-            Front front = new Front(color, frontCorners, score);
-            Back back = new Back(color, backCorners, backResources);
-
-            cards.add(new Card(front, back));
-        }
-
-        return cards;
-    }
-
-    private JsonArray getCardsFromJson(String resourcePath) throws NullPointerException {
-        /* json as streams, so even after jar build it can retrieve the correct file */
-        InputStream resourceAsStream = this.getClass()
-                .getResourceAsStream(resourcePath);
-        if (resourceAsStream == null)
-            throw new NullPointerException("Empty resource!");
-
-        Reader cardReader = new BufferedReader(new InputStreamReader(resourceAsStream));
-
-        return JsonParser.parseReader(cardReader).getAsJsonArray();
-    }
 }
