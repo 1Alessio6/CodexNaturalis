@@ -14,16 +14,6 @@ import static it.polimi.ingsw.model.card.strategies.CalculateResources.Condition
  * Strategy used for golden cards which add points based on the number of visible resources present in the playground
  */
 public class CalculateResources implements CalculatePoints {
-
-    private GoldenFront gInstance;
-
-    public CalculateResources(GoldenFront gInstance) {
-        this.gInstance = gInstance;
-    }
-
-    public CalculateResources() {
-    }
-
     /**
      * Calculates the points in the golden cards with resources as condition case.
      *
@@ -32,13 +22,12 @@ public class CalculateResources implements CalculatePoints {
      * @return the calculated points.
      */
     public int calculatePoints(Position pos, Playground playground) {
-
+        Condition calculatorCondition = playground.getTile(pos).getFace().getCondition();
         int multiplier = playground.getTile(pos).getFace().getScore();
-        Condition condition = gInstance.getPointsCondition();
         int result = 0;
 
-        if (playground.getResources().containsKey(conditionSymbolConversion(condition))) {
-            return playground.getResources().get(conditionSymbolConversion(condition)) * multiplier;
+        if (playground.getResources().containsKey(conditionSymbolConversion(calculatorCondition))) {
+            return playground.getResources().get(conditionSymbolConversion(calculatorCondition)) * multiplier;
         }
 
         return result;
