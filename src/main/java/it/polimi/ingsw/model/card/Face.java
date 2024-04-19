@@ -16,7 +16,6 @@ abstract public class Face {
 
     private final CalculatePoints calculator;
 
-    // public static final int NUM_CORNERS = 4;
     private final Map<CornerPosition, Corner> corners;
 
     // representation invariant
@@ -95,4 +94,6 @@ abstract public class Face {
     }
 
     public abstract int getScore();
+
+    public abstract Condition getCondition();
 }

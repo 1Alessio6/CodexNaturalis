@@ -51,4 +51,9 @@ public final class GoldenFront extends Front {
     public Condition getPointsCondition() {
         return pointsCondition;
     }
+
+    @Override
+    public Condition getCondition() {
+        return this.pointsCondition;
+    }
 }
