@@ -55,6 +55,11 @@ public class Front extends Face {
         return score;
     }
 
+    @Override
+    public Condition getCondition() {
+        return null;
+    }
+
     public int calcPoints(Playground p) {
         return score;
     }

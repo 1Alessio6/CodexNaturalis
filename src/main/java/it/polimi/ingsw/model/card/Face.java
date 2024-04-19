@@ -95,6 +95,8 @@ abstract public class Face {
 
     public abstract int getScore();
 
+    public abstract Condition getCondition();
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -107,4 +109,5 @@ abstract public class Face {
     public int hashCode() {
         return Objects.hash(color, calculator, corners);
     }
+
 }
