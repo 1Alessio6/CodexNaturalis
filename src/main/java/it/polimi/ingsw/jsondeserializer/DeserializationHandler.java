@@ -5,56 +5,48 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
+import java.util.Scanner;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-
+import it.polimi.ingsw.model.card.strategies.CalculatePoints;
 
 /*
 todo. Not ready yet: not to use
  */
 
-
 public class DeserializationHandler<T> {
     GsonBuilder builder;
+    Gson gson;
 
     public DeserializationHandler() {
-        this.builder = new GsonBuilder();
+        // enable flag for serialization of user-defined objects as keys in map
+        this.builder = new GsonBuilder().enableComplexMapKeySerialization();
+        // registry the adapter to deal with Interfaces.
+        builder.registerTypeAdapter(CalculatePoints.class, new InterfaceAdaptor<>());
+        gson = builder.create();
     }
 
-    public List<T> jsonToList(String filePath) throws FileNotFoundException {
-        Gson gson = new Gson();
+    private String getJson(String jsonPath) throws FileNotFoundException {
+        StringBuilder json = new StringBuilder();
 
-        gson = builder.create();
-
-        // solve type erasure
-        TypeToken<List<T>> listType = new TypeToken<List<T>>() {
-        };
-
-        BufferedReader bufferedReader = new BufferedReader(
-                new FileReader(filePath));
-
-        List<T> list = gson.fromJson(bufferedReader, listType);
-
-        try {
-            bufferedReader.close();
-        } catch (IOException e) {
-            // already closed, no problem
+        File myObj = new File(jsonPath);
+        Scanner myReader = new Scanner(myObj);
+        while (myReader.hasNextLine()) {
+            json.append(myReader.nextLine());
         }
+        myReader.close();
 
-        return list;
+        return json.toString();
+    }
+
+    public List<T> jsonToList(String jsonPath, TypeToken<List<T>> listType) throws FileNotFoundException {
+        String jsonRep = getJson(jsonPath);
+        return gson.fromJson(jsonRep, listType);
     }
 
     public void registerAdapter(Class<?> concreteClass) {
         builder.registerTypeAdapter(concreteClass, new InterfaceAdaptor<>());
-    }
-
-    public String listToJson(List<T> list) {
-        Gson gson = new Gson();
-        return gson.toJson(list);
     }
 
 }
