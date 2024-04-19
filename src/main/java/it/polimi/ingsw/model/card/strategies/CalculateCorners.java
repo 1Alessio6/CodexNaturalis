@@ -18,6 +18,6 @@ public class CalculateCorners implements CalculatePoints {
             for (int j = pos.getY() - 1; j - pos.getY() <= 2; j += 2)
                 count += playground.getTile(new Position(i,j)).sameAvailability(Availability.OCCUPIED) ? 1 : 0;
 
-        return count;
+        return count * multiplier;
     }
 }
