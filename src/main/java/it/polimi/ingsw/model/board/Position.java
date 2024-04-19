@@ -85,9 +85,8 @@ public class Position {
      */
     @Override
     public String toString() {
-        return this.x + "," + this.y;
+        return "{" + this.x + "," + this.y + "}";
     }
-
 
     /**
      * Sums two position's coordinates.

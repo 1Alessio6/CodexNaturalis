@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.card.strategies.CalculatePoints;
 import it.polimi.ingsw.model.card.strategies.CalculateResources;
 
 import java.util.Map;
+import java.util.Objects;
 
 public final class GoldenFront extends Front {
     /**
@@ -50,5 +51,21 @@ public final class GoldenFront extends Front {
      */
     public Condition getPointsCondition() {
         return pointsCondition;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        GoldenFront that = (GoldenFront) o;
+        return pointsCondition == that.pointsCondition && Objects.equals(requirements, that.requirements)
+                    &&
+               super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), pointsCondition, requirements);
     }
 }

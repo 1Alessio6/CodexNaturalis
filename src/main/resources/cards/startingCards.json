@@ -1,6 +1,7 @@
 [
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": "FUNGI",
                 "TOP_RIGHT": "PLANT",
@@ -9,6 +10,7 @@
             }
         },
         "back": {
+            "calculator": "CalculateBackPoints",
             "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": "PLANT",
@@ -22,6 +24,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": "INSECT",
                 "TOP_RIGHT": "ANIMAL",
@@ -30,6 +33,7 @@
             }
         },
         "back": {
+            "calculator": "CalculateBackPoints",
             "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": null,
@@ -44,6 +48,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": "PLANT",
                 "TOP_RIGHT": "ANIMAL",
@@ -52,6 +57,7 @@
             }
         },
         "back": {
+            "calculator": "CalculateBackPoints",
             "corners": {
                 "TOP_LEFT": "ANIMAL",
                 "TOP_RIGHT": null,
@@ -65,6 +71,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": "PLANT",
                 "TOP_RIGHT": "INSECT",
@@ -73,6 +80,7 @@
             }
         },
         "back": {
+            "calculator": "CalculateBackPoints",
             "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": null,
@@ -87,6 +95,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": "FUNGI",
                 "TOP_RIGHT": "ANIMAL",
@@ -95,6 +104,7 @@
             }
         },
         "back": {
+            "calculator": "CalculateBackPoints",
             "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": null
@@ -108,6 +118,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": "INSECT",
                 "TOP_RIGHT": "FUNGI",
@@ -116,6 +127,7 @@
             }
         },
         "back": {
+            "calculator": "CalculateBackPoints",
             "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": null

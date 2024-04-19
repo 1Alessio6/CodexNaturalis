@@ -1,6 +1,7 @@
 [
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": "FUNGI",
                 "TOP_RIGHT": null,
@@ -10,13 +11,22 @@
             "color": "RED"
         },
         "back": {
+            "color": "RED",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
         }
     },
     {
-        "front":{
+        "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": "FUNGI",
                 "TOP_RIGHT": "FUNGI",
@@ -26,6 +36,14 @@
             "color": "RED"
         },
         "back": {
+            "color": "RED",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -33,6 +51,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": null,
                 "LOWER_RIGHT": "FUNGI",
@@ -42,6 +61,14 @@
             "color": "RED"
         },
         "back": {
+            "color": "RED",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -49,6 +76,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_RIGHT": "FUNGI",
                 "LOWER_RIGHT": "FUNGI",
@@ -58,6 +86,14 @@
             "color": "RED"
         },
         "back": {
+            "color": "RED",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -65,6 +101,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_RIGHT": "QUILL",
                 "LOWER_RIGHT": "FUNGI",
@@ -74,6 +111,14 @@
             "color": "RED"
         },
         "back": {
+            "color": "RED",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -81,6 +126,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": "INKWELL",
                 "TOP_RIGHT": "FUNGI",
@@ -90,6 +136,14 @@
             "color": "RED"
         },
         "back": {
+            "color": "RED",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -97,6 +151,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": "FUNGI",
                 "TOP_RIGHT": "INSECT",
@@ -107,6 +162,14 @@
             "color": "RED"
         },
         "back": {
+            "color": "RED",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -114,6 +177,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": "FUNGI",
@@ -123,6 +187,14 @@
             "color": "RED"
         },
         "back": {
+            "color": "RED",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -130,6 +202,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": "FUNGI",
                 "LOWER_RIGHT": null,
@@ -139,6 +212,14 @@
             "color": "RED"
         },
         "back": {
+            "color": "RED",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -146,6 +227,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_RIGHT": null,
                 "LOWER_RIGHT": null,
@@ -155,6 +237,14 @@
             "color": "RED"
         },
         "back": {
+            "color": "RED",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -162,6 +252,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": "PLANT",
                 "TOP_RIGHT": null,
@@ -171,6 +262,14 @@
             "color": "GREEN"
         },
         "back": {
+            "color": "GREEN",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -178,6 +277,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": "PLANT",
                 "TOP_RIGHT": "PLANT",
@@ -187,6 +287,14 @@
             "color": "GREEN"
         },
         "back": {
+            "color": "GREEN",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -194,6 +302,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": null,
                 "LOWER_RIGHT": "PLANT",
@@ -203,6 +312,14 @@
             "color": "GREEN"
         },
         "back": {
+            "color": "GREEN",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -210,6 +327,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_RIGHT": "PLANT",
                 "LOWER_RIGHT": "PLANT",
@@ -219,6 +337,14 @@
             "color": "GREEN"
         },
         "back": {
+            "color": "GREEN",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -226,6 +352,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_RIGHT": "INSECT",
                 "LOWER_RIGHT": "PLANT",
@@ -235,6 +362,14 @@
             "color": "GREEN"
         },
         "back": {
+            "color": "GREEN",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -242,6 +377,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": "FUNGI",
                 "TOP_RIGHT": "PLANT",
@@ -251,6 +387,14 @@
             "color": "GREEN"
         },
         "back": {
+            "color": "GREEN",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -258,6 +402,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": "MANUSCRIPT",
                 "LOWER_RIGHT": "ANIMAL",
@@ -267,6 +412,14 @@
             "color": "GREEN"
         },
         "back": {
+            "color": "GREEN",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -274,6 +427,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": null,
@@ -283,6 +437,14 @@
             "color": "GREEN"
         },
         "back": {
+            "color": "GREEN",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -290,6 +452,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": null,
@@ -299,6 +462,14 @@
             "color": "GREEN"
         },
         "back": {
+            "color": "GREEN",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -306,6 +477,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_RIGHT": "PLANT",
                 "LOWER_RIGHT": null,
@@ -315,6 +487,14 @@
             "color": "GREEN"
         },
         "back": {
+            "color": "GREEN",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -322,6 +502,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": "ANIMAL",
                 "TOP_RIGHT": "ANIMAL",
@@ -331,6 +512,14 @@
             "color": "BLUE"
         },
         "back": {
+            "color": "BLUE",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -338,6 +527,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_RIGHT": null,
                 "LOWER_RIGHT": "ANIMAL",
@@ -347,6 +537,14 @@
             "color": "BLUE"
         },
         "back": {
+            "color": "BLUE",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -354,6 +552,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": "ANIMAL",
                 "LOWER_RIGHT": null,
@@ -363,6 +562,14 @@
             "color": "BLUE"
         },
         "back": {
+            "color": "BLUE",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -370,6 +577,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": "ANIMAL",
@@ -379,6 +587,14 @@
             "color": "BLUE"
         },
         "back": {
+            "color": "BLUE",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -386,6 +602,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_RIGHT": "INSECT",
                 "LOWER_RIGHT": "ANIMAL",
@@ -395,6 +612,14 @@
             "color": "BLUE"
         },
         "back": {
+            "color": "BLUE",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -402,6 +627,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": "PLANT",
                 "TOP_RIGHT": "ANIMAL",
@@ -411,6 +637,14 @@
             "color": "BLUE"
         },
         "back": {
+            "color": "BLUE",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -418,6 +652,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": "QUILL",
                 "LOWER_RIGHT": "FUNGI",
@@ -427,6 +662,14 @@
             "color": "BLUE"
         },
         "back": {
+            "color": "BLUE",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -434,6 +677,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_RIGHT": null,
                 "LOWER_RIGHT": null,
@@ -443,6 +687,14 @@
             "color": "BLUE"
         },
         "back": {
+            "color": "BLUE",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -450,6 +702,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": null,
                 "LOWER_RIGHT": "ANIMAL",
@@ -459,6 +712,14 @@
             "color": "BLUE"
         },
         "back": {
+            "color": "BLUE",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -466,6 +727,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": "ANIMAL",
@@ -475,6 +737,14 @@
             "color": "BLUE"
         },
         "back": {
+            "color": "BLUE",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -482,6 +752,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": "INSECT",
                 "TOP_RIGHT": "INSECT",
@@ -491,6 +762,14 @@
             "color": "PURPLE"
         },
         "back": {
+            "color": "PURPLE",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -498,6 +777,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_RIGHT": null,
                 "LOWER_RIGHT": "INSECT",
@@ -507,6 +787,14 @@
             "color": "PURPLE"
         },
         "back": {
+            "color": "PURPLE",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -514,6 +802,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": "INSECT",
                 "LOWER_RIGHT": null,
@@ -523,6 +812,14 @@
             "color": "PURPLE"
         },
         "back": {
+            "color": "PURPLE",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -530,6 +827,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": "INSECT",
@@ -539,6 +837,14 @@
             "color": "PURPLE"
         },
         "back": {
+            "color": "PURPLE",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -546,6 +852,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_RIGHT": "QUILL",
                 "LOWER_RIGHT": "INSECT",
@@ -555,6 +862,14 @@
             "color": "PURPLE"
         },
         "back": {
+            "color": "PURPLE",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -562,6 +877,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": "MANUSCRIPT",
                 "TOP_RIGHT": "INSECT",
@@ -571,6 +887,14 @@
             "color": "PURPLE"
         },
         "back": {
+            "color": "PURPLE",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -578,6 +902,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": "INSECT",
                 "TOP_RIGHT": "PLANT",
@@ -587,6 +912,14 @@
             "color": "PURPLE"
         },
         "back": {
+            "color": "PURPLE",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -594,6 +927,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": "INSECT",
                 "LOWER_RIGHT": null,
@@ -603,6 +937,14 @@
             "color": "PURPLE"
         },
         "back": {
+            "color": "PURPLE",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -610,6 +952,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_LEFT": null,
                 "TOP_RIGHT": null,
@@ -619,6 +962,14 @@
             "color": "PURPLE"
         },
         "back": {
+            "color": "PURPLE",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }
@@ -626,6 +977,7 @@
     },
     {
         "front": {
+            "calculator": "CalculateNoCondition",
             "corners": {
                 "TOP_RIGHT": "INSECT",
                 "LOWER_RIGHT": null,
@@ -635,6 +987,14 @@
             "color": "PURPLE"
         },
         "back": {
+            "color": "PURPLE",
+            "corners": {
+                "TOP_LEFT": null,
+                "TOP_RIGHT": null,
+                "LOWER_RIGHT": null,
+                "LOWER_LEFT": null
+            },
+            "calculator": "CalculateBackPoints",
             "resources": {
                 "FUNGI": 1
             }

@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.card.strategies.CalculatePoints;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Front extends Face {
     private final int score;
@@ -40,6 +41,7 @@ public class Front extends Face {
 
     /**
      * ad hoc constructor for StartingCards
+     *
      * @param corners of startingCard
      * @throws IllegalArgumentException
      */
@@ -57,11 +59,11 @@ public class Front extends Face {
         return score;
     }
 
-    public String toString(){
+    public String toString() {
 
         StringBuilder cornerString = new StringBuilder();
 
-        for(CornerPosition c : this.getCorners().keySet()){ //todo update when deserializer is fixed
+        for(CornerPosition c : this.getCorners().keySet()){
              if(this.getCorners().get(c) != null) {
                  cornerString.append(c + ": ").append(this.getCorners().get(c).toString()).append(" - ");
              }
@@ -71,4 +73,17 @@ public class Front extends Face {
         return "{ Color: " + this.getColor() + "| Points" + this.score + " ) " + "| Corners: [ " + cornerString + " ] ";
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Front front = (Front) o;
+        return score == front.score;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), score);
+    }
 }
