@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.card;
 import it.polimi.ingsw.model.card.strategies.CalculateBackPoints;
 import it.polimi.ingsw.model.card.strategies.CalculatePoints;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +43,18 @@ public class Back extends Face {
      * @return resoucers map
      */
     public Map<Symbol, Integer> getResources() {
-        return resources;
+
+        Map<Symbol, Integer> totalResources = super.getResources(); //totalResources is only initialized with corner's resource
+
+        for (Symbol s : resources.keySet()) {            //sum corner's resource with back's resources
+            if (totalResources.containsKey(s)) {         //update the value
+                totalResources.put(s, totalResources.get(s) + resources.get(s));
+            } else {
+                totalResources.put(s, resources.get(s));
+            }
+        }
+
+        return totalResources;
     }
 
     /**
@@ -57,21 +69,22 @@ public class Back extends Face {
 
     /**
      * Facilitates the deserialization of the different cards present in the json.
+     *
      * @return modified string
      */
-    public String toString(){
+    public String toString() {
 
-        StringBuilder symbolString  = new StringBuilder();
+        StringBuilder symbolString = new StringBuilder();
         StringBuilder cornerString = new StringBuilder();
 
-        for(Symbol s : Symbol.values()){
-            if(resources.containsKey(s)){
+        for (Symbol s : Symbol.values()) {
+            if (resources.containsKey(s)) {
                 symbolString.append(s).append(" - ");
             }
         }
         symbolString.append("END");
 
-        for(CornerPosition c : this.getCorners().keySet()){
+        for (CornerPosition c : this.getCorners().keySet()) {
             cornerString.append(c + ": ").append(this.getCorners().get(c).toString()).append(" - ");
         }
         cornerString.append("END");

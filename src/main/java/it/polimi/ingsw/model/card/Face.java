@@ -63,7 +63,23 @@ abstract public class Face {
      *
      * @return a map containing the resources of the face and their quantity.
      */
-    public abstract Map<Symbol, Integer> getResources();
+    public Map<Symbol, Integer> getResources() {
+        Map<Symbol, Integer> resources = new HashMap<>();
+        for(CornerPosition c : this.getCorners().keySet()){
+            Symbol s = this.getCorners().get(c).getSymbol();
+
+            if(s != null){
+                if(resources.containsKey(s)){
+                    resources.put(s,resources.get(s) + 1);
+                }
+                else{
+                    resources.put(s,1);
+                }
+            }
+        }
+
+        return resources;
+    }
 
     /**
      * Returns required resources to place the card on the chosen side.

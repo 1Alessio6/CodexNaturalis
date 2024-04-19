@@ -49,24 +49,6 @@ public class Front extends Face {
         this.score = 0;
     }
 
-    public Map<Symbol, Integer> getResources() {
-        Map<Symbol, Integer> resources = new HashMap<>();
-        for(CornerPosition c : this.getCorners().keySet()){
-            Symbol s = this.getCorners().get(c).getSymbol();
-
-            if(s != null){
-                if(resources.containsKey(s)){
-                    resources.put(s,resources.get(s) + 1);
-                }
-                else{
-                    resources.put(s,1);
-                }
-            }
-        }
-
-        return resources;
-    }
-
     public int getScore() {
         return score;
     }
