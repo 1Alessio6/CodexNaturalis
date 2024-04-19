@@ -61,7 +61,7 @@ public class CustomJsonDeserializer {
             /* create calculator */
             CalculatePoints calculator = switch (pointsCondition) {
                 case CORNERS -> new CalculateCorners();
-                case NUM_MANUSCRIPT, NUM_INKWKELL, NUM_QUILL -> new CalculateResources();
+                case NUM_MANUSCRIPT, NUM_INKWELL, NUM_QUILL -> new CalculateResources();
                 case null -> new CalculateNoCondition();
             };
 
