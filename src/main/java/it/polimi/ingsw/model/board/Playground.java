@@ -138,7 +138,7 @@ public class Playground {
      */
     public void placeCard(Face c, Position p) throws UnavailablePositionException, NotEnoughResourcesException {
 
-        //todo this excemption can be thrown by the game
+        //todo this exception can be thrown by the game
         if (!this.area.containsKey(p) || !this.area.get(p).sameAvailability(Availability.EMPTY)) {
             throw new UnavailablePositionException("This Position it's not available");
         }
@@ -155,7 +155,7 @@ public class Playground {
         this.area.get(p).setAvailability(Availability.OCCUPIED);
         this.area.get(p).setFace(c);
 
-        CornerPosition corner_pos = null;
+        CornerPosition corner_pos;
 
         //update for every corner the disposition
         for (CornerPosition current_corner : CornerPosition.values()) {
@@ -163,21 +163,17 @@ public class Playground {
             Position pos = correspondingPosition(x, y, current_corner);
 
             if (this.area.containsKey(pos) && this.area.get(pos).sameAvailability(Availability.OCCUPIED)) {
-                switch (current_corner) { //for each iteration the corner occupied in the card we are covering it is different
+                corner_pos = switch (current_corner) { //for each iteration the corner occupied in the card we are covering it is different
                     //corner_pos represents the occupied corner position in the list
-                    case TOP_LEFT: //rx low
-                        corner_pos = CornerPosition.LOWER_RIGHT;
-                        break;
-                    case TOP_RIGHT: //sx low
-                        corner_pos = CornerPosition.LOWER_LEFT;
-                        break;
-                    case LOWER_RIGHT: //sx high
-                        corner_pos = CornerPosition.TOP_LEFT;
-                        break;
-                    case LOWER_LEFT: //rx high
-                        corner_pos = CornerPosition.TOP_RIGHT;
-                        break;
-                }
+                    case TOP_LEFT -> //rx low
+                            CornerPosition.LOWER_RIGHT;
+                    case TOP_RIGHT -> //sx low
+                            CornerPosition.LOWER_LEFT;
+                    case LOWER_RIGHT -> //sx high
+                            CornerPosition.TOP_LEFT;
+                    case LOWER_LEFT -> //rx high
+                            CornerPosition.TOP_RIGHT;
+                };
 
                 this.area.get(pos).getFace().getCorners().get(corner_pos).setCovered();
                 // the placement may cover a resource

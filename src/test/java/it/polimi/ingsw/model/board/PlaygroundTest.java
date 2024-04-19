@@ -45,8 +45,25 @@ class PlaygroundTest {
         //start of Test1
 
         test.placeCard(back1, new Position(0, 0));
+
+        checkTileAvailability(test, new Position(1,1), Availability.EMPTY);
+        checkTileAvailability(test, new Position(-1,1), Availability.EMPTY);
+        checkTileAvailability(test, new Position(-1,-1), Availability.EMPTY);
+        checkTileAvailability(test, new Position(1,-1), Availability.EMPTY);
+
         test.placeCard(back2, new Position(1, 1));
+
+        checkTileAvailability(test, new Position(0,0), Availability.OCCUPIED);
+        checkTileAvailability(test, new Position(2,0), Availability.EMPTY);
+        checkTileAvailability(test, new Position(0,2), Availability.EMPTY);
+        checkTileAvailability(test, new Position(2,2), Availability.EMPTY);
+
         test.placeCard(back3, new Position(1, -1));
+
+        checkTileAvailability(test, new Position(0,0), Availability.OCCUPIED);
+        checkTileAvailability(test, new Position(2,0), Availability.EMPTY);
+        checkTileAvailability(test, new Position(0,-2), Availability.EMPTY);
+        checkTileAvailability(test, new Position(2,-2), Availability.EMPTY);
 
         //current position we're checking
         Position pos = new Position(0, 0);
@@ -61,7 +78,7 @@ class PlaygroundTest {
         checkCoveredCorner(test, pos, CornerPosition.LOWER_RIGHT, true);
 
         //check if the color is correct
-        checkFaceColor(test, pos, Color.RED);
+        checkFaceStatus(test, pos, back1);
 
         pos = new Position(1, 1);
         checkTileAvailability(test, pos, Availability.OCCUPIED);
@@ -69,7 +86,7 @@ class PlaygroundTest {
         checkCoveredCorner(test, pos, CornerPosition.TOP_LEFT, false);
         checkCoveredCorner(test, pos, CornerPosition.LOWER_LEFT, false);
         checkCoveredCorner(test, pos, CornerPosition.LOWER_RIGHT, false);
-        checkFaceColor(test, pos, Color.RED);
+        checkFaceStatus(test, pos, back2);
 
         pos = new Position(1, -1);
         checkTileAvailability(test, pos, Availability.OCCUPIED);
@@ -77,7 +94,7 @@ class PlaygroundTest {
         checkCoveredCorner(test, pos, CornerPosition.TOP_LEFT, false);
         checkCoveredCorner(test, pos, CornerPosition.LOWER_LEFT, false);
         checkCoveredCorner(test, pos, CornerPosition.LOWER_RIGHT, false);
-        checkFaceColor(test, pos, Color.RED);
+        checkFaceStatus(test, pos, back3);
 
         //check available position
         List<Position> correctAvailablePosition = new ArrayList<>();
@@ -119,11 +136,27 @@ class PlaygroundTest {
         Playground test = new Playground();
 
         test.placeCard(starterBack, new Position(0, 0));
+
+        checkTileAvailability(test, new Position(1,1), Availability.EMPTY);
+        checkTileAvailability(test, new Position(-1,1), Availability.EMPTY);
+        checkTileAvailability(test, new Position(-1,-1), Availability.EMPTY);
+        checkTileAvailability(test, new Position(1,-1), Availability.EMPTY);
+
         test.placeCard(front1, new Position(-1, 1));
+
+        checkTileAvailability(test, new Position(0,0), Availability.OCCUPIED);
+        checkTileAvailability(test, new Position(-2,0), Availability.NOTAVAILABLE);
+        checkTileAvailability(test, new Position(0,2), Availability.EMPTY);
+        checkTileAvailability(test, new Position(-2,2), Availability.EMPTY);
+
         test.placeCard(front2, new Position(-1, -1));
-        assertThrows(Playground.UnavailablePositionException.class, () -> {
-            test.placeCard(front3, new Position(-2, 0));
-        });
+
+        checkTileAvailability(test, new Position(0,0), Availability.OCCUPIED);
+        checkTileAvailability(test, new Position(-2,0), Availability.NOTAVAILABLE);
+        checkTileAvailability(test, new Position(0,-2), Availability.NOTAVAILABLE);
+        checkTileAvailability(test, new Position(-2,-2), Availability.EMPTY);
+
+        assertThrows(Playground.UnavailablePositionException.class, () -> test.placeCard(front3, new Position(-2, 0)));
 
         //current position we're checking
         Position pos = new Position(0, 0);
@@ -138,15 +171,15 @@ class PlaygroundTest {
         checkCoveredCorner(test, pos, CornerPosition.LOWER_RIGHT, false);
 
         //check if the color is correct
-        checkFaceColor(test, pos, null);
+        checkFaceStatus(test, pos, starterBack);
 
         pos = new Position(-1, 1);
         checkTileAvailability(test, pos, Availability.OCCUPIED);
         checkCoveredCorner(test, pos, CornerPosition.TOP_RIGHT, false);
         checkCoveredCorner(test, pos, CornerPosition.TOP_LEFT, false);
-        checkCoveredCorner(test, pos, CornerPosition.LOWER_LEFT, false);//e' false
+        checkCoveredCorner(test, pos, CornerPosition.LOWER_LEFT, false);
         checkCoveredCorner(test, pos, CornerPosition.LOWER_RIGHT, false);
-        checkFaceColor(test, pos, Color.BLUE);
+        checkFaceStatus(test, pos, front1);
 
         pos = new Position(-1, -1);
         checkTileAvailability(test, pos, Availability.OCCUPIED);
@@ -154,7 +187,7 @@ class PlaygroundTest {
         checkCoveredCorner(test, pos, CornerPosition.TOP_LEFT, false);
         checkCoveredCorner(test, pos, CornerPosition.LOWER_LEFT, false);
         checkCoveredCorner(test, pos, CornerPosition.LOWER_RIGHT, false);
-        checkFaceColor(test, pos, Color.BLUE);
+        checkFaceStatus(test, pos, front2);
 
         checkResource(test, Symbol.FUNGI, 1);
         checkResource(test, Symbol.PLANT, 2);
@@ -197,6 +230,13 @@ class PlaygroundTest {
         checkResource(test, Symbol.QUILL, 0);
         checkPoints(test, 0);
 
+        //checks the tiles created
+
+        checkTileAvailability(test, new Position(1,1), Availability.EMPTY);
+        checkTileAvailability(test, new Position(-1,1), Availability.EMPTY);
+        checkTileAvailability(test, new Position(-1,-1), Availability.EMPTY);
+        checkTileAvailability(test, new Position(1,-1), Availability.EMPTY);
+
         test.placeCard(front1, new Position(1, 1));
 
         checkResource(test, Symbol.FUNGI, 1);
@@ -207,6 +247,10 @@ class PlaygroundTest {
         checkResource(test, Symbol.INSECT, 2);
         checkResource(test, Symbol.QUILL, 0);
         checkPoints(test, 1);
+        checkTileAvailability(test, new Position(0,0), Availability.OCCUPIED);
+        checkTileAvailability(test, new Position(2,0), Availability.NOTAVAILABLE);
+        checkTileAvailability(test, new Position(0,2), Availability.EMPTY);
+        checkTileAvailability(test, new Position(2,2), Availability.EMPTY);
 
         test.placeCard(front2, new Position(2, 2));
 
@@ -218,6 +262,10 @@ class PlaygroundTest {
         checkResource(test, Symbol.INSECT, 2);
         checkResource(test, Symbol.QUILL, 0);
         checkPoints(test, 1);
+        checkTileAvailability(test, new Position(1,1), Availability.OCCUPIED);
+        checkTileAvailability(test, new Position(3,1), Availability.EMPTY);
+        checkTileAvailability(test, new Position(1,3), Availability.EMPTY);
+        checkTileAvailability(test, new Position(3,3), Availability.EMPTY);
 
         test.placeCard(front3, new Position(1, 3));
 
@@ -229,6 +277,10 @@ class PlaygroundTest {
         checkResource(test, Symbol.INSECT, 3);
         checkResource(test, Symbol.QUILL, 1);
         checkPoints(test, 1);
+        checkTileAvailability(test, new Position(2,2), Availability.OCCUPIED);
+        checkTileAvailability(test, new Position(2,4), Availability.EMPTY);
+        checkTileAvailability(test, new Position(0,2), Availability.EMPTY);
+        checkTileAvailability(test, new Position(0,4), Availability.NOTAVAILABLE);
 
         test.placeCard(front4, new Position(-1, 1));
 
@@ -240,6 +292,10 @@ class PlaygroundTest {
         checkResource(test, Symbol.INSECT, 4);
         checkResource(test, Symbol.QUILL, 1);
         checkPoints(test, 1);
+        checkTileAvailability(test, new Position(0,0), Availability.OCCUPIED);
+        checkTileAvailability(test, new Position(-2,0), Availability.EMPTY);
+        checkTileAvailability(test, new Position(0,2), Availability.EMPTY);
+        checkTileAvailability(test, new Position(-2,2), Availability.EMPTY);
 
         test.placeCard(front5, new Position(-2, 2));
 
@@ -251,6 +307,10 @@ class PlaygroundTest {
         checkResource(test, Symbol.INSECT, 3);
         checkResource(test, Symbol.QUILL, 1);
         checkPoints(test, 1);
+        checkTileAvailability(test, new Position(-1,1), Availability.OCCUPIED);
+        checkTileAvailability(test, new Position(-3,3), Availability.EMPTY);
+        checkTileAvailability(test, new Position(-3,1), Availability.NOTAVAILABLE);
+        checkTileAvailability(test, new Position(-1,3), Availability.EMPTY);
 
         test.placeCard(front6, new Position(-1, 3));
 
@@ -262,6 +322,10 @@ class PlaygroundTest {
         checkResource(test, Symbol.INSECT, 3);
         checkResource(test, Symbol.QUILL, 1);
         checkPoints(test, 2);
+        checkTileAvailability(test, new Position(-2,2), Availability.OCCUPIED);
+        checkTileAvailability(test, new Position(0,2), Availability.EMPTY);
+        checkTileAvailability(test, new Position(0,4), Availability.NOTAVAILABLE);
+        checkTileAvailability(test, new Position(-2,4), Availability.NOTAVAILABLE);
 
         test.placeCard(front7, new Position(0, 2));
 
@@ -273,6 +337,7 @@ class PlaygroundTest {
         checkResource(test, Symbol.INSECT, 3);
         checkResource(test, Symbol.QUILL, 0);
         checkPoints(test, 3);
+        //checking the adjacent position it's not necessary it's checked in the next code portion
 
         //current position we're checking
         Position pos = new Position(0, 0);
@@ -287,7 +352,7 @@ class PlaygroundTest {
         checkCoveredCorner(test, pos, CornerPosition.LOWER_RIGHT, false);
 
         //check if the color is correct
-        checkFaceColor(test, pos, null);
+        checkFaceStatus(test, pos, starterBack);
 
         pos = new Position(1, 1);
         checkTileAvailability(test, pos, Availability.OCCUPIED);
@@ -295,7 +360,7 @@ class PlaygroundTest {
         checkCoveredCorner(test, pos, CornerPosition.TOP_LEFT, true);
         checkCoveredCorner(test, pos, CornerPosition.LOWER_LEFT, false);
         checkCoveredCorner(test, pos, CornerPosition.LOWER_RIGHT, false);
-        checkFaceColor(test, pos, Color.RED);
+        checkFaceStatus(test, pos, front1);
 
         pos = new Position(2, 2);
         checkTileAvailability(test, pos, Availability.OCCUPIED);
@@ -303,7 +368,7 @@ class PlaygroundTest {
         checkCoveredCorner(test, pos, CornerPosition.TOP_LEFT, true);
         checkCoveredCorner(test, pos, CornerPosition.LOWER_LEFT, false);
         checkCoveredCorner(test, pos, CornerPosition.LOWER_RIGHT, false);
-        checkFaceColor(test, pos, Color.BLUE);
+        checkFaceStatus(test, pos, front2);
 
         pos = new Position(1, 3);
         checkTileAvailability(test, pos, Availability.OCCUPIED);
@@ -311,7 +376,7 @@ class PlaygroundTest {
         checkCoveredCorner(test, pos, CornerPosition.TOP_LEFT, false);
         checkCoveredCorner(test, pos, CornerPosition.LOWER_LEFT, true);
         checkCoveredCorner(test, pos, CornerPosition.LOWER_RIGHT, false);
-        checkFaceColor(test, pos, Color.GREEN);
+        checkFaceStatus(test, pos, front3);
 
         pos = new Position(-1, 1);
         checkTileAvailability(test, pos, Availability.OCCUPIED);
@@ -319,7 +384,7 @@ class PlaygroundTest {
         checkCoveredCorner(test, pos, CornerPosition.TOP_LEFT, true);
         checkCoveredCorner(test, pos, CornerPosition.LOWER_LEFT, false);
         checkCoveredCorner(test, pos, CornerPosition.LOWER_RIGHT, false);
-        checkFaceColor(test, pos, Color.PURPLE);
+        checkFaceStatus(test, pos, front4);
 
         pos = new Position(-2, 2);
         checkTileAvailability(test, pos, Availability.OCCUPIED);
@@ -327,7 +392,7 @@ class PlaygroundTest {
         checkCoveredCorner(test, pos, CornerPosition.TOP_LEFT, false);
         checkCoveredCorner(test, pos, CornerPosition.LOWER_LEFT, false);
         checkCoveredCorner(test, pos, CornerPosition.LOWER_RIGHT, false);
-        checkFaceColor(test, pos, Color.GREEN);
+        checkFaceStatus(test, pos, front5);
 
         pos = new Position(-1, 3);
         checkTileAvailability(test, pos, Availability.OCCUPIED);
@@ -335,7 +400,7 @@ class PlaygroundTest {
         checkCoveredCorner(test, pos, CornerPosition.TOP_LEFT, false);
         checkCoveredCorner(test, pos, CornerPosition.LOWER_LEFT, false);
         checkCoveredCorner(test, pos, CornerPosition.LOWER_RIGHT, true);
-        checkFaceColor(test, pos, Color.GREEN);
+        checkFaceStatus(test, pos, front6);
 
         pos = new Position(0, 2);
         checkTileAvailability(test, pos, Availability.OCCUPIED);
@@ -343,9 +408,7 @@ class PlaygroundTest {
         checkCoveredCorner(test, pos, CornerPosition.TOP_LEFT, false);
         checkCoveredCorner(test, pos, CornerPosition.LOWER_LEFT, false);
         checkCoveredCorner(test, pos, CornerPosition.LOWER_RIGHT, false);
-        checkFaceColor(test, pos, Color.BLUE);
-
-
+        checkFaceStatus(test, pos, front7);
     }
 
     /*
@@ -361,6 +424,16 @@ class PlaygroundTest {
 
     private void checkFaceColor(Playground test, Position position, Color c) {
         assertSame(test.getTile(position).getFace().getColor(), c);
+    }
+
+    private void checkFaceStatus(Playground test, Position position, Face previousFace) { //previous face represent the face before its placing
+        checkFaceColor(test, position, previousFace.getColor());
+        for (CornerPosition c : previousFace.getCorners().keySet()) {
+            assertEquals(previousFace.getCorners().get(c).getSymbol(), test.getTile(position).getFace().getCorners().get(c).getSymbol());
+        }
+        assertEquals(previousFace.getScore(), test.getTile(position).getFace().getScore());
+        assertEquals(previousFace.getResources(), test.getTile(position).getFace().getResources());
+
     }
 
     private void checkTileAvailability(Playground test, Position position, Availability availability) {
