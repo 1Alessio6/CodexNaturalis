@@ -38,67 +38,52 @@ class PlaygroundTest {
 
         //test place back
 
-        Playground PlaygroundTestBack = new Playground();
+        Playground test = new Playground();
 
         //cards creation
-        Map<CornerPosition, Corner> back1Corners = new HashMap<>();
-        for(CornerPosition c : CornerPosition.values()){
-            back1Corners.put(c,new Corner());
-        }
-
-        Map<CornerPosition, Corner> back2Corners = new HashMap<>();
-        for(CornerPosition c : CornerPosition.values()){
-            back2Corners.put(c,new Corner());
-        }
-
-        Map<CornerPosition, Corner> back3Corners = new HashMap<>();
-        for(CornerPosition c : CornerPosition.values()){
-            back3Corners.put(c,new Corner());
-        }
-
         Map<Symbol, Integer> fungiResource = new HashMap<>();
         fungiResource.put(Symbol.FUNGI, 1);
 
-        Back back1 = new Back(Color.RED, back1Corners, fungiResource);
-        Back back2 = new Back(Color.RED, back2Corners, fungiResource);
-        Back back3 = new Back(Color.RED, back3Corners, fungiResource);
+        Back back1 = new Back(Color.RED, createBackCorners(), fungiResource);
+        Back back2 = new Back(Color.RED, createBackCorners(), fungiResource);
+        Back back3 = new Back(Color.RED, createBackCorners(), fungiResource);
 
         //start of Test1
 
-        PlaygroundTestBack.placeCard(back1,new Position(0,0));
-        PlaygroundTestBack.placeCard(back2,new Position(1,1));
-        PlaygroundTestBack.placeCard(back3,new Position(1,-1));
+        test.placeCard(back1,new Position(0,0));
+        test.placeCard(back2,new Position(1,1));
+        test.placeCard(back3,new Position(1,-1));
 
         //current position we're checking
         Position pos = new Position(0,0);
 
         //check tile availability
-        checkTileAvailability(PlaygroundTestBack,pos,Availability.OCCUPIED);
+        checkTileAvailability(test,pos,Availability.OCCUPIED);
 
         //check if the corners are correctly covered
-        checkCoveredCorner(PlaygroundTestBack,pos,CornerPosition.TOP_RIGHT,true);
-        checkCoveredCorner(PlaygroundTestBack,pos,CornerPosition.TOP_LEFT,false);
-        checkCoveredCorner(PlaygroundTestBack,pos,CornerPosition.LOWER_LEFT,false);
-        checkCoveredCorner(PlaygroundTestBack,pos,CornerPosition.LOWER_RIGHT,true);
+        checkCoveredCorner(test,pos,CornerPosition.TOP_RIGHT,true);
+        checkCoveredCorner(test,pos,CornerPosition.TOP_LEFT,false);
+        checkCoveredCorner(test,pos,CornerPosition.LOWER_LEFT,false);
+        checkCoveredCorner(test,pos,CornerPosition.LOWER_RIGHT,true);
 
         //check if the color is correct
-        checkFaceColor(PlaygroundTestBack,pos,Color.RED);
+        checkFaceColor(test,pos,Color.RED);
 
         pos = new Position(1,1);
-        checkTileAvailability(PlaygroundTestBack,pos,Availability.OCCUPIED);
-        checkCoveredCorner(PlaygroundTestBack,pos,CornerPosition.TOP_RIGHT,false);
-        checkCoveredCorner(PlaygroundTestBack,pos,CornerPosition.TOP_LEFT,false);
-        checkCoveredCorner(PlaygroundTestBack,pos,CornerPosition.LOWER_LEFT,false);
-        checkCoveredCorner(PlaygroundTestBack,pos,CornerPosition.LOWER_RIGHT,false);
-        checkFaceColor(PlaygroundTestBack,pos,Color.RED);
+        checkTileAvailability(test,pos,Availability.OCCUPIED);
+        checkCoveredCorner(test,pos,CornerPosition.TOP_RIGHT,false);
+        checkCoveredCorner(test,pos,CornerPosition.TOP_LEFT,false);
+        checkCoveredCorner(test,pos,CornerPosition.LOWER_LEFT,false);
+        checkCoveredCorner(test,pos,CornerPosition.LOWER_RIGHT,false);
+        checkFaceColor(test,pos,Color.RED);
 
         pos = new Position(1,-1);
-        checkTileAvailability(PlaygroundTestBack,pos,Availability.OCCUPIED);
-        checkCoveredCorner(PlaygroundTestBack,pos,CornerPosition.TOP_RIGHT,false);
-        checkCoveredCorner(PlaygroundTestBack,pos,CornerPosition.TOP_LEFT,false);
-        checkCoveredCorner(PlaygroundTestBack,pos,CornerPosition.LOWER_LEFT,false);
-        checkCoveredCorner(PlaygroundTestBack,pos,CornerPosition.LOWER_RIGHT,false);
-        checkFaceColor(PlaygroundTestBack,pos,Color.RED);
+        checkTileAvailability(test,pos,Availability.OCCUPIED);
+        checkCoveredCorner(test,pos,CornerPosition.TOP_RIGHT,false);
+        checkCoveredCorner(test,pos,CornerPosition.TOP_LEFT,false);
+        checkCoveredCorner(test,pos,CornerPosition.LOWER_LEFT,false);
+        checkCoveredCorner(test,pos,CornerPosition.LOWER_RIGHT,false);
+        checkFaceColor(test,pos,Color.RED);
 
         //check available position
         List<Position> correctAvailablePosition = new ArrayList<>();
@@ -109,15 +94,17 @@ class PlaygroundTest {
         correctAvailablePosition.add(new Position(2,0));
         correctAvailablePosition.add(new Position(2,-2));
         correctAvailablePosition.add(new Position(0,-2));
-        checkAvailableList(correctAvailablePosition, PlaygroundTestBack);
+        checkAvailableList(correctAvailablePosition, test);
 
-        checkResource(PlaygroundTestBack, Symbol.FUNGI, 3);
-        checkPoints(PlaygroundTestBack, 0);
+        checkResource(test, Symbol.FUNGI, 3);
+        checkResource(test, Symbol.PLANT, 0);
+        checkResource(test, Symbol.ANIMAL, 0);
+        checkResource(test, Symbol.MANUSCRIPT, 0);
+        checkResource(test, Symbol.INKWELL, 0);
+        checkResource(test, Symbol.INSECT, 0);
+        checkResource(test, Symbol.QUILL, 0);
 
-        /*
-        System.out.println(PlaygroundTestBack);
-        System.out.println(PlaygroundTestBack.getAvailablePositions());
-        */
+        checkPoints(test, 0);
 
     }
 
@@ -125,30 +112,77 @@ class PlaygroundTest {
     void placeCardTest2() throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException{
         //second test
 
-        List<Card> cardsTest = createTestResourceCards("/playground/Test2.json");
-        //List<Card> StartingCardsTest = CustomJsonDeserializer.createStartingCards();
+        //create test cards
+        HashMap<Symbol,Integer> resorces = new HashMap<>();
+        resorces.put(Symbol.FUNGI,1);
+        resorces.put(Symbol.PLANT,1);
 
-        Playground PlaygroundSecondTest = new Playground();
+        Back starterBack = new Back(null, createBackCorners(),resorces);
+        Front front1 = new Front(Color.BLUE,createCorners(new Corner(Symbol.PLANT), new Corner(Symbol.ANIMAL), new Corner(Symbol.MANUSCRIPT),null),0);
+        Front front2 = new Front(Color.BLUE,createCorners(new Corner(), new Corner(Symbol.ANIMAL), null , new Corner()),1);
+        Front front3 = new Front(Color.GREEN,createCorners(new Corner(), new Corner(), new Corner(Symbol.INSECT),null),1);
 
-        PlaygroundSecondTest.placeCard(cardsTest.get(0).getFace(Side.BACK),new Position(0,0));
-        System.out.println(PlaygroundSecondTest);
+        Playground test = new Playground();
 
-        PlaygroundSecondTest.placeCard(cardsTest.get(0).getFace(Side.FRONT),new Position(-1,1));
-        System.out.println(PlaygroundSecondTest);
+        test.placeCard(starterBack, new Position(0,0));
+        test.placeCard(front1, new Position(-1,1));
+        test.placeCard(front2, new Position(-1,-1));
+        assertThrows(Playground.UnavailablePositionException.class, () -> { test.placeCard(front3,new Position(-2,0));});
 
-        PlaygroundSecondTest.placeCard(cardsTest.get(1).getFace(Side.FRONT),new Position(-1,-1));
-        System.out.println(PlaygroundSecondTest);
+        //current position we're checking
+        Position pos = new Position(0,0);
 
-        List<Card> finalCardsTest = cardsTest;
-        assertThrows(Playground.UnavailablePositionException.class, () -> { PlaygroundSecondTest.placeCard(finalCardsTest.get(2).getFace(Side.FRONT),new Position(-2,0));});
-        System.out.println(PlaygroundSecondTest);
+        //check tile availability
+        checkTileAvailability(test,pos,Availability.OCCUPIED);
+
+        //check if the corners are correctly covered
+        checkCoveredCorner(test,pos,CornerPosition.TOP_RIGHT,false);
+        checkCoveredCorner(test,pos,CornerPosition.TOP_LEFT,true);
+        checkCoveredCorner(test,pos,CornerPosition.LOWER_LEFT,true);
+        checkCoveredCorner(test,pos,CornerPosition.LOWER_RIGHT,false);
+
+        //check if the color is correct
+        checkFaceColor(test,pos,null);
+
+        pos = new Position(-1,1);
+        checkTileAvailability(test,pos,Availability.OCCUPIED);
+        checkCoveredCorner(test,pos,CornerPosition.TOP_RIGHT,false);
+        checkCoveredCorner(test,pos,CornerPosition.TOP_LEFT,false);
+        checkCoveredCorner(test,pos,CornerPosition.LOWER_LEFT,false);//e' false
+        checkCoveredCorner(test,pos,CornerPosition.LOWER_RIGHT,false);
+        checkFaceColor(test,pos,Color.BLUE);
+
+        pos = new Position(-1,-1);
+        checkTileAvailability(test,pos,Availability.OCCUPIED);
+        checkCoveredCorner(test,pos,CornerPosition.TOP_RIGHT,false);
+        checkCoveredCorner(test,pos,CornerPosition.TOP_LEFT,false);
+        checkCoveredCorner(test,pos,CornerPosition.LOWER_LEFT,false);
+        checkCoveredCorner(test,pos,CornerPosition.LOWER_RIGHT,false);
+        checkFaceColor(test,pos,Color.BLUE);
+
+        //List<Card> finalCardsTest = cardsTest;
+
+        checkResource(test, Symbol.FUNGI, 1);
+        checkResource(test, Symbol.PLANT, 2);
+        checkResource(test, Symbol.ANIMAL, 2);
+        checkResource(test, Symbol.MANUSCRIPT, 1);
+        checkResource(test, Symbol.INKWELL, 0);
+        checkResource(test, Symbol.INSECT, 0);
+        checkResource(test, Symbol.QUILL, 0);
+
+        checkPoints(test, 1);
     }
 
     /*
     Status is true when the corner is covered otherwise is false
      */
     private void checkCoveredCorner(Playground test, Position position, CornerPosition cornerPosition, boolean status){
-        assertEquals(test.getTile(position).getFace().getCorners().get(cornerPosition).isCovered(), status);
+        if(test.getTile(position).getFace().getCorners().containsKey(cornerPosition)){
+            assertEquals(test.getTile(position).getFace().getCorners().get(cornerPosition).isCovered(), status);
+        }
+        else{
+            assertFalse(status);
+        }
     }
 
     private void checkFaceColor(Playground test, Position position, Color c){
@@ -156,7 +190,7 @@ class PlaygroundTest {
     }
 
     private void checkTileAvailability(Playground test, Position position, Availability availability){
-        assertTrue(test.getTile(new Position(1, 1)).sameAvailability(availability));
+        assertTrue(test.getTile(position).sameAvailability(availability));
     }
 
     private void checkPoints(Playground test, int points){
@@ -170,6 +204,34 @@ class PlaygroundTest {
     private void checkAvailableList(List<Position> correctList, Playground Test){
         assertEquals(correctList.size(), Test.getAvailablePositions().size());
         assertTrue(Test.getAvailablePositions().containsAll(correctList) && correctList.containsAll(Test.getAvailablePositions()));
+    }
+
+    private Map<CornerPosition,Corner> createCorners(Corner pos1, Corner pos2, Corner pos3, Corner pos4){
+        Map<CornerPosition, Corner> corners = new HashMap<>();
+
+        placeCorner(corners,CornerPosition.TOP_LEFT,pos1);
+        placeCorner(corners,CornerPosition.TOP_RIGHT,pos2);
+        placeCorner(corners,CornerPosition.LOWER_RIGHT,pos3);
+        placeCorner(corners,CornerPosition.LOWER_LEFT,pos4);
+
+        return corners;
+    }
+
+    private Map<CornerPosition, Corner> placeCorner(Map<CornerPosition,Corner> map, CornerPosition pos, Corner c){
+        if(c != null){
+            map.put(pos,c);
+        }
+        return map;
+    }
+
+    private Map<CornerPosition,Corner> createBackCorners(){
+        Map<CornerPosition, Corner> corners = new HashMap<>();
+
+        for(CornerPosition c : CornerPosition.values()){
+            corners.put(c,new Corner());
+        }
+
+        return corners;
     }
 
     private List<Card> createTestResourceCards(String resourceCardsPath){
