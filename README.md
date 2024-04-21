@@ -10,10 +10,11 @@ Codex Naturalis is the implementation of the homonymous game 'Codex Naturalis' d
 **Professor:** Alessandro Margara
 
 **Team:**
-  * [Riccardo Cerberi][2].
-  * [Carlo Aspren Gines Lara][3].
-  * [Alessio Ginolfi][4].
-  * [Natalia Daniello Lopez][5].
+- ### Alessio Ginolfi (https://github.com/1Alessio6)<br>alessio.ginolfi@mail.polimi.it
+- ### Carlo Aspren Gines Lara (https://github.com/chuckdotsvg)<br>carloaspren.gines@mail.polimi.it
+- ### Natalia Daniello Lopez (https://github.com/audlo)<br>natalia.daniello@mail.polimi.it
+- ### Riccardo Cerberi (https://github.com/RiccardoCerberi)<br>riccardo.cerberi@mail.polimi.it
+[//]: <> (todo add person code and github nickname)
   
 </p>
 
