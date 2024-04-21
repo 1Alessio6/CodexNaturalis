@@ -156,7 +156,7 @@ class PlaygroundTest {
         checkTileAvailability(test, new Position(0,-2), Availability.NOTAVAILABLE);
         checkTileAvailability(test, new Position(-2,-2), Availability.EMPTY);
 
-        assertThrows(Playground.UnavailablePositionException.class, () -> test.placeCard(front3, new Position(-2, 0)));
+        checkThrowsUnavailablePositionException(test, front3, new Position(-2, 0));
 
         //current position we're checking
         Position pos = new Position(0, 0);
@@ -451,6 +451,10 @@ class PlaygroundTest {
     private void checkAvailableList(List<Position> correctList, Playground Test) {
         assertEquals(correctList.size(), Test.getAvailablePositions().size());
         assertTrue(Test.getAvailablePositions().containsAll(correctList) && correctList.containsAll(Test.getAvailablePositions()));
+    }
+
+    private void checkThrowsUnavailablePositionException(Playground test, Face face, Position unavailablePosition){
+        assertThrows(Playground.UnavailablePositionException.class, () -> test.placeCard(face, unavailablePosition));
     }
 
     private Map<CornerPosition, Corner> createCorners(Corner pos1, Corner pos2, Corner pos3, Corner pos4) {
