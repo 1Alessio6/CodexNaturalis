@@ -433,6 +433,7 @@ class PlaygroundTest {
         }
         assertEquals(previousFace.getScore(), test.getTile(position).getFace().getScore());
         assertEquals(previousFace.getResources(), test.getTile(position).getFace().getResources());
+        assertEquals(previousFace, test.getTile(position).getFace());
 
     }
 
@@ -455,6 +456,11 @@ class PlaygroundTest {
 
     private void checkThrowsUnavailablePositionException(Playground test, Face face, Position unavailablePosition){
         assertThrows(Playground.UnavailablePositionException.class, () -> test.placeCard(face, unavailablePosition));
+    }
+
+    private void checkThrowsNotEnoughResourcesException(Playground test, Face face){
+        Position pos = test.getAvailablePositions().get(0);
+        assertThrows(Playground.NotEnoughResourcesException.class, () -> test.placeCard(face, pos));
     }
 
     private Map<CornerPosition, Corner> createCorners(Corner pos1, Corner pos2, Corner pos3, Corner pos4) {
