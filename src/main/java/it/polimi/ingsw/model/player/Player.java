@@ -216,6 +216,14 @@ public class Player {
         return objectiveCards;
     }
 
+    /**
+     * Sets <code>this</code>' color.
+     *
+     * @param color to set
+     */
+    void setColor(Color color) {
+        this.colour = color;
+    }
 
     /**
      * Returns player's cards, excluding the objective and starter cards.
@@ -224,6 +232,16 @@ public class Player {
      */
     public List<Card> getCards() {
         return cards;
+    }
+
+    /**
+     * Sets the player's color to <code>color</code>.
+     *
+     * @param color the color to set
+     * @throws InvalidPlayerActionException if the player cannot perform the operation.
+     */
+    public void assignColor(Color color) throws InvalidPlayerActionException {
+        playerAction.assignColor(this, color);
     }
 
     /**

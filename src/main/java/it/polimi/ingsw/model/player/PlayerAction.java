@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 /**
  * A class containing all methods representing possible player's action.
  * The fsm is
- * ChooseStarter -> ChooseObjective -> Place -> Draw -> Place
+ * ChooseStarter -> ChooseColor -> ChooseObjective -> Place -> Draw -> Place
  * NOTE. Each Player Action is independent of the game's state, it only models which operation the player can do provided
  * the right context.
  */
@@ -35,6 +35,16 @@ public abstract class PlayerAction {
         throw new InvalidPlayerActionException("Player cannot place a card");
     }
 
+    /**
+     * Sets the player's color to <code>color</code>.
+     *
+     * @param player the player who has chose the color
+     * @param color the color to set
+     * @throws InvalidPlayerActionException if the player cannot perform the operation.
+     */
+    void assignColor(Player player, Color color) throws InvalidPlayerActionException {
+        throw new InvalidPlayerActionException("Player cannot place a card");
+    }
 
     /**
      * Allows the player to place the secret objective card.
@@ -58,15 +68,6 @@ public abstract class PlayerAction {
     void addCard(Player player, Card newCard) throws InvalidPlayerActionException {
         throw new InvalidPlayerActionException("Player cannot draw");
     }
-
-    //void drawFromDeck(Player player, Deck<Card> deck) throws InvalidPlayerActionException, EmptyDeckException {
-    //    throw new InvalidPlayerActionException("Player cannot draw");
-    //}
-
-    //void drawFromFaceUpCards(Player player, List<Card> faceUpCards, int cardIdx, Deck<Card> deck) throws InvalidPlayerActionException, EmptyDeckException {
-    //    throw new InvalidPlayerActionException("Player cannot draw");
-    //}
-
 
     /**
      * Updates the state of the Player Action.
@@ -104,10 +105,23 @@ class ChooseStarter extends PlayerAction {
     int placeCard(Player player, Card card, Side side, Position position)
             throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
         player.getPlayground().placeCard(card.getFace(side), position);
-        nextAction(player, new ChooseObjective());
+        assert (player.getPoints() == 0);
+
+        nextAction(player, new ChooseColor());
         // starter doesn't increment player's points
         assert (player.getPoints() == 0);
         return player.getPoints();
+    }
+}
+
+class ChooseColor extends PlayerAction {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    void assignColor(Player player, Color color) {
+        player.setColor(color);
+        nextAction(player, new ChooseObjective());
     }
 }
 

@@ -427,6 +427,10 @@ public class Game {
         }
     }
 
+    public void assignColor(String username, Color color) throws InvalidPlayerActionException {
+        gameState.assignColor(this, getPlayerByUsername(username), color);
+    }
+
     /**
      * Places the secret objective from one of the two available.
      *

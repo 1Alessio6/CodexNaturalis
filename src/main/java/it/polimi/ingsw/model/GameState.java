@@ -42,6 +42,16 @@ public abstract class GameState {
     }
 
     /**
+     * Allows the player to choose a color
+     *
+     * @param game   in which the action takes place.
+     * @param player who performs the placement.
+     * @param color  of the player
+     * @throws InvalidPlayerActionException            if the player cannot perform the operation.
+     */
+    public void assignColor(Game game, Player player, Color color) throws  InvalidPlayerActionException {}
+
+    /**
      * Allows the player to place the secret objective in a game.
      *
      * @param game            in which the action takes place.
@@ -149,6 +159,13 @@ class Setup extends GameState {
         player.placeStarter(side);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void assignColor(Game game, Player player, Color color) throws  InvalidPlayerActionException {
+        player.assignColor(color);
+    }
 
     /**
      * {@inheritDoc}
