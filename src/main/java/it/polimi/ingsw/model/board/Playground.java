@@ -138,7 +138,6 @@ public class Playground {
      */
     public void placeCard(Face c, Position p) throws UnavailablePositionException, NotEnoughResourcesException {
 
-        //todo this exception can be thrown by the game
         if (!this.area.containsKey(p) || !this.area.get(p).sameAvailability(Availability.EMPTY)) {
             throw new UnavailablePositionException("This Position it's not available");
         }
