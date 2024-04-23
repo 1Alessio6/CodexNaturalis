@@ -6,7 +6,7 @@ import it.polimi.ingsw.model.card.Color;
 import java.util.*;
 
 public class Lobby {
-    private Map<String, Color> users;
+    private List<String> users;
     private boolean isStarted;
     private final int gameSize;
     private final int MAX_NUMBER = 4;
@@ -18,17 +18,17 @@ public class Lobby {
             throw new IllegalArgumentException("Number of players should be between " + MIN_NUMBER + " and " + MAX_NUMBER);
 
         this.gameSize = size;
-        users = new HashMap<>(size);
+        users = new ArrayList<>(size);
         isStarted = false;
 
-        users.put(creator, creatorColor);
+        users.add(creator);
     }
 
     protected void addPlayer (String username, Color color) throws IndexOutOfBoundsException{
         if (users.size() == this.gameSize)
             throw new IndexOutOfBoundsException("Already reached " + gameSize + "players!");
 
-        users.put(username, color);
+        users.add(username);
     }
 
     protected Game createGame() throws IllegalStateException {
