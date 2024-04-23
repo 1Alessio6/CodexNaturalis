@@ -57,7 +57,7 @@ public class Player {
     /**
      * Represents the current player's PlayerAction.
      */
-    private final PlayerAction playerAction;
+    private PlayerAction playerAction;
 
 
     /**
