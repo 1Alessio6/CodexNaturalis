@@ -5,7 +5,6 @@ import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * A class containing all methods representing possible player's action.
@@ -105,11 +104,10 @@ class ChooseStarter extends PlayerAction {
     int placeCard(Player player, Card card, Side side, Position position)
             throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
         player.getPlayground().placeCard(card.getFace(side), position);
+        // starter doesn't increment player's points
         assert (player.getPoints() == 0);
 
         nextAction(player, new ChooseColor());
-        // starter doesn't increment player's points
-        assert (player.getPoints() == 0);
         return player.getPoints();
     }
 }

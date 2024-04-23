@@ -12,7 +12,7 @@ import java.util.*;
 // The network status is not modelled as a state to avoid storing information related to the previous state to recovery the last state
 
 /**
- * Represents the player.
+ * Representation of the player's state.
  */
 public class Player {
 
@@ -71,13 +71,11 @@ public class Player {
      * with all other cards to be in player's possession provided.
      *
      * @param username           of the player.
-     * @param color              of the player's token.
      * @param starter            card.
      * @param cards              of the player.
      * @param objectivesToChoose list.
      */
     public Player(String username,
-                  Color color,
                   Card starter,
                   List<Card> cards,
                   List<ObjectiveCard> objectivesToChoose) {
@@ -87,7 +85,6 @@ public class Player {
                 && objectivesToChoose.size() == numObjectives);
 
         this.username = username;
-        this.colour = color;
         this.cards = cards;
         this.starter = starter;
 
@@ -95,6 +92,8 @@ public class Player {
 
         this.isConnected = true;
         this.playground = new Playground();
+
+        this.playerAction = new Place();
     }
 
     //methods
