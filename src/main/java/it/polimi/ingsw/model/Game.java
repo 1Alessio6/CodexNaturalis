@@ -112,12 +112,7 @@ public class Game {
         return f;
     }
 
-    /**
-     * Creates game based on the lobby
-     *
-     * @param users the map user:color of the lobby that wants to start the game
-     */
-    public Game(Map<String, Color> users) {
+    private void loadCards() {
         String backCardsPath = "src/main/resources/cards/backCards.json";
         String goldenFrontCardsPath = "src/main/resources/cards/goldenFrontCards.json";
         String resourceFrontCardsPath = "src/main/resources/cards/resourceFrontCards.json";
@@ -162,28 +157,34 @@ public class Game {
             System.err.println("File not found");
             e.printStackTrace();
         }
+    }
 
+    private Player createPlayer(String username) throws EmptyDeckException {
+        Card startingCard = starterCards.draw();
+
+        List<Card> userHand = new ArrayList<>();
+        userHand.add(resourceCards.draw());
+        userHand.add(resourceCards.draw());
+        userHand.add(goldenCards.draw());
+
+        List<ObjectiveCard> userObjectives = new ArrayList<>();
+        userObjectives.add(objectiveCards.draw());
+        userObjectives.add(objectiveCards.draw());
+
+        return new Player(username, startingCard, userHand, userObjectives);
+    }
+
+    /**
+     * Creates game based on the lobby
+     *
+     * @param usernames the list containing all players
+     */
+    public Game(List<String> usernames) {
+        loadCards();
         try {
-
             players = new ArrayList<>();
-            for (Map.Entry<String, Color> entry : users.entrySet()) {
-                List<Card> userHand = new ArrayList<>();
-                userHand.add(resourceCards.draw());
-                userHand.add(resourceCards.draw());
-                userHand.add(goldenCards.draw());
-
-                List<ObjectiveCard> userObjectives = new ArrayList<>();
-                userObjectives.add(objectiveCards.draw());
-                userObjectives.add(objectiveCards.draw());
-
-                Card startingCard = starterCards.draw();
-                players.add(new Player(
-                        entry.getKey(),
-                        entry.getValue(),
-                        startingCard,
-                        userHand,
-                        userObjectives
-                ));
+            for (String username : usernames) {
+                players.add(createPlayer(username));
             }
         } catch (EmptyDeckException e) {
             e.printStackTrace();
@@ -408,7 +409,7 @@ public class Game {
      * @return the player.
      * @throws IllegalArgumentException if the user is not found.
      */
-    public Player getUserByUsername(String username) throws IllegalArgumentException {
+    public Player getPlayerByUsername(String username) throws IllegalArgumentException {
         return getPlayers().stream().filter(p -> p.getUsername().equals(username)).findFirst().orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 
@@ -421,7 +422,7 @@ public class Game {
      */
     public void placeStarter(String username, Side side) throws InvalidPlayerActionException {
         try {
-            gameState.placeStarter(this, getUserByUsername(username), side);
+            gameState.placeStarter(this, getPlayerByUsername(username), side);
         } catch (Playground.UnavailablePositionException | Playground.NotEnoughResourcesException ignored) {
             // the placement of the starter cannot cause problems
         }
@@ -439,7 +440,7 @@ public class Game {
      * @throws InvalidPlayerActionException if the player cannot perform the operation. For example the player has already chosen the objective.
      */
     public void placeObjectiveCard(String username, int chosenObjective) throws InvalidPlayerActionException {
-        gameState.placeObjectiveCard(this, getUserByUsername(username), chosenObjective);
+        gameState.placeObjectiveCard(this, getPlayerByUsername(username), chosenObjective);
     }
 
     /**
@@ -454,7 +455,7 @@ public class Game {
      * @throws Playground.NotEnoughResourcesException  if the player's resource are not enough to place the card.
      */
     public void placeCard(String username, Card card, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
-        gameState.placeCard(this, getUserByUsername(username), card, side, position);
+        gameState.placeCard(this, getPlayerByUsername(username), card, side, position);
     }
 
     /**
@@ -465,7 +466,7 @@ public class Game {
      * @throws EmptyDeckException           if the deck is empty.
      */
     public void drawFromResourceDeck(String username) throws InvalidPlayerActionException, EmptyDeckException {
-        gameState.drawFromResourceDeck(this, getUserByUsername(username));
+        gameState.drawFromResourceDeck(this, getPlayerByUsername(username));
     }
 
     /**
@@ -476,7 +477,7 @@ public class Game {
      * @throws EmptyDeckException           if the deck is empty.
      */
     public void drawFromGoldenDeck(String username) throws InvalidPlayerActionException, EmptyDeckException {
-        gameState.drawFromGoldenDeck(this, getUserByUsername(username));
+        gameState.drawFromGoldenDeck(this, getPlayerByUsername(username));
     }
 
     /**
@@ -487,7 +488,7 @@ public class Game {
      * @throws InvalidPlayerActionException if the player cannot perform the operation.
      */
     public void drawFromFaceUpCards(String username, int faceUpCardIdx) throws InvalidPlayerActionException {
-        gameState.drawFromFaceUpCards(this, getUserByUsername(username), faceUpCardIdx);
+        gameState.drawFromFaceUpCards(this, getPlayerByUsername(username), faceUpCardIdx);
     }
 
     /**
