@@ -93,7 +93,7 @@ public class Player {
         this.isConnected = true;
         this.playground = new Playground();
 
-        this.playerAction = new Place();
+        this.playerAction = new ChooseStarter();
     }
 
     //methods
