@@ -55,7 +55,7 @@ public class Controller implements EventListener {
      */
     public void placeCard(int cardIdx, Side side, Position pos, String username) {
         try {
-            game.placeCard(username, game.getUserByUsername(username).getCards().get(cardIdx), side, pos);
+            game.placeCard(username, game.getPlayerByUsername(username).getCards().get(cardIdx), side, pos);
         } catch (InvalidPlayerActionException e) {
             throw new RuntimeException(e);
         } catch (Playground.UnavailablePositionException e) {
