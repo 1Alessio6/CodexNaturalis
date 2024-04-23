@@ -41,7 +41,7 @@ public final class GoldenFront extends Front {
      *
      * @return a map containing the resources required by the golden front and their quantity.
      */
-    public Map<Symbol, Integer> getRequirements() {
+    public Map<Symbol, Integer> getRequiredResources() {
         return requirements;
     }
 
