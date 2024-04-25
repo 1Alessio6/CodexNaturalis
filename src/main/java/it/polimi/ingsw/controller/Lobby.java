@@ -13,7 +13,7 @@ public class Lobby {
     private final int MIN_NUMBER = 2;
     private List<Color> remainColors;
 
-    protected Lobby(String creator, Color creatorColor, int size) throws IllegalArgumentException {
+    protected Lobby(String creator, int size) throws IllegalArgumentException {
         if (size > MAX_NUMBER || size < MIN_NUMBER)
             throw new IllegalArgumentException("Number of players should be between " + MIN_NUMBER + " and " + MAX_NUMBER);
 

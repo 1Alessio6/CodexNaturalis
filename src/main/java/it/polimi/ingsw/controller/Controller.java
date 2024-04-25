@@ -145,7 +145,7 @@ public class Controller implements EventListener {
      * @param numPlayers required to start the game.
      */
     public void createLobby(String creator, Color color, int numPlayers) {
-        this.lobby = new Lobby(creator, color, numPlayers);
+        this.lobby = new Lobby(creator, numPlayers);
     }
 
     /**
