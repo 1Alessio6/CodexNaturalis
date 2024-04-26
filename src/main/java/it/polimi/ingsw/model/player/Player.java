@@ -168,12 +168,7 @@ public class Player {
      * @return true if the player has the specified card, false otherwise.
      */
     boolean has(Card card) {
-        return cards.stream()
-                .filter((c) -> {
-                    return c.equals(card);
-                })
-                .toList()
-                .isEmpty();
+        return cards.contains(card);
     }
 
     // discard the card from the player's hand

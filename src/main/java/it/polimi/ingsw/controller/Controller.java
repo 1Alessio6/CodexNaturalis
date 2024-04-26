@@ -1,12 +1,15 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.model.Deck.DeckType;
+import it.polimi.ingsw.model.InvalidGamePhaseException;
+import it.polimi.ingsw.model.NonexistentPlayerException;
 import it.polimi.ingsw.model.board.Playground;
+import it.polimi.ingsw.model.card.Color.InvalidColorException;
+import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.EmptyDeckException;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.NonexistentPlayerException;
 import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.card.Color;
 import it.polimi.ingsw.model.card.Side;
 
 import java.util.EventListener;
@@ -18,6 +21,7 @@ import java.util.Timer;
  * It also allows the player to make moves in the playground and to choose his/her own username and token color
  * before the start of a game.
  */
+// todo. controller to fix
 public class Controller implements EventListener {
     /**
      * Measures the time remaining before the proclamation of the only player present in the game as the winner
@@ -27,7 +31,7 @@ public class Controller implements EventListener {
     /**
      * Manage the entry of the players into the game.
      */
-    private Lobby lobby;
+   // private Lobby lobby;
     /**
      * Representation of the game.
      */
@@ -55,12 +59,14 @@ public class Controller implements EventListener {
      */
     public void placeCard(int cardIdx, Side side, Position pos, String username) {
         try {
-            game.placeCard(username, game.getUserByUsername(username).getCards().get(cardIdx), side, pos);
+            game.placeCard(username, game.getPlayerByUsername(username).getCards().get(cardIdx), side, pos);
         } catch (InvalidPlayerActionException e) {
             throw new RuntimeException(e);
         } catch (Playground.UnavailablePositionException e) {
             throw new RuntimeException(e);
         } catch (Playground.NotEnoughResourcesException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidGamePhaseException e) {
             throw new RuntimeException(e);
         }
     }
@@ -74,7 +80,7 @@ public class Controller implements EventListener {
     public void drawFromFaceUpCards(int faceUpCardIdx, String username) {
         try {
             game.drawFromFaceUpCards(username, faceUpCardIdx);
-        } catch (InvalidPlayerActionException e) {
+        } catch (InvalidPlayerActionException | InvalidGamePhaseException e) {
             e.printStackTrace();
         }
     }
@@ -85,17 +91,15 @@ public class Controller implements EventListener {
      * @param deckType the type of the deck.
      * @param username of the player.
      */
-    public void drawFromDeck(String deckType, String username) {
+    public void drawFromDeck(String username, DeckType deckType) {
         try {
-            // TODO: deck type could be passed in a better way
-            if (deckType.equals("a"))
-                game.drawFromResourceDeck(username);
-            else
-                game.drawFromGoldenDeck(username);
+            game.drawFromDeck(username, deckType);
         } catch (EmptyDeckException e) {
             e.printStackTrace();
         } catch (InvalidPlayerActionException e) {
             e.printStackTrace();
+        } catch (InvalidGamePhaseException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -114,23 +118,23 @@ public class Controller implements EventListener {
      * @param username of the player.
      * @param color    token color chosen for the player.
      */
-    public void joinLobby(String username, Color color) {
-        lobby.addPlayer(username, color);
-    }
+  //  public void joinLobby(String username, Color color) {
+  //      lobby.addPlayer(username, color);
+  //  }
+
+  //  /**
+  //   * Creates a new game with the players in the lobby.
+  //   */
+  //  public void createGame() {
+  //      try {
+  //          this.game = this.lobby.createGame();
+  //      } catch (IllegalStateException e) {
+  //          e.printStackTrace();
+  //      }
+  //  }
 
     /**
-     * Creates a new game with the players in the lobby.
-     */
-    public void createGame() {
-        try {
-            this.game = this.lobby.createGame();
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     *
+     *todo
      */
     public void playerDisconnected() {
         //timer.schedule(game.setFinished(), countdown);
@@ -144,9 +148,9 @@ public class Controller implements EventListener {
      * @param color      of the creator.
      * @param numPlayers required to start the game.
      */
-    public void createLobby(String creator, Color color, int numPlayers) {
-        this.lobby = new Lobby(creator, color, numPlayers);
-    }
+  //  public void createLobby(String creator, Color color, int numPlayers) {
+  //      this.lobby = new Lobby(creator, numPlayers);
+  //  }
 
     /**
      * Places the secret objective from one of the two available.
@@ -157,21 +161,21 @@ public class Controller implements EventListener {
     public void chooseObjectiveCard(int objectiveIdx, String username) throws InvalidPlayerActionException {
         try {
             game.placeObjectiveCard(username, objectiveIdx);
-        } catch (InvalidPlayerActionException e) {
+        } catch (InvalidPlayerActionException | InvalidGamePhaseException e) {
             e.printStackTrace();
         }
 
     }
 
-    /**
-     * Assigns a name to the player.
-     *
-     * @param username of the player.
-     */
-    public void nameUsername(String username) {
-        lobby.addPlayer(username, null);
-    }
-    //assuming that a "NULL" value is going to be assigned in the color's enumeration
+  //  /**
+  //   * Assigns a name to the player.
+  //   *
+  //   * @param username of the player.
+  //   */
+  //  public void nameUsername(String username) {
+  //      lobby.addPlayer(username, null);
+  //  }
+  //  //assuming that a "NULL" value is going to be assigned in the color's enumeration
 
     /**
      * Assigns a color for the player.
@@ -179,14 +183,9 @@ public class Controller implements EventListener {
      * @param username of the player.
      * @param color    token color chosen by the player.
      */
-    public void assignColor(String username, Color color) {
-
-        if (lobby.getRemainColors().stream().anyMatch(remainColor -> remainColor == color)) {
-            lobby.addPlayer(username, color);
-        } else {
-            System.out.println("Already assigned color");
-        }
+    // todo. to improve exceptions handling.
+    public void assignColor(String username, PlayerColor color) throws NonexistentPlayerException, InvalidPlayerActionException, InvalidColorException, InvalidGamePhaseException {
+        game.assignColor(username, color);
     }
-    //another approach can be adopted, as it is the try-catch statement
 
 }
