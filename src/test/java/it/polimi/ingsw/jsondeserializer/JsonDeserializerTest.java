@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.*;
+import it.polimi.ingsw.model.card.Color.CardColor;
 import it.polimi.ingsw.model.card.strategies.CalculateNoCondition;
 import it.polimi.ingsw.model.card.strategies.CalculatePoints;
 import it.polimi.ingsw.model.card.strategies.CalculateResources;
@@ -43,7 +44,7 @@ public class JsonDeserializerTest {
 
         Front front =
                 new Front(
-                        Color.BLUE,
+                        CardColor.BLUE,
                         corners,
                         1
                 );
@@ -78,7 +79,7 @@ public class JsonDeserializerTest {
 
         Back back =
                 new Back(
-                        Color.BLUE,
+                        CardColor.BLUE,
                         corners,
                         resources
                 );
@@ -110,7 +111,7 @@ public class JsonDeserializerTest {
 
         Front f =
                 new GoldenFront(
-                        Color.BLUE,
+                        CardColor.BLUE,
                         corners,
                         0,
                         Condition.CORNERS,
@@ -148,8 +149,8 @@ public class JsonDeserializerTest {
 
     @Test
     void deserializeObjectivePositionCard() {
-        Map<Position, Color> conditions = new HashMap<>();
-        conditions.put(new Position(0, 10), Color.BLUE);
+        Map<Position, CardColor> conditions = new HashMap<>();
+        conditions.put(new Position(0, 10), CardColor.BLUE);
 
 
         ObjectiveCard objectiveCard =
@@ -205,7 +206,7 @@ public class JsonDeserializerTest {
     @Test
     void createListOfGoldenFront_maintainsAttributes() {
         List<GoldenFront> goldenFrontList = createList(2, new GoldenFront(
-                Color.BLUE,
+                CardColor.BLUE,
                 new HashMap<>(),
                 10,
                 Condition.CORNERS,
@@ -235,7 +236,7 @@ public class JsonDeserializerTest {
         corners.put(CornerPosition.LOWER_LEFT, new Corner(Symbol.ANIMAL));
 
         List<Front> frontList = createList(2, new Front(
-                Color.BLUE,
+                CardColor.BLUE,
                 corners,
                 10,
                 new CalculateNoCondition())
@@ -259,7 +260,7 @@ public class JsonDeserializerTest {
     void deserializeListOfBack() {
 
         List<Back> backList = createList(2, new Back(
-                Color.BLUE,
+                CardColor.BLUE,
                 new HashMap<>(),
                 new HashMap<>()
         ));
