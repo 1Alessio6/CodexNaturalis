@@ -25,7 +25,16 @@ public interface VirtualView extends Remote {
 
     void showRemainingColor(Set<Color> remainingColor) throws RemoteException;
 
+    //method to show updated information after a place
 
+    //it's more efficient to pass only the new added tile and position in order to avoid sending the whole map to the client every time
+    void showUpdatePlaygroundArea(Position position, Tile tile) throws RemoteException;
+
+    void showUpdatePoints(int points) throws RemoteException;
+
+    void showUpdateResources(Map<Symbol, Integer> resources) throws RemoteException;
+
+    void reportError(String details) throws RemoteException;
 
 
 
