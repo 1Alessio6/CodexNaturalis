@@ -2,6 +2,8 @@ package it.polimi.ingsw.network;
 
 import it.polimi.ingsw.model.board.*;
 import it.polimi.ingsw.model.card.*;
+import it.polimi.ingsw.model.chat.Message;
+import it.polimi.ingsw.model.player.Player;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -34,18 +36,25 @@ public interface VirtualView extends Remote {
 
     //method to show update after a draw
 
-    void showUpdatePlayerCards(List<Card> newCards);
+    void showUpdatePlayerCards(List<Card> newCards) throws RemoteException;
 
-    void showUpdateDeck(boolean isEmpty); //the client (player) can't see the updates of a deck till the deck is empty
+    void showUpdateDeck(boolean isEmpty) throws RemoteException; //the client (player) can't see the updates of a deck till the deck is empty
 
-    void showUpdateFaceUpCards(int position, Card card);
+    void showUpdateFaceUpCards(int position, Card card) throws RemoteException;
     //Face up cards have specific position inside the list, so it's possible to pass only the position which needs to be updated
 
-    void showCommonObjectiveCard(List<ObjectiveCard> commonObjective);
+    void showCommonObjectiveCard(List<ObjectiveCard> commonObjective) throws RemoteException;
 
-    void showUpdatePlayerObjectiveCard(List<ObjectiveCard> privateObjective); //it's the only method that show information to one player per time
+    void showUpdatePlayerObjectiveCard(List<ObjectiveCard> privateObjective) throws RemoteException;
+    //it's the only method that show information to one player per time
 
-    void showPlayerStarterCard(Card starterCard);
+    void showPlayerStarterCard(Card starterCard) throws RemoteException;
+
+    void showUpdateChat(Message message) throws RemoteException;
+
+    void showUpdateCurrentPlayer(Player currentPlayer) throws RemoteException;
+
+    void showUpdateGamePhase(String GamePhase) throws RemoteException;
 
     void reportError(String details) throws RemoteException;
 
