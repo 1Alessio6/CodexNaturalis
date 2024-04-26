@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.card;
 
+import it.polimi.ingsw.model.card.Color.CardColor;
 import it.polimi.ingsw.model.card.strategies.CalculateNoCondition;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -10,7 +11,7 @@ public class GoldenFrontTest {
     @Test
     void sameAttributes_equalGoldenFronts() {
         GoldenFront gf1 = new GoldenFront(
-                Color.BLUE,
+                CardColor.BLUE,
                 new HashMap<>(),
                 0,
                 Condition.CORNERS,
@@ -19,7 +20,7 @@ public class GoldenFrontTest {
         );
 
         GoldenFront gf2 = new GoldenFront(
-                Color.BLUE,
+                CardColor.BLUE,
                 new HashMap<>(),
                 0,
                 Condition.CORNERS,
@@ -33,7 +34,7 @@ public class GoldenFrontTest {
     @Test
     void differentBaseClassAttributes_differentGoldenFronts() {
         GoldenFront gf1 = new GoldenFront(
-                Color.BLUE,
+                CardColor.BLUE,
                 new HashMap<>(),
                 0,
                 Condition.CORNERS,
@@ -46,7 +47,7 @@ public class GoldenFrontTest {
         corners.put(CornerPosition.LOWER_LEFT, new Corner());
 
         GoldenFront gf2 = new GoldenFront(
-                Color.BLUE,
+                CardColor.BLUE,
                 corners,
                 0,
                 Condition.CORNERS,
@@ -60,7 +61,7 @@ public class GoldenFrontTest {
     @Test
     void differentSuperClassAttributes_differentGoldenFronts() {
         GoldenFront gf1 = new GoldenFront(
-                Color.BLUE,
+                CardColor.BLUE,
                 new HashMap<>(),
                 0,
                 Condition.CORNERS,
@@ -73,7 +74,7 @@ public class GoldenFrontTest {
         res.put(Symbol.ANIMAL, 10);
 
         GoldenFront gf2 = new GoldenFront(
-                Color.BLUE,
+                CardColor.BLUE,
                 new HashMap<>(),
                 0,
                 Condition.CORNERS,

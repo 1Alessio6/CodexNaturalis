@@ -3,6 +3,8 @@ package it.polimi.ingsw.model.player;
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.*;
+import it.polimi.ingsw.model.card.Color.CardColor;
+import it.polimi.ingsw.model.card.Color.PlayerColor;
 
 import java.util.List;
 
@@ -41,7 +43,7 @@ public abstract class PlayerAction {
      * @param color the color to set
      * @throws InvalidPlayerActionException if the player cannot perform the operation.
      */
-    void assignColor(Player player, Color color) throws InvalidPlayerActionException {
+    void assignColor(Player player, PlayerColor color) throws InvalidPlayerActionException {
         throw new InvalidPlayerActionException("Player cannot place a card");
     }
 
@@ -117,7 +119,7 @@ class ChooseColor extends PlayerAction {
      * {@inheritDoc}
      */
     @Override
-    void assignColor(Player player, Color color) {
+    void assignColor(Player player, PlayerColor color) {
         player.setColor(color);
         nextAction(player, new ChooseObjective());
     }

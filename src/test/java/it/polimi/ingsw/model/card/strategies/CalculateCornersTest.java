@@ -3,15 +3,13 @@ package it.polimi.ingsw.model.card.strategies;
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.*;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
+import it.polimi.ingsw.model.card.Color.CardColor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,7 +20,7 @@ class CalculateCornersTest {
     @BeforeEach
     void setUp() throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
         playground = new Playground();
-        Color color = Color.RED;
+        CardColor color = CardColor.RED;
         Map<CornerPosition, Corner> corners = new HashMap<>();
         Arrays.stream(CornerPosition.values()).forEach(cp -> corners.put(cp, new Corner()));
         int score = 2;

@@ -3,10 +3,10 @@ package it.polimi.ingsw.model.card.strategies;
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.*;
+import it.polimi.ingsw.model.card.Color.CardColor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +21,7 @@ class CalculateResourcesTest {
     @BeforeEach
     void setUp() throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
         playground = new Playground();
-        Color color = Color.RED;
+        CardColor color = CardColor.RED;
         condition = Condition.NUM_QUILL;
         Map<CornerPosition, Corner> corners = new HashMap<>();
         corners.put(CornerPosition.LOWER_LEFT, new Corner());

@@ -2,14 +2,14 @@ package it.polimi.ingsw.model.card;
 
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.board.Tile;
+import it.polimi.ingsw.model.card.Color.CardColor;
 
 import java.util.*;
 
 public class ObjectivePositionCard extends ObjectiveCard {
-    private final Map<Position, Color> condition;
+    private final Map<Position, CardColor> condition;
 
-    public ObjectivePositionCard(Map<Position, Color> condition, int multiplier) throws IllegalArgumentException {
+    public ObjectivePositionCard(Map<Position, CardColor> condition, int multiplier) throws IllegalArgumentException {
         super(multiplier);
 
         if (condition == null) {
@@ -18,11 +18,11 @@ public class ObjectivePositionCard extends ObjectiveCard {
         this.condition = condition;
     }
 
-    public Map<Position, Color> getCondition(){
+    public Map<Position, CardColor> getCondition(){
         return new HashMap<>(condition);
     }
 
-    private boolean matchRequirement(Playground playground, Position requiredPosition, Color requiredColor) {
+    private boolean matchRequirement(Playground playground, Position requiredPosition, CardColor requiredColor) {
         return playground.contains(requiredPosition)
                 && playground.getTile(requiredPosition).getFace().getColor().equals(requiredColor);
     }
@@ -39,10 +39,10 @@ public class ObjectivePositionCard extends ObjectiveCard {
 
             List<Position> usedPositions = new ArrayList<>();
 
-            for (Map.Entry<Position, Color> entry : condition.entrySet()) {
+            for (Map.Entry<Position, CardColor> entry : condition.entrySet()) {
 
                 Position requiredPosition = Position.sum(p, entry.getKey());
-                Color requiredColor = entry.getValue();
+                CardColor requiredColor = entry.getValue();
 
                 if (alreadyVisitedPositions.contains(requiredPosition)
                         || !matchRequirement(playground, requiredPosition, requiredColor))

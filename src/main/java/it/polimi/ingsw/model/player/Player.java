@@ -2,6 +2,8 @@ package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.model.board.*;
 import it.polimi.ingsw.model.card.*;
+import it.polimi.ingsw.model.card.Color.CardColor;
+import it.polimi.ingsw.model.card.Color.PlayerColor;
 
 import java.util.*;
 
@@ -32,7 +34,7 @@ public class Player {
     /**
      * Represents the player's token color.
      */
-    private Color colour;
+    private PlayerColor colour;
 
     /**
      * Specifies whether the player is connected or not.
@@ -220,7 +222,7 @@ public class Player {
      *
      * @param color to set
      */
-    void setColor(Color color) {
+    void setColor(PlayerColor color) {
         this.colour = color;
     }
 
@@ -239,7 +241,7 @@ public class Player {
      * @param color the color to set
      * @throws InvalidPlayerActionException if the player cannot perform the operation.
      */
-    public void assignColor(Color color) throws InvalidPlayerActionException {
+    public void assignColor(PlayerColor color) throws InvalidPlayerActionException {
         playerAction.assignColor(this, color);
     }
 

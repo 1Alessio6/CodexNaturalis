@@ -1,9 +1,8 @@
 package it.polimi.ingsw.model.card;
 
+import it.polimi.ingsw.model.card.Color.CardColor;
 import it.polimi.ingsw.model.card.strategies.CalculateBackPoints;
-import it.polimi.ingsw.model.card.strategies.CalculatePoints;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -21,7 +20,7 @@ public class Back extends Face {
      * @param corners   of the card.
      * @param resources provided by the card.
      */
-    public Back(Color color, Map<CornerPosition, Corner> corners, Map<Symbol, Integer> resources) throws IllegalArgumentException {
+    public Back(CardColor color, Map<CornerPosition, Corner> corners, Map<Symbol, Integer> resources) throws IllegalArgumentException {
         super(color, corners, new CalculateBackPoints());
 
         if (resources == null) {

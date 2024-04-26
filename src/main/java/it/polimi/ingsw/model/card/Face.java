@@ -2,17 +2,17 @@ package it.polimi.ingsw.model.card;
 
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
+import it.polimi.ingsw.model.card.Color.CardColor;
 import it.polimi.ingsw.model.card.strategies.CalculatePoints;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Immutable class representing the Face card.
  * The face can be either the front or the back.
  */
 abstract public class Face {
-    private final Color color;
+    private final CardColor color;
 
     private final CalculatePoints calculator;
 
@@ -35,7 +35,7 @@ abstract public class Face {
      *                                  any of them is null.
      *                                  or calculator is null.
      */
-    public Face(Color color, Map<CornerPosition, Corner> corners, CalculatePoints calculator)
+    public Face(CardColor color, Map<CornerPosition, Corner> corners, CalculatePoints calculator)
             throws IllegalArgumentException {
 
         if (!isValid(corners, calculator)) {
@@ -49,7 +49,7 @@ abstract public class Face {
         this.calculator = calculator;
     }
 
-    public Color getColor() {
+    public CardColor getColor() {
         return color;
     }
 

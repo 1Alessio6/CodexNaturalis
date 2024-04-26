@@ -1,10 +1,10 @@
 package it.polimi.ingsw.model.card;
 
 import it.polimi.ingsw.model.board.Playground;
+import it.polimi.ingsw.model.card.Color.CardColor;
 import it.polimi.ingsw.model.card.strategies.CalculateNoCondition;
 import it.polimi.ingsw.model.card.strategies.CalculatePoints;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -19,7 +19,7 @@ public class Front extends Face {
      * @param score   obtained after positioning the card.
      * @throws IllegalArgumentException if any argument is null or there are not 4 corners or the score is negative.
      */
-    public Front(Color color, Map<CornerPosition, Corner> corners, int score) throws IllegalArgumentException {
+    public Front(CardColor color, Map<CornerPosition, Corner> corners, int score) throws IllegalArgumentException {
         super(color, corners, new CalculateNoCondition());
 
         if (score < 0) {
@@ -29,7 +29,7 @@ public class Front extends Face {
         this.score = score;
     }
 
-    public Front(Color color, Map<CornerPosition, Corner> corners, int score, CalculatePoints calculator) throws IllegalArgumentException {
+    public Front(CardColor color, Map<CornerPosition, Corner> corners, int score, CalculatePoints calculator) throws IllegalArgumentException {
         super(color, corners, calculator);
 
         if (score < 0) {

@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.board;
 import java.util.*;
 
 import it.polimi.ingsw.model.card.*;
+import it.polimi.ingsw.model.card.Color.CardColor;
 import it.polimi.ingsw.model.card.strategies.CalculateCorners;
 import it.polimi.ingsw.model.card.strategies.CalculateResources;
 import org.junit.jupiter.api.Test;
@@ -34,9 +35,9 @@ class PlaygroundTest {
         Map<Symbol, Integer> fungiResource = new HashMap<>();
         fungiResource.put(Symbol.FUNGI, 1);
 
-        Back back1 = new Back(Color.RED, createBackCorners(), fungiResource);
-        Back back2 = new Back(Color.RED, createBackCorners(), fungiResource);
-        Back back3 = new Back(Color.RED, createBackCorners(), fungiResource);
+        Back back1 = new Back(CardColor.RED, createBackCorners(), fungiResource);
+        Back back2 = new Back(CardColor.RED, createBackCorners(), fungiResource);
+        Back back3 = new Back(CardColor.RED, createBackCorners(), fungiResource);
 
         //start of Test1
 
@@ -125,9 +126,9 @@ class PlaygroundTest {
         resources.put(Symbol.PLANT, 1);
 
         Back starterBack = new Back(null, createBackCorners(), resources);
-        Front front1 = new Front(Color.BLUE, createCorners(new Corner(Symbol.PLANT), new Corner(Symbol.ANIMAL), new Corner(Symbol.MANUSCRIPT), null), 0);
-        Front front2 = new Front(Color.BLUE, createCorners(new Corner(), new Corner(Symbol.ANIMAL), null, new Corner()), 1);
-        Front front3 = new Front(Color.GREEN, createCorners(new Corner(), new Corner(), new Corner(Symbol.INSECT), null), 1);
+        Front front1 = new Front(CardColor.BLUE, createCorners(new Corner(Symbol.PLANT), new Corner(Symbol.ANIMAL), new Corner(Symbol.MANUSCRIPT), null), 0);
+        Front front2 = new Front(CardColor.BLUE, createCorners(new Corner(), new Corner(Symbol.ANIMAL), null, new Corner()), 1);
+        Front front3 = new Front(CardColor.GREEN, createCorners(new Corner(), new Corner(), new Corner(Symbol.INSECT), null), 1);
 
         Playground test = new Playground();
 
@@ -204,13 +205,13 @@ class PlaygroundTest {
         resources.put(Symbol.INSECT, 1);
 
         Back starterBack = new Back(null, createCorners(new Corner(), new Corner(Symbol.PLANT), new Corner(), new Corner(Symbol.INSECT)), resources);
-        Front front1 = new Front(Color.RED, createCorners(new Corner(), new Corner(Symbol.FUNGI), null, new Corner()), 1);
-        Front front2 = new Front(Color.BLUE, createCorners(new Corner(Symbol.PLANT), new Corner(Symbol.ANIMAL), new Corner(Symbol.MANUSCRIPT), null), 0);
-        Front front3 = new Front(Color.GREEN, createCorners(null, new Corner(Symbol.INSECT), new Corner(Symbol.PLANT), new Corner(Symbol.QUILL)), 0);
-        Front front4 = new Front(Color.PURPLE, createCorners(new Corner(Symbol.INSECT), new Corner(Symbol.PLANT), null, new Corner(Symbol.INKWELL)), 0);
-        Front front5 = new Front(Color.GREEN, createCorners(new Corner(Symbol.FUNGI), new Corner(Symbol.PLANT), new Corner(Symbol.INKWELL), null), 0);
-        Front front6 = new Front(Color.GREEN, createCorners(null, new Corner(Symbol.PLANT), new Corner(), new Corner()), 1);
-        Front front7 = new Front(Color.BLUE, createCorners(new Corner(), new Corner(Symbol.ANIMAL), null, new Corner()), 1);
+        Front front1 = new Front(CardColor.RED, createCorners(new Corner(), new Corner(Symbol.FUNGI), null, new Corner()), 1);
+        Front front2 = new Front(CardColor.BLUE, createCorners(new Corner(Symbol.PLANT), new Corner(Symbol.ANIMAL), new Corner(Symbol.MANUSCRIPT), null), 0);
+        Front front3 = new Front(CardColor.GREEN, createCorners(null, new Corner(Symbol.INSECT), new Corner(Symbol.PLANT), new Corner(Symbol.QUILL)), 0);
+        Front front4 = new Front(CardColor.PURPLE, createCorners(new Corner(Symbol.INSECT), new Corner(Symbol.PLANT), null, new Corner(Symbol.INKWELL)), 0);
+        Front front5 = new Front(CardColor.GREEN, createCorners(new Corner(Symbol.FUNGI), new Corner(Symbol.PLANT), new Corner(Symbol.INKWELL), null), 0);
+        Front front6 = new Front(CardColor.GREEN, createCorners(null, new Corner(Symbol.PLANT), new Corner(), new Corner()), 1);
+        Front front7 = new Front(CardColor.BLUE, createCorners(new Corner(), new Corner(Symbol.ANIMAL), null, new Corner()), 1);
         //create test playground
         Playground test = new Playground();
 
@@ -413,31 +414,31 @@ class PlaygroundTest {
         resources.put(Symbol.INSECT, 1);
 
         Back starterBack = new Back(null, createCorners(new Corner(), new Corner(Symbol.PLANT), new Corner(), new Corner(Symbol.INSECT)), resources);
-        Front front1 = new Front(Color.RED, createCorners(new Corner(), new Corner(Symbol.FUNGI), null, new Corner()), 1);
-        Front front2 = new Front(Color.BLUE, createCorners(new Corner(Symbol.PLANT), new Corner(Symbol.ANIMAL), new Corner(Symbol.MANUSCRIPT), null), 0);
-        Front front3 = new Front(Color.GREEN, createCorners(null, new Corner(Symbol.INSECT), new Corner(Symbol.PLANT), new Corner(Symbol.QUILL)), 0);
-        Front front4 = new Front(Color.PURPLE, createCorners(new Corner(Symbol.INSECT), new Corner(Symbol.PLANT), null, new Corner(Symbol.INKWELL)), 0);
-        Front front5 = new Front(Color.GREEN, createCorners(new Corner(Symbol.FUNGI), new Corner(Symbol.PLANT), new Corner(Symbol.INKWELL), null), 0);
-        Front front6 = new Front(Color.GREEN, createCorners(null, new Corner(Symbol.PLANT), new Corner(), new Corner()),1);
+        Front front1 = new Front(CardColor.RED, createCorners(new Corner(), new Corner(Symbol.FUNGI), null, new Corner()), 1);
+        Front front2 = new Front(CardColor.BLUE, createCorners(new Corner(Symbol.PLANT), new Corner(Symbol.ANIMAL), new Corner(Symbol.MANUSCRIPT), null), 0);
+        Front front3 = new Front(CardColor.GREEN, createCorners(null, new Corner(Symbol.INSECT), new Corner(Symbol.PLANT), new Corner(Symbol.QUILL)), 0);
+        Front front4 = new Front(CardColor.PURPLE, createCorners(new Corner(Symbol.INSECT), new Corner(Symbol.PLANT), null, new Corner(Symbol.INKWELL)), 0);
+        Front front5 = new Front(CardColor.GREEN, createCorners(new Corner(Symbol.FUNGI), new Corner(Symbol.PLANT), new Corner(Symbol.INKWELL), null), 0);
+        Front front6 = new Front(CardColor.GREEN, createCorners(null, new Corner(Symbol.PLANT), new Corner(), new Corner()),1);
 
         HashMap<Symbol, Integer> requirements1 = new HashMap<>();
         requirements1.put(Symbol.INSECT, 3);
         requirements1.put(Symbol.ANIMAL, 1);
 
-        GoldenFront goldenfront1 = new GoldenFront(Color.PURPLE, createCorners(new Corner(), new Corner(), new Corner(), null), 2, Condition.CORNERS, new CalculateCorners(), requirements1);
+        GoldenFront goldenfront1 = new GoldenFront(CardColor.PURPLE, createCorners(new Corner(), new Corner(), new Corner(), null), 2, Condition.CORNERS, new CalculateCorners(), requirements1);
 
         HashMap<Symbol, Integer> requirements2 = new HashMap<>();
         requirements2.put(Symbol.INSECT, 1);
         requirements2.put(Symbol.ANIMAL, 3);
-        GoldenFront goldenfront2 = new GoldenFront(Color.BLUE, createCorners(new Corner(), new Corner(), new Corner(), null), 2, Condition.CORNERS, new CalculateCorners(), requirements2);
+        GoldenFront goldenfront2 = new GoldenFront(CardColor.BLUE, createCorners(new Corner(), new Corner(), new Corner(), null), 2, Condition.CORNERS, new CalculateCorners(), requirements2);
         HashMap<Symbol, Integer> requirements3 = new HashMap<>();
         requirements3.put(Symbol.INSECT, 2);
         requirements3.put(Symbol.FUNGI, 1);
-        GoldenFront goldenfront3 = new GoldenFront(Color.PURPLE, createCorners(null, new Corner(), new Corner(Symbol.INKWELL), new Corner()), 1, Condition.NUM_INKWELL, new CalculateResources(), requirements3);
+        GoldenFront goldenfront3 = new GoldenFront(CardColor.PURPLE, createCorners(null, new Corner(), new Corner(Symbol.INKWELL), new Corner()), 1, Condition.NUM_INKWELL, new CalculateResources(), requirements3);
         HashMap<Symbol, Integer> requirements4 = new HashMap<>();
         requirements4.put(Symbol.INSECT, 2);
         requirements4.put(Symbol.ANIMAL, 1);
-        GoldenFront goldenfront4 = new GoldenFront(Color.PURPLE, createCorners(new Corner(), null, new Corner(), new Corner(Symbol.MANUSCRIPT)), 1, Condition.NUM_MANUSCRIPT, new CalculateResources(), requirements4);
+        GoldenFront goldenfront4 = new GoldenFront(CardColor.PURPLE, createCorners(new Corner(), null, new Corner(), new Corner(Symbol.MANUSCRIPT)), 1, Condition.NUM_MANUSCRIPT, new CalculateResources(), requirements4);
 
         //create test playground
         Playground test = new Playground();
@@ -694,7 +695,7 @@ class PlaygroundTest {
         }
     }
 
-    private void checkFaceColor(Playground test, Position position, Color c) {
+    private void checkFaceColor(Playground test, Position position, CardColor c) {
         assertSame(test.getTile(position).getFace().getColor(), c);
     }
 

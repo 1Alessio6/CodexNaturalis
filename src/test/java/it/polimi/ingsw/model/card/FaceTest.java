@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.card;
 
+import it.polimi.ingsw.model.card.Color.CardColor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -9,13 +10,13 @@ public class FaceTest {
     @Test
     void backDifferentFromFront() {
         Face f1 = new Front(
-                Color.BLUE,
+                CardColor.BLUE,
                 new HashMap<>(),
                 0
         );
 
         Face f2 = new Back(
-                Color.BLUE,
+                CardColor.BLUE,
                 new HashMap<>(),
                 new HashMap<>()
         );
@@ -27,13 +28,13 @@ public class FaceTest {
     void frontsWithSameAttributes_equalFronts() {
 
         Face f1 = new Front(
-                Color.BLUE,
+                CardColor.BLUE,
                 new HashMap<>(),
                 0
         );
 
         Face f2 = new Front(
-                Color.BLUE,
+                CardColor.BLUE,
                 new HashMap<>(),
                 0
         );
@@ -45,13 +46,13 @@ public class FaceTest {
     void frontsWithDifferentAttributes_differentFronts() {
 
         Face f1 = new Front(
-                Color.BLUE,
+                CardColor.BLUE,
                 new HashMap<>(),
                 0
         );
 
         Face f2 = new Front(
-                Color.BLUE,
+                CardColor.BLUE,
                 new HashMap<>(),
                 10
         );
@@ -63,13 +64,13 @@ public class FaceTest {
     @Test
     void backsWithSameAttributes_equalBacks() {
         Face f1 = new Back(
-                Color.BLUE,
+                CardColor.BLUE,
                 new HashMap<>(),
                 new HashMap<>()
         );
 
         Face f2 = new Back(
-                Color.BLUE,
+                CardColor.BLUE,
                 new HashMap<>(),
                 new HashMap<>()
         );
@@ -81,13 +82,13 @@ public class FaceTest {
     void backsWithDifferentAttributes_differentBacks() {
 
         Face f1 = new Back(
-                Color.BLUE,
+                CardColor.BLUE,
                 new HashMap<>(),
                 new HashMap<>()
         );
 
         Face f2 = new Back(
-                Color.RED,
+                CardColor.RED,
                 new HashMap<>(),
                 new HashMap<>()
         );

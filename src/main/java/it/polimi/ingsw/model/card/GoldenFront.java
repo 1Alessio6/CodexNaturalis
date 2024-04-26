@@ -1,9 +1,7 @@
 package it.polimi.ingsw.model.card;
 
-import it.polimi.ingsw.model.card.strategies.CalculateCorners;
-import it.polimi.ingsw.model.card.strategies.CalculateNoCondition;
+import it.polimi.ingsw.model.card.Color.CardColor;
 import it.polimi.ingsw.model.card.strategies.CalculatePoints;
-import it.polimi.ingsw.model.card.strategies.CalculateResources;
 
 import java.util.Map;
 import java.util.Objects;
@@ -30,7 +28,7 @@ public final class GoldenFront extends Front {
      * @param requirements needed before playing the card
      * @throws IllegalArgumentException if any argument is null or there are not 4 corners or the score is negative.
      */
-    public GoldenFront(Color color, Map<CornerPosition, Corner> corners, int score, Condition pointsCondition, CalculatePoints calculator, Map<Symbol, Integer> requirements) throws IllegalArgumentException {
+    public GoldenFront(CardColor color, Map<CornerPosition, Corner> corners, int score, Condition pointsCondition, CalculatePoints calculator, Map<Symbol, Integer> requirements) throws IllegalArgumentException {
         super(color, corners, score, calculator);
         this.pointsCondition = pointsCondition;
         this.requirements = requirements;
