@@ -2,79 +2,52 @@ package it.polimi.ingsw.model;
 
 import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.jsondeserializer.DeserializationHandler;
+import it.polimi.ingsw.model.Deck.Deck;
+import it.polimi.ingsw.model.Deck.DeckType;
 import it.polimi.ingsw.model.board.*;
 import it.polimi.ingsw.model.card.*;
+import it.polimi.ingsw.model.card.Color.InvalidColorException;
+import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.ChatDatabase;
+import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.gamePhase.PhaseHandler;
 
 import java.io.FileNotFoundException;
 import java.util.*;
-
 
 /**
  * Representation of the game.
  * Each player is recognised through the system by their username.
  */
-
 public class Game {
-    /**
-     * Represents a deck of resources cards.
-     */
     private Deck<Card> resourceCards;
-
-    /**
-     * Represents a deck of golden cards.
-     */
     private Deck<Card> goldenCards;
-
-    /**
-     * Represents a deck of starter cards.
-     */
     private Deck<Card> starterCards;
-
-    /**
-     * Represents a deck of objective cards.
-     */
     private Deck<ObjectiveCard> objectiveCards;
 
+    List<PlayerColor> availableColors;
 
-    /**
-     * Represents a list of face up cards.
-     */
     private List<Card> faceUpCards;
 
-    /**
-     * Represents a list of common objective cards.
-     */
     private List<ObjectiveCard> commonObjects;
 
-    // private int numRequiredPlayers;
+    private static final int MAX_POINT = 20;
 
-    /**
-     * Represents the index that identifies the current player inside the list of players.
-     */
     private int currentPlayerIdx; // index in the current player list.
 
-    /**
-     * Specifies if the game has finished.
-     */
     private boolean isFinished;
 
-
-    /**
-     * Represents a list of players.
-     */
     private List<Player> players;
 
+    private GamePhase phase;
 
-    /**
-     * Represents the state of the game.
-     */
-    GameState gameState;
+    private PhaseHandler phaseHandler;
 
     // Advanced Features
-    private ChatDatabase chatDatabase; // todo. maybe implement it outside
+    // chat database containing the history of all sent messages
+    private ChatDatabase chatDatabase;
 
     private List<Card> createCardList(List<Front> fronts, List<Back> backs) {
         assert fronts.size() == backs.size();
@@ -110,6 +83,21 @@ public class Game {
         }
 
         return f;
+    }
+
+    private void laodAvailableColors() {
+        this.availableColors = new ArrayList<>(
+                Arrays.asList(
+                        PlayerColor.RED,
+                        PlayerColor.RED,
+                        PlayerColor.BLUE,
+                        PlayerColor.BLUE,
+                        PlayerColor.GREEEN,
+                        PlayerColor.GREEEN,
+                        PlayerColor.YELLOW,
+                        PlayerColor.YELLOW
+                )
+        );
     }
 
     private void loadCards() {
@@ -180,6 +168,7 @@ public class Game {
      * @param usernames the list containing all players
      */
     public Game(List<String> usernames) {
+        laodAvailableColors();
         loadCards();
         try {
             players = new ArrayList<>();
@@ -190,128 +179,28 @@ public class Game {
             e.printStackTrace();
         }
 
-        gameState = new Setup();
+        phase = GamePhase.Setup;
         currentPlayerIdx = 0;
         isFinished = false;
         chatDatabase = new ChatDatabase();
+        phaseHandler = new PhaseHandler(players);
     }
 
     // methods
-
-    // methods needed by the GameState's
-
-    /**
-     * Sets the status of the game.
-     *
-     * @param gameState to be set.
-     */
-    void setStatus(GameState gameState) {
-        this.gameState = gameState;
-    }
-
-
-    /**
-     * Returns the index of the current player.
-     *
-     * @return current player index.
-     */
-    int getCurrentPlayerIdx() {
-        return currentPlayerIdx;
-    }
-
 
     /**
      * Sets the index of the new current player.
      *
      * @param newCurrentPlayerIdx index of the new current player.
      */
-    void setCurrentPlayerIdx(int newCurrentPlayerIdx) {
+    private void setCurrentPlayerIdx(int newCurrentPlayerIdx) {
         assert (0 <= newCurrentPlayerIdx && newCurrentPlayerIdx < players.size());
         currentPlayerIdx = newCurrentPlayerIdx;
     }
 
 
-    /**
-     * Specifies whether the index of a particular player is valid or not.
-     *
-     * @param idx index of the player to be evaluated.
-     * @return true if the index is greater than 0 and less than the total number of players present in the game, false
-     * otherwise.
-     */
     private boolean isValidIdx(int idx) {
         return 0 <= idx && idx < players.size();
-    }
-
-
-    /**
-     * Sets the end of the game.
-     */
-    void setFinished() {
-        isFinished = true;
-    }
-
-
-    /**
-     * Returns a list with the players in the game.
-     *
-     * @return a list of players.
-     */
-    List<Player> getPlayers() {
-        return players;
-    }
-
-
-    /**
-     * Returns a deck containing the resource cards.
-     *
-     * @return a deck of resource cards.
-     */
-    Deck<Card> getResourceDeck() {
-        return resourceCards;
-    }
-
-
-    /**
-     * Returns a deck containing the golden cards.
-     *
-     * @return a deck of golden cards.
-     */
-    Deck<Card> getGoldenDeck() {
-        return goldenCards;
-    }
-
-    // get and replace (if possible) the faceUp card at index faceUpCardIdx.
-
-    /**
-     * Gets and replaces (if possible) the face up card present at the faceUpCardIdx's index.
-     *
-     * @param faceUpCardIdx index of the face up card to be replaced.
-     * @return a face up card.
-     */
-    Card getFaceUpCard(int faceUpCardIdx) {
-        assert (isValidIdx(faceUpCardIdx));
-
-        Card card = faceUpCards.get(faceUpCardIdx);
-
-        // replace the card if possible (at least one deck is not empty)
-        List<Deck<Card>> decks = Arrays.asList(resourceCards, goldenCards);
-        int deckIdx = faceUpCardIdx <= 1 ? 0 : 1;
-
-        Card replacement = null;
-
-        try {
-            if (!decks.get(deckIdx).isEmpty()) {
-                replacement = decks.get(deckIdx).draw();
-            } else {
-                replacement = decks.get((deckIdx + 1) % 2).draw();
-            }
-        } catch (EmptyDeckException e) {
-            // the replacement may be invalid if both decks are empty, so there's no exception to throw
-        }
-
-        faceUpCards.set(faceUpCardIdx, replacement); // null if there's none card for replacement
-
-        return card;
     }
 
     /**
@@ -337,55 +226,28 @@ public class Game {
         this.isFinished = gameBeforeCrash.isFinished;
 
         this.players = gameBeforeCrash.players;
-        this.gameState = gameBeforeCrash.gameState;
-
+        this.phase = gameBeforeCrash.phase;
     }
 
+    public List<Player> getPlayers() {
+        return players;
+    }
 
-    /*
-        The currentPlayerIdx is updated every time a request from outside about the players' turn comes.
-        This function, whose return type needs to be defined, will check if the game is finished, if so it will send a notification to all players; otherwise
-        it will check  whether the oldCurrentPlayer has drawn a card. If the player has not done that, an automatic drawn is done for them and the new player is selected.
-        We're assuming the request has taken into account the requirements: no action when there's only one player
-        and the game stops when no one is active (a timer is created outside).
-     */
+    public GamePhase getPhase() {
+        return phase;
+    }
 
     /**
-     * Returns the current player.
+     * Returns the next current player.
      *
      * @return the next current player.
      * @throws SuspendedGameException if there's less than 2 connected players.
      */
-    public Player getCurrentPlayer() throws SuspendedGameException {
-        if (getActivePlayers().size() <= 1) {
-            throw new SuspendedGameException("At least two connected players are required for the game to continue");
-        }
-
-        boolean foundNextPlayer = false;
-        int numRequiredPlayers = players.size();
-
-        currentPlayerIdx = (currentPlayerIdx + 1) % numRequiredPlayers;
-        for (int i = 0; !foundNextPlayer && i < numRequiredPlayers; ++i) {
-            if (players.get(currentPlayerIdx).isConnected()) {
-                foundNextPlayer = true;
-            }
-
-            gameState.skipTurn(this);
-            currentPlayerIdx = (currentPlayerIdx + 1) % numRequiredPlayers;
-        }
-
-        assert foundNextPlayer;
-
+    public Player getNextPlayer() throws SuspendedGameException {
+        currentPlayerIdx = (currentPlayerIdx + 1) % players.size();
         return players.get(currentPlayerIdx);
     }
 
-
-    /**
-     * Sets the player's network status to <code>networkStatus</code>.
-     *
-     * @param username      of the player.
-     * @param networkStatus of the player to be set.
-     */
     public void setNetworkStatus(String username, boolean networkStatus) {
         players.stream()
                 .filter(p -> p.getUsername().equals(username))
@@ -393,24 +255,17 @@ public class Game {
                 .ifPresent(p -> p.setNetworkStatus(networkStatus));
     }
 
-    /*
-     *  NOTE. We're assuming all methods are called before having requested the getCurrentPlayerIdx
-     */
-
-    /*
-     * NOTE. Exceptions are handled by the controller
-     */
-
-
     /**
      * Returns a player based on the username.
      *
      * @param username of the player.
      * @return the player.
-     * @throws IllegalArgumentException if the user is not found.
      */
-    public Player getPlayerByUsername(String username) throws IllegalArgumentException {
-        return getPlayers().stream().filter(p -> p.getUsername().equals(username)).findFirst().orElseThrow(() -> new IllegalArgumentException("User not found"));
+    public Player getPlayerByUsername(String username) {
+        return players.stream()
+                .filter(p -> p.getUsername().equals(username))
+                .findFirst()
+                .get();
     }
 
     /**
@@ -420,16 +275,48 @@ public class Game {
      * @param side     of the starter
      * @throws InvalidPlayerActionException if the player cannot perform the operation. For example the player has already chosen the side.
      */
-    public void placeStarter(String username, Side side) throws InvalidPlayerActionException {
+    public void placeStarter(String username, Side side)
+            throws InvalidPlayerActionException,
+            InvalidGamePhaseException {
+        if (!phase.equals(GamePhase.Setup)) {
+            throw new InvalidGamePhaseException();
+        }
+
+        Player player = getPlayerByUsername(username);
+
         try {
-            gameState.placeStarter(this, getPlayerByUsername(username), side);
-        } catch (Playground.UnavailablePositionException | Playground.NotEnoughResourcesException ignored) {
-            // the placement of the starter cannot cause problems
+            player.placeStarter(side);
+        }
+        // the starter card shouldn't cause any exception related to the playground
+        catch (Playground.UnavailablePositionException e) {
+            e.printStackTrace();
+        } catch (Playground.NotEnoughResourcesException e) {
+            e.printStackTrace();
         }
     }
 
-    public void assignColor(String username, Color color) throws InvalidPlayerActionException {
-        gameState.assignColor(this, getPlayerByUsername(username), color);
+    /**
+     * Assigns at <code>username</code> the specified <code>color</code>.
+     *
+     * @param username of the player who has chose the color.
+     * @param color    chosen.
+     * @throws InvalidPlayerActionException if the player cannot perform this action.
+     * @throws InvalidColorException        if the color has already been selected by others.
+     * @throws NonexistentPlayerException   if the username is invalid.
+     * @throws InvalidGamePhaseException    if the player has already finished their setup.
+     */
+    public void assignColor(String username, PlayerColor color) throws InvalidPlayerActionException, InvalidColorException, NonexistentPlayerException, InvalidGamePhaseException {
+        if (!phase.equals(GamePhase.Setup)) {
+            throw new InvalidGamePhaseException();
+        }
+
+        if (!availableColors.contains(color)) {
+            throw new InvalidColorException();
+        }
+
+        Player player = getPlayerByUsername(username);
+        player.assignColor(color);
+        availableColors.remove(color);
     }
 
     /**
@@ -438,9 +325,18 @@ public class Game {
      * @param username        of the player.
      * @param chosenObjective the chosen objective.
      * @throws InvalidPlayerActionException if the player cannot perform the operation. For example the player has already chosen the objective.
+     * @throws InvalidGamePhaseException    if the player has already finished the setup.
      */
-    public void placeObjectiveCard(String username, int chosenObjective) throws InvalidPlayerActionException {
-        gameState.placeObjectiveCard(this, getPlayerByUsername(username), chosenObjective);
+    public void placeObjectiveCard(String username, int chosenObjective) throws InvalidPlayerActionException, InvalidGamePhaseException {
+        if (!phase.equals(GamePhase.Setup)) {
+            throw new InvalidGamePhaseException();
+        }
+
+        Player player = getPlayerByUsername(username);
+
+        player.placeObjectiveCard(chosenObjective);
+
+        phase = phaseHandler.getNextPhase(phase);
     }
 
     /**
@@ -453,31 +349,94 @@ public class Game {
      * @throws InvalidPlayerActionException            if the player cannot perform the operation.
      * @throws Playground.UnavailablePositionException if the position is not available. For example the player is trying to place the card in an already covered corner.
      * @throws Playground.NotEnoughResourcesException  if the player's resource are not enough to place the card.
+     * @throws InvalidGamePhaseException               if the game phase cannot allow placing cards.
      */
-    public void placeCard(String username, Card card, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
-        gameState.placeCard(this, getPlayerByUsername(username), card, side, position);
+    public int placeCard(String username, Card card, Side side, Position position)
+            throws InvalidPlayerActionException,
+            Playground.UnavailablePositionException,
+            Playground.NotEnoughResourcesException,
+            InvalidGamePhaseException {
+
+        if (!phase.equals(GamePhase.PlaceNormal) && !phase.equals(GamePhase.PlaceAdditional)) {
+            throw new InvalidGamePhaseException();
+        }
+
+        Player currentPlayer = getPlayerByUsername(username);
+
+        if (!currentPlayer.getUsername().equals(username)) {
+            throw new InvalidPlayerActionException();
+        }
+
+        int newScore = currentPlayer.placeCard(card, side, position);
+
+        if (newScore >= MAX_POINT) {
+            phaseHandler.setLastNormalTurn();
+        }
+
+        phase = phaseHandler.getNextPhase(phase);
+        return newScore;
     }
 
     /**
-     * Draws from the resource cards deck
+     * Draws a card from the deck specified.
      *
-     * @param username of the player
+     * @param username of the player to draw.
+     * @param deckType of the deck to draw a card from.
      * @throws InvalidPlayerActionException if the player cannot perform the operation.
-     * @throws EmptyDeckException           if the deck is empty.
+     * @throws EmptyDeckException           if the selected deck is empty.
+     * @throws InvalidGamePhaseException    if the game phase doesn't allow the operation.
      */
-    public void drawFromResourceDeck(String username) throws InvalidPlayerActionException, EmptyDeckException {
-        gameState.drawFromResourceDeck(this, getPlayerByUsername(username));
+    public void drawFromDeck(String username, DeckType deckType) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException {
+        if (!phase.equals(GamePhase.DrawNormal)) {
+            throw new InvalidGamePhaseException();
+        }
+
+        Player currentPlayer = players.get(currentPlayerIdx);
+
+        if (!currentPlayer.getUsername().equals(username)) {
+            throw new InvalidPlayerActionException();
+        }
+
+        Deck<Card> deck;
+        if (deckType.equals(DeckType.GOLDEN))
+            deck = goldenCards;
+        else
+            deck = resourceCards;
+
+        Card newCard = deck.draw();
+
+        try {
+            currentPlayer.addCard(newCard);
+            if (goldenCards.isEmpty() && resourceCards.isEmpty()) {
+                phaseHandler.setLastNormalTurn();
+            }
+            phase = phaseHandler.getNextPhase(phase);
+        } catch (InvalidPlayerActionException invalidPlayerActionException) {
+            deck.add(newCard);
+            throw invalidPlayerActionException;
+        }
     }
 
-    /**
-     * Draws from the golden cards deck
-     *
-     * @param username of the player
-     * @throws InvalidPlayerActionException if the player cannot perform the operation.
-     * @throws EmptyDeckException           if the deck is empty.
-     */
-    public void drawFromGoldenDeck(String username) throws InvalidPlayerActionException, EmptyDeckException {
-        gameState.drawFromGoldenDeck(this, getPlayerByUsername(username));
+    private void replaceFaceUpCard(int faceUpCardIdx) {
+        List<Deck<Card>> decks = Arrays.asList(resourceCards, goldenCards);
+        int deckIdx = faceUpCardIdx <= 1 ? 0 : 1;
+
+        Card replacement = null;
+        try {
+            if (!decks.get(deckIdx).isEmpty()) {
+                replacement = decks.get(deckIdx).draw();
+            } else {
+                replacement = decks.get((deckIdx + 1) % 2).draw();
+            }
+        } catch (EmptyDeckException e) {
+            // the replacement may be invalid if both decks are empty, so there's no exception to throw
+        }
+
+        faceUpCards.set(faceUpCardIdx, replacement); // null if there's none card for replacement
+
+        if (goldenCards.isEmpty() && resourceCards.isEmpty()) {
+            phaseHandler.setLastNormalTurn();
+        }
     }
 
     /**
@@ -487,55 +446,52 @@ public class Game {
      * @param faceUpCardIdx specifying the face up card.
      * @throws InvalidPlayerActionException if the player cannot perform the operation.
      */
-    public void drawFromFaceUpCards(String username, int faceUpCardIdx) throws InvalidPlayerActionException {
-        gameState.drawFromFaceUpCards(this, getPlayerByUsername(username), faceUpCardIdx);
-    }
+    public void drawFromFaceUpCards(String username, int faceUpCardIdx) throws InvalidPlayerActionException, InvalidGamePhaseException {
+        if (!phase.equals(GamePhase.DrawNormal)) {
+            throw new InvalidGamePhaseException();
+        }
 
-    /**
-     * Draws automatically to complete the current player's turn.
-     * It may happen if the current player disconnects after placing a card but before drawing the new one.
-     *
-     * @param username of the player.
-     */
-    public void automaticDraw(String username) {
-        assert players.get(currentPlayerIdx).getUsername().equals(username); // the automatic draw is for the current player only
+        Player currentPlayer = getPlayerByUsername(username);
 
+        if (!currentPlayer.getUsername().equals(username)) {
+            throw new InvalidPlayerActionException();
+        }
 
-        Random rand = new Random();
-        int methodOfDraw = rand.nextInt(4);
-        Player currentPlayer = players.get(currentPlayerIdx);
+        assert (isValidIdx(faceUpCardIdx));
 
-        if (!players.get(currentPlayerIdx).isConnected()) {
-            // The current player may have already drawn causing exceptions thrown; such exceptions will be not considered.
-            try {
-                if (methodOfDraw == 0) {
-                    if (!resourceCards.isEmpty()) {
-                        gameState.drawFromResourceDeck(this, currentPlayer);
-                    }
-                } else if (methodOfDraw == 1) {
-                    if (!goldenCards.isEmpty()) {
-                        gameState.drawFromGoldenDeck(this, currentPlayer);
-                    }
-                } else {
-                    gameState.drawFromFaceUpCards(this, currentPlayer, rand.nextInt(5));
-                }
-            } catch (Exception e) {
+        Card newCard = faceUpCards.get(faceUpCardIdx);
 
-            }
+        try {
+            currentPlayer.addCard(newCard);
+            replaceFaceUpCard(faceUpCardIdx);
+            phase = phaseHandler.getNextPhase(phase);
+        } catch (InvalidPlayerActionException e) {
+            throw new InvalidPlayerActionException();
         }
     }
 
+    /**
+     * Skips the current player's turn.
+     * The method is invoked whenever the current player is not active.
+     */
+    public void skipTurn() {
+        if (!phase.equals(GamePhase.PlaceNormal)
+            && !phase.equals(GamePhase.PlaceAdditional)) {
+            throw new RuntimeException("A turn can be skipped only at the beginning");
+        }
+
+        phase = phaseHandler.skipTurn(phase);
+    }
 
     /**
      * Returns a list of active players.
      *
      * @return an active player's list.
      */
-    private List<Player> getActivePlayers() {
+    public List<Player> getActivePlayers() {
         return players.stream()
                 .filter(Player::isConnected)
                 .toList();
     }
-
 }
 
