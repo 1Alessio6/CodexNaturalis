@@ -130,7 +130,7 @@ public class Controller implements EventListener {
     }
 
     /**
-     *
+     *todo
      */
     public void playerDisconnected() {
         //timer.schedule(game.setFinished(), countdown);
