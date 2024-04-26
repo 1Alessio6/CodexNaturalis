@@ -2,7 +2,9 @@ package it.polimi.ingsw.network;
 
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.board.Tile;
+import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.card.Color;
+import it.polimi.ingsw.model.card.Deck;
 import it.polimi.ingsw.model.card.Symbol;
 
 import java.rmi.Remote;
@@ -32,9 +34,20 @@ public interface VirtualView extends Remote {
 
     void showUpdatePoints(int points) throws RemoteException;
 
-    void showUpdateResources(Map<Symbol, Integer> resources) throws RemoteException;
+    void showUpdateResources(Symbol symbol, int totalAmount) throws RemoteException;
+
+    //method to show update after a draw
+
+    void showUpdatePlayerCards(List<Card> newCards);
+
+    void showUpdateDeck(boolean isEmpty); //the client (player) can't see the updates of a deck till the deck is empty
+
+    void showUpdateFaceUpCards(int position, Card card);
+    //Face up cards have specific position inside the list, so it's possible to pass only the position which needs to be updated
 
     void reportError(String details) throws RemoteException;
+
+    //todo check if showUpdatedTimer is required or two synchronized timer are used for both server and client
 
 
 
