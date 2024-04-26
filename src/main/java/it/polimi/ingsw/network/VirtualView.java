@@ -1,11 +1,7 @@
 package it.polimi.ingsw.network;
 
-import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.board.Tile;
-import it.polimi.ingsw.model.card.Card;
-import it.polimi.ingsw.model.card.Color;
-import it.polimi.ingsw.model.card.Deck;
-import it.polimi.ingsw.model.card.Symbol;
+import it.polimi.ingsw.model.board.*;
+import it.polimi.ingsw.model.card.*;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -45,10 +41,15 @@ public interface VirtualView extends Remote {
     void showUpdateFaceUpCards(int position, Card card);
     //Face up cards have specific position inside the list, so it's possible to pass only the position which needs to be updated
 
+    void showCommonObjectiveCard(List<ObjectiveCard> commonObjective);
+
+    void showUpdatePlayerObjectiveCard(List<ObjectiveCard> privateObjective); //it's the only method that show information to one player per time
+
+    void showPlayerStarterCard(Card starterCard);
+
     void reportError(String details) throws RemoteException;
 
     //todo check if showUpdatedTimer is required or two synchronized timer are used for both server and client
-
 
 
 }
