@@ -1,16 +1,11 @@
-package it.polimi.ingsw.model.card;
+package it.polimi.ingsw.model.Deck;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.jsondeserializer.InterfaceAdaptor;
-import it.polimi.ingsw.model.board.Position;
+import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.card.strategies.CalculatePoints;
-import it.polimi.ingsw.model.jsondeserializer.CalculatorDeserializer;
-import it.polimi.ingsw.model.jsondeserializer.CornerDeserializer;
-import it.polimi.ingsw.model.jsondeserializer.PositionDeserializer;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
