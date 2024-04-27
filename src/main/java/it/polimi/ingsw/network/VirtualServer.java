@@ -6,7 +6,7 @@ import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.ObjectiveCard;
 import it.polimi.ingsw.model.card.Symbol;
-import it.polimi.ingsw.model.chat.Message;
+import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.player.Player;
 
 import java.rmi.Remote;

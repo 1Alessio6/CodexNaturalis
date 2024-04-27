@@ -3,7 +3,7 @@ package it.polimi.ingsw.network;
 import it.polimi.ingsw.model.board.*;
 import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
-import it.polimi.ingsw.model.chat.Message;
+import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.player.Player;
 
 import java.rmi.Remote;

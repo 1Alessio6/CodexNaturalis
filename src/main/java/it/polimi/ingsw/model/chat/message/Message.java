@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.chat;
+package it.polimi.ingsw.model.chat.message;
 
 /**
  * Message sent by players.
@@ -15,7 +15,7 @@ public class Message {
         return sender;
     }
 
-    public String getReceiver() {
+    public String getRecipient() {
         return receiver;
     }
 
@@ -36,8 +36,8 @@ public class Message {
             throw new IllegalArgumentException("receiver"+ " must be a valid reference");
         }
 
-        if (content == null) {
-            throw new IllegalArgumentException("content" + " must be a valid reference");
+        if (content == null || content.isEmpty()) {
+            throw new IllegalArgumentException("invalid content");
         }
     }
 

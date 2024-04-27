@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.chat;
 
+import it.polimi.ingsw.model.chat.message.Message;
 import org.junit.jupiter.api.*;
 
 import java.util.List;
@@ -43,7 +44,7 @@ class ChatDatabaseTest {
         Message m = messages.get(0);
         // the message contained must be the right one
         Assertions.assertEquals(senderUsername, m.getSender());
-        Assertions.assertEquals(receiverUsername, m.getReceiver());
+        Assertions.assertEquals(receiverUsername, m.getRecipient());
         Assertions.assertEquals(content, m.getContent());
         Assertions.assertFalse(m.isBroadcast());
     }

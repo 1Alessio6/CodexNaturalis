@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.chat;
+package it.polimi.ingsw.model.chat.message;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
