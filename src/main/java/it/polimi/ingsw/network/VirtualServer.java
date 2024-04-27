@@ -20,10 +20,7 @@ todo: in order to follow the design pattern this should be an abstract class wit
  */
 
 
-public abstract class VirtualServer implements Remote {
-
-    List<VirtualView> connectedClients;
-
+public interface VirtualServer extends Remote {
     public abstract void connect(VirtualView client) throws RemoteException; //possible to add username as a parameter
 
     //method servers class need to have to invoke controller method
