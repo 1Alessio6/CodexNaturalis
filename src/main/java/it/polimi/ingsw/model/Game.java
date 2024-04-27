@@ -532,5 +532,17 @@ public class Game {
                 .filter(Player::isConnected)
                 .toList();
     }
+
+    /**
+     * Gets the card associated to the <code>cardId</code>.
+     *
+     * @param username the player's username.
+     * @param cardId   the id of the card to get.
+     * @return the player's card associated with <code>cardId</code>.
+     */
+    public Card getCard(String username, int cardId) {
+        Player player = getPlayerByUsername(username);
+        return player.getCard(cardId);
+    }
 }
 
