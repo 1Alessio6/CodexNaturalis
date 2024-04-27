@@ -171,6 +171,15 @@ public class Player {
         return cards.contains(card);
     }
 
+
+    public Card getCard(int idCard) throws IllegalArgumentException {
+        return  cards
+                .stream()
+                .filter(c -> c.getId() == idCard)
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("Card not present in player"));
+    }
+
     // discard the card from the player's hand
 
     /**
