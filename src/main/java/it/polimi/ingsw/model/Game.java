@@ -87,7 +87,7 @@ public class Game {
         return f;
     }
 
-    private void laodAvailableColors() {
+    private void loadAvailableColors() {
         this.availableColors = new ArrayList<>(
                 Arrays.asList(
                         PlayerColor.RED,
@@ -170,7 +170,7 @@ public class Game {
      * @param usernames the list containing all players
      */
     public Game(List<String> usernames) {
-        laodAvailableColors();
+        loadAvailableColors();
         loadCards();
         try {
             players = new ArrayList<>();
@@ -184,6 +184,7 @@ public class Game {
         phase = GamePhase.Setup;
         currentPlayerIdx = 0;
         isFinished = false;
+        isSuspended = false;
         chatDatabase = new ChatDatabase();
         phaseHandler = new PhaseHandler(players);
     }
@@ -304,12 +305,13 @@ public class Game {
      *
      * @param username of the player who has chose the color.
      * @param color    chosen.
+     * @return a list containing the remaining colors.
      * @throws InvalidPlayerActionException if the player cannot perform this action.
      * @throws InvalidColorException        if the color has already been selected by others.
      * @throws NonexistentPlayerException   if the username is invalid.
      * @throws InvalidGamePhaseException    if the player has already finished their setup.
      */
-    public void assignColor(String username, PlayerColor color) throws InvalidPlayerActionException, InvalidColorException, NonexistentPlayerException, InvalidGamePhaseException {
+    public List<PlayerColor> assignColor(String username, PlayerColor color) throws InvalidPlayerActionException, InvalidColorException, NonexistentPlayerException, InvalidGamePhaseException {
         if (!phase.equals(GamePhase.Setup)) {
             throw new InvalidGamePhaseException();
         }
@@ -321,6 +323,7 @@ public class Game {
         Player player = getPlayerByUsername(username);
         player.assignColor(color);
         availableColors.remove(color);
+        return availableColors;
     }
 
     /**
