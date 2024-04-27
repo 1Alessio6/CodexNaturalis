@@ -13,6 +13,8 @@ import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.gamePhase.PhaseHandler;
+import it.polimi.ingsw.model.chat.message.Message;
+import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -501,6 +503,23 @@ public class Game {
         }
 
         phase = phaseHandler.skipTurn(phase);
+    }
+
+    /**
+     * Registers message sent by author.
+     *
+     * @param author  of the message.
+     * @param message to register.
+     * @throws InvalidMessageException if the author doesn't match the sender or the recipient is an invalid username.
+     */
+    public void registerMessage(String author, Message message) throws InvalidMessageException {
+        if (!message.getSender().equals(author)) {
+            throw new InvalidMessageException("sender doesn't match the author's username");
+        }
+        if (getPlayerByUsername(message.getRecipient()) == null) {
+            throw new InvalidMessageException("recipient doesn't exists");
+        }
+        chatDatabase.addMessage(message);
     }
 
     /**
