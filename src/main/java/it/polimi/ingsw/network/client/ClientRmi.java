@@ -24,6 +24,20 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
         this.server = server;
     }
 
+
+    //todo: this method assume the client tries to connect to the server till the server is available
+    private void run(){
+        while(true) {
+            try {
+                this.server.connect(this);
+                break;
+            } catch (RemoteException e) {
+                System.out.println("Connection Error");
+            }
+        }
+        this.readClientCommand();
+    }
+
     private void readClientCommand(){
 
         Scanner scanner = new Scanner(System.in);
