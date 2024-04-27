@@ -11,7 +11,10 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
 
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.Scanner;
@@ -22,6 +25,15 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
     private final VirtualServer server;
     protected ClientRmi(VirtualServer server) throws RemoteException {
         this.server = server;
+    }
+
+    public static void main(String[] args) throws RemoteException, NotBoundException {
+        String serverName = "ServerRmi";
+        Registry registry = LocateRegistry.getRegistry(args[0],1234); //todo change port and args and decide how to handle the exception
+
+        VirtualServer server = (VirtualServer)registry.lookup(serverName);
+
+        new ClientRmi(server).run();
     }
 
 
@@ -46,6 +58,7 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
             System.out.println("Insert a command:\n> ");
             String command = scanner.nextLine();
             if(command.equals("end")){
+                scanner.close();
                 break;
             }
 
