@@ -39,6 +39,8 @@ public class Game {
 
     private boolean isFinished;
 
+    private boolean isSuspended;
+
     private List<Player> players;
 
     private GamePhase phase;
@@ -225,10 +227,9 @@ public class Game {
 
         this.commonObjects = gameBeforeCrash.commonObjects;
 
-        // this.numRequiredPlayers = gameBeforeCrash.numRequiredPlayers;
         this.currentPlayerIdx = gameBeforeCrash.currentPlayerIdx;
         this.isFinished = gameBeforeCrash.isFinished;
-
+        this.isSuspended = gameBeforeCrash.isSuspended;
         this.players = gameBeforeCrash.players;
         this.phase = gameBeforeCrash.phase;
     }
@@ -245,22 +246,17 @@ public class Game {
         return phase;
     }
 
-    /**
-     * Returns the next current player.
-     *
-     * @return the next current player.
-     * @throws SuspendedGameException if there's less than 2 connected players.
-     */
-    public Player getNextPlayer() throws SuspendedGameException {
-        currentPlayerIdx = (currentPlayerIdx + 1) % players.size();
-        return players.get(currentPlayerIdx);
-    }
-
     public void setNetworkStatus(String username, boolean networkStatus) {
         players.stream()
                 .filter(p -> p.getUsername().equals(username))
                 .findFirst()
                 .ifPresent(p -> p.setNetworkStatus(networkStatus));
+
+        if (getActivePlayers().size() <= 1) {
+            isSuspended = true;
+        } else {
+            isSuspended = false;
+        }
     }
 
     /**
@@ -363,7 +359,11 @@ public class Game {
             throws InvalidPlayerActionException,
             Playground.UnavailablePositionException,
             Playground.NotEnoughResourcesException,
-            InvalidGamePhaseException {
+            InvalidGamePhaseException, SuspendedGameException {
+
+        if (isSuspended) {
+            throw new SuspendedGameException();
+        }
 
         if (!phase.equals(GamePhase.PlaceNormal) && !phase.equals(GamePhase.PlaceAdditional)) {
             throw new InvalidGamePhaseException();
