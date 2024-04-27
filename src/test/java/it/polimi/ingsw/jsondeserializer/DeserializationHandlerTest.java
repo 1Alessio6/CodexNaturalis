@@ -59,7 +59,6 @@ class DeserializationHandlerTest {
         TypeToken<List<GoldenFront>> listType = new TypeToken<List<GoldenFront>>() {
         };
 
-
         Assertions.assertDoesNotThrow(
                 () -> {
                     deserializationHandler.jsonToList(goldenFrontCardsPath, listType);
@@ -166,4 +165,40 @@ class DeserializationHandlerTest {
         Assertions.assertEquals(6, l.size());
     }
 
+    @Test
+    void testUniqueObjectiveCardId() throws FileNotFoundException {
+        DeserializationHandler<ObjectivePositionCard> objectivePositionDeserializer = new DeserializationHandler<ObjectivePositionCard>();
+        TypeToken<List<ObjectivePositionCard>> objectivePositionType = new TypeToken<List<ObjectivePositionCard>>() {
+        };
+
+        DeserializationHandler<ObjectiveResourceCard> objectiveResourceDeserializer = new DeserializationHandler<ObjectiveResourceCard>();
+        TypeToken<List<ObjectiveResourceCard>> objectiveResourceType = new TypeToken<List<ObjectiveResourceCard>>() {
+        };
+
+        List<ObjectivePositionCard> objectivePositionCards = objectivePositionDeserializer.jsonToList(objectivePositionFrontCardsPath, objectivePositionType);
+        List<ObjectiveResourceCard> objectiveResourceCards = objectiveResourceDeserializer.jsonToList(objectiveResourceCardsPath, objectiveResourceType);
+
+        // unique ids between objective position
+        for (int i = 0; i < objectivePositionCards.size(); ++i)  {
+            for (int j = 0; j < objectivePositionCards.size(); ++j) {
+                if (i == j) continue;
+                Assertions.assertNotEquals(objectivePositionCards.get(i), objectivePositionCards.get(j));
+            }
+        }
+
+        // unique ids between objective resource
+        for (int i = 0; i < objectiveResourceCards.size(); ++i)  {
+            for (int j = 0; j < objectiveResourceCards.size(); ++j) {
+                if (i == j) continue;
+                Assertions.assertNotEquals(objectiveResourceCards.get(i), objectiveResourceCards.get(j));
+            }
+        }
+
+        // unique ids between objective position and resource cards
+        for (int i = 0; i < objectivePositionCards.size(); ++i) {
+            for (int j = 0; j < objectiveResourceCards.size(); ++j) {
+                Assertions.assertNotEquals(objectivePositionCards.get(i), objectiveResourceCards.get(j));
+            }
+        }
+    }
 }
