@@ -16,7 +16,6 @@ Follow the observer design pattern
  */
 public interface VirtualView extends Remote {
 
-
     //method to show players base information
     public void showPlayerUsername(String username) throws RemoteException;
 
