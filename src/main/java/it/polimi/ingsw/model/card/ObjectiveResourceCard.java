@@ -10,6 +10,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 public final class ObjectiveResourceCard extends ObjectiveCard {
     private final Map<Symbol,Integer> condition;
 
+    public ObjectiveResourceCard() {
+        super();
+        condition = new Hashtable<>();
+    }
+
+
     public ObjectiveResourceCard(Map<Symbol,Integer> condition, int multiplier) {
         super(multiplier);
         this.condition = condition;

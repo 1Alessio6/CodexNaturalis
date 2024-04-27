@@ -9,6 +9,11 @@ import java.util.*;
 public class ObjectivePositionCard extends ObjectiveCard {
     private final Map<Position, CardColor> condition;
 
+    public ObjectivePositionCard() {
+        super();
+        condition = new HashMap<>();
+    }
+
     public ObjectivePositionCard(Map<Position, CardColor> condition, int multiplier) throws IllegalArgumentException {
         super(multiplier);
 

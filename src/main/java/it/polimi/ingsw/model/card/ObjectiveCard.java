@@ -14,6 +14,23 @@ public abstract class ObjectiveCard {
      */
     int multiplier;
 
+    // id to represent a card unambiguously.
+    private int id;
+
+    private static int incrementalId = 0;
+
+    private static int getIncrementalId() {
+        return ++incrementalId;
+    }
+
+    public ObjectiveCard() {
+        id = getIncrementalId();
+    }
+
+    public int getId() {
+        return id;
+    }
+
     /**
      * Constructs an objective card with given provided.
      *
