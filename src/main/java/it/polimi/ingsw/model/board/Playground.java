@@ -177,7 +177,7 @@ public class Playground {
                 this.area.get(pos).getFace().getCorners().get(corner_pos).setCovered();
                 // the placement may cover a resource
                 Symbol s = this.area.get(pos).getFace().getCorners().get(corner_pos).getSymbol();
-                if(s != null) {
+                if (s != null) {
                     this.resources.put(s, this.resources.get(s) - 1);
                 }
             }
@@ -262,16 +262,16 @@ public class Playground {
         return new Position(k, j);
     }
 
-    public String toString(){
+    public String toString() {
 
         return "Area: \n" + areaToString() + "\n\nResources:\n" + this.resources.toString() + "\n\nScore:\n" + points;
 
     }
 
-    private String areaToString(){
+    private String areaToString() {
         StringBuilder areaString = new StringBuilder();
 
-        for(Position p : this.area.keySet()){
+        for (Position p : this.area.keySet()) {
             areaString.append("( ").append(p).append(" ) --> ").append(this.area.get(p)).append("\n");
         }
 

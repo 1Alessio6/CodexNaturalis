@@ -14,6 +14,7 @@ import it.polimi.ingsw.network.VirtualView;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
 
 public class ClientRmi extends UnicastRemoteObject implements VirtualView {
@@ -21,6 +22,20 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
     private final VirtualServer server;
     protected ClientRmi(VirtualServer server) throws RemoteException {
         this.server = server;
+    }
+
+    private void readClientCommand(){
+
+        Scanner scanner = new Scanner(System.in);
+
+        while(true){
+            System.out.println("Insert a command:\n> ");
+            String command = scanner.nextLine();
+            if(command.equals("end")){
+                break;
+            }
+
+        }
     }
 
     @Override
