@@ -203,6 +203,10 @@ public class Game {
         return 0 <= idx && idx < players.size();
     }
 
+    private void updateCurrentPlayerIdx() {
+        currentPlayerIdx = (currentPlayerIdx + 1) % players.size();
+    }
+
     /**
      * Constructs a game using the information stored in <code>gameBeforeCrash</code>.
      * In this way is possible to recover the game's status before the last crash.
@@ -231,6 +235,10 @@ public class Game {
 
     public List<Player> getPlayers() {
         return players;
+    }
+
+    public Player getCurrentPlayer() {
+        return players.get(currentPlayerIdx);
     }
 
     public GamePhase getPhase() {
@@ -374,6 +382,11 @@ public class Game {
         }
 
         phase = phaseHandler.getNextPhase(phase);
+
+        if (phase == GamePhase.PlaceAdditional) {
+            updateCurrentPlayerIdx();
+        }
+
         return newScore;
     }
 
@@ -411,6 +424,9 @@ public class Game {
                 phaseHandler.setLastNormalTurn();
             }
             phase = phaseHandler.getNextPhase(phase);
+
+            updateCurrentPlayerIdx();
+
         } catch (InvalidPlayerActionException invalidPlayerActionException) {
             deck.add(newCard);
             throw invalidPlayerActionException;
@@ -465,6 +481,7 @@ public class Game {
             currentPlayer.addCard(newCard);
             replaceFaceUpCard(faceUpCardIdx);
             phase = phaseHandler.getNextPhase(phase);
+            updateCurrentPlayerIdx();
         } catch (InvalidPlayerActionException e) {
             throw new InvalidPlayerActionException();
         }
