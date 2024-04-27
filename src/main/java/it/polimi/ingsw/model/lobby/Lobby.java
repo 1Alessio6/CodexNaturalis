@@ -4,6 +4,13 @@ import it.polimi.ingsw.model.Game;
 
 import java.util.*;
 
+/**
+ * Class representing the lobby of the game.
+ * The first player joining the lobby will be the creator of the lobby, therefore they'll be the one to choose the number of players.
+ * if the creator crashes or disconnects before having set the number of players, the lobby will be reset; otherwise it's considered as a normal player leaving the lobby.
+ * When there are enough players (the number matches the one chosen by the creator) the lobby will create the game with all the players in the lobby.
+ */
+
 public class Lobby {
     private List<String> waitingList;
 
