@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.card;
 import it.polimi.ingsw.model.card.Color.CardColor;
 import it.polimi.ingsw.model.card.strategies.CalculateBackPoints;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -12,6 +13,11 @@ public class Back extends Face {
      * Map containing the resources of the back and their quantity.
      */
     private final Map<Symbol, Integer> resources;
+
+    public Back() {
+        super();
+        resources = new HashMap<>();
+    }
 
     /**
      * Constructs a front card with the color, corners and resources provided.

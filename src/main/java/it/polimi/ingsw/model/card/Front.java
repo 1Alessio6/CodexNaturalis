@@ -11,6 +11,11 @@ import java.util.Objects;
 public class Front extends Face {
     private final int score;
 
+    public Front() {
+        super();
+        score = 0;
+    }
+
     /**
      * Constructs a front card with the color, score and corners provided.
      *

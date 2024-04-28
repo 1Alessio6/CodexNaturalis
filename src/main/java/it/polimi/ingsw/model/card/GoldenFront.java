@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.card;
 import it.polimi.ingsw.model.card.Color.CardColor;
 import it.polimi.ingsw.model.card.strategies.CalculatePoints;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -16,6 +17,13 @@ public final class GoldenFront extends Front {
      * Represents a map with the resources and their corresponding amounts required to place the card.
      */
     private final Map<Symbol, Integer> requirements; /* set? */
+
+    public GoldenFront() {
+        super();
+        pointsCondition = Condition.CORNERS;
+        requirements = new HashMap<>();
+    }
+
 
     /**
      * Constructs a front card with the color, score and corners provided.
