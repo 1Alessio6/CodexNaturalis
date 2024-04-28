@@ -11,14 +11,6 @@ public class Card {
      */
     private Back back;
 
-    // id to represent a card unambiguously.
-    private int id;
-
-    private static int incrementalId = 0;
-
-    private static int getIncrementalId() {
-        return ++incrementalId;
-    }
 
     /**
      * Constructs a Card with the front and the back provided.
@@ -29,7 +21,6 @@ public class Card {
     public Card(Front front, Back back) {
         this.front = front;
         this.back = back;
-        this.id = getIncrementalId();
     }
 
     /**
@@ -44,10 +35,5 @@ public class Card {
         else
             return back;
     }
-
-    public int getId() {
-        return id;
-    }
-
 }
 

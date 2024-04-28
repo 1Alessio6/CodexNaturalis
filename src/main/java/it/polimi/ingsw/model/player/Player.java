@@ -172,10 +172,17 @@ public class Player {
     }
 
 
-    public Card getCard(int idCard) throws IllegalArgumentException {
-        return  cards
+    /**
+     * Returns the card with the specified front and back ids.
+     * @param frontId the id of the card's front.
+     * @param backId the id of the card's back.
+     * @return the card matching the two ids.
+     * @throws IllegalArgumentException if there's no card matching the provided ids.
+     */
+    public Card getCard(int frontId, int backId) throws IllegalArgumentException {
+        return cards
                 .stream()
-                .filter(c -> c.getId() == idCard)
+                .filter(c -> c.getFace(Side.FRONT).getId() == frontId && c.getFace(Side.BACK).getId() == backId)
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("Card not present in player"));
     }

@@ -18,12 +18,30 @@ abstract public class Face {
 
     private final Map<CornerPosition, Corner> corners;
 
+    // id to represent a card unambiguously.
+    private int id;
+
+    private static int incrementalId = 0;
+
+    private static int getIncrementalId() {
+        return ++incrementalId;
+    }
+
+
     // representation invariant
     private boolean isValid(Map<CornerPosition, Corner> corners, CalculatePoints calculator) {
         return corners != null
                 && calculator != null
                 && !corners.containsKey(null)
                 && !corners.containsValue(null);
+    }
+
+
+    public Face() {
+        id = getIncrementalId();
+        color = null;
+        calculator = null;
+        corners = null;
     }
 
     /**
@@ -47,6 +65,10 @@ abstract public class Face {
         this.corners = Collections.unmodifiableMap(corners);
 
         this.calculator = calculator;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public CardColor getColor() {
