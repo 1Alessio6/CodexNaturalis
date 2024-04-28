@@ -179,7 +179,9 @@ public class Game {
             for (String username : usernames) {
                 players.add(createPlayer(username));
             }
+            Collections.shuffle(players);
         } catch (EmptyDeckException e) {
+            // there must be enough cards for the beginning
             e.printStackTrace();
         }
 
