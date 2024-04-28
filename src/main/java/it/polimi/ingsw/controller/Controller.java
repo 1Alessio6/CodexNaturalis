@@ -28,7 +28,7 @@ import java.util.List;
  * It also allows the player to make moves in the playground and to choose his/her own username and token color
  * before the start of a game.
  */
-public class Controller implements EventListener {
+public class Controller implements EventListener, GameRequest {
     private Lobby lobby;
     private Game game;
     private List<String> usernames;
@@ -45,12 +45,14 @@ public class Controller implements EventListener {
      * @throws FullLobbyException      if the lobby is full.
      * @throws AlreadyInLobbyException if there's already a player with <code>username</code> in the lobby.
      */
+    @Override
     public boolean joinLobby(String username) throws FullLobbyException, AlreadyInLobbyException {
         game = lobby.joinLobby(username);
         return game != null;
     }
 
     // fixme(return_value): it has to be the client's representation of a player to recovery their state.
+    @Override
     public void joinGame(String username) {
         game.setNetworkStatus(username, true);
         // todo. get all info needed by the client related to the player and return them.
@@ -62,6 +64,7 @@ public class Controller implements EventListener {
      * @param username the user's name who leaves the lobby.
      * @return true if the lobby has been reset, false otherwise.
      */
+    @Override
     public boolean leaveLobby(String username) {
         List<String> leftUsers = lobby.remove(username);
         return leftUsers.isEmpty();
@@ -73,6 +76,7 @@ public class Controller implements EventListener {
      * @param username the user's name.
      * @return true if there's no enough player, so the game has to be suspended; false otherwise.
      */
+    @Override
     public boolean leaveGame(String username) {
         game.setNetworkStatus(username, false);
         // return true if the game need to be suspended.
@@ -87,6 +91,7 @@ public class Controller implements EventListener {
      * @throws InvalidPlayerActionException if the player cannot perform this action.
      * @throws InvalidGamePhaseException    if the player has already finished their setup.
      */
+    @Override
     public void placeStarter(String username, Side side) throws InvalidPlayerActionException, InvalidGamePhaseException {
         game.placeStarter(username, side);
     }
@@ -101,6 +106,7 @@ public class Controller implements EventListener {
      * @throws InvalidPlayerActionException if the player cannot perform this action.
      * @throws InvalidGamePhaseException    if the player has already finished their setup.
      */
+    @Override
     public List<PlayerColor> assignColor(String username, PlayerColor color) throws NonexistentPlayerException, InvalidColorException, InvalidPlayerActionException, InvalidGamePhaseException {
         return game.assignColor(username, color);
     }
@@ -113,6 +119,7 @@ public class Controller implements EventListener {
      * @throws InvalidPlayerActionException if the player cannot perform the operation. For example the player has already chosen the objective.
      * @throws InvalidGamePhaseException    if the player has already finished the setup.
      */
+    @Override
     public void placeObjectiveCard(String username, int chosenObjective) throws InvalidPlayerActionException, InvalidGamePhaseException {
         game.placeObjectiveCard(username, chosenObjective);
     }
@@ -131,6 +138,7 @@ public class Controller implements EventListener {
      * @throws InvalidGamePhaseException               if the game phase cannot allow placing cards.
      * @throws SuspendedGameException                  if the game is suspended, thus no placement is allowed.
      */
+    @Override
     public int placeCard(String username, int frontId, int backId, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException {
         Card cardToPlace = game.getCard(username, frontId, backId);
         return game.placeCard(username, cardToPlace, side, position);
@@ -145,6 +153,7 @@ public class Controller implements EventListener {
      * @throws EmptyDeckException           if the selected deck is empty.
      * @throws InvalidGamePhaseException    if the game phase doesn't allow the operation.
      */
+    @Override
     public void draw(String username, int idToDraw) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException {
         if (idToDraw == 4) {
             game.drawFromDeck(username, DeckType.GOLDEN);
@@ -160,6 +169,7 @@ public class Controller implements EventListener {
      *
      * @return the current player's name.
      */
+    @Override
     public String getCurrentPlayer() {
         return game.getCurrentPlayer().getUsername();
     }
@@ -168,6 +178,7 @@ public class Controller implements EventListener {
     /**
      * Skips the current player.
      */
+    @Override
     public void skipTurn() {
         game.skipTurn();
     }
@@ -179,6 +190,7 @@ public class Controller implements EventListener {
      * @param message sent by the author.
      * @throws InvalidMessageException if the message is invalid.
      */
+    @Override
     public void sendMessage(String author, Message message) throws InvalidMessageException {
         game.registerMessage(author, message);
     }

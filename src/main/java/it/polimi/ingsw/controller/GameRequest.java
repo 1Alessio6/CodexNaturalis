@@ -1,0 +1,50 @@
+package it.polimi.ingsw.controller;
+
+import it.polimi.ingsw.model.InvalidGamePhaseException;
+import it.polimi.ingsw.model.NonexistentPlayerException;
+import it.polimi.ingsw.model.SuspendedGameException;
+import it.polimi.ingsw.model.board.Playground;
+import it.polimi.ingsw.model.board.Position;
+import it.polimi.ingsw.model.card.Color.InvalidColorException;
+import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.card.EmptyDeckException;
+import it.polimi.ingsw.model.card.Side;
+import it.polimi.ingsw.model.chat.message.InvalidMessageException;
+import it.polimi.ingsw.model.chat.message.Message;
+import it.polimi.ingsw.model.lobby.AlreadyInLobbyException;
+import it.polimi.ingsw.model.lobby.FullLobbyException;
+import it.polimi.ingsw.model.player.InvalidPlayerActionException;
+
+import java.util.List;
+
+/**
+ * This interface represents all methods/actions that can be invoked from clients
+ */
+public interface GameRequest {
+    boolean joinLobby(String username) throws FullLobbyException, AlreadyInLobbyException;
+
+    // fixme(return_value): it has to be the client's representation of a player to recovery their state.
+    void joinGame(String username);
+
+    boolean leaveLobby(String username);
+
+    boolean leaveGame(String username);
+
+    void placeStarter(String username, Side side) throws InvalidPlayerActionException, InvalidGamePhaseException;
+
+    List<PlayerColor> assignColor(String username, PlayerColor color) throws NonexistentPlayerException, InvalidColorException, InvalidPlayerActionException, InvalidGamePhaseException;
+
+    void placeObjectiveCard(String username, int chosenObjective) throws InvalidPlayerActionException, InvalidGamePhaseException;
+
+    int placeCard(String username, int frontId, int backId, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException;
+
+    void draw(String username, int idToDraw) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException;
+
+    String getCurrentPlayer();
+
+    void skipTurn();
+
+    void sendMessage(String author, Message message) throws InvalidMessageException;
+
+
+}
