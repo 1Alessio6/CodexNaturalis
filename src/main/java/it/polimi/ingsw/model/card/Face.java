@@ -124,7 +124,7 @@ abstract public class Face {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Face face = (Face) o;
-        return color == face.color && Objects.equals(calculator, face.calculator) && Objects.equals(corners, face.corners);
+        return this.id == face.id;
     }
 
     @Override
