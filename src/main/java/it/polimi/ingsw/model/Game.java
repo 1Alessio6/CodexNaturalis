@@ -347,7 +347,7 @@ public class Game {
 
         player.placeObjectiveCard(chosenObjective);
 
-        phase = phaseHandler.getNextPhase(phase);
+        phase = phaseHandler.getNextPhase(phase, currentPlayerIdx);
     }
 
     /**
@@ -388,7 +388,7 @@ public class Game {
             phaseHandler.setLastNormalTurn();
         }
 
-        phase = phaseHandler.getNextPhase(phase);
+        phase = phaseHandler.getNextPhase(phase, currentPlayerIdx);
 
         if (phase == GamePhase.PlaceAdditional) {
             updateCurrentPlayerIdx();
@@ -430,7 +430,7 @@ public class Game {
             if (goldenCards.isEmpty() && resourceCards.isEmpty()) {
                 phaseHandler.setLastNormalTurn();
             }
-            phase = phaseHandler.getNextPhase(phase);
+            phase = phaseHandler.getNextPhase(phase, currentPlayerIdx);
 
             updateCurrentPlayerIdx();
 
@@ -487,7 +487,7 @@ public class Game {
         try {
             currentPlayer.addCard(newCard);
             replaceFaceUpCard(faceUpCardIdx);
-            phase = phaseHandler.getNextPhase(phase);
+            phase = phaseHandler.getNextPhase(phase, currentPlayerIdx);
             updateCurrentPlayerIdx();
         } catch (InvalidPlayerActionException e) {
             throw new InvalidPlayerActionException();
@@ -499,12 +499,16 @@ public class Game {
      * The method is invoked whenever the current player is not active.
      */
     public void skipTurn() {
-        if (!phase.equals(GamePhase.PlaceNormal)
-            && !phase.equals(GamePhase.PlaceAdditional)) {
+        if (phase != GamePhase.PlaceNormal && phase != GamePhase.PlaceAdditional) {
             throw new RuntimeException("A turn can be skipped only at the beginning");
         }
 
-        phase = phaseHandler.skipTurn(phase);
+        if (phase == GamePhase.PlaceNormal) {
+            // additional getNextPhase is required because the player has to skip the placement and the draw
+            phase = phaseHandler.getNextPhase(phase, currentPlayerIdx);
+        }
+
+        phase = phaseHandler.getNextPhase(phase, currentPlayerIdx);
     }
 
     /**

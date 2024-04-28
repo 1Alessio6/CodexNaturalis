@@ -7,26 +7,23 @@ import java.util.List;
 /**
  * Class that handles the game's phases.
  * The FSM looks like
- *      Setup -> PlaceNormal -> Draw -> PlaceNormal -> Draw
- *                                   -> PlaceAdditional (if all players have finished the additional turn)
- *                                                         -> PlaceAdditional
- *                                                         -> End
+ * Setup -> PlaceNormal -> Draw -> PlaceNormal -> Draw
+                                                 * -> PlaceAdditional (if all players have finished the additional turn)
+                                                 * -> PlaceAdditional
+                                                 * -> End
  */
 
 public class PhaseHandler {
     private boolean lastNormalTurn;
 
-    private int numPlayersPlayedLastTurn;
-
-    private int numAdditionalTurns;
-
     private List<Player> players;
+
+    private final int lastPlayerIdx;
 
     public PhaseHandler(List<Player> players) {
         this.players = players;
         this.lastNormalTurn = false;
-        this.numPlayersPlayedLastTurn = 0;
-        this.numAdditionalTurns = 0;
+        this.lastPlayerIdx = players.size() - 1;
     }
 
     public void setLastNormalTurn() {
@@ -35,10 +32,11 @@ public class PhaseHandler {
 
     /**
      * Returns the next phase.
+     *
      * @param currentPhase the current game's phase.
      * @return the next game's phase.
      */
-    public GamePhase getNextPhase(GamePhase currentPhase) {
+    public GamePhase getNextPhase(GamePhase currentPhase, int currentPlayerIdx) {
         GamePhase nextPhase = null;
         switch (currentPhase) {
             case Setup:
@@ -55,18 +53,13 @@ public class PhaseHandler {
                 break;
             case DrawNormal:
                 nextPhase = GamePhase.PlaceNormal;
-                if (lastNormalTurn) {
-                    numPlayersPlayedLastTurn += 1;
-                    // all players have played the additional turn
-                    if (numPlayersPlayedLastTurn == players.size()) {
-                        nextPhase = GamePhase.PlaceAdditional;
-                    }
+                if (lastNormalTurn && currentPlayerIdx == lastPlayerIdx) {
+                    nextPhase = GamePhase.PlaceAdditional;
                 }
                 break;
             case PlaceAdditional:
                 nextPhase = GamePhase.PlaceAdditional;
-                numAdditionalTurns += 1;
-                if (numAdditionalTurns == players.size()) {
+                if (currentPlayerIdx == lastPlayerIdx) {
                     nextPhase = GamePhase.End;
                 }
                 break;
@@ -75,18 +68,5 @@ public class PhaseHandler {
                 break;
         }
         return nextPhase;
-    }
-
-    /**
-     * Update the game phase after skipping a turn.
-     * @param phase of the game.
-     * @return the next phase.
-     */
-    public GamePhase skipTurn(GamePhase phase) {
-        if (phase.equals(GamePhase.PlaceNormal)) {
-            // skips placing and simulate a draw
-            return getNextPhase(GamePhase.DrawNormal);
-        }
-        return getNextPhase(GamePhase.PlaceAdditional);
     }
 }

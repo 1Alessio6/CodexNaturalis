@@ -46,7 +46,7 @@ public class PhaseHandlerTest {
 
     @Test
     void transitionFromSetup_nextPhaseSetup() {
-        Assertions.assertEquals(GamePhase.Setup, phaseHandler.getNextPhase(GamePhase.Setup));
+        Assertions.assertEquals(GamePhase.Setup, phaseHandler.getNextPhase(GamePhase.Setup, 0));
     }
 
     @Test
@@ -54,55 +54,72 @@ public class PhaseHandlerTest {
         Assertions.assertDoesNotThrow(
                 () -> {
                     // finish setup
-                    for (int i = 0; i < genericPlayers.size(); ++i) {
-                        genericPlayers.get(i).placeStarter(Side.FRONT);
-                        genericPlayers.get(i).assignColor(PlayerColor.BLUE);
-                        genericPlayers.get(i).placeObjectiveCard(0);
+                    for (Player genericPlayer : genericPlayers) {
+                        genericPlayer.placeStarter(Side.FRONT);
+                        genericPlayer.assignColor(PlayerColor.BLUE);
+                        genericPlayer.placeObjectiveCard(0);
                     }
                 }
         );
 
-        Assertions.assertEquals(GamePhase.PlaceNormal, phaseHandler.getNextPhase(GamePhase.Setup));
+        Assertions.assertEquals(GamePhase.PlaceNormal, phaseHandler.getNextPhase(GamePhase.Setup, 0));
     }
 
     @Test
     void transitionFromPlaceNormal_nextPhaseDrawNormal() {
-        Assertions.assertEquals(GamePhase.DrawNormal, phaseHandler.getNextPhase(GamePhase.PlaceNormal));
+        Assertions.assertEquals(GamePhase.DrawNormal, phaseHandler.getNextPhase(GamePhase.PlaceNormal, 0));
     }
 
     @Test
     void transitionFromDrawNormal_nextPhasePlaceNormal() {
-        Assertions.assertEquals(GamePhase.PlaceNormal, phaseHandler.getNextPhase(GamePhase.DrawNormal));
+        Assertions.assertEquals(GamePhase.PlaceNormal, phaseHandler.getNextPhase(GamePhase.DrawNormal, 0));
+    }
+
+    private void testLastTurn(int playerCausingLastNormalTurn, GamePhase phase) {
+        for (int playerNormalTurn = playerCausingLastNormalTurn + 1; playerNormalTurn < genericPlayers.size(); ++playerNormalTurn) {
+            Assertions.assertEquals(GamePhase.PlaceNormal, phase);
+            phase = phaseHandler.getNextPhase(phase, playerCausingLastNormalTurn);
+            Assertions.assertEquals(GamePhase.DrawNormal, phase);
+            phase = phaseHandler.getNextPhase(phase, playerNormalTurn);
+        }
+
+        Assertions.assertEquals(phase, GamePhase.PlaceAdditional);
     }
 
     @Test
     void transitionFromDrawNormal_nextPhasePlaceAdditional() {
-        // the last normal turn starts
-        phaseHandler.setLastNormalTurn();
+        for (int playerCausingLastNormalTurn = 0; playerCausingLastNormalTurn < genericPlayers.size(); ++playerCausingLastNormalTurn) {
+            // triggered after reaching 20 points
+            GamePhase phase = GamePhase.PlaceNormal;
+            phaseHandler.setLastNormalTurn();
+            phase = phaseHandler.getNextPhase(phase, playerCausingLastNormalTurn);
+            Assertions.assertEquals(phase, GamePhase.DrawNormal);
+            phase = phaseHandler.getNextPhase(phase, playerCausingLastNormalTurn);
 
-        // all n-1 players play their last normal turn
-        for (int i = 0; i < genericPlayers.size()-1; ++i) {
-            phaseHandler.skipTurn(GamePhase.PlaceNormal);
+            testLastTurn(playerCausingLastNormalTurn, phase);
+
+            // triggered after reaching an empty deck
+            phase = GamePhase.DrawNormal;
+            phaseHandler.setLastNormalTurn();
+            phase = phaseHandler.getNextPhase(phase, playerCausingLastNormalTurn);
+
+            testLastTurn(playerCausingLastNormalTurn, phase);
         }
-
-        // the last player plays their last normal turn and triggers the additional turn
-        Assertions.assertEquals(GamePhase.PlaceAdditional, phaseHandler.getNextPhase(GamePhase.DrawNormal));
     }
 
     @Test
-    void transitionFromPlaceAdditional_nextPhasePlaceAddtional() {
-        Assertions.assertEquals(GamePhase.PlaceAdditional, phaseHandler.getNextPhase(GamePhase.PlaceAdditional));
-    }
-
-    @Test
-    void transitionFromPlaceAdditional_nextPhaseEndTurn() {
-        // n-1 players play their additional turn.
-        for (int i = 0; i < genericPlayers.size()-1; ++i) {
-            Assertions.assertEquals(GamePhase.PlaceAdditional, phaseHandler.getNextPhase(GamePhase.PlaceAdditional));
+    void testTransitionsFromAdditionalTurn() {
+        GamePhase phase = GamePhase.PlaceAdditional;
+        for (int i = 0; i < genericPlayers.size(); ++i) {
+            phase = phaseHandler.getNextPhase(phase, i);
+            if (i < genericPlayers.size() - 1) {
+                Assertions.assertEquals(GamePhase.PlaceAdditional, phase);
+            } else {
+                Assertions.assertEquals(GamePhase.End, phase);
+            }
         }
 
-        // the last player will trigger the end of the game
-        Assertions.assertEquals(GamePhase.End, phaseHandler.getNextPhase(GamePhase.PlaceAdditional));
+        Assertions.assertEquals(GamePhase.End, phase);
     }
 
 }
