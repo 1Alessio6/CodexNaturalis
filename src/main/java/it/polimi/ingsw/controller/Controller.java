@@ -121,7 +121,8 @@ public class Controller implements EventListener {
      * Places the card on the side and position specified.
      *
      * @param username of the player.
-     * @param idCard   to place.
+     * @param frontId   of the card's front to place.
+     * @param backId   of the card's back to place.
      * @param side     of the card.
      * @param position in the playground.
      * @throws InvalidPlayerActionException            if the player cannot perform the operation.
@@ -130,8 +131,8 @@ public class Controller implements EventListener {
      * @throws InvalidGamePhaseException               if the game phase cannot allow placing cards.
      * @throws SuspendedGameException                  if the game is suspended, thus no placement is allowed.
      */
-    public int placeCard(String username, int idCard, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException {
-        Card cardToPlace = game.getCard(username, idCard);
+    public int placeCard(String username, int frontId, int backId, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException {
+        Card cardToPlace = game.getCard(username, frontId, backId);
         return game.placeCard(username, cardToPlace, side, position);
     }
 

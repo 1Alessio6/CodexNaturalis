@@ -539,12 +539,13 @@ public class Game {
      * Gets the card associated to the <code>cardId</code>.
      *
      * @param username the player's username.
-     * @param cardId   the id of the card to get.
+     * @param frontId the id of the card's front.
+     * @param backId the id of the card's back.
      * @return the player's card associated with <code>cardId</code>.
      */
-    public Card getCard(String username, int cardId) {
+    public Card getCard(String username, int frontId, int backId) {
         Player player = getPlayerByUsername(username);
-        return player.getCard(cardId);
+        return player.getCard(frontId, backId);
     }
 }
 
