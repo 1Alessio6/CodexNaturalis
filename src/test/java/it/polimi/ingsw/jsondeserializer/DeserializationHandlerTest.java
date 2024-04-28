@@ -165,6 +165,49 @@ class DeserializationHandlerTest {
         Assertions.assertEquals(6, l.size());
     }
 
+    private void testUniqueIdsForFaces(List<Face> faces) {
+        for (int i = 0; i < faces.size(); ++i) {
+            for (int j = 0; j < faces.size(); ++j) {
+                if (i==j) continue;
+                Assertions.assertNotEquals(faces.get(i).getId(), faces.get(j).getId());
+            }
+        }
+    }
+
+    @Test
+    void testUniqueFrontId() throws FileNotFoundException {
+        DeserializationHandler<Front> frontDeserializationHandler = new DeserializationHandler<>();
+        TypeToken<List<Front>> objectivePositionType = new TypeToken<List<Front>>() {
+        };
+
+        List<Front> fronts = frontDeserializationHandler.jsonToList(resourceFrontCardsPath, objectivePositionType);
+
+        testUniqueIdsForFaces(new ArrayList<>(fronts));
+    }
+
+    @Test
+    void testUniqueGoldenFrontId() throws FileNotFoundException {
+        DeserializationHandler<GoldenFront> goldenFronts = new DeserializationHandler<>();
+        TypeToken<List<GoldenFront>> goldenFrontType = new TypeToken<List<GoldenFront>>() {
+        };
+
+        List<GoldenFront> fronts = goldenFronts.jsonToList(goldenFrontCardsPath, goldenFrontType);
+
+        testUniqueIdsForFaces(new ArrayList<>(fronts));
+    }
+
+    @Test
+    void testUniqueBackId() throws FileNotFoundException {
+        DeserializationHandler<Back> backDeserializationHandler = new DeserializationHandler<>();
+        TypeToken<List<Back>> backType = new TypeToken<List<Back>>() {
+        };
+
+        List<Back> fronts = backDeserializationHandler.jsonToList(backCardsPath, backType);
+
+        testUniqueIdsForFaces(new ArrayList<>(fronts));
+    }
+
+
     @Test
     void testUniqueObjectiveCardId() throws FileNotFoundException {
         DeserializationHandler<ObjectivePositionCard> objectivePositionDeserializer = new DeserializationHandler<ObjectivePositionCard>();
@@ -179,7 +222,7 @@ class DeserializationHandlerTest {
         List<ObjectiveResourceCard> objectiveResourceCards = objectiveResourceDeserializer.jsonToList(objectiveResourceCardsPath, objectiveResourceType);
 
         // unique ids between objective position
-        for (int i = 0; i < objectivePositionCards.size(); ++i)  {
+        for (int i = 0; i < objectivePositionCards.size(); ++i) {
             for (int j = 0; j < objectivePositionCards.size(); ++j) {
                 if (i == j) continue;
                 Assertions.assertNotEquals(objectivePositionCards.get(i), objectivePositionCards.get(j));
@@ -187,7 +230,7 @@ class DeserializationHandlerTest {
         }
 
         // unique ids between objective resource
-        for (int i = 0; i < objectiveResourceCards.size(); ++i)  {
+        for (int i = 0; i < objectiveResourceCards.size(); ++i) {
             for (int j = 0; j < objectiveResourceCards.size(); ++j) {
                 if (i == j) continue;
                 Assertions.assertNotEquals(objectiveResourceCards.get(i), objectiveResourceCards.get(j));
