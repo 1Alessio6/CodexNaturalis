@@ -6,7 +6,9 @@ import it.polimi.ingsw.model.board.Tile;
 import it.polimi.ingsw.model.card.Symbol;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ClientPlayground {
     private final Map<Position, ClientTile> area;
@@ -49,6 +51,10 @@ public class ClientPlayground {
 
     public void placeTile(Position position, ClientTile tile){
         this.area.put(position,tile);
+    }
+
+    public List<Position> getAvailablePositions() {
+        return this.area.keySet().stream().filter(x -> this.area.get(x).sameAvailability(Availability.EMPTY)).collect(Collectors.toList());
     }
 
     public String toString() {
