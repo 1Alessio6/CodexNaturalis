@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network;
 
+import it.polimi.ingsw.controller.GameRequest;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.board.Tile;
 import it.polimi.ingsw.model.card.Card;
@@ -20,7 +21,7 @@ todo: in order to follow the design pattern this should be an abstract class wit
  */
 
 
-public interface VirtualServer extends Remote {
+public interface VirtualServer extends Remote, GameRequest {
     public abstract void connect(VirtualView client) throws RemoteException; //possible to add username as a parameter
 
     public abstract  void connect(VirtualView client, String username) throws RemoteException;

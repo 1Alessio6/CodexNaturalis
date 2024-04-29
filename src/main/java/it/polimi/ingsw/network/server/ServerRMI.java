@@ -1,7 +1,6 @@
-package it.polimi.ingsw.network;
+package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.controller.GameRequest;
 import it.polimi.ingsw.model.InvalidGamePhaseException;
 import it.polimi.ingsw.model.NonexistentPlayerException;
 import it.polimi.ingsw.model.SuspendedGameException;
@@ -17,6 +16,8 @@ import it.polimi.ingsw.model.lobby.AlreadyInLobbyException;
 import it.polimi.ingsw.model.lobby.FullLobbyException;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.network.VirtualServer;
+import it.polimi.ingsw.network.VirtualView;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
@@ -27,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class ServerRMI implements VirtualServer, GameRequest {
+public class ServerRMI implements VirtualServer {
     private final static int PORT = 1234;
     private final Controller myController;
 
