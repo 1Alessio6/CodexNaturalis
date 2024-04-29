@@ -14,18 +14,26 @@ public class ClientPlayer {
 
     private boolean isConnected;
 
-    private int starterCard; //todo check if it's needed
+    private int starterFrontID;
 
-    private int[] cards; //max 3
+    private int starterBackID; //todo check if it's needed
 
-    private int[] hiddenObjectives;
+    private int[] frontID; //max 3
 
+    private int[] backID;
+
+    private int[] hiddenObjectivesID; //max 2
 
     public ClientPlayer(String username) {
         this.username = username;
     }
 
     //getter method needed for the view
+
+    public ClientPlayground getPlayground() {
+        return playground;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -38,15 +46,23 @@ public class ClientPlayer {
         return isConnected;
     }
 
-    public int[] getCards() {
-        return cards;
+    public int[] getBackID() {
+        return backID;
+    }
+
+    public int[] getFrontID() {
+        return frontID;
     }
 
     public int[] getHiddenObjectives() {
-        return hiddenObjectives;
+        return hiddenObjectivesID;
     }
 
-    public int getStarterCard() {
-        return starterCard;
+    public int getStarterFrontID() {
+        return starterFrontID;
+    }
+
+    public int getStarterBackID() {
+        return starterFrontID;
     }
 }
