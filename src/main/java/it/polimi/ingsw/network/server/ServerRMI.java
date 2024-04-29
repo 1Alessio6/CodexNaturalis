@@ -18,6 +18,7 @@ import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
+import it.polimi.ingsw.network.client.ClientTile;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
@@ -71,8 +72,10 @@ public class ServerRMI implements VirtualServer {
     }
 
     @Override
-    public void notifyUpdatePlaygroundArea(Position position, Tile tile, Integer clientIndex) throws RemoteException {
-        this.connectedClients.get(clientIndex).showUpdatePlaygroundArea(position, tile);
+    public void notifyUpdatePlaygroundArea(Position position, ClientTile tile, String username) throws RemoteException {
+        for (VirtualView virtualView : this.connectedClients) {
+            virtualView.showUpdatePlaygroundArea(position,tile,username);
+        }
     }
 
     @Override

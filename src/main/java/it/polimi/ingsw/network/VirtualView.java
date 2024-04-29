@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.network.client.ClientTile;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -28,7 +29,7 @@ public interface VirtualView extends Remote {
     //method to show updated information after a place
 
     //it's more efficient to pass only the new added tile and position in order to avoid sending the whole map to the client every time
-    public void showUpdatePlaygroundArea(Position position, Tile tile) throws RemoteException;
+    public void showUpdatePlaygroundArea(Position position, ClientTile tile, String username) throws RemoteException;
 
     public void showUpdatePoints(int points) throws RemoteException;
 

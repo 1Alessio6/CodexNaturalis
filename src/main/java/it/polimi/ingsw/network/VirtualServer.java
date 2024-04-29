@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.card.ObjectiveCard;
 import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.network.client.ClientTile;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -40,7 +41,7 @@ public interface VirtualServer extends Remote, GameRequest {
     //method to notify updated information after a place
     //client index indicates which client playground needs to be updated
 
-    public void notifyUpdatePlaygroundArea(Position position, Tile tile, Integer clientIndex) throws RemoteException;
+    public void notifyUpdatePlaygroundArea(Position position, ClientTile tile, String username) throws RemoteException;
 
     public void notifyUpdatePoints(int points, Integer clientIndex) throws RemoteException;
 
