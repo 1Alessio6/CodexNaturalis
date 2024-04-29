@@ -194,4 +194,8 @@ public class Controller implements EventListener, GameRequest {
     public void sendMessage(String author, Message message) throws InvalidMessageException {
         game.registerMessage(author, message);
     }
+
+    public List<String> getWinners() throws InvalidGamePhaseException {
+        return game.getWinners();
+    }
 }

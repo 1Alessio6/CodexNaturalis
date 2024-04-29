@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.card.Color.CardColor;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 
 // todo. define equals method for Player based on username equality
@@ -61,6 +62,7 @@ public class Player {
      */
     private PlayerAction playerAction;
 
+    private int numSatisfiedObjectives;
 
     /**
      * Specifies if the player is active or not.
@@ -96,6 +98,7 @@ public class Player {
         this.playground = new Playground();
 
         this.playerAction = new ChooseStarter();
+        this.numSatisfiedObjectives = 0;
     }
 
     //methods
@@ -308,5 +311,28 @@ public class Player {
         playerAction.addCard(this, newCard);
     }
 
+    public int getNumSatisfiedObjectives() {
+        return this.numSatisfiedObjectives;
+    }
+
+    /**
+     * Calculates extra points from objective cards.
+     * @param commonObjectives the list of common objectives in the game.
+     * @return the extra points reached.
+     */
+    public int calculateExtraPoints(List<ObjectiveCard> commonObjectives) {
+        List<ObjectiveCard> objectives = new ArrayList<>(Stream.concat(commonObjectives.stream(), objectiveCards.stream()).toList());
+        assert objectives.size() == 3;
+
+        int extraPoints = 0;
+        for (ObjectiveCard objective : objectives) {
+            extraPoints = objective.calculatePoints(playground);
+            if (extraPoints > 0) {
+                ++numSatisfiedObjectives;
+            }
+        }
+
+        return extraPoints;
+    }
 }
 

@@ -18,6 +18,7 @@ import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 
 import java.io.FileNotFoundException;
 import java.util.*;
+import static java.lang.Math.min;
 
 /**
  * Representation of the game.
@@ -550,6 +551,52 @@ public class Game {
     public Card getCard(String username, int frontId, int backId) {
         Player player = getPlayerByUsername(username);
         return player.getCard(frontId, backId);
+    }
+
+    /**
+     * Returns winners' name.
+     *
+     * @return the list of players' name winning the game (they can be more than one in case of a tie).
+     * @throws InvalidGamePhaseException if the game is not yet finished
+     */
+    public List<String> getWinners() throws InvalidGamePhaseException {
+        if (phase != GamePhase.End) {
+            throw new InvalidGamePhaseException("Game not yet finished");
+        }
+
+        int maxPointNormalTurns = 29;
+        int maxPoints = -1;
+        List<Player> winners = new ArrayList<>();
+
+        for (Player player : players) {
+            int finalPoints = min(maxPointNormalTurns, player.getPoints()) + player.calculateExtraPoints(commonObjects);
+            boolean win = false;
+            boolean tie = false;
+
+            if (finalPoints > maxPoints) {
+                win = true;
+            } else if (finalPoints == maxPoints) {
+                int winnerSatisfiedObjectives = winners.getFirst().getNumSatisfiedObjectives();
+                int playerObjectives = player.getNumSatisfiedObjectives();
+
+                if (winnerSatisfiedObjectives < playerObjectives) {
+                    win = true;
+                } else if (winnerSatisfiedObjectives == playerObjectives) {
+                    tie = true;
+                }
+            }
+
+            if (win) {
+                maxPoints = finalPoints;
+                winners.clear();
+                winners.add(player);
+            }
+            if (tie) {
+                winners.add(player);
+            }
+        }
+
+        return winners.stream().map(Player::getUsername).toList();
     }
 }
 
