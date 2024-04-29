@@ -47,6 +47,10 @@ public class ClientPlayground {
         this.points = points;
     }
 
+    public void placeTile(Position position, ClientTile tile){
+        this.area.put(position,tile);
+    }
+
     public String toString() {
 
         return "Area: \n" + areaToString() + "\n\nResources:\n" + this.resources.toString() + "\n\nScore:\n" + points;
