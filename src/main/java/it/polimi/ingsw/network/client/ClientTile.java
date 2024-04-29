@@ -1,12 +1,17 @@
 package it.polimi.ingsw.network.client;
 
 import it.polimi.ingsw.model.board.Availability;
+import it.polimi.ingsw.model.card.CornerPosition;
 import it.polimi.ingsw.model.card.Face;
+
+import java.util.Map;
 
 public class ClientTile {
     private int faceID;
     //private boolean isUsed; a variable used to check if the card has been already used for redeeming the points of an objective card
     private Availability availability;
+
+    private Map<CornerPosition, Boolean> coveredCorner; //boolean True if the corner at the given position it's covered, if there isn't a position in the map the corner it's considered not existing
 
 
     /**
@@ -14,7 +19,7 @@ public class ClientTile {
      * @param a the tile's availability.
      */
     public ClientTile(Availability a){ //this constructor method it's used when we create an empty Tile that could be available or not available
-        faceID = -1;
+        faceID = -1; //empty tile, equivalent to null into Playground
         availability = a;
     }
 
@@ -28,7 +33,10 @@ public class ClientTile {
         return faceID;
     }
 
-
+    public void setCoveredCorner(Map<CornerPosition, Boolean> coveredCorner) {
+        assert(this.faceID != -1);
+        this.coveredCorner = coveredCorner;
+    }
 
     /**
      * Checks if the availability of the tile it's equal to parameter's availability.
