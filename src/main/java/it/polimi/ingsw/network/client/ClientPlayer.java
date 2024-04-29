@@ -22,8 +22,6 @@ public class ClientPlayer {
 
     private int[] backID;
 
-    private int[] hiddenObjectivesID; //max 2
-
     public ClientPlayer(String username) {
         this.username = username;
     }
@@ -52,10 +50,6 @@ public class ClientPlayer {
 
     public int[] getFrontID() {
         return frontID;
-    }
-
-    public int[] getHiddenObjectives() {
-        return hiddenObjectivesID;
     }
 
     public int getStarterFrontID() {
