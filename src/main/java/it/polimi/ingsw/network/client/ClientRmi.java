@@ -1,5 +1,8 @@
 package it.polimi.ingsw.network.client;
 
+import it.polimi.ingsw.model.InvalidGamePhaseException;
+import it.polimi.ingsw.model.SuspendedGameException;
+import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.board.Tile;
 import it.polimi.ingsw.model.card.*;
@@ -7,6 +10,7 @@ import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.ObjectiveCard;
 import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.model.chat.message.Message;
+import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
@@ -23,23 +27,28 @@ import java.util.Set;
 public class ClientRmi extends UnicastRemoteObject implements VirtualView {
 
     private final VirtualServer server;
+
+    private ClientPlayer player;
+
+    private List<ClientPlayer> otherPlayers;
+
     protected ClientRmi(VirtualServer server) throws RemoteException {
         this.server = server;
     }
 
     public static void main(String[] args) throws RemoteException, NotBoundException {
         String serverName = "ServerRmi";
-        Registry registry = LocateRegistry.getRegistry(args[0],1234); //todo change port and args and decide how to handle the exception
+        Registry registry = LocateRegistry.getRegistry(args[0], 1234); //todo change port and args and decide how to handle the exception
 
-        VirtualServer server = (VirtualServer)registry.lookup(serverName);
+        VirtualServer server = (VirtualServer) registry.lookup(serverName);
 
         new ClientRmi(server).run();
     }
 
 
     //todo: this method assume the client tries to connect to the server till the server is available
-    private void run(){
-        while(true) {
+    private void run() {
+        while (true) {
             try {
                 this.server.connect(this);
                 break;
@@ -50,19 +59,52 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
         this.readClientCommand();
     }
 
-    private void readClientCommand(){
+    private void readClientCommand() {
 
         Scanner scanner = new Scanner(System.in);
 
-        while(true){
+        while (true) {
             System.out.println("Insert a command:\n> ");
             String command = scanner.nextLine();
-            if(command.equals("end")){
-                scanner.close();
-                break;
+
+            switch (command) {
+                case "place": //todo always add a way to go back to the card selection
+                    System.out.println("Which card do you select?");
+                    int numCard = scanner.nextInt();
+                    System.out.println("Which face of the card do you want to place?");
+                    Side selectedSide = convertSide(scanner.nextLine());
+                    System.out.println("Which position?");
+                    int posX = scanner.nextInt();
+                    int posY = scanner.nextInt();
+                    //todo add exception handling
+                    checkPosition();
+                    checkRequirements();
+                    try{
+                        server.placeCard(this.player.getUsername(), player.getBackID()[numCard], player.getFrontID()[numCard], selectedSide, new Position(posX, posY));
+                    }
+                    catch (Playground.UnavailablePositionException|Playground.NotEnoughResourcesException e){
+                        System.out.println("Error check methods should have avoid an incorrect move");
+                    }
+                    catch(InvalidPlayerActionException| SuspendedGameException| InvalidGamePhaseException e){
+                        System.out.println("Error");
+                    }
+
+                    //todo check if ClientPlayground it's correctly updated, it should be updated by the methods from observer pattern
+
+
+                case "end":
+                    scanner.close();
+                    break;
             }
 
         }
+    }
+
+    private Side convertSide(String s) {
+        return Side.FRONT;
+    }
+
+    private void checkRequirements() {
     }
 
     @Override
@@ -147,6 +189,17 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
 
     @Override
     public void reportError(String details) throws RemoteException {
+
+    }
+
+    private void checkCardOwned(int cardId) {
+
+    }
+
+    private void checkFaceOwned(int cardID, int faceID) {
+    }
+
+    private void checkPosition() {
 
     }
 }
