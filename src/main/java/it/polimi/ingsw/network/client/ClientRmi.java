@@ -23,23 +23,28 @@ import java.util.Set;
 public class ClientRmi extends UnicastRemoteObject implements VirtualView {
 
     private final VirtualServer server;
+
+    private ClientPlayer player;
+
+    private List<ClientPlayer> otherPlayers;
+
     protected ClientRmi(VirtualServer server) throws RemoteException {
         this.server = server;
     }
 
     public static void main(String[] args) throws RemoteException, NotBoundException {
         String serverName = "ServerRmi";
-        Registry registry = LocateRegistry.getRegistry(args[0],1234); //todo change port and args and decide how to handle the exception
+        Registry registry = LocateRegistry.getRegistry(args[0], 1234); //todo change port and args and decide how to handle the exception
 
-        VirtualServer server = (VirtualServer)registry.lookup(serverName);
+        VirtualServer server = (VirtualServer) registry.lookup(serverName);
 
         new ClientRmi(server).run();
     }
 
 
     //todo: this method assume the client tries to connect to the server till the server is available
-    private void run(){
-        while(true) {
+    private void run() {
+        while (true) {
             try {
                 this.server.connect(this);
                 break;
@@ -50,14 +55,14 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
         this.readClientCommand();
     }
 
-    private void readClientCommand(){
+    private void readClientCommand() {
 
         Scanner scanner = new Scanner(System.in);
 
-        while(true){
+        while (true) {
             System.out.println("Insert a command:\n> ");
             String command = scanner.nextLine();
-            if(command.equals("end")){
+            if (command.equals("end")) {
                 scanner.close();
                 break;
             }
