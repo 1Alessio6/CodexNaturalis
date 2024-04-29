@@ -4,7 +4,6 @@ import it.polimi.ingsw.model.InvalidGamePhaseException;
 import it.polimi.ingsw.model.SuspendedGameException;
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.board.Tile;
 import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.ObjectiveCard;
@@ -31,6 +30,8 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
     private ClientPlayer player;
 
     private List<ClientPlayer> otherPlayers;
+
+    private int[] hiddenObjectivesID; //max 2 and cannot be into ClientPlayer class because it would be visible to all the game partecipants
 
     protected ClientRmi(VirtualServer server) throws RemoteException {
         this.server = server;
@@ -90,6 +91,7 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
                     }
 
                     //todo check if ClientPlayground it's correctly updated, it should be updated by the methods from observer pattern
+                    //todo the server needs to send the map of corner
 
 
                 case "end":
@@ -128,8 +130,9 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
     }
 
     @Override
-    public void showUpdatePlaygroundArea(Position position, Tile tile) throws RemoteException {
-
+    public void showUpdatePlaygroundArea(Position position, ClientTile tile, String username) throws RemoteException {
+        this.player.getPlayground().placeTile(position, tile);
+        this.player.getPlayground().toString();
     }
 
     @Override
