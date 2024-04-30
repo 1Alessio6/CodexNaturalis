@@ -70,25 +70,7 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
 
             switch (command) {
                 case "place": //todo always add a way to go back to the card selection
-                    System.out.println("Which card do you select?");
-                    int numCard = scanner.nextInt();
-                    System.out.println("Which face of the card do you want to place?");
-                    Side selectedSide = convertSide(scanner.nextLine());
-                    System.out.println("Which position?");
-                    int posX = scanner.nextInt();
-                    int posY = scanner.nextInt();
-                    //todo add exception handling
-                    checkPosition();
-                    checkRequirements();
-                    try{
-                        server.placeCard(this.player.getUsername(), player.getBackID()[numCard], player.getFrontID()[numCard], selectedSide, new Position(posX, posY));
-                    }
-                    catch (Playground.UnavailablePositionException|Playground.NotEnoughResourcesException e){
-                        System.out.println("Error check methods should have avoid an incorrect move");
-                    }
-                    catch(InvalidPlayerActionException| SuspendedGameException| InvalidGamePhaseException e){
-                        System.out.println("Error");
-                    }
+                    receivePlaceCommand();
 
                     //todo check if ClientPlayground it's correctly updated, it should be updated by the methods from observer pattern
                     //todo the server needs to send the map of corner
@@ -99,6 +81,29 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
                     break;
             }
 
+        }
+    }
+
+    private void receivePlaceCommand(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Which card do you select?");
+        int numCard = scanner.nextInt();
+        System.out.println("Which face of the card do you want to place?");
+        Side selectedSide = convertSide(scanner.nextLine());
+        System.out.println("Which position?");
+        int posX = scanner.nextInt();
+        int posY = scanner.nextInt();
+        //todo add exception handling
+        checkPosition();
+        checkRequirements();
+        try{
+            server.placeCard(this.player.getUsername(), player.getBackID()[numCard], player.getFrontID()[numCard], selectedSide, new Position(posX, posY));
+        }
+        catch (Playground.UnavailablePositionException|Playground.NotEnoughResourcesException e){
+            System.out.println("Error check methods should have avoid an incorrect move");
+        }
+        catch(InvalidPlayerActionException| SuspendedGameException| InvalidGamePhaseException e){
+            System.out.println("Error");
         }
     }
 
