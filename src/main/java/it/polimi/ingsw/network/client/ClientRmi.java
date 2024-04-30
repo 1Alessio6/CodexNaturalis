@@ -162,7 +162,7 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
     }
 
     @Override
-    public void showUpdateFaceUpCards(int position, Card card) throws RemoteException {
+    public void showUpdateFaceUpCards(int position, int backID, int frontID) throws RemoteException {
 
     }
 
@@ -203,8 +203,5 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
 
     private void checkPosition() {
 
-    }
-    public String getUsername(){
-        return this.player.getUsername();
     }
 }

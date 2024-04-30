@@ -17,8 +17,6 @@ Follow the observer design pattern
  */
 public interface VirtualView extends Remote {
 
-    public String getUsername() throws RemoteException; //todo: check if it's possible to remove and put a map <username,client> into the server
-
     //method to show players base information
     public void showPlayerUsername(String username) throws RemoteException;
 
@@ -45,7 +43,7 @@ public interface VirtualView extends Remote {
 
     public void showUpdateDeck(boolean isEmpty, int backID) throws RemoteException; //the client (player) can't see the updates of a deck till the deck is empty
 
-    public void showUpdateFaceUpCards(int position, Card card) throws RemoteException;
+    public void showUpdateFaceUpCards(int position, int backID, int frontID) throws RemoteException;
     //Face up cards have specific position inside the list, so it's possible to pass only the position which needs to be updated
 
     public void showCommonObjectiveCard(int[] commonObjective) throws RemoteException;

@@ -24,18 +24,16 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class ServerRMI implements VirtualServer {
     private final static int PORT = 1234;
     private final Controller myController;
 
-    List<VirtualView> connectedClients;
+    Map<String, VirtualView> connectedClients;
 
     public ServerRMI() {
-        this.connectedClients = new ArrayList<>();
+        this.connectedClients = new HashMap<>();
         this.myController = new Controller();
     }
 
@@ -50,107 +48,105 @@ public class ServerRMI implements VirtualServer {
 
     @Override
     public void notifyPlayerUsername(String username) throws RemoteException {
-        for (VirtualView client : connectedClients) {
-            client.showPlayerUsername(username);
+        for (String user : connectedClients.keySet()) {
+            connectedClients.get(user).showPlayerUsername(username);
         }
     }
 
     @Override
     public void notifyUpdatePlayerStatus(boolean isConnected, String username) throws RemoteException {
-        for (VirtualView client : connectedClients) {
-            client.showUpdatePlayerStatus(isConnected, username);
+        for (String user : connectedClients.keySet()) {
+            connectedClients.get(user).showUpdatePlayerStatus(isConnected,username);
         }
     }
 
     @Override
     public void notifyColor(PlayerColor color, String username) throws RemoteException {
-        for (VirtualView client : connectedClients) {
-            client.showColor(color, username);
+        for (String user : connectedClients.keySet()) {
+            connectedClients.get(user).showColor(color, username);
         }
     }
 
+
+
     @Override
     public void notifyRemainingColor(Set<PlayerColor> remainingColors) throws RemoteException {
-        for (VirtualView virtualView : this.connectedClients) {
-            virtualView.showRemainingColor(remainingColors);
+        for (String user : connectedClients.keySet()) {
+            connectedClients.get(user).showRemainingColor(remainingColors);
         }
     }
 
     @Override
     public void notifyUpdatePlaygroundArea(Position position, ClientTile tile, String username) throws RemoteException {
-        for (VirtualView virtualView : this.connectedClients) {
-            virtualView.showUpdatePlaygroundArea(position,tile,username);
+        for (String user : connectedClients.keySet()) {
+            connectedClients.get(user).showUpdatePlaygroundArea(position,tile,username);
         }
     }
 
     @Override
     public void notifyUpdatePoints(int points, String username) throws RemoteException {
-        for (VirtualView virtualView : this.connectedClients) {
-            virtualView.showUpdatePoints(points,username);
+        for (String user : connectedClients.keySet()) {
+            connectedClients.get(user).showUpdatePoints(points,username);
         }
     }
 
     @Override
     public void notifyUpdateResources(Symbol symbol, int totalAmount, String username) throws RemoteException {
-        for (VirtualView virtualView : this.connectedClients) {
-            virtualView.showUpdateResources(symbol, totalAmount, username);
+        for (String user : connectedClients.keySet()) {
+            connectedClients.get(user).showUpdateResources(symbol,totalAmount,username);
         }
     }
 
     @Override
     public void notifyRemovePlayerCard(int backID, int frontID, int cardPosition, String Username){
-        for (VirtualView virtualView : this.connectedClients) {
-            virtualView.showRemovePlayerCard(backID,frontID,cardPosition,Username);
+        for (String user : connectedClients.keySet()) {
+            connectedClients.get(user).showRemovePlayerCard(backID,frontID,cardPosition,Username);
         }
     }
 
     public void notifyAddPlayerCard(int backID, int frontID, int cardPosition, String Username){
-        for (VirtualView virtualView : this.connectedClients) {
-            virtualView.showAddPlayerCard(backID,frontID,cardPosition,Username);
+        for (String user : connectedClients.keySet()) {
+            connectedClients.get(user).showAddPlayerCard(backID,frontID,cardPosition,Username);
         }
     }
     @Override
     public void notifyUpdateDeck(boolean isEmpty, int backID) throws RemoteException {
-        for (VirtualView virtualView : this.connectedClients) {
-            virtualView.showUpdateDeck(isEmpty, backID);
+        for (String user : connectedClients.keySet()) {
+            connectedClients.get(user).showUpdateDeck(isEmpty,backID);
         }
 
     }
 
     @Override
     public void notifyUpdateFaceUpCards(int position, Card card) throws RemoteException {
-        for (VirtualView virtualView : this.connectedClients) {
-            virtualView.showUpdateFaceUpCards(position, card);
+        for (String user : connectedClients.keySet()) {
+            connectedClients.get(user).showUpdateFaceUpCards(position, card.getFace(Side.BACK).getId(), card.getFace(Side.FRONT).getId());
         }
     }
 
     @Override
     public void notifyCommonObjectiveCard(int[] commonObjectiveID) throws RemoteException {
-        for (VirtualView virtualView : this.connectedClients) {
-            virtualView.showCommonObjectiveCard(commonObjectiveID);
+        for (String user : connectedClients.keySet()) {
+            connectedClients.get(user).showCommonObjectiveCard(commonObjectiveID);
         }
     }
 
     @Override
     public void notifyUpdatePlayerObjectiveCard(int[] objectiveId, String username) throws RemoteException {
-        for (VirtualView virtualView : this.connectedClients) {
-            if(virtualView.getUsername().equals(username)){
-                virtualView.showUpdatePlayerObjectiveCard(objectiveId);
-            }
-        }
+        connectedClients.get(username).showUpdatePlayerObjectiveCard(objectiveId);
     }
 
     @Override
     public void notifyPlayerStarterCard(Card starterCard, String username) throws RemoteException {
-        for (VirtualView virtualView : this.connectedClients) {
-            virtualView.showPlayerStarterCard(starterCard.getFace(Side.BACK).getId(), starterCard.getFace(Side.FRONT).getId(), username);
+        for (String user : connectedClients.keySet()) {
+            connectedClients.get(user).showPlayerStarterCard(starterCard.getFace(Side.BACK).getId(), starterCard.getFace(Side.FRONT).getId(), username);
         }
     }
 
     @Override
     public void notifyUpdateChat(Message message) throws RemoteException {
-        for (VirtualView virtualView : this.connectedClients) {
-            virtualView.showUpdateChat(message);
+        for (String user : connectedClients.keySet()) {
+            connectedClients.get(user).showUpdateChat(message);
         }
     }
 
@@ -161,8 +157,8 @@ public class ServerRMI implements VirtualServer {
 
     @Override
     public void notifyUpdateGamePhase(String gamePhase) throws RemoteException {
-        for (VirtualView virtualView : this.connectedClients) {
-            virtualView.showUpdateGamePhase(gamePhase);
+        for (String user : connectedClients.keySet()) {
+            connectedClients.get(user).showUpdateGamePhase(gamePhase);
         }
     }
 
