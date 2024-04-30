@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
-import it.polimi.ingsw.model.card.ObjectiveCard;
 import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
@@ -84,7 +83,7 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
         }
     }
 
-    private void receivePlaceCommand(){
+    private void receivePlaceCommand() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Which card do you select?");
         int numCard = scanner.nextInt();
@@ -96,13 +95,11 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
         //todo add exception handling
         checkPosition();
         checkRequirements();
-        try{
+        try {
             server.placeCard(this.player.getUsername(), player.getBackID()[numCard], player.getFrontID()[numCard], selectedSide, new Position(posX, posY));
-        }
-        catch (Playground.UnavailablePositionException|Playground.NotEnoughResourcesException e){
+        } catch (Playground.UnavailablePositionException | Playground.NotEnoughResourcesException e) {
             System.out.println("Error check methods should have avoid an incorrect move");
-        }
-        catch(InvalidPlayerActionException| SuspendedGameException| InvalidGamePhaseException e){
+        } catch (InvalidPlayerActionException | SuspendedGameException | InvalidGamePhaseException e) {
             System.out.println("Error");
         }
     }
@@ -120,12 +117,12 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
     }
 
     @Override
-    public void showUpdatePlayerStatus(boolean isConnected) throws RemoteException {
+    public void showUpdatePlayerStatus(boolean isConnected, String username) throws RemoteException {
 
     }
 
     @Override
-    public void showColor(PlayerColor color) throws RemoteException {
+    public void showColor(PlayerColor color, String username) throws RemoteException {
 
     }
 
@@ -136,27 +133,31 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
 
     @Override
     public void showUpdatePlaygroundArea(Position position, ClientTile tile, String username) throws RemoteException {
-        this.player.getPlayground().placeTile(position, tile);
-        this.player.getPlayground().toString();
-    }
-
-    @Override
-    public void showUpdatePoints(int points) throws RemoteException {
 
     }
 
     @Override
-    public void showUpdateResources(Symbol symbol, int totalAmount) throws RemoteException {
+    public void showUpdatePoints(int points, String username) throws RemoteException {
 
     }
 
     @Override
-    public void showUpdatePlayerCards(List<Card> newCards) throws RemoteException {
+    public void showUpdateResources(Symbol symbol, int totalAmount, String username) throws RemoteException {
 
     }
 
     @Override
-    public void showUpdateDeck(boolean isEmpty) throws RemoteException {
+    public void showRemovePlayerCard(int backID, int frontID, int cardPosition, String Username) {
+
+    }
+
+    @Override
+    public void showAddPlayerCard(int backID, int frontID, int cardPosition, String Username) {
+
+    }
+
+    @Override
+    public void showUpdateDeck(boolean isEmpty, int backID) throws RemoteException {
 
     }
 
@@ -166,17 +167,17 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
     }
 
     @Override
-    public void showCommonObjectiveCard(List<ObjectiveCard> commonObjective) throws RemoteException {
+    public void showCommonObjectiveCard(int[] commonObjective) throws RemoteException {
 
     }
 
     @Override
-    public void showUpdatePlayerObjectiveCard(List<ObjectiveCard> privateObjective) throws RemoteException {
+    public void showUpdatePlayerObjectiveCard(int[] privateObjective) throws RemoteException {
 
     }
 
     @Override
-    public void showPlayerStarterCard(Card starterCard) throws RemoteException {
+    public void showPlayerStarterCard(int starterBackID, int starterFrontID, String username) throws RemoteException {
 
     }
 
@@ -200,14 +201,10 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
 
     }
 
-    private void checkCardOwned(int cardId) {
-
-    }
-
-    private void checkFaceOwned(int cardID, int faceID) {
-    }
-
     private void checkPosition() {
 
+    }
+    public String getUsername(){
+        return this.player.getUsername();
     }
 }

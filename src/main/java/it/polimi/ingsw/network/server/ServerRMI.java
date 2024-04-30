@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.NonexistentPlayerException;
 import it.polimi.ingsw.model.SuspendedGameException;
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.board.Tile;
 import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.card.Color.InvalidColorException;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
@@ -50,18 +49,24 @@ public class ServerRMI implements VirtualServer {
     }
 
     @Override
-    public void notifyPlayerUsername(String username, Integer clientIndex) throws RemoteException {
-        this.connectedClients.get(clientIndex).showPlayerUsername(username);
+    public void notifyPlayerUsername(String username) throws RemoteException {
+        for (VirtualView client : connectedClients) {
+            client.showPlayerUsername(username);
+        }
     }
 
     @Override
-    public void notifyUpdatePlayerStatus(boolean isConnected, Integer clientIndex) throws RemoteException {
-        this.connectedClients.get(clientIndex).showUpdatePlayerStatus(isConnected);
+    public void notifyUpdatePlayerStatus(boolean isConnected, String username) throws RemoteException {
+        for (VirtualView client : connectedClients) {
+            client.showUpdatePlayerStatus(isConnected, username);
+        }
     }
 
     @Override
-    public void notifyColor(PlayerColor color, Integer clientIndex) throws RemoteException {
-        this.connectedClients.get(clientIndex).showColor(color);
+    public void notifyColor(PlayerColor color, String username) throws RemoteException {
+        for (VirtualView client : connectedClients) {
+            client.showColor(color, username);
+        }
     }
 
     @Override
@@ -79,24 +84,35 @@ public class ServerRMI implements VirtualServer {
     }
 
     @Override
-    public void notifyUpdatePoints(int points, Integer clientIndex) throws RemoteException {
-        this.connectedClients.get(clientIndex).showUpdatePoints(points);
-    }
-
-    @Override
-    public void notifyUpdateResources(Symbol symbol, int totalAmount, Integer clientIndex) throws RemoteException {
-        this.connectedClients.get(clientIndex).showUpdateResources(symbol, totalAmount);
-    }
-
-    @Override
-    public void notifyUpdatePlayerCards(List<Card> newCards, Integer clientIndex) throws RemoteException {
-        this.connectedClients.get(clientIndex).showUpdatePlayerCards(newCards);
-    }
-
-    @Override
-    public void notifyUpdateDeck(boolean isEmpty) throws RemoteException {
+    public void notifyUpdatePoints(int points, String username) throws RemoteException {
         for (VirtualView virtualView : this.connectedClients) {
-            virtualView.showUpdateDeck(isEmpty);
+            virtualView.showUpdatePoints(points,username);
+        }
+    }
+
+    @Override
+    public void notifyUpdateResources(Symbol symbol, int totalAmount, String username) throws RemoteException {
+        for (VirtualView virtualView : this.connectedClients) {
+            virtualView.showUpdateResources(symbol, totalAmount, username);
+        }
+    }
+
+    @Override
+    public void notifyRemovePlayerCard(int backID, int frontID, int cardPosition, String Username){
+        for (VirtualView virtualView : this.connectedClients) {
+            virtualView.showRemovePlayerCard(backID,frontID,cardPosition,Username);
+        }
+    }
+
+    public void notifyAddPlayerCard(int backID, int frontID, int cardPosition, String Username){
+        for (VirtualView virtualView : this.connectedClients) {
+            virtualView.showAddPlayerCard(backID,frontID,cardPosition,Username);
+        }
+    }
+    @Override
+    public void notifyUpdateDeck(boolean isEmpty, int backID) throws RemoteException {
+        for (VirtualView virtualView : this.connectedClients) {
+            virtualView.showUpdateDeck(isEmpty, backID);
         }
 
     }
@@ -109,20 +125,26 @@ public class ServerRMI implements VirtualServer {
     }
 
     @Override
-    public void notifyCommonObjectiveCard(List<ObjectiveCard> commonObjective) throws RemoteException {
+    public void notifyCommonObjectiveCard(int[] commonObjectiveID) throws RemoteException {
         for (VirtualView virtualView : this.connectedClients) {
-            virtualView.showCommonObjectiveCard(commonObjective);
+            virtualView.showCommonObjectiveCard(commonObjectiveID);
         }
     }
 
     @Override
-    public void notifyUpdatePlayerObjectiveCard(List<ObjectiveCard> privateObjective, Integer clientIndex) throws RemoteException {
-        this.connectedClients.get(clientIndex).showUpdatePlayerObjectiveCard(privateObjective);
+    public void notifyUpdatePlayerObjectiveCard(int[] objectiveId, String username) throws RemoteException {
+        for (VirtualView virtualView : this.connectedClients) {
+            if(virtualView.getUsername().equals(username)){
+                virtualView.showUpdatePlayerObjectiveCard(objectiveId);
+            }
+        }
     }
 
     @Override
-    public void notifyPlayerStarterCard(Card starterCard, Integer clientIndex) throws RemoteException {
-        this.connectedClients.get(clientIndex).showPlayerStarterCard(starterCard);
+    public void notifyPlayerStarterCard(Card starterCard, String username) throws RemoteException {
+        for (VirtualView virtualView : this.connectedClients) {
+            virtualView.showPlayerStarterCard(starterCard.getFace(Side.BACK).getId(), starterCard.getFace(Side.FRONT).getId(), username);
+        }
     }
 
     @Override
