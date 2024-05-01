@@ -184,15 +184,14 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
 
     @Override
     public void showCommonObjectiveCard(int[] commonObjective) throws RemoteException {
-        for(int i:hiddenObjectivesID){
-            System.out.println(i);
-        }
+
     }
 
     @Override
     public void showUpdatePlayerObjectiveCard(int[] privateObjective) throws RemoteException {
-        player.setObjectiveCardID(privateObjective);
-        System.out.println(Arrays.toString(player.getObjectiveCardID()));
+        for(int i:hiddenObjectivesID){
+            System.out.println(i);
+        }
     }
 
     @Override
