@@ -105,6 +105,17 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
         }
     }
 
+    private void receiveDrawCommand(){
+        Scanner scanner=new Scanner(System.in);
+        System.out.println("Insert the card position");
+        int cardPosition=scanner.nextInt();
+        try {
+            server.draw(this.player.getUsername(),cardPosition);
+        } catch (InvalidPlayerActionException | EmptyDeckException | InvalidGamePhaseException e) {
+            System.out.println("Error");
+        }
+    }
+
     private Side convertSide(String s) {
         return Side.FRONT;
     }
