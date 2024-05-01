@@ -20,7 +20,6 @@ public class ClientPlayer {
 
     private int[] backID;
 
-    private int [] objectiveCardID;
 
     public ClientPlayer(String username) {
         this.username = username;
@@ -60,15 +59,12 @@ public class ClientPlayer {
         return starterFrontID;
     }
 
-    public int[] getObjectiveCardID(){return objectiveCardID;}
 
     //setter methods
 
     public void setNetworkStatus(boolean networkStatus){this.isConnected=networkStatus;}
 
     public void setColor(PlayerColor color){this.color=color;}
-
-    public void setObjectiveCardID(int [] objectiveCardID){this.objectiveCardID=objectiveCardID;}
 
     public void setStarterFrontID(int starterFrontID){this.starterFrontID=starterFrontID;}
 
