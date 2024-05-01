@@ -72,4 +72,9 @@ public class ClientPlayground {
 
         return String.valueOf(areaString);
     }
+    public void updateResources(Symbol symbol,int amount){
+        this.resources.put(symbol,amount);
+    }// updateResources doesn't calculate the sum of the different calculated points, it only updates the actual amount of a particular
+    // symbol in the resources map
+
 }
