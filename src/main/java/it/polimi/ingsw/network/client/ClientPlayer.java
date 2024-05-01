@@ -2,8 +2,6 @@ package it.polimi.ingsw.network.client;
 
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 
-import java.util.List;
-
 public class ClientPlayer {
 
     private final String username;
@@ -21,6 +19,8 @@ public class ClientPlayer {
     private int[] frontID; //max 3
 
     private int[] backID;
+
+    private int [] objectiveCardID;
 
     public ClientPlayer(String username) {
         this.username = username;
@@ -59,4 +59,18 @@ public class ClientPlayer {
     public int getStarterBackID() {
         return starterFrontID;
     }
+
+    public int[] getObjectiveCardID(){return objectiveCardID;}
+
+    //setter methods
+
+    public void setNetworkStatus(boolean networkStatus){this.isConnected=networkStatus;}
+
+    public void setColor(PlayerColor color){this.color=color;}
+
+    public void setObjectiveCardID(int [] objectiveCardID){this.objectiveCardID=objectiveCardID;}
+
+    public void setStarterFrontID(int starterFrontID){this.starterFrontID=starterFrontID;}
+
+    public void setStarterBackID(int starterBackID){this.starterBackID=starterBackID;}
 }
