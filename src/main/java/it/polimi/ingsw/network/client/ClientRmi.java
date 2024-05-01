@@ -18,6 +18,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -113,22 +114,24 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
 
     @Override
     public void showPlayerUsername(String username) throws RemoteException {
-
+        System.out.println(player.getUsername());
     }
 
     @Override
     public void showUpdatePlayerStatus(boolean isConnected, String username) throws RemoteException {
-
+        player.setNetworkStatus(isConnected);
+        System.out.println(player.isConnected());
     }
 
     @Override
     public void showColor(PlayerColor color, String username) throws RemoteException {
-
+        player.setColor(color);
+        System.out.println(player.getColor());
     }
 
     @Override
     public void showRemainingColor(Set<PlayerColor> remainingColor) throws RemoteException {
-
+        remainingColor.forEach(System.out::println);
     }
 
     @Override
@@ -138,12 +141,14 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
 
     @Override
     public void showUpdatePoints(int points, String username) throws RemoteException {
-
-    }
+        player.getPlayground().setPoints(points);
+        System.out.println(player.getPlayground().getPoints());
+    }//hp: th passed points are the updated points
 
     @Override
     public void showUpdateResources(Symbol symbol, int totalAmount, String username) throws RemoteException {
-
+        player.getPlayground().updateResources(symbol,totalAmount);
+        System.out.println(player.getPlayground().getResources());
     }
 
     @Override
@@ -168,37 +173,42 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
 
     @Override
     public void showCommonObjectiveCard(int[] commonObjective) throws RemoteException {
-
+        for(int i:hiddenObjectivesID){
+            System.out.println(i);
+        }
     }
 
     @Override
     public void showUpdatePlayerObjectiveCard(int[] privateObjective) throws RemoteException {
-
+        player.setObjectiveCardID(privateObjective);
+        System.out.println(Arrays.toString(player.getObjectiveCardID()));
     }
 
     @Override
     public void showPlayerStarterCard(int starterBackID, int starterFrontID, String username) throws RemoteException {
-
+        player.setStarterBackID(starterBackID);
+        player.setStarterFrontID(starterFrontID);
+        System.out.println(player.getStarterFrontID()+player.getStarterBackID());
     }
 
     @Override
     public void showUpdateChat(Message message) throws RemoteException {
-
+        System.out.println(message.getContent());
     }
 
     @Override
     public void showUpdateCurrentPlayer(Player currentPlayer) throws RemoteException {
-
+        System.out.print(currentPlayer.getUsername());
     }
 
     @Override
     public void showUpdateGamePhase(String GamePhase) throws RemoteException {
-
+        System.out.println(GamePhase);
     }
 
     @Override
     public void reportError(String details) throws RemoteException {
-
+        System.out.println(details);
     }
 
     private void checkPosition() {
