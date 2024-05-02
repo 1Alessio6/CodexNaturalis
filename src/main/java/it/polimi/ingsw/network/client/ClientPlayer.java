@@ -1,6 +1,10 @@
 package it.polimi.ingsw.network.client;
 
 import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.card.Symbol;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 public class ClientPlayer {
 
@@ -16,9 +20,11 @@ public class ClientPlayer {
 
     private int starterBackID; //todo check if it's needed
 
-    private int[] frontID; //max 3
+    private int[] playerCardsFrontID; //max 3
 
-    private int[] backID;
+    private int[] PlayerCardsBackID;
+
+    private Map<Integer, Map<Symbol, Integer>> goldenFrontRequirements; //todo could be changed into an array list of map
 
 
     public ClientPlayer(String username) {
@@ -26,6 +32,19 @@ public class ClientPlayer {
     }
 
     //getter method needed for the view
+
+    public int getAmountResource(Symbol s){
+        return this.getPlayground().getResources().get(s);
+    }
+
+    public boolean isGoldenFront(int frontID){
+        return this.goldenFrontRequirements.containsKey(frontID);
+    }
+
+    public Map<Symbol, Integer> getGoldenFrontRequirements(int frontID){
+        assert(isGoldenFront(frontID));
+        return this.goldenFrontRequirements.get(frontID);
+    }
 
     public ClientPlayground getPlayground() {
         return playground;
@@ -43,12 +62,12 @@ public class ClientPlayer {
         return isConnected;
     }
 
-    public int[] getBackID() {
-        return backID;
+    public int[] getPlayerCardsBackID() {
+        return PlayerCardsBackID;
     }
 
-    public int[] getFrontID() {
-        return frontID;
+    public int[] getPlayerCardsFrontID() {
+        return playerCardsFrontID;
     }
 
     public int getStarterFrontID() {
@@ -62,11 +81,19 @@ public class ClientPlayer {
 
     //setter methods
 
-    public void setNetworkStatus(boolean networkStatus){this.isConnected=networkStatus;}
+    public void setNetworkStatus(boolean networkStatus) {
+        this.isConnected = networkStatus;
+    }
 
-    public void setColor(PlayerColor color){this.color=color;}
+    public void setColor(PlayerColor color) {
+        this.color = color;
+    }
 
-    public void setStarterFrontID(int starterFrontID){this.starterFrontID=starterFrontID;}
+    public void setStarterFrontID(int starterFrontID) {
+        this.starterFrontID = starterFrontID;
+    }
 
-    public void setStarterBackID(int starterBackID){this.starterBackID=starterBackID;}
+    public void setStarterBackID(int starterBackID) {
+        this.starterBackID = starterBackID;
+    }
 }
