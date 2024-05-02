@@ -18,7 +18,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -85,19 +84,31 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
     }
 
     private void receivePlaceCommand() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Which card do you select?");
-        int numCard = scanner.nextInt();
-        System.out.println("Which face of the card do you want to place?");
-        Side selectedSide = convertSide(scanner.nextLine());
-        System.out.println("Which position?");
-        int posX = scanner.nextInt();
-        int posY = scanner.nextInt();
-        //todo add exception handling
-        checkPosition();
-        checkRequirements();
+
+        int numCard;
+        Side selectedSide;
+        Position position;
+
+        while(true){
+            numCard = receivePlayerCardPosition();
+            try{
+                selectedSide = receiveCardSide();
+                if(selectedSide == Side.FRONT) {
+                    try {
+                        checkRequirements(this.player.getPlayerCardsFrontID()[numCard]);
+                        position = receivePosition();
+                        break;
+                    }catch(Playground.NotEnoughResourcesException e){
+                        System.out.println(e.getMessage());
+                    }
+                }
+
+            }catch(ChangeCard ignored){
+            }
+        }
+
         try {
-            server.placeCard(this.player.getUsername(), player.getBackID()[numCard], player.getFrontID()[numCard], selectedSide, new Position(posX, posY));
+            server.placeCard(this.player.getUsername(), player.getPlayerCardsBackID()[numCard], player.getPlayerCardsFrontID()[numCard], selectedSide,position);
         } catch (Playground.UnavailablePositionException | Playground.NotEnoughResourcesException e) {
             System.out.println("Error check methods should have avoid an incorrect move");
         } catch (InvalidPlayerActionException | SuspendedGameException | InvalidGamePhaseException e) {
@@ -105,22 +116,87 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
         }
     }
 
-    private void receiveDrawCommand(){
-        Scanner scanner=new Scanner(System.in);
+    private int receivePlayerCardPosition() {
+
+        int numCard = -1;
+        Scanner scanner = new Scanner(System.in);
+        while (numCard < 0 || numCard > 2) {
+            System.out.println("Which card from your hand do you select? { 0 1 2}");
+            numCard = scanner.nextInt();
+            if (numCard < 0 || numCard > 2) {
+                System.out.println("You don't have that card in your hand");
+            }
+        }
+        scanner.close();
+
+        return numCard;
+    }
+
+    private Side receiveCardSide() throws ChangeCard {
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Which face of the card do you want to place?\nWrite 0 for FRONT or 1 for BACK, or write any other number to change the card selected");
+        int selectedSide = scanner.nextInt();
+
+        return switch (selectedSide) {
+            case 0 -> {
+                scanner.close();
+                yield Side.FRONT;
+            }
+            case 1 -> {
+                scanner.close();
+                yield Side.BACK;
+            }
+            default -> {
+                scanner.close();
+                throw new ChangeCard();
+            }
+        };
+    }
+
+    private Position receivePosition() {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("Which position?");
+            int posX = scanner.nextInt();
+            int posY = scanner.nextInt();
+            Position position = new Position(posX, posY);
+            try{
+                checkPosition(position, this.player.getPlayground());
+                scanner.close();
+                return position;
+            }catch (Playground.UnavailablePositionException e){
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+
+    private void receiveDrawCommand() {
+        Scanner scanner = new Scanner(System.in);
         System.out.println("Insert the card position");
-        int cardPosition=scanner.nextInt();
+        int cardPosition = scanner.nextInt();
         try {
-            server.draw(this.player.getUsername(),cardPosition);
+            server.draw(this.player.getUsername(), cardPosition);
         } catch (InvalidPlayerActionException | EmptyDeckException | InvalidGamePhaseException e) {
             System.out.println("Error");
         }
     }
 
-    private Side convertSide(String s) {
-        return Side.FRONT;
+    private void checkPosition(Position position, ClientPlayground playground) throws Playground.UnavailablePositionException {
+        if(!playground.getAvailablePositions().contains(position)){
+            throw new Playground.UnavailablePositionException("The position insert isn't available");
+        }
     }
 
-    private void checkRequirements() {
+    private void checkRequirements(int frontID) throws Playground.NotEnoughResourcesException{
+        if(this.player.isGoldenFront(frontID)){
+            for(Symbol s : this.player.getGoldenFrontRequirements(frontID).keySet()){
+                if(this.player.getAmountResource(s) < this.player.getGoldenFrontRequirements(frontID).get(s)){
+                    throw new Playground.NotEnoughResourcesException("You don't have the resources to place this side of the card");
+                }
+            }
+        }
     }
 
     @Override
@@ -158,7 +234,7 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
 
     @Override
     public void showUpdateResources(Symbol symbol, int totalAmount, String username) throws RemoteException {
-        player.getPlayground().updateResources(symbol,totalAmount);
+        player.getPlayground().updateResources(symbol, totalAmount);
         System.out.println(player.getPlayground().getResources());
     }
 
@@ -189,7 +265,7 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
 
     @Override
     public void showUpdatePlayerObjectiveCard(int[] privateObjective) throws RemoteException {
-        for(int i:hiddenObjectivesID){
+        for (int i : hiddenObjectivesID) {
             System.out.println(i);
         }
     }
@@ -198,7 +274,7 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
     public void showPlayerStarterCard(int starterBackID, int starterFrontID, String username) throws RemoteException {
         player.setStarterBackID(starterBackID);
         player.setStarterFrontID(starterFrontID);
-        System.out.println(player.getStarterFrontID()+player.getStarterBackID());
+        System.out.println(player.getStarterFrontID() + player.getStarterBackID());
     }
 
     @Override
@@ -221,7 +297,7 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
         System.out.println(details);
     }
 
-    private void checkPosition() {
-
+    public static class ChangeCard extends Exception {
     }
+
 }
