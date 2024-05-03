@@ -20,7 +20,7 @@ import java.util.Set;
 /*
  */
 
-
+//todo use a different interface and remove gameRequest (username not needed)
 public interface VirtualServer extends Remote, GameRequest {
     public abstract void connect(VirtualView client) throws RemoteException; //possible to add username as a parameter
 

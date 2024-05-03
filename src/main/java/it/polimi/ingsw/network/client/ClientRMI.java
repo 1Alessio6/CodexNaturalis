@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
-public class ClientRmi extends UnicastRemoteObject implements VirtualView {
+public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
     private final VirtualServer server;
 
@@ -32,7 +32,7 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
 
     private int[] hiddenObjectivesID; //max 2 and cannot be into ClientPlayer class because it would be visible to all the game partecipants
 
-    protected ClientRmi(VirtualServer server) throws RemoteException {
+    protected ClientRMI(VirtualServer server) throws RemoteException {
         this.server = server;
     }
 
@@ -42,7 +42,7 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
 
         VirtualServer server = (VirtualServer) registry.lookup(serverName);
 
-        new ClientRmi(server).run();
+        new ClientRMI(server).run();
     }
 
 
@@ -71,8 +71,7 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
                 case "place": //todo always add a way to go back to the card selection
                     receivePlaceCommand();
 
-                    //todo check if ClientPlayground it's correctly updated, it should be updated by the methods from observer pattern
-                    //todo the server needs to send the map of corner
+
 
 
                 case "end":
@@ -81,6 +80,20 @@ public class ClientRmi extends UnicastRemoteObject implements VirtualView {
             }
 
         }
+    }
+
+    //todo check if ClientPlayground it's correctly updated, it should be updated by the methods from observer pattern
+    //todo the server needs to send the map of corner
+
+    private void runSetUpPhase(){
+
+    }
+
+    private void runPlayerTurn(){
+        while(!this.player.isCurrentPlayer()){}
+        receivePlaceCommand();
+        receiveDrawCommand();
+        this.player.setIsCurrentPlayer(false);
     }
 
     private void receivePlaceCommand() {
