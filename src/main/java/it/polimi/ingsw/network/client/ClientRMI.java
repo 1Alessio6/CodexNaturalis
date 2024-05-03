@@ -239,70 +239,28 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     }
 
     @Override
-    public void showColor(PlayerColor color, String username) throws RemoteException {
-        player.setColor(color);
-        System.out.println(player.getColor());
-    }
-
-    @Override
-    public void showRemainingColor(Set<PlayerColor> remainingColor) throws RemoteException {
-        remainingColor.forEach(System.out::println);
-    }
-
-    @Override
-    public void showUpdatePlaygroundArea(Position position, ClientTile tile, String username) throws RemoteException {
+    public void showUpdatePlayerObjectiveCard(int[] commonObjectiveID, int starterCardID, String username) throws RemoteException {
 
     }
 
     @Override
-    public void showUpdatePoints(int points, String username) throws RemoteException {
-        player.getPlayground().setPoints(points);
-        System.out.println(player.getPlayground().getPoints());
-    }//hp: th passed points are the updated points
-
-    @Override
-    public void showUpdateResources(Symbol symbol, int totalAmount, String username) throws RemoteException {
-        player.getPlayground().updateResources(symbol, totalAmount);
-        System.out.println(player.getPlayground().getResources());
-    }
-
-    @Override
-    public void showRemovePlayerCard(int backID, int frontID, int cardPosition, String Username) {
+    public void showBoardSetUp(int[] commonObjectiveID, int topBackID, int topGoldenBackID, int[] faceUpCards) throws RemoteException {
 
     }
 
     @Override
-    public void showAddPlayerCard(int backID, int frontID, int cardPosition, String Username) {
+    public void showUpdateColor(PlayerColor color, String username) throws RemoteException {
 
     }
 
     @Override
-    public void showUpdateDeck(boolean isEmpty, int backID) throws RemoteException {
+    public void showUpdateAfterPlace(List<Position> positions, List<ClientTile> tiles, List<Symbol> symbols, int[] totalAmount, int points, String username) throws RemoteException {
 
     }
 
     @Override
-    public void showUpdateFaceUpCards(int position, int backID, int frontID) throws RemoteException {
+    public void showUpdateAfterDraw(int newBackID, int newFrontID, int cardHandPosition, boolean isEmpty, int newDeckBackID, int deckType, int newFrontFaceUp, int newBackFaceUp, int positionFaceUp, String Username) throws RemoteException {
 
-    }
-
-    @Override
-    public void showCommonObjectiveCard(int[] commonObjective) throws RemoteException {
-
-    }
-
-    @Override
-    public void showUpdatePlayerObjectiveCard(int[] privateObjective) throws RemoteException {
-        for (int i : hiddenObjectivesID) {
-            System.out.println(i);
-        }
-    }
-
-    @Override
-    public void showPlayerStarterCard(int starterBackID, int starterFrontID, String username) throws RemoteException {
-        player.setStarterBackID(starterBackID);
-        player.setStarterFrontID(starterFrontID);
-        System.out.println(player.getStarterFrontID() + player.getStarterBackID());
     }
 
     @Override
@@ -311,13 +269,8 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     }
 
     @Override
-    public void showUpdateCurrentPlayer(Player currentPlayer) throws RemoteException {
-        System.out.print(currentPlayer.getUsername());
-    }
+    public void showUpdateCurrentPlayer(Player currentPlayer, ClientPhase phase) throws RemoteException {
 
-    @Override
-    public void showUpdateGamePhase(String GamePhase) throws RemoteException {
-        System.out.println(GamePhase);
     }
 
     @Override

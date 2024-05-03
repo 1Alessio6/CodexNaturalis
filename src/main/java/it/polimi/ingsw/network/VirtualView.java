@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.network.client.ClientPhase;
 import it.polimi.ingsw.network.client.ClientTile;
 
 import java.rmi.Remote;
@@ -18,46 +19,31 @@ Follow the observer design pattern
 public interface VirtualView extends Remote {
 
     //method to show players base information
-    public void showPlayerUsername(String username) throws RemoteException;
+    void showPlayerUsername(String username) throws RemoteException; //see if it's needed or if it could be handled with an exception
 
-    public void showUpdatePlayerStatus(boolean isConnected, String username) throws RemoteException;
+    void showUpdatePlayerStatus(boolean isConnected, String username) throws RemoteException;
 
-    public void showColor(PlayerColor color, String username) throws RemoteException;
+    //method called only to give the cards the first time, not after the player choice
+    //it's the only method that show information to one player per time
+    void showUpdatePlayerObjectiveCard(int[] commonObjectiveID, int starterCardID, String username) throws RemoteException;
 
-    public void showRemainingColor(Set<PlayerColor> remainingColor) throws RemoteException;
+    void showBoardSetUp(int[] commonObjectiveID, int topBackID, int topGoldenBackID, int[] faceUpCards) throws RemoteException;
+
+    void showUpdateColor(PlayerColor color, String username) throws RemoteException;
 
     //method to show updated information after a place
+    //The two list positions and tiles represent every new available tile added after the last place invocation
+    //symbols and total amount represent the new resources added after the last place invocation
+    //consider both couples like maps
+    void showUpdateAfterPlace(List<Position> positions, List<ClientTile> tiles, List<Symbol> symbols, int[] totalAmount, int points, String username) throws RemoteException;
 
-    //it's more efficient to pass only the new added tile and position in order to avoid sending the whole map to the client every time
-    public void showUpdatePlaygroundArea(Position position, ClientTile tile, String username) throws RemoteException;
+    void showUpdateAfterDraw(int newBackID, int newFrontID, int cardHandPosition, boolean isEmpty, int newDeckBackID, int deckType, int newFrontFaceUp, int newBackFaceUp, int positionFaceUp,String Username) throws RemoteException;
 
-    public void showUpdatePoints(int points, String username) throws RemoteException;
+    //method to notify update after a draw
 
-    public void showUpdateResources(Symbol symbol, int totalAmount, String username) throws RemoteException;
+    void showUpdateChat(Message message) throws RemoteException;
 
-    //method to show update after a draw
-
-    public void showRemovePlayerCard(int backID, int frontID, int cardPosition, String Username);
-
-    public void showAddPlayerCard(int backID, int frontID, int cardPosition, String Username);
-
-    public void showUpdateDeck(boolean isEmpty, int backID) throws RemoteException; //the client (player) can't see the updates of a deck till the deck is empty
-
-    public void showUpdateFaceUpCards(int position, int backID, int frontID) throws RemoteException;
-    //Face up cards have specific position inside the list, so it's possible to pass only the position which needs to be updated
-
-    public void showCommonObjectiveCard(int[] commonObjective) throws RemoteException;
-
-    public void showUpdatePlayerObjectiveCard(int[] privateObjective) throws RemoteException;
-    //it's the only method that show information to one player per time
-
-    public void showPlayerStarterCard(int starterBackID, int starterFrontID, String username) throws RemoteException;
-
-    public void showUpdateChat(Message message) throws RemoteException;
-
-    public void showUpdateCurrentPlayer(Player currentPlayer) throws RemoteException;
-
-    public void showUpdateGamePhase(String GamePhase) throws RemoteException;
+    void showUpdateCurrentPlayer(Player currentPlayer, ClientPhase phase) throws RemoteException;
 
     public void reportError(String details) throws RemoteException;
 
