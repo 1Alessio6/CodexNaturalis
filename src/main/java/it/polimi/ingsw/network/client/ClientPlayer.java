@@ -16,6 +16,8 @@ public class ClientPlayer {
 
     private boolean isConnected;
 
+    private boolean isCurrentPlayer;
+
     private int starterFrontID;
 
     private int starterBackID; //todo check if it's needed
@@ -44,6 +46,14 @@ public class ClientPlayer {
     public Map<Symbol, Integer> getGoldenFrontRequirements(int frontID){
         assert(isGoldenFront(frontID));
         return this.goldenFrontRequirements.get(frontID);
+    }
+
+    public boolean isCurrentPlayer() {
+        return isCurrentPlayer;
+    }
+
+    public void setIsCurrentPlayer(boolean currentPlayer) {
+        isCurrentPlayer = currentPlayer;
     }
 
     public ClientPlayground getPlayground() {
