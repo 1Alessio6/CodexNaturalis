@@ -28,6 +28,8 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
     private ClientPlayer player;
 
+    private ClientPhase currentPhase;
+
     private List<ClientPlayer> otherPlayers;
 
     private int[] hiddenObjectivesID; //max 2 and cannot be into ClientPlayer class because it would be visible to all the game partecipants
@@ -62,21 +64,28 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     private void readClientCommand() {
 
         Scanner scanner = new Scanner(System.in);
+        boolean isEnded = false;
 
-        while (true) {
-            System.out.println("Insert a command:\n> ");
-            String command = scanner.nextLine();
-
-            switch (command) {
-                case "place": //todo always add a way to go back to the card selection
-                    receivePlaceCommand();
-
-
-
-
-                case "end":
-                    scanner.close();
-                    break;
+        //
+        while (!isEnded) {
+            switch (currentPhase) {
+                case SETUP:
+                    runSetUpPhase();
+                case WAIT:
+                    if(this.player.isCurrentPlayer()){
+                        this.currentPhase = ClientPhase.NORMAL_TURN;
+                    }
+                case NORMAL_TURN:
+                    runPlayerTurn();
+                case ADDITIONAL_WAIT:
+                    if(this.player.isCurrentPlayer()){
+                        this.currentPhase = ClientPhase.ADDITIONAL_TURN;
+                    }
+                case ADDITIONAL_TURN:
+                     runPlayerAdditionalTurn();
+                case END:
+                    //todo run end of the game
+                    isEnded = true;
             }
 
         }
@@ -89,8 +98,14 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
     }
 
+    private void runPlayerAdditionalTurn(){
+        receivePlaceCommand();
+        receiveDrawCommand();
+        this.player.setIsCurrentPlayer(false);
+    }
+
     private void runPlayerTurn(){
-        while(!this.player.isCurrentPlayer()){}
+        //while(!this.player.isCurrentPlayer()){}
         receivePlaceCommand();
         receiveDrawCommand();
         this.player.setIsCurrentPlayer(false);
@@ -123,9 +138,9 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
         try {
             server.placeCard(this.player.getUsername(), player.getPlayerCardsBackID()[numCard], player.getPlayerCardsFrontID()[numCard], selectedSide,position);
         } catch (Playground.UnavailablePositionException | Playground.NotEnoughResourcesException e) {
-            System.out.println("Error check methods should have avoid an incorrect move");
+            System.err.println("Error check methods should have avoid an incorrect move");
         } catch (InvalidPlayerActionException | SuspendedGameException | InvalidGamePhaseException e) {
-            System.out.println("Error");
+            System.err.println("Error");
         }
     }
 
