@@ -84,7 +84,7 @@ public class ServerRMI implements VirtualServer {
     }
 
     @Override
-    public void notifyUpdateAfterDraw(int newBackID, int newFrontID, int cardHandPosition, boolean isEmpty, int newDeckBackID, int deckType, int newFrontFaceUp, int newBackFaceUp, int positionFaceUp, String Username) throws RemoteException {
+    public void notifyUpdateAfterDraw(int newBackID, int newFrontID, Map<Symbol, Integer> goldenFrontRequirements, int cardHandPosition, boolean isEmpty, int newDeckBackID, int deckType, int newFrontFaceUp, int newBackFaceUp, int positionFaceUp, String Username) throws RemoteException {
 
     }
 

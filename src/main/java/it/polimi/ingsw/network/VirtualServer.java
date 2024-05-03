@@ -16,6 +16,7 @@ import java.io.StringReader;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /*
@@ -50,7 +51,9 @@ public interface VirtualServer extends Remote, GameRequest {
     //consider both couples like maps
     void notifyUpdateAfterPlace(List<Position> positions, List<ClientTile> tiles, List<Symbol> symbols, int[] totalAmount, int points, String username) throws RemoteException;
 
-    void notifyUpdateAfterDraw(int newBackID, int newFrontID, int cardHandPosition, boolean isEmpty, int newDeckBackID, int deckType, int newFrontFaceUp, int newBackFaceUp, int positionFaceUp,String Username) throws RemoteException;
+    //todo decide if it's useful to mantain a map for goldenFrontRequirements or it's better to use two lists
+    //goldenFrontRequirements it's an empty Map field if the front drawn isn't golden
+    void notifyUpdateAfterDraw(int newBackID, int newFrontID, Map<Symbol, Integer> goldenFrontRequirements, int cardHandPosition, boolean isEmpty, int newDeckBackID, int deckType, int newFrontFaceUp, int newBackFaceUp, int positionFaceUp, String Username) throws RemoteException;
 
     //method to notify update after a draw
 
