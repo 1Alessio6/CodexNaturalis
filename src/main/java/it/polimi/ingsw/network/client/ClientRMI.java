@@ -18,10 +18,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
@@ -34,6 +31,8 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     private List<ClientPlayer> otherPlayers;
 
     private int[] hiddenObjectivesID; //max 2 and cannot be into ClientPlayer class because it would be visible to all the game partecipants
+
+    private ClientBoard clientBoard;
 
     protected ClientRMI(VirtualServer server) throws RemoteException {
         this.server = server;
@@ -240,27 +239,93 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     }
 
     @Override
-    public void showUpdatePlayerObjectiveCard(int[] commonObjectiveID, int starterCardID, String username) throws RemoteException {
-
+    public void showUpdatePlayerObjectiveCard(int[] privateObjectiveID, int starterCardID, String username) throws RemoteException {
+        this.hiddenObjectivesID=privateObjectiveID.clone();
+        player.setStarterFrontID(starterCardID);
+        System.out.println("Hidden Objectives ID are: \n");
+        for(int i:hiddenObjectivesID){
+            System.out.println(i+"\n");
+        }
+        System.out.println("Starter card is: "+player.getStarterFrontID()+"\n");
+        System.out.println("The username is: "+username);
     }
 
     @Override
     public void showBoardSetUp(int[] commonObjectiveID, int topBackID, int topGoldenBackID, int[] faceUpCards) throws RemoteException {
-
+        clientBoard.setCommonObjectives(commonObjectiveID);
+        clientBoard.addGoldenBackID(topGoldenBackID);
+        clientBoard.addResourceBackID(topBackID);
+        clientBoard.setFaceUpCards(faceUpCards);
+        System.out.println("Common objectives are: \n");
+        for (int i:clientBoard.getCommonObjectives()){
+            System.out.println(i+"\n");
+        }
+        System.out.println("The top back ID is: "+ clientBoard.getResourceDeck().getLast() +"\n");
+        System.out.println("The top golden back ID is: "+ clientBoard.getGoldenDeck().getLast() +"\n");
+        System.out.println("Face up cards are: \n");
+        for(int i:clientBoard.getFaceUpCards()){
+            System.out.println(i+"\n");
+        }
     }
 
     @Override
     public void showUpdateColor(PlayerColor color, String username) throws RemoteException {
-
+        player.setColor(color);
+        System.out.println("The color is: "+player.getColor().name());
     }
 
     @Override
     public void showUpdateAfterPlace(List<Position> positions, List<ClientTile> tiles, List<Symbol> symbols, int[] totalAmount, int points, String username) throws RemoteException {
-
+        if (positions.size() == tiles.size()) {//this can be omitted
+            Iterator<Position> posIterator = positions.iterator();
+            Iterator<ClientTile> tilesIterator = tiles.iterator();
+            while (posIterator.hasNext() && tilesIterator.hasNext()) {
+                player.getPlayground().placeTile(posIterator.next(), tilesIterator.next());
+            }
+        }
+        if (symbols.size()==totalAmount.length){
+            for(int i=0;i< symbols.size();i++){
+                player.getPlayground().updateResources(symbols.get(i),totalAmount[i]);
+            }
+        }
+        player.getPlayground().setPoints(points);
+        System.out.println("Playground after place: \n"+player.getPlayground().toString());
     }
 
     @Override
     public void showUpdateAfterDraw(int newBackID, int newFrontID, Map<Symbol, Integer> goldenFrontRequirements, int cardHandPosition, boolean isEmpty, int newDeckBackID, int deckType, int newFrontFaceUp, int newBackFaceUp, int positionFaceUp, String Username) throws RemoteException {
+        player.addPlayerCard(newBackID, newFrontID, cardHandPosition);
+        if (!goldenFrontRequirements.isEmpty()) {
+            player.addGoldenFrontRequirements(newFrontID, goldenFrontRequirements);
+            System.out.println("Golden Front Requirements are: \n");
+            for (Map.Entry<Symbol, Integer> e : player.getGoldenFrontRequirements(newFrontID).entrySet()) {
+                System.out.println(e.getKey() + " --> " + e.getValue() + "\n");
+            }
+        } else {//if goldenFrontRequirements map is empty, it means that the drawn card isn't golden
+            System.out.println("The card drawn doesn't have golden front requirements");
+        }
+
+        if (!isEmpty) {// 4 for normal deck, 5 for golden deck
+            if (deckType == 4) {
+                clientBoard.addResourceBackID(newDeckBackID);
+                System.out.println("Top back ID in normal deck is: " + clientBoard.getResourceDeck().getLast() + "\n");
+            } else if (deckType == 5) {
+                clientBoard.addGoldenBackID(newBackID);
+                System.out.println("Top back ID in golden deck is: " + clientBoard.getGoldenDeck().getLast() + "\n");
+            }
+        } else {
+            System.out.println("The deck is empty \n");
+        }
+
+        if (positionFaceUp >= 0 && positionFaceUp <= 4) {
+            clientBoard.addFaceUpCards(newFrontFaceUp, newBackFaceUp, positionFaceUp);
+            System.out.println("Face up cards are: \n");
+            for (int i : clientBoard.getFaceUpCards()) {
+                System.out.println(i + "\n");
+            }
+        } else {
+            System.out.println("Face up position is not valid \n");
+        }
 
     }
 
@@ -270,8 +335,13 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     }
 
     @Override
-    public void showUpdateCurrentPlayer(Player currentPlayer, ClientPhase phase) throws RemoteException {
+    public void showUpdateCurrentPlayer(ClientPlayer currentPlayer, ClientPhase phase) throws RemoteException {
+        this.currentPhase=phase;
+        this.player=currentPlayer;
+        player.setIsCurrentPlayer(true);
 
+        System.out.println(this.currentPhase.name());
+        System.out.println(player.isCurrentPlayer()?player.getUsername():"Error");
     }
 
     @Override

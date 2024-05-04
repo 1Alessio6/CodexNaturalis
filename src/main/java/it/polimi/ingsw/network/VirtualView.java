@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.client.ClientPhase;
+import it.polimi.ingsw.network.client.ClientPlayer;
 import it.polimi.ingsw.network.client.ClientTile;
 
 import java.rmi.Remote;
@@ -43,7 +44,7 @@ public interface VirtualView extends Remote {
 
     void showUpdateChat(Message message) throws RemoteException;
 
-    void showUpdateCurrentPlayer(Player currentPlayer, ClientPhase phase) throws RemoteException;
+    void showUpdateCurrentPlayer(ClientPlayer currentPlayer, ClientPhase phase) throws RemoteException;
 
     public void reportError(String details) throws RemoteException;
 
