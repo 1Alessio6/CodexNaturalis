@@ -38,6 +38,14 @@ public class Controller implements EventListener, GameRequest {
         lobby = new Lobby();
     }
 
+    public void handleConnection(String username) throws FullLobbyException, AlreadyInLobbyException {
+        if (this.game == null) {
+            joinLobby(username);
+        } else {
+            joinGame(username);
+        }
+    }
+
     /**
      * Joins user to the lobby.
      *
@@ -55,14 +63,21 @@ public class Controller implements EventListener, GameRequest {
         // todo. get all info needed by the client related to the player and return them.
     }
 
+    public boolean handleDisconnection(String username) {
+        if (this.game == null) {
+            return leaveLobby(username);
+        } else {
+            return leaveGame(username);
+        }
+    }
+
     /**
      * Removes the user from the lobby.
      *
      * @param username the user's name who leaves the lobby.
      * @return true if the lobby has been reset, false otherwise.
      */
-    @Override
-    public boolean leaveLobby(String username) {
+    private boolean leaveLobby(String username) {
         List<String> leftUsers = lobby.remove(username);
         return leftUsers.isEmpty();
     }
@@ -73,8 +88,7 @@ public class Controller implements EventListener, GameRequest {
      * @param username the user's name.
      * @return true if there's no enough player, so the game has to be suspended; false otherwise.
      */
-    @Override
-    public boolean leaveGame(String username) {
+    private boolean leaveGame(String username) {
         game.setNetworkStatus(username, false);
         // return true if the game need to be suspended.
         return game.getActivePlayers().size() <= 1;

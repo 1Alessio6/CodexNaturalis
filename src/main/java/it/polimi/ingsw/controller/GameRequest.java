@@ -19,10 +19,6 @@ import java.util.Set;
  * This interface represents all methods/actions that can be invoked from clients
  */
 public interface GameRequest {
-    boolean leaveLobby(String username);
-
-    boolean leaveGame(String username);
-
     void placeStarter(String username, Side side) throws InvalidPlayerActionException, InvalidGamePhaseException;
 
     Set<PlayerColor> chooseColor(String username, PlayerColor color) throws NonexistentPlayerException, InvalidColorException, InvalidPlayerActionException, InvalidGamePhaseException;

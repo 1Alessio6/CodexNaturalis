@@ -2,31 +2,31 @@ package it.polimi.ingsw.network;
 
 import it.polimi.ingsw.controller.GameRequest;
 import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.board.Tile;
-import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
-import it.polimi.ingsw.model.card.ObjectiveCard;
 import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.model.chat.message.Message;
-import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.client.ClientPhase;
+import it.polimi.ingsw.network.client.ClientPlayer;
 import it.polimi.ingsw.network.client.ClientTile;
 
-import java.io.StringReader;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /*
  */
 
 //todo use a different interface and remove gameRequest (username not needed)
 public interface VirtualServer extends Remote, GameRequest {
-    public void connect(VirtualView client) throws RemoteException; //possible to add username as a parameter
+    /**
+     * Connect to server
+     * @param client
+     * @throws RemoteException
+     */
+    void connect(VirtualView client) throws RemoteException;
+    boolean disconnect(String username);
 
-    public void connect(VirtualView client, String username) throws RemoteException;
 
     //notify methods
 
@@ -59,6 +59,6 @@ public interface VirtualServer extends Remote, GameRequest {
 
     void notifyUpdateChat(Message message) throws RemoteException;
 
-    void notifyUpdateCurrentPlayer(Player currentPlayer, ClientPhase phase) throws RemoteException;
+    void notifyUpdateCurrentPlayer(ClientPlayer currentPlayer, ClientPhase phase) throws RemoteException;
 
 }
