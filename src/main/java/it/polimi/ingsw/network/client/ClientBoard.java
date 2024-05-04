@@ -5,15 +5,19 @@ import java.util.ArrayList;
 
 public class ClientBoard {
 
-    private int[] faceUpCards; //max 4
+    private int[] faceUpCardsFrontID; //max 4
 
-    private ArrayList<Integer> goldenDeck;
+    private int[] faceUpCardsBackID;
 
-    private ArrayList<Integer> resourceDeck;
+    private ArrayList<Integer> goldenDeck; //contains only backID numbers
+
+    private ArrayList<Integer> resourceDeck; //contains only backID numbers
+
     private int[] commonObjectives;
 
     public ClientBoard() {
-        faceUpCards = new int[4];
+        faceUpCardsFrontID = new int[4];
+        faceUpCardsBackID = new int[4];
         commonObjectives = new int[2];
         goldenDeck = new ArrayList<>();
         resourceDeck = new ArrayList<>();
@@ -21,12 +25,35 @@ public class ClientBoard {
 
     //getter methods
 
-    public int[] getFaceUpCards(){return faceUpCards;}
+    public int[] getFaceUpCards() {return faceUpCardsFrontID;}
 
-    public ArrayList<Integer> getGoldenDeck(){return goldenDeck;}
+    public ArrayList<Integer> getGoldenDeck() {return goldenDeck;}
 
-    public ArrayList<Integer> getResourceDeck(){return resourceDeck;}
+    public ArrayList<Integer> getResourceDeck() {return resourceDeck;}
 
-    public int[] getCommonObjectives(){return commonObjectives;}
+    public int[] getCommonObjectives() {return commonObjectives;}
 
+    //setter methods
+
+
+    public void setCommonObjectives(int[] commonObjectives) {
+        this.commonObjectives = commonObjectives;
+    }
+
+    public void setFaceUpCards(int[] faceUpCards) {
+        this.faceUpCardsFrontID = faceUpCards;
+    }
+
+    public void addGoldenBackID(int goldenBackID) {
+        goldenDeck.add(goldenBackID);
+    }
+
+    public void addResourceBackID(int resourceBackID) {
+        resourceDeck.add(resourceBackID);
+    }
+
+    public void addFaceUpCards(int newFrontFaceUp, int newBackFaceUp, int positionFaceUp) {
+        this.faceUpCardsFrontID[positionFaceUp] = newFrontFaceUp;
+        this.faceUpCardsBackID[positionFaceUp] = newBackFaceUp;
+    }
 }
