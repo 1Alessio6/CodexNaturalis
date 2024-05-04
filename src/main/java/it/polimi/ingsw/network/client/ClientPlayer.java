@@ -106,4 +106,13 @@ public class ClientPlayer {
     public void setStarterBackID(int starterBackID) {
         this.starterBackID = starterBackID;
     }
+
+    public void addPlayerCard(int newBackID, int newFrontID,int cardHandPosition){
+        this.PlayerCardsBackID[cardHandPosition]=newBackID;
+        this.playerCardsFrontID[cardHandPosition]=newFrontID;
+    }
+
+    public void addGoldenFrontRequirements(Integer frontID, Map<Symbol, Integer> goldenFrontRequirements) {
+        this.goldenFrontRequirements.put(frontID,goldenFrontRequirements);
+    }
 }
