@@ -21,6 +21,7 @@ import it.polimi.ingsw.model.card.Side;
 
 import java.util.EventListener;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The Controller class manages the entry of players through the use of a lobby, as well as their subsequent
@@ -41,19 +42,15 @@ public class Controller implements EventListener, GameRequest {
      * Joins user to the lobby.
      *
      * @param username the user's name who joins the lobby.
-     * @return true if the game starts after the user has joined the lobby.
      * @throws FullLobbyException      if the lobby is full.
      * @throws AlreadyInLobbyException if there's already a player with <code>username</code> in the lobby.
      */
-    @Override
-    public boolean joinLobby(String username) throws FullLobbyException, AlreadyInLobbyException {
+    private void joinLobby(String username) throws FullLobbyException, AlreadyInLobbyException {
         game = lobby.joinLobby(username);
-        return game != null;
     }
 
     // fixme(return_value): it has to be the client's representation of a player to recovery their state.
-    @Override
-    public void joinGame(String username) {
+    private void joinGame(String username) {
         game.setNetworkStatus(username, true);
         // todo. get all info needed by the client related to the player and return them.
     }
@@ -107,7 +104,7 @@ public class Controller implements EventListener, GameRequest {
      * @throws InvalidGamePhaseException    if the player has already finished their setup.
      */
     @Override
-    public List<PlayerColor> assignColor(String username, PlayerColor color) throws NonexistentPlayerException, InvalidColorException, InvalidPlayerActionException, InvalidGamePhaseException {
+    public Set<PlayerColor> chooseColor(String username, PlayerColor color) throws NonexistentPlayerException, InvalidColorException, InvalidPlayerActionException, InvalidGamePhaseException {
         return game.assignColor(username, color);
     }
 
@@ -149,19 +146,23 @@ public class Controller implements EventListener, GameRequest {
      *
      * @param username the username of the player.
      * @param idToDraw the id representing the deck or any of the face up card positions.
+     * @return the emptiness of deck of draw/replace
      * @throws InvalidPlayerActionException if the player cannot perform the operation.
      * @throws EmptyDeckException           if the selected deck is empty.
      * @throws InvalidGamePhaseException    if the game phase doesn't allow the operation.
      */
     @Override
-    public void draw(String username, int idToDraw) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException {
+    public boolean draw(String username, int idToDraw) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException {
+        boolean isEmpty = false;
         if (idToDraw == 4) {
-            game.drawFromDeck(username, DeckType.GOLDEN);
+            isEmpty = game.drawFromDeck(username, DeckType.GOLDEN);
         } else if (idToDraw == 5) {
-            game.drawFromDeck(username, DeckType.RESOURCE);
+            isEmpty = game.drawFromDeck(username, DeckType.RESOURCE);
         } else {
-            game.drawFromFaceUpCards(username, idToDraw);
+            isEmpty = game.drawFromFaceUpCards(username, idToDraw);
         }
+
+        return isEmpty;
     }
 
     /**
@@ -193,6 +194,12 @@ public class Controller implements EventListener, GameRequest {
     @Override
     public void sendMessage(String author, Message message) throws InvalidMessageException {
         game.registerMessage(author, message);
+    }
+
+    @Override
+    public void setPlayersNumber(int playersNumber) {
+        lobby.setNumPlayers(playersNumber);
+
     }
 
     public List<String> getWinners() throws InvalidGamePhaseException {

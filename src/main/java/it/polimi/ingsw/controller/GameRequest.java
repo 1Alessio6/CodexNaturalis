@@ -11,34 +11,27 @@ import it.polimi.ingsw.model.card.EmptyDeckException;
 import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
-import it.polimi.ingsw.model.lobby.AlreadyInLobbyException;
-import it.polimi.ingsw.model.lobby.FullLobbyException;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * This interface represents all methods/actions that can be invoked from clients
  */
 public interface GameRequest {
-    boolean joinLobby(String username) throws FullLobbyException, AlreadyInLobbyException;
-
-    // fixme(return_value): it has to be the client's representation of a player to recovery their state.
-    void joinGame(String username);
-
     boolean leaveLobby(String username);
 
     boolean leaveGame(String username);
 
     void placeStarter(String username, Side side) throws InvalidPlayerActionException, InvalidGamePhaseException;
 
-    List<PlayerColor> assignColor(String username, PlayerColor color) throws NonexistentPlayerException, InvalidColorException, InvalidPlayerActionException, InvalidGamePhaseException;
+    Set<PlayerColor> chooseColor(String username, PlayerColor color) throws NonexistentPlayerException, InvalidColorException, InvalidPlayerActionException, InvalidGamePhaseException;
 
     void placeObjectiveCard(String username, int chosenObjective) throws InvalidPlayerActionException, InvalidGamePhaseException;
 
     int placeCard(String username, int frontId, int backId, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException;
 
-    void draw(String username, int idToDraw) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException;
+    boolean draw(String username, int idToDraw) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException;
 
     String getCurrentPlayer();
 
@@ -46,5 +39,5 @@ public interface GameRequest {
 
     void sendMessage(String author, Message message) throws InvalidMessageException;
 
-
+    void setPlayersNumber(int playersNumber);
 }

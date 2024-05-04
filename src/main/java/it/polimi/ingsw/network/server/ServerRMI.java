@@ -11,8 +11,6 @@ import it.polimi.ingsw.model.card.Color.InvalidColorException;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
-import it.polimi.ingsw.model.lobby.AlreadyInLobbyException;
-import it.polimi.ingsw.model.lobby.FullLobbyException;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.VirtualServer;
@@ -101,16 +99,6 @@ public class ServerRMI implements VirtualServer {
     }
 
     @Override
-    public boolean joinLobby(String username) throws FullLobbyException, AlreadyInLobbyException {
-        return false;
-    }
-
-    @Override
-    public void joinGame(String username) {
-        this.myController.joinGame(username);
-    }
-
-    @Override
     public boolean leaveLobby(String username) {
         return false;
     }
@@ -126,8 +114,8 @@ public class ServerRMI implements VirtualServer {
     }
 
     @Override
-    public List<PlayerColor> assignColor(String username, PlayerColor color) throws NonexistentPlayerException, InvalidColorException, InvalidPlayerActionException, InvalidGamePhaseException {
-        return List.of();
+    public Set<PlayerColor> chooseColor(String username, PlayerColor color) throws NonexistentPlayerException, InvalidColorException, InvalidPlayerActionException, InvalidGamePhaseException {
+        return Set.of();
     }
 
     @Override
@@ -141,8 +129,9 @@ public class ServerRMI implements VirtualServer {
     }
 
     @Override
-    public void draw(String username, int idToDraw) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException {
+    public boolean draw(String username, int idToDraw) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException {
 
+        return false;
     }
 
     @Override
@@ -157,6 +146,11 @@ public class ServerRMI implements VirtualServer {
 
     @Override
     public void sendMessage(String author, Message message) throws InvalidMessageException {
+
+    }
+
+    @Override
+    public void setPlayersNumber(int playersNumber) {
 
     }
 
