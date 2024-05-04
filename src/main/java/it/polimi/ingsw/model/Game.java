@@ -30,7 +30,7 @@ public class Game {
     private Deck<Card> starterCards;
     private Deck<ObjectiveCard> objectiveCards;
 
-    List<PlayerColor> availableColors;
+    Set<PlayerColor> availableColors;
 
     private List<Card> faceUpCards;
 
@@ -91,7 +91,7 @@ public class Game {
     }
 
     private void loadAvailableColors() {
-        this.availableColors = new ArrayList<>(
+        this.availableColors = new HashSet<>(
                 Arrays.asList(
                         PlayerColor.RED,
                         PlayerColor.RED,
@@ -316,7 +316,7 @@ public class Game {
      * @throws NonexistentPlayerException   if the username is invalid.
      * @throws InvalidGamePhaseException    if the player has already finished their setup.
      */
-    public List<PlayerColor> assignColor(String username, PlayerColor color) throws InvalidPlayerActionException, InvalidColorException, NonexistentPlayerException, InvalidGamePhaseException {
+    public Set<PlayerColor> assignColor(String username, PlayerColor color) throws InvalidPlayerActionException, InvalidColorException, NonexistentPlayerException, InvalidGamePhaseException {
         if (!phase.equals(GamePhase.Setup)) {
             throw new InvalidGamePhaseException();
         }
@@ -403,11 +403,12 @@ public class Game {
      *
      * @param username of the player to draw.
      * @param deckType of the deck to draw a card from.
+     * @return
      * @throws InvalidPlayerActionException if the player cannot perform the operation.
      * @throws EmptyDeckException           if the selected deck is empty.
      * @throws InvalidGamePhaseException    if the game phase doesn't allow the operation.
      */
-    public void drawFromDeck(String username, DeckType deckType) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException {
+    public boolean drawFromDeck(String username, DeckType deckType) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException {
         if (!phase.equals(GamePhase.DrawNormal)) {
             throw new InvalidGamePhaseException();
         }
@@ -439,19 +440,25 @@ public class Game {
             deck.add(newCard);
             throw invalidPlayerActionException;
         }
+
+        return deck.isEmpty();
     }
 
-    private void replaceFaceUpCard(int faceUpCardIdx) {
+    /**
+     * Fills the missing spot on faceUpCards
+     *
+     * @param faceUpCardIdx the spot of the taken card
+     * @return whether the deck of replacements is empty or not
+     */
+    private boolean replaceFaceUpCard(int faceUpCardIdx) {
         List<Deck<Card>> decks = Arrays.asList(resourceCards, goldenCards);
         int deckIdx = faceUpCardIdx <= 1 ? 0 : 1;
 
         Card replacement = null;
         try {
-            if (!decks.get(deckIdx).isEmpty()) {
-                replacement = decks.get(deckIdx).draw();
-            } else {
-                replacement = decks.get((deckIdx + 1) % 2).draw();
-            }
+            // updates the index of deckIdx based on the supposed deck's emptiness
+            deckIdx = deckIdx + (decks.get(deckIdx).isEmpty() ? 0 : 1) % 2;
+            replacement = decks.get(deckIdx).draw();
         } catch (EmptyDeckException e) {
             // the replacement may be invalid if both decks are empty, so there's no exception to throw
         }
@@ -461,6 +468,7 @@ public class Game {
         if (goldenCards.isEmpty() && resourceCards.isEmpty()) {
             phaseHandler.setLastNormalTurn();
         }
+        return decks.get(deckIdx).isEmpty();
     }
 
     /**
@@ -468,9 +476,10 @@ public class Game {
      *
      * @param username      of the player.
      * @param faceUpCardIdx specifying the face up card.
+     * @return whether the deck chosen for drawing the replacement is empty or not
      * @throws InvalidPlayerActionException if the player cannot perform the operation.
      */
-    public void drawFromFaceUpCards(String username, int faceUpCardIdx) throws InvalidPlayerActionException, InvalidGamePhaseException {
+    public boolean drawFromFaceUpCards(String username, int faceUpCardIdx) throws InvalidPlayerActionException, InvalidGamePhaseException {
         if (!phase.equals(GamePhase.DrawNormal)) {
             throw new InvalidGamePhaseException();
         }
@@ -485,14 +494,17 @@ public class Game {
 
         Card newCard = faceUpCards.get(faceUpCardIdx);
 
+        boolean isReplaceDeckEmpty;
         try {
             currentPlayer.addCard(newCard);
-            replaceFaceUpCard(faceUpCardIdx);
+            isReplaceDeckEmpty = replaceFaceUpCard(faceUpCardIdx);
             phase = phaseHandler.getNextPhase(phase, currentPlayerIdx);
             updateCurrentPlayerIdx();
         } catch (InvalidPlayerActionException e) {
             throw new InvalidPlayerActionException();
         }
+
+        return isReplaceDeckEmpty;
     }
 
     /**
