@@ -11,11 +11,13 @@ import it.polimi.ingsw.model.card.Color.InvalidColorException;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
+import it.polimi.ingsw.model.lobby.AlreadyInLobbyException;
+import it.polimi.ingsw.model.lobby.FullLobbyException;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
-import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.ClientPhase;
+import it.polimi.ingsw.network.client.ClientPlayer;
 import it.polimi.ingsw.network.client.ClientTile;
 
 import java.rmi.AlreadyBoundException;
@@ -37,121 +39,183 @@ public class ServerRMI implements VirtualServer {
     }
 
     @Override
-    public void connect(VirtualView client) throws RemoteException {
+    public void connect(VirtualView client) {
+        // TODO: change connect behaviour
+        try {
+            String clientUsername = String.valueOf(connectedClients.entrySet().stream()
+                    .filter(a -> a.getValue().equals(client)) // get the one and only calling client
+                    .map(Map.Entry::getKey) // get its associated username
+                    .findFirst()); // get as string: if there isn't, it means that there isn't such client
 
+            myController.handleConnection(clientUsername);
+        } catch (FullLobbyException | AlreadyInLobbyException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public void connect(VirtualView client, String username) throws RemoteException {
+    public boolean disconnect(String username) {
+        return myController.handleDisconnection(username);
     }
 
     @Override
     public void notifyPlayerUsername(String username) throws RemoteException {
         for (String user : connectedClients.keySet()) {
-            connectedClients.get(user).showPlayerUsername(username);
+                connectedClients.get(user).showPlayerUsername(username);
         }
     }
 
     @Override
     public void notifyUpdatePlayerStatus(boolean isConnected, String username) throws RemoteException {
         for (String user : connectedClients.keySet()) {
-            connectedClients.get(user).showUpdatePlayerStatus(isConnected,username);
+                connectedClients.get(user).showUpdatePlayerStatus(isConnected,username);
         }
     }
 
     @Override
     public void notifyUpdatePlayerObjectiveCard(int[] commonObjectiveID, int starterCardID, String username) throws RemoteException {
-
+            connectedClients.get(username).showUpdatePlayerObjectiveCard(commonObjectiveID, starterCardID, username);
     }
 
     @Override
     public void notifyBoardSetUp(int[] commonObjectiveID, int topBackID, int topGoldenBackID, int[] faceUpCards) throws RemoteException {
-
+        for (VirtualView virtualView : connectedClients.values()) {
+            virtualView.showBoardSetUp(commonObjectiveID, topBackID, topGoldenBackID, faceUpCards);
+        }
     }
 
     @Override
     public void notifyColor(PlayerColor color, String username) throws RemoteException {
         for (String user : connectedClients.keySet()) {
-            connectedClients.get(user).showUpdateColor(color, username);
+                connectedClients.get(user).showUpdateColor(color, username);
         }
     }
 
     @Override
     public void notifyUpdateAfterPlace(List<Position> positions, List<ClientTile> tiles, List<Symbol> symbols, int[] totalAmount, int points, String username) throws RemoteException {
-
+        for (VirtualView virtualView : this.connectedClients.values()) {
+            virtualView.showUpdateAfterPlace(positions, tiles, symbols, totalAmount, points, username);
+        }
     }
 
     @Override
-    public void notifyUpdateAfterDraw(int newBackID, int newFrontID, Map<Symbol, Integer> goldenFrontRequirements, int cardHandPosition, boolean isEmpty, int newDeckBackID, int deckType, int newFrontFaceUp, int newBackFaceUp, int positionFaceUp, String Username) throws RemoteException {
-
+    public void notifyUpdateAfterDraw(int newBackID,
+                                      int newFrontID,
+                                      Map<Symbol, Integer> goldenFrontRequirements,
+                                      int cardHandPosition,
+                                      boolean isEmpty,
+                                      int newDeckBackID,
+                                      int deckType,
+                                      int newFrontFaceUp,
+                                      int newBackFaceUp,
+                                      int positionFaceUp,
+                                      String username) throws RemoteException {
+        for (VirtualView virtualView : this.connectedClients.values()) {
+            virtualView.showUpdateAfterDraw(newBackID,
+                    newFrontID,
+                    goldenFrontRequirements,
+                    cardHandPosition,
+                    isEmpty,
+                    newDeckBackID,
+                    deckType,
+                    newFrontFaceUp,
+                    newBackFaceUp,
+                    positionFaceUp,
+                    username);
+        }
     }
 
     @Override
     public void notifyUpdateChat(Message message) throws RemoteException {
         for (String user : connectedClients.keySet()) {
-            connectedClients.get(user).showUpdateChat(message);
+                connectedClients.get(user).showUpdateChat(message);
         }
     }
 
     @Override
-    public void notifyUpdateCurrentPlayer(Player currentPlayer, ClientPhase phase) throws RemoteException {
-
-    }
-
-    @Override
-    public boolean leaveLobby(String username) {
-        return false;
-    }
-
-    @Override
-    public boolean leaveGame(String username) {
-        return false;
+    public void notifyUpdateCurrentPlayer(ClientPlayer currentPlayer, ClientPhase phase) throws RemoteException {
+        for (VirtualView virtualView : connectedClients.values()) {
+            virtualView.showUpdateCurrentPlayer(currentPlayer, phase);
+        }
     }
 
     @Override
     public void placeStarter(String username, Side side) throws InvalidPlayerActionException, InvalidGamePhaseException {
+            myController.placeStarter(username, side);
+    }
+
+    @Override
+    public Set<PlayerColor> chooseColor(String username, PlayerColor color) {
+        Set<PlayerColor> remainingColors = Set.of();
+
+        try {
+            remainingColors = myController.chooseColor(username, color);
+
+            notifyColor(color, username);
+        } catch (NonexistentPlayerException | InvalidColorException | InvalidPlayerActionException |
+                 InvalidGamePhaseException | RemoteException e) {
+            e.printStackTrace();
+        }
+
+        return remainingColors;
+    }
+
+    @Override
+    public void placeObjectiveCard(String username, int chosenObjective) {
+        try {
+            myController.placeObjectiveCard(username, chosenObjective);
+
+            // TODO: notify
+        } catch (InvalidPlayerActionException | InvalidGamePhaseException e) {
+            throw new RuntimeException(e);
+        }
+
 
     }
 
     @Override
-    public Set<PlayerColor> chooseColor(String username, PlayerColor color) throws NonexistentPlayerException, InvalidColorException, InvalidPlayerActionException, InvalidGamePhaseException {
-        return Set.of();
-    }
+    public int placeCard(String username, int frontId, int backId, Side side, Position position) {
+        try {
+            myController.placeCard(username, frontId, backId, side, position);
 
-    @Override
-    public void placeObjectiveCard(String username, int chosenObjective) throws InvalidPlayerActionException, InvalidGamePhaseException {
+            // todo: notify after place
+        } catch (InvalidPlayerActionException | Playground.UnavailablePositionException |
+                 Playground.NotEnoughResourcesException | InvalidGamePhaseException | SuspendedGameException e) {
+            throw new RuntimeException(e);
+        }
 
-    }
-
-    @Override
-    public int placeCard(String username, int frontId, int backId, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException {
         return 0;
     }
 
     @Override
-    public boolean draw(String username, int idToDraw) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException {
+    public boolean draw(String username, int idToDraw) {
+        try {
+            myController.draw(username, idToDraw);
+
+            // todo : notify
+        } catch (InvalidPlayerActionException | EmptyDeckException | InvalidGamePhaseException e) {
+            throw new RuntimeException(e);
+        }
+
 
         return false;
     }
 
     @Override
-    public String getCurrentPlayer() {
-        return "";
-    }
+    public void sendMessage(String author, Message message) {
+        try {
+            myController.sendMessage(author, message);
 
-    @Override
-    public void skipTurn() {
-
-    }
-
-    @Override
-    public void sendMessage(String author, Message message) throws InvalidMessageException {
-
+            notifyUpdateChat(message);
+        } catch (RemoteException | InvalidMessageException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void setPlayersNumber(int playersNumber) {
-
+        myController.setPlayersNumber(playersNumber);
+        // todo: need notify
     }
 
     public static void main(String[] args) {
