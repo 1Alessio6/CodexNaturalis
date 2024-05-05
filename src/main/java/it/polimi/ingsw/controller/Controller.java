@@ -112,7 +112,7 @@ public class Controller implements EventListener, GameRequest {
      *
      * @param username of the player who have chosen the color.
      * @param color    chosen by the player.
-     * @return the list of remaining colors after the player's choice.
+     * @return the set of remaining colors after the player's choice.
      * @throws InvalidColorException        if the color has already been chosen.
      * @throws InvalidPlayerActionException if the player cannot perform this action.
      * @throws InvalidGamePhaseException    if the player has already finished their setup.
@@ -177,25 +177,6 @@ public class Controller implements EventListener, GameRequest {
         }
 
         return isEmpty;
-    }
-
-    /**
-     * Gets the current player from the game.
-     *
-     * @return the current player's name.
-     */
-    @Override
-    public String getCurrentPlayer() {
-        return game.getCurrentPlayer().getUsername();
-    }
-
-
-    /**
-     * Skips the current player.
-     */
-    @Override
-    public void skipTurn() {
-        game.skipTurn();
     }
 
     /**

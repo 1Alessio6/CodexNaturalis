@@ -29,10 +29,6 @@ public interface GameRequest {
 
     boolean draw(String username, int idToDraw) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException;
 
-    String getCurrentPlayer();
-
-    void skipTurn();
-
     void sendMessage(String author, Message message) throws InvalidMessageException;
 
     void setPlayersNumber(int playersNumber);
