@@ -13,6 +13,7 @@ import it.polimi.ingsw.model.player.NotAvailableUsername;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
+import it.polimi.ingsw.network.client.card.ClientCard;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -140,7 +141,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
                 selectedSide = receiveCardSide();
                 if (selectedSide == Side.FRONT) {
                     try {
-                        checkRequirements(this.player.getPlayerCardsFrontID()[numCard]);
+                        checkRequirements(this.player.getPlayerCard(numCard));
                         position = receivePosition();
                         break;
                     } catch (Playground.NotEnoughResourcesException e) {
@@ -153,7 +154,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
         }
 
         try {
-            server.placeCard(this.player.getUsername(), player.getPlayerCardsBackID()[numCard], player.getPlayerCardsFrontID()[numCard], selectedSide, position);
+            server.placeCard(this.player.getUsername(), this.player.getPlayerCard(numCard).getBackId(), this.player.getPlayerCard(numCard).getFrontId(), selectedSide, position);
         } catch (Playground.UnavailablePositionException | Playground.NotEnoughResourcesException e) {
             System.err.println("Error check methods should have avoid an incorrect move");
         } catch (InvalidPlayerActionException | SuspendedGameException | InvalidGamePhaseException e) {
@@ -234,12 +235,10 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
         }
     }
 
-    private void checkRequirements(int frontID) throws Playground.NotEnoughResourcesException {
-        if (this.player.isGoldenFront(frontID)) {
-            for (Symbol s : this.player.getGoldenFrontRequirements(frontID).keySet()) {
-                if (this.player.getAmountResource(s) < this.player.getGoldenFrontRequirements(frontID).get(s)) {
-                    throw new Playground.NotEnoughResourcesException("You don't have the resources to place this side of the card");
-                }
+    private void checkRequirements(ClientCard card) throws Playground.NotEnoughResourcesException {
+        for (Symbol s : card.getRequiredResources().keySet()) {
+            if (this.player.getAmountResource(s) < card.getRequiredResources().get(s)) {
+                throw new Playground.NotEnoughResourcesException("You don't have the resources to place this side of the card");
             }
         }
     }
@@ -256,15 +255,21 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     }
 
     @Override
-    public void showUpdatePlayerObjectiveCard(int[] privateObjectiveID, int starterCardID, String username) throws RemoteException {
+    public void showUpdatePlayerObjectiveCard(int[] privateObjectiveID, ClientCard starterCard, String username) throws RemoteException {
         this.hiddenObjectivesID = privateObjectiveID.clone();
-        player.setStarterFrontID(starterCardID);
+        player.setStarterCard(starterCard);
         System.out.println("Hidden Objectives ID are: \n");
         for (int i : hiddenObjectivesID) {
             System.out.println(i + "\n");
         }
-        System.out.println("Starter card is: " + player.getStarterFrontID() + "\n");
+        System.out.println("Starter card front is: " + player.getStarterCard().getFrontId() + "\n");
+        System.out.println("Starter back is: " + player.getStarterCard().getBackId() + "\n");
         System.out.println("The username is: " + username);
+    }
+
+    @Override
+    public void showFirstPlayersCards(Map<String, List<ClientCard>> firstCardsAssigned) {
+
     }
 
     @Override
@@ -310,25 +315,19 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     }
 
     @Override
-    public void showUpdateAfterDraw(int newBackID, int newFrontID, Map<Symbol, Integer> goldenFrontRequirements, int cardHandPosition, boolean isEmpty, int newDeckBackID, int deckType, int newFrontFaceUp, int newBackFaceUp, int positionFaceUp, String Username) throws RemoteException {
-        player.addPlayerCard(newBackID, newFrontID, cardHandPosition);
-        if (!goldenFrontRequirements.isEmpty()) {
-            player.addGoldenFrontRequirements(newFrontID, goldenFrontRequirements);
-            System.out.println("Golden Front Requirements are: \n");
-            for (Map.Entry<Symbol, Integer> e : player.getGoldenFrontRequirements(newFrontID).entrySet()) {
-                System.out.println(e.getKey() + " --> " + e.getValue() + "\n");
-            }
-        } else {//if goldenFrontRequirements map is empty, it means that the drawn card isn't golden
-            System.out.println("The card drawn doesn't have golden front requirements");
-        }
+    public void showUpdateAfterDraw(ClientCard card, int cardHandPosition, boolean isEmpty, int newDeckBackID, int deckType, int newFrontFaceUp, int newBackFaceUp, int positionFaceUp, String Username) throws RemoteException {
+        player.setPlayerCard(card, cardHandPosition);
 
         if (!isEmpty) {// 4 for normal deck, 5 for golden deck
             if (deckType == 4) {
                 clientBoard.addResourceBackID(newDeckBackID);
                 System.out.println("Top back ID in normal deck is: " + clientBoard.getResourceDeck().getLast() + "\n");
             } else if (deckType == 5) {
-                clientBoard.addGoldenBackID(newBackID);
+                clientBoard.addGoldenBackID(newDeckBackID);
                 System.out.println("Top back ID in golden deck is: " + clientBoard.getGoldenDeck().getLast() + "\n");
+            }
+            else{
+                System.err.println("Error, this deck doesn't exist");
             }
         } else {
             System.out.println("The deck is empty \n");
