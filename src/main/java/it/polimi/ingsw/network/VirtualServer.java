@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.player.NotAvailableUsername;
 import it.polimi.ingsw.network.client.ClientPhase;
 import it.polimi.ingsw.network.client.ClientPlayer;
 import it.polimi.ingsw.network.client.ClientTile;
+import it.polimi.ingsw.network.client.card.ClientCard;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -40,7 +41,8 @@ public interface VirtualServer extends Remote, GameRequest {
 
     //method called only to give the cards the first time, not after the player choice
     //it's the only method that show information to one player per time
-    void notifyUpdatePlayerObjectiveCard(int[] commonObjectiveID, int starterCardID, String username) throws RemoteException;
+
+    void notifyUpdatePlayerObjectiveCard(int[] commonObjectiveID, ClientCard starterCard, String username) throws RemoteException;
 
     void notifyBoardSetUp(int[] commonObjectiveID, int topBackID, int topGoldenBackID, int[] faceUpCards) throws RemoteException;
 
@@ -53,10 +55,18 @@ public interface VirtualServer extends Remote, GameRequest {
     void notifyUpdateAfterPlace(List<Position> positions, List<ClientTile> tiles, List<Symbol> symbols, int[] totalAmount, int points, String username) throws RemoteException;
 
     //todo decide if it's useful to mantain a map for goldenFrontRequirements or it's better to use two lists
-    //goldenFrontRequirements it's an empty Map field if the front drawn isn't golden
-    void notifyUpdateAfterDraw(int newBackID, int newFrontID, Map<Symbol, Integer> goldenFrontRequirements, int cardHandPosition, boolean isEmpty, int newDeckBackID, int deckType, int newFrontFaceUp, int newBackFaceUp, int positionFaceUp, String Username) throws RemoteException;
 
     //method to notify update after a draw
+
+    void notifyUpdateAfterDraw(ClientCard card,
+                               int cardHandPosition,
+                               boolean isEmpty,
+                               int newDeckBackID,
+                               int deckType,
+                               int newFrontFaceUp,
+                               int newBackFaceUp,
+                               int positionFaceUp,
+                               String username) throws RemoteException;
 
     void notifyUpdateChat(Message message) throws RemoteException;
 

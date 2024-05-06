@@ -11,8 +11,6 @@ import it.polimi.ingsw.model.card.Color.InvalidColorException;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
-import it.polimi.ingsw.model.lobby.AlreadyInLobbyException;
-import it.polimi.ingsw.model.lobby.FullLobbyException;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.player.NotAvailableUsername;
 import it.polimi.ingsw.network.VirtualServer;
@@ -20,6 +18,7 @@ import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.ClientPhase;
 import it.polimi.ingsw.network.client.ClientPlayer;
 import it.polimi.ingsw.network.client.ClientTile;
+import it.polimi.ingsw.network.client.card.ClientCard;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
@@ -65,20 +64,20 @@ public class ServerRMI implements VirtualServer {
     @Override
     public void notifyPlayerUsername(String username) throws RemoteException {
         for (String user : connectedClients.keySet()) {
-                connectedClients.get(user).showPlayerUsername(username);
+            connectedClients.get(user).showPlayerUsername(username);
         }
     }
 
     @Override
     public void notifyUpdatePlayerStatus(boolean isConnected, String username) throws RemoteException {
         for (String user : connectedClients.keySet()) {
-                connectedClients.get(user).showUpdatePlayerStatus(isConnected,username);
+            connectedClients.get(user).showUpdatePlayerStatus(isConnected, username);
         }
     }
 
     @Override
-    public void notifyUpdatePlayerObjectiveCard(int[] commonObjectiveID, int starterCardID, String username) throws RemoteException {
-            connectedClients.get(username).showUpdatePlayerObjectiveCard(commonObjectiveID, starterCardID, username);
+    public void notifyUpdatePlayerObjectiveCard(int[] commonObjectiveID, ClientCard starterCard, String username) throws RemoteException {
+        connectedClients.get(username).showUpdatePlayerObjectiveCard(commonObjectiveID, starterCard, username);
     }
 
     @Override
@@ -91,7 +90,7 @@ public class ServerRMI implements VirtualServer {
     @Override
     public void notifyColor(PlayerColor color, String username) throws RemoteException {
         for (String user : connectedClients.keySet()) {
-                connectedClients.get(user).showUpdateColor(color, username);
+            connectedClients.get(user).showUpdateColor(color, username);
         }
     }
 
@@ -103,9 +102,7 @@ public class ServerRMI implements VirtualServer {
     }
 
     @Override
-    public void notifyUpdateAfterDraw(int newBackID,
-                                      int newFrontID,
-                                      Map<Symbol, Integer> goldenFrontRequirements,
+    public void notifyUpdateAfterDraw(ClientCard card,
                                       int cardHandPosition,
                                       boolean isEmpty,
                                       int newDeckBackID,
@@ -115,24 +112,22 @@ public class ServerRMI implements VirtualServer {
                                       int positionFaceUp,
                                       String username) throws RemoteException {
         for (VirtualView virtualView : this.connectedClients.values()) {
-            virtualView.showUpdateAfterDraw(newBackID,
-                    newFrontID,
-                    goldenFrontRequirements,
-                    cardHandPosition,
-                    isEmpty,
-                    newDeckBackID,
-                    deckType,
-                    newFrontFaceUp,
-                    newBackFaceUp,
-                    positionFaceUp,
-                    username);
+            virtualView.showUpdateAfterDraw(card,
+                        cardHandPosition,
+                        isEmpty,
+                        newDeckBackID,
+                        deckType,
+                        newFrontFaceUp,
+                        newBackFaceUp,
+                        positionFaceUp,
+                        username);
         }
     }
 
     @Override
     public void notifyUpdateChat(Message message) throws RemoteException {
         for (String user : connectedClients.keySet()) {
-                connectedClients.get(user).showUpdateChat(message);
+            connectedClients.get(user).showUpdateChat(message);
         }
     }
 
@@ -145,7 +140,7 @@ public class ServerRMI implements VirtualServer {
 
     @Override
     public void placeStarter(String username, Side side) throws InvalidPlayerActionException, InvalidGamePhaseException {
-            myController.placeStarter(username, side);
+        myController.placeStarter(username, side);
     }
 
     @Override
