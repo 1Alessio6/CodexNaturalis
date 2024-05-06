@@ -1,7 +1,10 @@
 package it.polimi.ingsw.network.client;
 
+import java.util.List;
+
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.Symbol;
+import it.polimi.ingsw.network.client.card.*;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -18,13 +21,9 @@ public class ClientPlayer {
 
     private boolean isCurrentPlayer;
 
-    private int starterFrontID;
+    private ClientCard starterCard;
 
-    private int starterBackID; //todo check if it's needed
-
-    private int[] playerCardsFrontID; //max 3
-
-    private int[] PlayerCardsBackID;
+    private List<ClientCard> playerCards;
 
     private Map<Integer, Map<Symbol, Integer>> goldenFrontRequirements; //todo could be changed into an array list of map
 
@@ -35,16 +34,16 @@ public class ClientPlayer {
 
     //getter method needed for the view
 
-    public int getAmountResource(Symbol s){
+    public int getAmountResource(Symbol s) {
         return this.getPlayground().getResources().get(s);
     }
 
-    public boolean isGoldenFront(int frontID){
+    public boolean isGoldenFront(int frontID) {
         return this.goldenFrontRequirements.containsKey(frontID);
     }
 
-    public Map<Symbol, Integer> getGoldenFrontRequirements(int frontID){
-        assert(isGoldenFront(frontID));
+    public Map<Symbol, Integer> getGoldenFrontRequirements(int frontID) {
+        assert (isGoldenFront(frontID));
         return this.goldenFrontRequirements.get(frontID);
     }
 
@@ -72,22 +71,13 @@ public class ClientPlayer {
         return isConnected;
     }
 
-    public int[] getPlayerCardsBackID() {
-        return PlayerCardsBackID;
+    public ClientCard getStarterCard() {
+        return starterCard;
     }
 
-    public int[] getPlayerCardsFrontID() {
-        return playerCardsFrontID;
+    public ClientCard getPlayerCard(int cardHandPosition) {
+        return playerCards.get(cardHandPosition);
     }
-
-    public int getStarterFrontID() {
-        return starterFrontID;
-    }
-
-    public int getStarterBackID() {
-        return starterFrontID;
-    }
-
 
     //setter methods
 
@@ -99,20 +89,11 @@ public class ClientPlayer {
         this.color = color;
     }
 
-    public void setStarterFrontID(int starterFrontID) {
-        this.starterFrontID = starterFrontID;
+    public void setStarterCard(ClientCard starterCard) {
+        this.starterCard = starterCard;
     }
 
-    public void setStarterBackID(int starterBackID) {
-        this.starterBackID = starterBackID;
-    }
-
-    public void addPlayerCard(int newBackID, int newFrontID,int cardHandPosition){
-        this.PlayerCardsBackID[cardHandPosition]=newBackID;
-        this.playerCardsFrontID[cardHandPosition]=newFrontID;
-    }
-
-    public void addGoldenFrontRequirements(Integer frontID, Map<Symbol, Integer> goldenFrontRequirements) {
-        this.goldenFrontRequirements.put(frontID,goldenFrontRequirements);
+    public void setPlayerCard(ClientCard card, int cardHandPosition) {
+        this.playerCards.set(cardHandPosition, card);
     }
 }
