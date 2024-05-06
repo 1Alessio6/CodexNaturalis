@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.client.ClientPhase;
 import it.polimi.ingsw.network.client.ClientPlayer;
 import it.polimi.ingsw.network.client.ClientTile;
+import it.polimi.ingsw.network.client.card.ClientCard;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -26,7 +27,10 @@ public interface VirtualView extends Remote {
 
     //method called only to give the cards the first time, not after the player choice
     //it's the only method that show information to one player per time
-    void showUpdatePlayerObjectiveCard(int[] commonObjectiveID, int starterCardID, String username) throws RemoteException;
+    void showUpdatePlayerObjectiveCard(int[] commonObjectiveID, ClientCard starterCard, String username) throws RemoteException;
+
+    //before board setUp every player has 3 cards representing his first hand
+    void showFirstPlayersCards(Map<String, List<ClientCard> > firstCardsAssigned);
 
     void showBoardSetUp(int[] commonObjectiveID, int topBackID, int topGoldenBackID, int[] faceUpCards) throws RemoteException;
 
@@ -38,7 +42,7 @@ public interface VirtualView extends Remote {
     //consider both couples like maps
     void showUpdateAfterPlace(List<Position> positions, List<ClientTile> tiles, List<Symbol> symbols, int[] totalAmount, int points, String username) throws RemoteException;
 
-    void showUpdateAfterDraw(int newBackID, int newFrontID, Map<Symbol, Integer> goldenFrontRequirements, int cardHandPosition, boolean isEmpty, int newDeckBackID, int deckType, int newFrontFaceUp, int newBackFaceUp, int positionFaceUp,String Username) throws RemoteException;
+    void showUpdateAfterDraw(ClientCard card, int cardHandPosition, boolean isEmpty, int newDeckBackID, int deckType, int newFrontFaceUp, int newBackFaceUp, int positionFaceUp, String Username) throws RemoteException;
 
     //method to notify update after a draw
 
