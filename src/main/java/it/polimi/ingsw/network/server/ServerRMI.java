@@ -14,6 +14,7 @@ import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.lobby.AlreadyInLobbyException;
 import it.polimi.ingsw.model.lobby.FullLobbyException;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
+import it.polimi.ingsw.model.player.NotAvailableUsername;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.ClientPhase;
@@ -39,8 +40,10 @@ public class ServerRMI implements VirtualServer {
     }
 
     @Override
-    public void connect(VirtualView client) {
+    public void connect(VirtualView client, String username) throws NotAvailableUsername {
         // TODO: change connect behaviour
+
+        /*
         try {
             String clientUsername = String.valueOf(connectedClients.entrySet().stream()
                     .filter(a -> a.getValue().equals(client)) // get the one and only calling client
@@ -51,6 +54,7 @@ public class ServerRMI implements VirtualServer {
         } catch (FullLobbyException | AlreadyInLobbyException e) {
             throw new RuntimeException(e);
         }
+        */
     }
 
     @Override

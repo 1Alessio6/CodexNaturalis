@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.model.chat.message.Message;
+import it.polimi.ingsw.model.player.NotAvailableUsername;
 import it.polimi.ingsw.network.client.ClientPhase;
 import it.polimi.ingsw.network.client.ClientPlayer;
 import it.polimi.ingsw.network.client.ClientTile;
@@ -24,7 +25,7 @@ public interface VirtualServer extends Remote, GameRequest {
      * @param client
      * @throws RemoteException
      */
-    void connect(VirtualView client) throws RemoteException;
+    void connect(VirtualView client, String username) throws RemoteException, NotAvailableUsername;
     boolean disconnect(String username);
 
 
