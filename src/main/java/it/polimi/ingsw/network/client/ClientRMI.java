@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
+import it.polimi.ingsw.model.player.NotAvailableUsername;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
@@ -48,16 +49,9 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     }
 
 
-    //todo: this method assume the client tries to connect to the server till the server is available
+    //this method assume the client tries to connect to the server till the server is available
     private void run() {
-        while (true) {
-            try {
-                this.server.connect(this);
-                break;
-            } catch (RemoteException e) {
-                System.out.println("Connection Error");
-            }
-        }
+        connect();
         this.readClientCommand();
     }
 
@@ -72,17 +66,17 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
                 case SETUP:
                     runSetUpPhase();
                 case WAIT:
-                    if(this.player.isCurrentPlayer()){
+                    if (this.player.isCurrentPlayer()) {
                         this.currentPhase = ClientPhase.NORMAL_TURN;
                     }
                 case NORMAL_TURN:
                     runPlayerTurn();
                 case ADDITIONAL_WAIT:
-                    if(this.player.isCurrentPlayer()){
+                    if (this.player.isCurrentPlayer()) {
                         this.currentPhase = ClientPhase.ADDITIONAL_TURN;
                     }
                 case ADDITIONAL_TURN:
-                     runPlayerAdditionalTurn();
+                    runPlayerAdditionalTurn();
                 case END:
                     //todo run end of the game
                     isEnded = true;
@@ -94,17 +88,40 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     //todo check if ClientPlayground it's correctly updated, it should be updated by the methods from observer pattern
     //todo the server needs to send the map of corner
 
-    private void runSetUpPhase(){
+    private void connect(){
+        while(true) {
+            try {
+                String username = receiveUsername();
+                this.server.connect(this, username);
+                break;
+            }catch(NotAvailableUsername e){
+                System.err.println("Username selected is already taken. Please try again");
+            } catch (RemoteException e) {
+                System.err.println("Connection Error");
+            }
+        }
+    }
+
+    private String receiveUsername(){
+        System.out.println("Insert username");
+        Scanner scanner = new Scanner(System.in);
+        String username = scanner.next();
+        scanner.close();
+
+        return username;
+    }
+
+    private void runSetUpPhase() {
 
     }
 
-    private void runPlayerAdditionalTurn(){
+    private void runPlayerAdditionalTurn() {
         receivePlaceCommand();
         receiveDrawCommand();
         this.player.setIsCurrentPlayer(false);
     }
 
-    private void runPlayerTurn(){
+    private void runPlayerTurn() {
         //while(!this.player.isCurrentPlayer()){}
         receivePlaceCommand();
         receiveDrawCommand();
@@ -117,26 +134,26 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
         Side selectedSide;
         Position position;
 
-        while(true){
+        while (true) {
             numCard = receivePlayerCardPosition();
-            try{
+            try {
                 selectedSide = receiveCardSide();
-                if(selectedSide == Side.FRONT) {
+                if (selectedSide == Side.FRONT) {
                     try {
                         checkRequirements(this.player.getPlayerCardsFrontID()[numCard]);
                         position = receivePosition();
                         break;
-                    }catch(Playground.NotEnoughResourcesException e){
+                    } catch (Playground.NotEnoughResourcesException e) {
                         System.out.println(e.getMessage());
                     }
                 }
 
-            }catch(ChangeCard ignored){
+            } catch (ChangeCard ignored) {
             }
         }
 
         try {
-            server.placeCard(this.player.getUsername(), player.getPlayerCardsBackID()[numCard], player.getPlayerCardsFrontID()[numCard], selectedSide,position);
+            server.placeCard(this.player.getUsername(), player.getPlayerCardsBackID()[numCard], player.getPlayerCardsFrontID()[numCard], selectedSide, position);
         } catch (Playground.UnavailablePositionException | Playground.NotEnoughResourcesException e) {
             System.err.println("Error check methods should have avoid an incorrect move");
         } catch (InvalidPlayerActionException | SuspendedGameException | InvalidGamePhaseException e) {
@@ -189,11 +206,11 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
             int posX = scanner.nextInt();
             int posY = scanner.nextInt();
             Position position = new Position(posX, posY);
-            try{
+            try {
                 checkPosition(position, this.player.getPlayground());
                 scanner.close();
                 return position;
-            }catch (Playground.UnavailablePositionException e){
+            } catch (Playground.UnavailablePositionException e) {
                 System.out.println(e.getMessage());
             }
         }
@@ -212,15 +229,15 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     }
 
     private void checkPosition(Position position, ClientPlayground playground) throws Playground.UnavailablePositionException {
-        if(!playground.getAvailablePositions().contains(position)){
+        if (!playground.getAvailablePositions().contains(position)) {
             throw new Playground.UnavailablePositionException("The position insert isn't available");
         }
     }
 
-    private void checkRequirements(int frontID) throws Playground.NotEnoughResourcesException{
-        if(this.player.isGoldenFront(frontID)){
-            for(Symbol s : this.player.getGoldenFrontRequirements(frontID).keySet()){
-                if(this.player.getAmountResource(s) < this.player.getGoldenFrontRequirements(frontID).get(s)){
+    private void checkRequirements(int frontID) throws Playground.NotEnoughResourcesException {
+        if (this.player.isGoldenFront(frontID)) {
+            for (Symbol s : this.player.getGoldenFrontRequirements(frontID).keySet()) {
+                if (this.player.getAmountResource(s) < this.player.getGoldenFrontRequirements(frontID).get(s)) {
                     throw new Playground.NotEnoughResourcesException("You don't have the resources to place this side of the card");
                 }
             }
@@ -240,14 +257,14 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
     @Override
     public void showUpdatePlayerObjectiveCard(int[] privateObjectiveID, int starterCardID, String username) throws RemoteException {
-        this.hiddenObjectivesID=privateObjectiveID.clone();
+        this.hiddenObjectivesID = privateObjectiveID.clone();
         player.setStarterFrontID(starterCardID);
         System.out.println("Hidden Objectives ID are: \n");
-        for(int i:hiddenObjectivesID){
-            System.out.println(i+"\n");
+        for (int i : hiddenObjectivesID) {
+            System.out.println(i + "\n");
         }
-        System.out.println("Starter card is: "+player.getStarterFrontID()+"\n");
-        System.out.println("The username is: "+username);
+        System.out.println("Starter card is: " + player.getStarterFrontID() + "\n");
+        System.out.println("The username is: " + username);
     }
 
     @Override
@@ -257,21 +274,21 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
         clientBoard.addResourceBackID(topBackID);
         clientBoard.setFaceUpCards(faceUpCards);
         System.out.println("Common objectives are: \n");
-        for (int i:clientBoard.getCommonObjectives()){
-            System.out.println(i+"\n");
+        for (int i : clientBoard.getCommonObjectives()) {
+            System.out.println(i + "\n");
         }
-        System.out.println("The top back ID is: "+ clientBoard.getResourceDeck().getLast() +"\n");
-        System.out.println("The top golden back ID is: "+ clientBoard.getGoldenDeck().getLast() +"\n");
+        System.out.println("The top back ID is: " + clientBoard.getResourceDeck().getLast() + "\n");
+        System.out.println("The top golden back ID is: " + clientBoard.getGoldenDeck().getLast() + "\n");
         System.out.println("Face up cards are: \n");
-        for(int i:clientBoard.getFaceUpCards()){
-            System.out.println(i+"\n");
+        for (int i : clientBoard.getFaceUpCards()) {
+            System.out.println(i + "\n");
         }
     }
 
     @Override
     public void showUpdateColor(PlayerColor color, String username) throws RemoteException {
         player.setColor(color);
-        System.out.println("The color is: "+player.getColor().name());
+        System.out.println("The color is: " + player.getColor().name());
     }
 
     @Override
@@ -283,13 +300,13 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
                 player.getPlayground().placeTile(posIterator.next(), tilesIterator.next());
             }
         }
-        if (symbols.size()==totalAmount.length){
-            for(int i=0;i< symbols.size();i++){
-                player.getPlayground().updateResources(symbols.get(i),totalAmount[i]);
+        if (symbols.size() == totalAmount.length) {
+            for (int i = 0; i < symbols.size(); i++) {
+                player.getPlayground().updateResources(symbols.get(i), totalAmount[i]);
             }
         }
         player.getPlayground().setPoints(points);
-        System.out.println("Playground after place: \n"+player.getPlayground().toString());
+        System.out.println("Playground after place: \n" + player.getPlayground().toString());
     }
 
     @Override
@@ -336,17 +353,18 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
     @Override
     public void showUpdateCurrentPlayer(ClientPlayer currentPlayer, ClientPhase phase) throws RemoteException {
-        this.currentPhase=phase;
-        this.player=currentPlayer;
+        this.currentPhase = phase;
+        this.player = currentPlayer;
         player.setIsCurrentPlayer(true);
 
         System.out.println(this.currentPhase.name());
-        System.out.println(player.isCurrentPlayer()?player.getUsername():"Error");
+        System.out.println(player.isCurrentPlayer() ? player.getUsername() : "Error");
     }
 
+    //todo
     @Override
     public void reportError(String details) throws RemoteException {
-        System.out.println(details);
+        System.err.println(details);
     }
 
     public static class ChangeCard extends Exception {
