@@ -15,10 +15,10 @@ import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.player.NotAvailableUsername;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
-import it.polimi.ingsw.network.client.ClientPhase;
-import it.polimi.ingsw.network.client.ClientPlayer;
-import it.polimi.ingsw.network.client.ClientTile;
-import it.polimi.ingsw.network.client.card.ClientCard;
+import it.polimi.ingsw.network.client.model.ClientPhase;
+import it.polimi.ingsw.network.client.model.ClientPlayer;
+import it.polimi.ingsw.network.client.model.ClientTile;
+import it.polimi.ingsw.network.client.model.card.ClientCard;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;

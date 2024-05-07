@@ -4,11 +4,10 @@ import it.polimi.ingsw.model.board.*;
 import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.Message;
-import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.network.client.ClientPhase;
-import it.polimi.ingsw.network.client.ClientPlayer;
-import it.polimi.ingsw.network.client.ClientTile;
-import it.polimi.ingsw.network.client.card.ClientCard;
+import it.polimi.ingsw.network.client.model.ClientPhase;
+import it.polimi.ingsw.network.client.model.ClientPlayer;
+import it.polimi.ingsw.network.client.model.ClientTile;
+import it.polimi.ingsw.network.client.model.card.ClientCard;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

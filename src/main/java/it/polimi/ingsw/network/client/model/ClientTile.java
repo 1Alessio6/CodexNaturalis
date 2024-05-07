@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.client;
+package it.polimi.ingsw.network.client.model;
 
 import it.polimi.ingsw.model.board.Availability;
 import it.polimi.ingsw.model.card.CornerPosition;

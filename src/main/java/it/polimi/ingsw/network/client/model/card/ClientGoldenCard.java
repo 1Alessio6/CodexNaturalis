@@ -1,8 +1,7 @@
-package it.polimi.ingsw.network.client.card;
+package it.polimi.ingsw.network.client.model.card;
 
 import it.polimi.ingsw.model.card.Symbol;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class ClientGoldenCard extends ClientCard {

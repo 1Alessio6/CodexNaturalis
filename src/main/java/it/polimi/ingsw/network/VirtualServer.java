@@ -6,14 +6,13 @@ import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.player.NotAvailableUsername;
-import it.polimi.ingsw.network.client.ClientPhase;
-import it.polimi.ingsw.network.client.ClientPlayer;
-import it.polimi.ingsw.network.client.ClientTile;
-import it.polimi.ingsw.network.client.card.ClientCard;
+import it.polimi.ingsw.network.client.model.ClientPhase;
+import it.polimi.ingsw.network.client.model.ClientPlayer;
+import it.polimi.ingsw.network.client.model.ClientTile;
+import it.polimi.ingsw.network.client.model.card.ClientCard;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.List;
 import java.util.Map;
 
 /*

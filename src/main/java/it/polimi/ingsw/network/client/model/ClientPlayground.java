@@ -1,9 +1,9 @@
-package it.polimi.ingsw.network.client;
+package it.polimi.ingsw.network.client.model;
 
 import it.polimi.ingsw.model.board.Availability;
 import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.board.Tile;
 import it.polimi.ingsw.model.card.Symbol;
+import it.polimi.ingsw.network.client.model.ClientTile;
 
 import java.util.HashMap;
 import java.util.List;

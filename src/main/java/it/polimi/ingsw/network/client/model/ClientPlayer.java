@@ -1,12 +1,10 @@
-package it.polimi.ingsw.network.client;
-
-import java.util.List;
+package it.polimi.ingsw.network.client.model;
 
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.Symbol;
-import it.polimi.ingsw.network.client.card.*;
+import it.polimi.ingsw.network.client.model.card.ClientCard;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class ClientPlayer {
