@@ -52,11 +52,11 @@ public interface VirtualServer extends Remote, GameRequest {
     //The two list positions and tiles represent every new available tile added after the last place invocation
     //symbols and total amount represent the new resources added after the last place invocation
     //consider both couples like maps
-    void notifyUpdateAfterPlace(List<Position> positions, List<ClientTile> tiles, List<Symbol> symbols, int[] totalAmount, int points, String username) throws RemoteException;
-
     //todo decide if it's useful to mantain a map for goldenFrontRequirements or it's better to use two lists
 
     //method to notify update after a draw
+
+    void notifyUpdateAfterPlace(Map<Position, ClientTile> newAvailablePosition, Map<Symbol, Integer> newResources, int points, String username) throws RemoteException;
 
     void notifyUpdateAfterDraw(ClientCard card,
                                int cardHandPosition,

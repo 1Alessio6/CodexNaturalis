@@ -95,9 +95,9 @@ public class ServerRMI implements VirtualServer {
     }
 
     @Override
-    public void notifyUpdateAfterPlace(List<Position> positions, List<ClientTile> tiles, List<Symbol> symbols, int[] totalAmount, int points, String username) throws RemoteException {
+    public void notifyUpdateAfterPlace(Map<Position, ClientTile> newAvailablePosition, Map<Symbol, Integer> newResources, int points, String username) throws RemoteException {
         for (VirtualView virtualView : this.connectedClients.values()) {
-            virtualView.showUpdateAfterPlace(positions, tiles, symbols, totalAmount, points, username);
+            virtualView.showUpdateAfterPlace(newAvailablePosition, newResources, points, username);
         }
     }
 

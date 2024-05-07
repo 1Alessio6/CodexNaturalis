@@ -10,7 +10,6 @@ import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.player.NotAvailableUsername;
-import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.card.ClientCard;
@@ -297,19 +296,8 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     }
 
     @Override
-    public void showUpdateAfterPlace(List<Position> positions, List<ClientTile> tiles, List<Symbol> symbols, int[] totalAmount, int points, String username) throws RemoteException {
-        if (positions.size() == tiles.size()) {//this can be omitted
-            Iterator<Position> posIterator = positions.iterator();
-            Iterator<ClientTile> tilesIterator = tiles.iterator();
-            while (posIterator.hasNext() && tilesIterator.hasNext()) {
-                player.getPlayground().placeTile(posIterator.next(), tilesIterator.next());
-            }
-        }
-        if (symbols.size() == totalAmount.length) {
-            for (int i = 0; i < symbols.size(); i++) {
-                player.getPlayground().updateResources(symbols.get(i), totalAmount[i]);
-            }
-        }
+    public void showUpdateAfterPlace(Map<Position, ClientTile> newAvailablePosition, Map<Symbol, Integer> newResources, int points, String username) throws RemoteException {
+        //todo update after changing with maps
         player.getPlayground().setPoints(points);
         System.out.println("Playground after place: \n" + player.getPlayground().toString());
     }

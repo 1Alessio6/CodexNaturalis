@@ -40,7 +40,7 @@ public interface VirtualView extends Remote {
     //The two list positions and tiles represent every new available tile added after the last place invocation
     //symbols and total amount represent the new resources added after the last place invocation
     //consider both couples like maps
-    void showUpdateAfterPlace(List<Position> positions, List<ClientTile> tiles, List<Symbol> symbols, int[] totalAmount, int points, String username) throws RemoteException;
+    void showUpdateAfterPlace( Map<Position, ClientTile> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username) throws RemoteException;
 
     void showUpdateAfterDraw(ClientCard card, int cardHandPosition, boolean isEmpty, int newDeckBackID, int deckType, int newFrontFaceUp, int newBackFaceUp, int positionFaceUp, String Username) throws RemoteException;
 
