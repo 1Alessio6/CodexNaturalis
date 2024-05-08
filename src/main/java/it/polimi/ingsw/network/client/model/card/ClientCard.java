@@ -6,25 +6,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ClientCard {
-    int frontId;
-    int backId;
+    ClientFace front;
+    ClientFace back;
 
     public ClientCard() {
-        frontId = -1;
-        backId = -1;
+        front = new ClientFace();
+        back = new ClientFace();
     }
 
-    public ClientCard(int frontId, int backId) {
-        this.frontId = frontId;
-        this.backId = backId;
+    public ClientCard(int frontID, int backID) {
+        front = new ClientFace(frontID);
+        back = new ClientFace(backID);
     }
 
     public int getBackId() {
-        return backId;
+        return back.getFaceID();
     }
 
     public int getFrontId() {
-        return frontId;
+        return front.getFaceID();
     }
 
     public Map<Symbol, Integer> getRequiredResources() {
