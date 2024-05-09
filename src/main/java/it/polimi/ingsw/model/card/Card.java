@@ -1,6 +1,10 @@
 package it.polimi.ingsw.model.card;
 
-public class Card {
+import it.polimi.ingsw.GeneralCard;
+
+import java.util.Map;
+
+public class Card implements GeneralCard {
 
     /**
      * Represents the front of the card
@@ -34,6 +38,21 @@ public class Card {
             return front;
         else
             return back;
+    }
+
+    @Override
+    public int getFrontId() {
+        return front.getId();
+    }
+
+    @Override
+    public int getBackId() {
+        return back.getId();
+    }
+
+    @Override
+    public Map<Symbol, Integer> getRequiredResources() {
+        return front.getRequiredResources();
     }
 }
 
