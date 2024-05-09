@@ -3,11 +3,12 @@ package it.polimi.ingsw.network.client.model;
 import it.polimi.ingsw.model.board.Availability;
 import it.polimi.ingsw.model.card.CornerPosition;
 import it.polimi.ingsw.model.card.Face;
+import it.polimi.ingsw.network.client.model.card.ClientFace;
 
 import java.util.Map;
 
 public class ClientTile {
-    private int faceID;
+    private ClientFace face;
     //private boolean isUsed; a variable used to check if the card has been already used for redeeming the points of an objective card
     private Availability availability;
 
@@ -19,7 +20,7 @@ public class ClientTile {
      * @param a the tile's availability.
      */
     public ClientTile(Availability a){ //this constructor method it's used when we create an empty Tile that could be available or not available
-        faceID = -1; //empty tile, equivalent to null into Playground
+        face = new ClientFace(); //empty tile, equivalent to null into Playground
         availability = a;
     }
 
@@ -29,12 +30,12 @@ public class ClientTile {
      * Returns the face contained in the tile.
      * @return a face representing the card's face placed in the tile.
      */
-    public int getFace() {
-        return faceID;
+    public ClientFace getFace() {
+        return face;
     }
 
     public void setCoveredCorner(Map<CornerPosition, Boolean> coveredCorner) {
-        assert(this.faceID != -1);
+        assert(this.face.getFaceID() != -1);
         this.coveredCorner = coveredCorner;
     }
 
@@ -63,12 +64,12 @@ public class ClientTile {
      * @param faceID the ID of the new face contained in the tile.
      */
     public void setFace(int faceID) {
-        this.faceID = faceID;
+        face = new ClientFace(faceID);
     }
 
     public String toString(){
         String face = "EmptyTile";
-        if(this.getFace() != -1){
+        if(this.getFace().getFaceID() != -1){
             face = String.valueOf(this.getFace());
         }
         return availability + "  " + face;
