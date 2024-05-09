@@ -127,6 +127,15 @@ public class Playground {
         return this.area.keySet().stream().filter(x -> this.area.get(x).sameAvailability(Availability.EMPTY)).collect(Collectors.toList());
     }
 
+    /**
+     * Gets the adjacent position of <code>pos</code> respect to <code>corner</code>.
+     * @param pos the position from which the adjacent position is returned.
+     * @param corner the corner of the tile.
+     * @return the position of the tile adjacent to the one at <code>pos</code> respect to <code>corner</code>.
+     */
+    public Position getAdjacentPosition(Position pos, CornerPosition corner) {
+        return correspondingPosition(pos.getX(), pos.getY(), corner);
+    }
 
     /**
      * Places a card's face in the playground.
