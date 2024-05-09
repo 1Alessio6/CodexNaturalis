@@ -21,7 +21,6 @@ public class Deck<T> {
     private final Stack<T> deck;
 
 
-
     /**
      * Constructs a deck of any kind of cards using the deck provided.
      *
@@ -64,6 +63,7 @@ public class Deck<T> {
      */
     /**
      * Retrieves the StreamReader of the resource
+     *
      * @param resourcePath virtual path inside resource folder
      * @return reader
      * @throws NullPointerException if the resource doesn't exist, or is empty
@@ -80,48 +80,54 @@ public class Deck<T> {
 
     /**
      * Creates Face (or objectiveCard) list, to pass to other constructors.
+     *
      * @param resourcePath of target file to deserialize
+     * @param <K>          whether is Face or ObjectiveCard
      * @return the list of that file.
      * ArrayList return because List is interface, and would be deserialized according to custom interface deserializer
-     * @param <K> whether is Face or ObjectiveCard
      */
-    private static <K> ArrayList<K> createFaceList(String resourcePath){
+    private static <K> ArrayList<K> createFaceList(String resourcePath) {
         GsonBuilder builder = new GsonBuilder().enableComplexMapKeySerialization();
         builder.registerTypeAdapter(CalculatePoints.class, new InterfaceAdaptor<>());
 
-        return builder.create().fromJson(getReaderFromResource(resourcePath), new TypeToken<>(){});
+        return builder.create().fromJson(getReaderFromResource(resourcePath), new TypeToken<>() {
+        });
     }
 
-    /**
-     * Creates the actual list to be passed to Deck constructor
-     */
-    public static List<Card> createCardList(){
-        // todo: replace with correct paths
-        List<Front> fronts = createFaceList("aa");
-        List<Back> backs = createFaceList("aa");
-
-        List<Card> cardList = new ArrayList<>();
-        for (int i = 0; i < fronts.size(); ++i){
-            cardList.add(new Card(fronts.removeFirst(), backs.removeFirst()));
-        }
-
-        return cardList;
+    public T getTop() {
+        return deck.peek();
     }
 
-    /**
-     * Creates the actual objective list to be passed to Deck constructor
-     */
-    public static List<ObjectiveCard> createObjectiveCardList(){
-        Gson gson = new Gson();
-        List<ObjectiveCard> objectives = new ArrayList<>();
-
-        // todo: replace with correct paths
-        objectives.addAll(createFaceList("path1"));
-        objectives.addAll(createFaceList("path2"));
-
-        return objectives;
-    }
-
+    //    /**
+//     * Creates the actual list to be passed to Deck constructor
+//     */
+//    public static List<Card> createCardList(){
+//        // todo: replace with correct paths
+//        List<Front> fronts = createFaceList("aa");
+//        List<Back> backs = createFaceList("aa");
+//
+//        List<Card> cardList = new ArrayList<>();
+//        for (int i = 0; i < fronts.size(); ++i){
+//            cardList.add(new Card(fronts.removeFirst(), backs.removeFirst()));
+//        }
+//
+//        return cardList;
+//    }
+//
+//    /**
+//     * Creates the actual objective list to be passed to Deck constructor
+//     */
+//    public static List<ObjectiveCard> createObjectiveCardList(){
+//        Gson gson = new Gson();
+//        List<ObjectiveCard> objectives = new ArrayList<>();
+//
+//        // todo: replace with correct paths
+//        objectives.addAll(createFaceList("path1"));
+//        objectives.addAll(createFaceList("path2"));
+//
+//        return objectives;
+//    }
+//
     public boolean isEmpty() {
         return deck.isEmpty();
     }
