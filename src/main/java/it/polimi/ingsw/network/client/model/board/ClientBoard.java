@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.client.model;
+package it.polimi.ingsw.network.client.model.board;
 
 import java.util.ArrayList;
 

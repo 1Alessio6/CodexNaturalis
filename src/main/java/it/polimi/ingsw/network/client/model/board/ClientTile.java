@@ -1,8 +1,7 @@
-package it.polimi.ingsw.network.client.model;
+package it.polimi.ingsw.network.client.model.board;
 
 import it.polimi.ingsw.model.board.Availability;
 import it.polimi.ingsw.model.card.CornerPosition;
-import it.polimi.ingsw.model.card.Face;
 
 import java.util.Map;
 
