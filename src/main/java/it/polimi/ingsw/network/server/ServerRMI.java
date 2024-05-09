@@ -11,14 +11,12 @@ import it.polimi.ingsw.model.card.Color.InvalidColorException;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
+import it.polimi.ingsw.model.lobby.FullLobbyException;
+import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.player.NotAvailableUsername;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
-import it.polimi.ingsw.network.client.model.ClientPhase;
-import it.polimi.ingsw.network.client.model.ClientPlayer;
-import it.polimi.ingsw.network.client.model.ClientTile;
-import it.polimi.ingsw.network.client.model.card.ClientCard;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
@@ -39,103 +37,19 @@ public class ServerRMI implements VirtualServer {
     }
 
     @Override
-    public void connect(VirtualView client, String username) throws NotAvailableUsername {
-        // TODO: change connect behaviour
+    public void connect(VirtualView client, String username) throws RemoteException, FullLobbyException, InvalidUsernameException {
+        myController.handleConnection(username, client);
+    }
 
-        /*
-        try {
-            String clientUsername = String.valueOf(connectedClients.entrySet().stream()
-                    .filter(a -> a.getValue().equals(client)) // get the one and only calling client
-                    .map(Map.Entry::getKey) // get its associated username
-                    .findFirst()); // get as string: if there isn't, it means that there isn't such client
 
-            myController.handleConnection(clientUsername);
-        } catch (FullLobbyException | AlreadyInLobbyException e) {
-            throw new RuntimeException(e);
-        }
-        */
+    @Override
+    public void disconnect(String username) throws InvalidUsernameException, RemoteException {
+        myController.handleDisconnection(username);
     }
 
     @Override
-    public boolean disconnect(String username) {
-        return myController.handleDisconnection(username);
-    }
+    public void sendPing(String username) {
 
-    @Override
-    public void notifyPlayerUsername(String username) throws RemoteException {
-        for (String user : connectedClients.keySet()) {
-            connectedClients.get(user).showPlayerUsername(username);
-        }
-    }
-
-    @Override
-    public void notifyUpdatePlayerStatus(boolean isConnected, String username) throws RemoteException {
-        for (String user : connectedClients.keySet()) {
-            connectedClients.get(user).showUpdatePlayerStatus(isConnected, username);
-        }
-    }
-
-    @Override
-    public void notifyUpdatePlayerObjectiveCard(int[] commonObjectiveID, ClientCard starterCard, String username) throws RemoteException {
-        connectedClients.get(username).showUpdatePlayerObjectiveCard(commonObjectiveID, starterCard, username);
-    }
-
-    @Override
-    public void notifyBoardSetUp(int[] commonObjectiveID, int topBackID, int topGoldenBackID, int[] faceUpCards) throws RemoteException {
-        for (VirtualView virtualView : connectedClients.values()) {
-            virtualView.showBoardSetUp(commonObjectiveID, topBackID, topGoldenBackID, faceUpCards);
-        }
-    }
-
-    @Override
-    public void notifyColor(PlayerColor color, String username) throws RemoteException {
-        for (String user : connectedClients.keySet()) {
-            connectedClients.get(user).showUpdateColor(color, username);
-        }
-    }
-
-    @Override
-    public void notifyUpdateAfterPlace(Map<Position, ClientTile> newAvailablePosition, Map<Symbol, Integer> newResources, int points, String username) throws RemoteException {
-        for (VirtualView virtualView : this.connectedClients.values()) {
-            virtualView.showUpdateAfterPlace(newAvailablePosition, newResources, points, username);
-        }
-    }
-
-    @Override
-    public void notifyUpdateAfterDraw(ClientCard card,
-                                      int cardHandPosition,
-                                      boolean isEmpty,
-                                      int newDeckBackID,
-                                      int deckType,
-                                      int newFrontFaceUp,
-                                      int newBackFaceUp,
-                                      int positionFaceUp,
-                                      String username) throws RemoteException {
-        for (VirtualView virtualView : this.connectedClients.values()) {
-            virtualView.showUpdateAfterDraw(card,
-                        cardHandPosition,
-                        isEmpty,
-                        newDeckBackID,
-                        deckType,
-                        newFrontFaceUp,
-                        newBackFaceUp,
-                        positionFaceUp,
-                        username);
-        }
-    }
-
-    @Override
-    public void notifyUpdateChat(Message message) throws RemoteException {
-        for (String user : connectedClients.keySet()) {
-            connectedClients.get(user).showUpdateChat(message);
-        }
-    }
-
-    @Override
-    public void notifyUpdateCurrentPlayer(ClientPlayer currentPlayer, ClientPhase phase) throws RemoteException {
-        for (VirtualView virtualView : connectedClients.values()) {
-            virtualView.showUpdateCurrentPlayer(currentPlayer, phase);
-        }
     }
 
     @Override
@@ -144,19 +58,13 @@ public class ServerRMI implements VirtualServer {
     }
 
     @Override
-    public Set<PlayerColor> chooseColor(String username, PlayerColor color) {
-        Set<PlayerColor> remainingColors = Set.of();
-
+    public void chooseColor(String username, PlayerColor color) {
         try {
-            remainingColors = myController.chooseColor(username, color);
-
-            notifyColor(color, username);
+            myController.chooseColor(username, color);
         } catch (NonexistentPlayerException | InvalidColorException | InvalidPlayerActionException |
                  InvalidGamePhaseException | RemoteException e) {
             e.printStackTrace();
         }
-
-        return remainingColors;
     }
 
     @Override
@@ -173,48 +81,32 @@ public class ServerRMI implements VirtualServer {
     }
 
     @Override
-    public int placeCard(String username, int frontId, int backId, Side side, Position position) {
+    public void placeCard(String username, int frontId, int backId, Side side, Position position) {
         try {
             myController.placeCard(username, frontId, backId, side, position);
-
-            // todo: notify after place
         } catch (InvalidPlayerActionException | Playground.UnavailablePositionException |
                  Playground.NotEnoughResourcesException | InvalidGamePhaseException | SuspendedGameException e) {
             throw new RuntimeException(e);
         }
-
-        return 0;
     }
 
     @Override
-    public boolean draw(String username, int idToDraw) {
+    public void draw(String username, int idToDraw) {
         try {
             myController.draw(username, idToDraw);
-
-            // todo : notify
         } catch (InvalidPlayerActionException | EmptyDeckException | InvalidGamePhaseException e) {
             throw new RuntimeException(e);
         }
-
-
-        return false;
     }
 
     @Override
-    public void sendMessage(String author, Message message) {
-        try {
-            myController.sendMessage(author, message);
-
-            notifyUpdateChat(message);
-        } catch (RemoteException | InvalidMessageException e) {
-            throw new RuntimeException(e);
-        }
+    public void sendMessage(String author, Message message) throws InvalidMessageException {
+        myController.sendMessage(author, message);
     }
 
     @Override
     public void setPlayersNumber(int playersNumber) {
         myController.setPlayersNumber(playersNumber);
-        // todo: need notify
     }
 
     public static void main(String[] args) {
