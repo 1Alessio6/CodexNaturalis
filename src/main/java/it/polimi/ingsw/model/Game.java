@@ -10,14 +10,23 @@ import it.polimi.ingsw.model.card.Color.InvalidColorException;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.ChatDatabase;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
+import it.polimi.ingsw.model.listenerhandler.ListenerHandler;
+import it.polimi.ingsw.model.lobby.InvalidUsernameException;
+import it.polimi.ingsw.model.notifier.Notifier;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.gamePhase.PhaseHandler;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
+import it.polimi.ingsw.network.VirtualView;
+import it.polimi.ingsw.network.client.model.ClientGame;
+import it.polimi.ingsw.network.client.model.player.ClientPlayer;
+import it.polimi.ingsw.network.client.model.card.ClientCard;
 
 import java.io.FileNotFoundException;
+import java.rmi.RemoteException;
 import java.util.*;
+
 import static java.lang.Math.min;
 
 /**
@@ -29,6 +38,8 @@ public class Game {
     private Deck<Card> goldenCards;
     private Deck<Card> starterCards;
     private Deck<ObjectiveCard> objectiveCards;
+
+    private final List<String> validUsernames;
 
     Set<PlayerColor> availableColors;
 
@@ -42,7 +53,7 @@ public class Game {
 
     private boolean isFinished;
 
-    private boolean isSuspended;
+    private boolean isActive;
 
     private List<Player> players;
 
@@ -50,7 +61,23 @@ public class Game {
 
     private PhaseHandler phaseHandler;
 
+    private Timer timerForSuspendedGame;
+
+    private Map<String, Timer> timersForInactivePlayers;
+
+    private TimerTask completeCurrentPlayerTurn;
+
+    private static final int MAX_DELAY_FOR_SUSPENDED_GAME = 1000000;
+
+    private static final int MAX_ACTION_DELAY = 100000;
+
+    private ListenerHandler<VirtualView> listenerHandler;
+
+    // synchronization
+    private Object actionLock = new Object();
+
     // Advanced Features
+
     // chat database containing the history of all sent messages
     private ChatDatabase chatDatabase;
 
@@ -82,7 +109,6 @@ public class Game {
                 });
 
         List<Front> f = new ArrayList<>();
-
         for (GoldenFront g : gFronts) {
             f.add(g);
         }
@@ -164,20 +190,38 @@ public class Game {
         userObjectives.add(objectiveCards.draw());
         userObjectives.add(objectiveCards.draw());
 
+        listenerHandler.notify(username, new Notifier<VirtualView>() {
+            @Override
+            public void sendUpdate(VirtualView receiver) throws RemoteException {
+                // create the client player representation
+                List<ClientCard> clientHand = new ArrayList<>();
+                for (Card c : userHand) {
+                    clientHand.add(new ClientCard(c));
+                }
+                List<ClientCard> clientObjectives = new ArrayList<>();
+                for (ObjectiveCard o : userObjectives) {
+                    clientObjectives.add(new ClientCard(o));
+                }
+                ClientPlayer clientPlayer = new ClientPlayer(
+                        username,
+                        new ClientCard(startingCard),
+                        clientHand,
+                        clientObjectives);
+                receiver.showInitialPlayerStatus(clientPlayer);
+            }
+        });
         return new Player(username, startingCard, userHand, userObjectives);
     }
 
     /**
      * Creates game based on the lobby
-     *
-     * @param usernames the list containing all players
      */
-    public Game(List<String> usernames) {
+    public Game(List<String> validUsernames) {
         loadAvailableColors();
         loadCards();
         try {
             players = new ArrayList<>();
-            for (String username : usernames) {
+            for (String username : validUsernames) {
                 players.add(createPlayer(username));
             }
             Collections.shuffle(players);
@@ -186,12 +230,18 @@ public class Game {
             e.printStackTrace();
         }
 
+        this.validUsernames = validUsernames;
         phase = GamePhase.Setup;
         currentPlayerIdx = 0;
         isFinished = false;
-        isSuspended = false;
+        isActive = true;
         chatDatabase = new ChatDatabase();
         phaseHandler = new PhaseHandler(players);
+        timerForSuspendedGame = new Timer();
+        timersForInactivePlayers = new HashMap<>();
+        for (String username : validUsernames) {
+            timersForInactivePlayers.put(username, new Timer());
+        }
     }
 
     // methods
@@ -211,8 +261,25 @@ public class Game {
         return 0 <= idx && idx < players.size();
     }
 
+    // find the next valid current player idx, that is, the first player still connected.
     private void updateCurrentPlayerIdx() {
         currentPlayerIdx = (currentPlayerIdx + 1) % players.size();
+        Player currentPlayer = players.get(currentPlayerIdx);
+        if (currentPlayer.isConnected()) {
+            completeTurn(currentPlayer.getUsername());
+            // todo.timerForInactiveCurrentPlayer.schedule(completeCurrentPlayerTurn, MAX_ACTION_DELAY);
+        }
+    }
+
+    // todo.
+    private void completeSetup(String usernameToComplete) {
+        Player player = getPlayerByUsername(usernameToComplete);
+        // if (player.getPlayerAction() == PlayerState.)
+    }
+
+    // todo.
+    private void completeCurrentPlayerTurn() {
+
     }
 
     /**
@@ -235,9 +302,15 @@ public class Game {
 
         this.currentPlayerIdx = gameBeforeCrash.currentPlayerIdx;
         this.isFinished = gameBeforeCrash.isFinished;
-        this.isSuspended = gameBeforeCrash.isSuspended;
+        this.isActive = gameBeforeCrash.isActive;
         this.players = gameBeforeCrash.players;
         this.phase = gameBeforeCrash.phase;
+        this.listenerHandler = gameBeforeCrash.listenerHandler;
+        this.validUsernames = gameBeforeCrash.validUsernames;
+    }
+
+    public void setListenerHandler(ListenerHandler<VirtualView> listenerHandler) {
+        this.listenerHandler = listenerHandler;
     }
 
     public List<Player> getPlayers() {
@@ -252,17 +325,116 @@ public class Game {
         return phase;
     }
 
-    public void setNetworkStatus(String username, boolean networkStatus) {
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public boolean isFinished() {
+        return phase == GamePhase.End;
+    }
+
+    private void completeTurn(String username) {
+
+    }
+
+    private void activateSuspendedActionTimer() {
+        List<String> usernamesToSetTimer = new ArrayList<>();
+        if (phase == GamePhase.Setup) {
+            for (Player player : players) {
+                if (!player.isConnected()) {
+                    usernamesToSetTimer.add(player.getUsername());
+                }
+            }
+        } else {
+            Player currentPlayer = players.get(currentPlayerIdx);
+            if (!currentPlayer.isConnected()) {
+                usernamesToSetTimer.add(currentPlayer.getUsername());
+            }
+        }
+
+        for (String inactivePlayersUsername : usernamesToSetTimer) {
+            timersForInactivePlayers.get(inactivePlayersUsername).schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    completeTurn(inactivePlayersUsername);
+                }
+            }, MAX_ACTION_DELAY);
+        }
+    }
+
+    public void add(String username, VirtualView client) throws InvalidUsernameException {
+        // only previously connected users can join the game
+        if (!validUsernames.contains(username)) {
+            throw new InvalidUsernameException();
+        }
+
+        listenerHandler.add(username, client);
+
+        setNetworkStatus(username, true);
+
+        timersForInactivePlayers.get(username).cancel();
+
+        if (!isActive && getActivePlayers().size() > 1) {
+            timerForSuspendedGame.cancel();
+            activateSuspendedActionTimer();
+            isActive = true;
+        }
+
+        listenerHandler.notify(username, new Notifier<VirtualView>() {
+            @Override
+            public void sendUpdate(VirtualView receiver) throws RemoteException {
+                receiver.updateAfterConnection(new ClientGame(Game.this));
+            }
+        });
+    }
+
+    public void remove(String username) throws InvalidUsernameException, RemoteException {
+        if (!validUsernames.contains(username)) {
+            throw new InvalidUsernameException();
+        }
+        listenerHandler.remove(username);
+        setNetworkStatus(username, false);
+        if (getActivePlayers().size() <= 1) {
+            if (isActive) {
+                listenerHandler.notifyBroadcast(VirtualView::showUpdateSuspendedGame);
+                isActive = false;
+            }
+            timerForSuspendedGame.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    terminateForInactivity();
+                }
+            }, MAX_DELAY_FOR_SUSPENDED_GAME);
+            // cancel all timer related to actions, the game has been suspended
+            for (Timer timer : timersForInactivePlayers.values()) {
+                timer.cancel();
+            }
+        } else {
+            // not suspended game: set the timer
+            if (phase == GamePhase.Setup) {
+                timersForInactivePlayers.get(username).schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        completeSetup(username);
+                    }
+                }, MAX_ACTION_DELAY);
+            }
+            if (username.equals(players.get(currentPlayerIdx).getUsername())) {
+                timersForInactivePlayers.get(username).schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        completeCurrentPlayerTurn();
+                    }
+                }, MAX_ACTION_DELAY);
+            }
+        }
+    }
+
+    private void setNetworkStatus(String username, boolean networkStatus) {
         players.stream()
                 .filter(p -> p.getUsername().equals(username))
                 .findFirst()
                 .ifPresent(p -> p.setNetworkStatus(networkStatus));
-
-        if (getActivePlayers().size() <= 1) {
-            isSuspended = true;
-        } else {
-            isSuspended = false;
-        }
     }
 
     /**
@@ -296,6 +468,12 @@ public class Game {
 
         try {
             player.placeStarter(side);
+            listenerHandler.notify(username, new Notifier<VirtualView>() {
+                @Override
+                public void sendUpdate(VirtualView receiver) throws RemoteException {
+                    receiver.showStarterPlacement(username, player.getStarter().getFace(side).getId());
+                }
+            });
         }
         // the starter card shouldn't cause any exception related to the playground
         catch (Playground.UnavailablePositionException e) {
@@ -310,13 +488,12 @@ public class Game {
      *
      * @param username of the player who has chose the color.
      * @param color    chosen.
-     * @return a list containing the remaining colors.
      * @throws InvalidPlayerActionException if the player cannot perform this action.
      * @throws InvalidColorException        if the color has already been selected by others.
      * @throws NonexistentPlayerException   if the username is invalid.
      * @throws InvalidGamePhaseException    if the player has already finished their setup.
      */
-    public Set<PlayerColor> assignColor(String username, PlayerColor color) throws InvalidPlayerActionException, InvalidColorException, NonexistentPlayerException, InvalidGamePhaseException {
+    public void assignColor(String username, PlayerColor color) throws InvalidPlayerActionException, InvalidColorException, NonexistentPlayerException, InvalidGamePhaseException, RemoteException {
         if (!phase.equals(GamePhase.Setup)) {
             throw new InvalidGamePhaseException();
         }
@@ -328,7 +505,12 @@ public class Game {
         Player player = getPlayerByUsername(username);
         player.assignColor(color);
         availableColors.remove(color);
-        return availableColors;
+        listenerHandler.notifyBroadcast(new Notifier<VirtualView>() {
+            @Override
+            public void sendUpdate(VirtualView receiver) throws RemoteException {
+                receiver.showUpdateColor(color, username);
+            }
+        });
     }
 
     /**
@@ -349,6 +531,14 @@ public class Game {
         player.placeObjectiveCard(chosenObjective);
 
         phase = phaseHandler.getNextPhase(phase, currentPlayerIdx);
+
+        listenerHandler.notifyBroadcast(new Notifier<VirtualView>() {
+            @Override
+            public void sendUpdate(VirtualView receiver) throws RemoteException {
+                ObjectiveCard secretObjective = player.getObjective();
+                receiver.showUpdateObjectiveCard(new ClientCard(secretObjective), username);
+            }
+        });
     }
 
     /**
@@ -363,13 +553,13 @@ public class Game {
      * @throws Playground.NotEnoughResourcesException  if the player's resource are not enough to place the card.
      * @throws InvalidGamePhaseException               if the game phase cannot allow placing cards.
      */
-    public int placeCard(String username, Card card, Side side, Position position)
+    public void placeCard(String username, Card card, Side side, Position position)
             throws InvalidPlayerActionException,
             Playground.UnavailablePositionException,
             Playground.NotEnoughResourcesException,
             InvalidGamePhaseException, SuspendedGameException {
 
-        if (isSuspended) {
+        if (!isActive) {
             throw new SuspendedGameException();
         }
 
@@ -395,7 +585,30 @@ public class Game {
             updateCurrentPlayerIdx();
         }
 
-        return newScore;
+        listenerHandler.notifyBroadcast(new Notifier<VirtualView>() {
+            @Override
+            public void sendUpdate(VirtualView receiver) throws RemoteException {
+                Map<Position, CornerPosition> positionToCornerCovered = new HashMap<>();
+                List<CornerPosition> cornerToTest = Arrays.asList(CornerPosition.LOWER_LEFT, CornerPosition.TOP_LEFT, CornerPosition.TOP_RIGHT, CornerPosition.LOWER_RIGHT);
+                Playground playground = currentPlayer.getPlayground();
+                for (CornerPosition cornerPosition : cornerToTest) {
+                    Position adjacentPos = playground.getAdjacentPosition(position, cornerPosition);
+                    if (playground.getTile(adjacentPos).sameAvailability(Availability.OCCUPIED)) {
+                        positionToCornerCovered.put(adjacentPos, cornerPosition);
+                    }
+                }
+                receiver.showUpdateAfterPlace(positionToCornerCovered, currentPlayer.getPlayground().getAvailablePositions(), playground.getResources(), currentPlayer.getPoints(), username);
+            }
+        });
+
+        if (phase == GamePhase.End) {
+            listenerHandler.notifyBroadcast(new Notifier<VirtualView>() {
+                @Override
+                public void sendUpdate(VirtualView receiver) throws RemoteException {
+                    receiver.showWinners(getWinners());
+                }
+            });
+        }
     }
 
     /**
@@ -403,12 +616,11 @@ public class Game {
      *
      * @param username of the player to draw.
      * @param deckType of the deck to draw a card from.
-     * @return
      * @throws InvalidPlayerActionException if the player cannot perform the operation.
      * @throws EmptyDeckException           if the selected deck is empty.
      * @throws InvalidGamePhaseException    if the game phase doesn't allow the operation.
      */
-    public boolean drawFromDeck(String username, DeckType deckType) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException {
+    public void drawFromDeck(String username, DeckType deckType) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException {
         if (!phase.equals(GamePhase.DrawNormal)) {
             throw new InvalidGamePhaseException();
         }
@@ -441,24 +653,31 @@ public class Game {
             throw invalidPlayerActionException;
         }
 
-        return deck.isEmpty();
+        listenerHandler.notifyBroadcast(new Notifier<VirtualView>() {
+            @Override
+            public void sendUpdate(VirtualView receiver) throws RemoteException {
+                receiver.showUpdateAfterDraw(new ClientCard(newCard), deck.isEmpty(), new ClientCard(deck.getTop()), null, null, phase == GamePhase.PlaceAdditional, username);
+            }
+        });
     }
 
     /**
      * Fills the missing spot on faceUpCards
      *
      * @param faceUpCardIdx the spot of the taken card
-     * @return whether the deck of replacements is empty or not
+     * @return the deck from which the face up card has been replaced
      */
-    private boolean replaceFaceUpCard(int faceUpCardIdx) {
+    private Deck<Card> replaceFaceUpCard(int faceUpCardIdx) {
         List<Deck<Card>> decks = Arrays.asList(resourceCards, goldenCards);
         int deckIdx = faceUpCardIdx <= 1 ? 0 : 1;
 
         Card replacement = null;
+        Deck<Card> deckForReplacement = null;
         try {
             // updates the index of deckIdx based on the supposed deck's emptiness
             deckIdx = deckIdx + (decks.get(deckIdx).isEmpty() ? 0 : 1) % 2;
-            replacement = decks.get(deckIdx).draw();
+            deckForReplacement = decks.get(deckIdx);
+            replacement = deckForReplacement.draw();
         } catch (EmptyDeckException e) {
             // the replacement may be invalid if both decks are empty, so there's no exception to throw
         }
@@ -468,7 +687,8 @@ public class Game {
         if (goldenCards.isEmpty() && resourceCards.isEmpty()) {
             phaseHandler.setLastNormalTurn();
         }
-        return decks.get(deckIdx).isEmpty();
+
+        return deckForReplacement;
     }
 
     /**
@@ -476,10 +696,9 @@ public class Game {
      *
      * @param username      of the player.
      * @param faceUpCardIdx specifying the face up card.
-     * @return whether the deck chosen for drawing the replacement is empty or not
      * @throws InvalidPlayerActionException if the player cannot perform the operation.
      */
-    public boolean drawFromFaceUpCards(String username, int faceUpCardIdx) throws InvalidPlayerActionException, InvalidGamePhaseException {
+    public void drawFromFaceUpCards(String username, int faceUpCardIdx) throws InvalidPlayerActionException, InvalidGamePhaseException {
         if (!phase.equals(GamePhase.DrawNormal)) {
             throw new InvalidGamePhaseException();
         }
@@ -495,16 +714,29 @@ public class Game {
         Card newCard = faceUpCards.get(faceUpCardIdx);
 
         boolean isReplaceDeckEmpty;
+        Deck<Card> deckForReplacement;
         try {
             currentPlayer.addCard(newCard);
-            isReplaceDeckEmpty = replaceFaceUpCard(faceUpCardIdx);
+            deckForReplacement = replaceFaceUpCard(faceUpCardIdx);
             phase = phaseHandler.getNextPhase(phase, currentPlayerIdx);
             updateCurrentPlayerIdx();
         } catch (InvalidPlayerActionException e) {
             throw new InvalidPlayerActionException();
         }
 
-        return isReplaceDeckEmpty;
+        listenerHandler.notifyBroadcast(new Notifier<VirtualView>() {
+            @Override
+            public void sendUpdate(VirtualView receiver) throws RemoteException {
+                receiver.showUpdateAfterDraw(
+                        new ClientCard(newCard),
+                        deckForReplacement.isEmpty(),
+                        new ClientCard(deckForReplacement.getTop()),
+                        new ClientCard(faceUpCards.get(faceUpCardIdx)),
+                        new ClientCard(deckForReplacement.getTop()),
+                        phase == GamePhase.PlaceAdditional,
+                        username);
+            }
+        });
     }
 
     /**
@@ -539,6 +771,12 @@ public class Game {
             throw new InvalidMessageException("recipient doesn't exists");
         }
         chatDatabase.addMessage(message);
+        listenerHandler.notifyBroadcast(new Notifier<VirtualView>() {
+            @Override
+            public void sendUpdate(VirtualView receiver) throws RemoteException {
+                receiver.showUpdateChat(message);
+            }
+        });
     }
 
     /**
@@ -556,8 +794,8 @@ public class Game {
      * Gets the card associated to the <code>cardId</code>.
      *
      * @param username the player's username.
-     * @param frontId the id of the card's front.
-     * @param backId the id of the card's back.
+     * @param frontId  the id of the card's front.
+     * @param backId   the id of the card's back.
      * @return the player's card associated with <code>cardId</code>.
      */
     public Card getCard(String username, int frontId, int backId) {
@@ -569,11 +807,10 @@ public class Game {
      * Returns winners' name.
      *
      * @return the list of players' name winning the game (they can be more than one in case of a tie).
-     * @throws InvalidGamePhaseException if the game is not yet finished
      */
-    public List<String> getWinners() throws InvalidGamePhaseException {
+    private List<String> getWinners() {
         if (phase != GamePhase.End) {
-            throw new InvalidGamePhaseException("Game not yet finished");
+            System.err.println("Error: game not finished yet");
         }
 
         int maxPointNormalTurns = 29;
@@ -607,8 +844,23 @@ public class Game {
                 winners.add(player);
             }
         }
-
         return winners.stream().map(Player::getUsername).toList();
     }
+
+
+    private void terminateForInactivity() {
+        try {
+            String lastConnectedPlayer = getActivePlayers().getFirst().getUsername();
+            listenerHandler.notifyBroadcast(new Notifier<VirtualView>() {
+                @Override
+                public void sendUpdate(VirtualView receiver) throws RemoteException {
+                    receiver.showWinners(Collections.singletonList(lastConnectedPlayer));
+                }
+            });
+        } catch (NoSuchElementException noSuchElementException) {
+            // empty list: there's no player to notify
+        }
+    }
+
 }
 
