@@ -1,21 +1,28 @@
 package it.polimi.ingsw.model.card;
 
+import it.polimi.ingsw.GeneralCard;
 import it.polimi.ingsw.model.board.Playground;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
  * Immutable class representing the objective card.
  */
-public abstract class ObjectiveCard {
+public abstract class ObjectiveCard implements GeneralCard {
 
     /**
      * Represents the number of points won when card is placed.
      */
     int multiplier;
 
-    // id to represent a card unambiguously.
-    private int id;
+    private int frontId;
+
+    private int backId;
+
+    // in total 16 front and 1 back
+    private static final int COMMON_BACK_ID = 17;
 
     private static int incrementalId = 0;
 
@@ -24,11 +31,8 @@ public abstract class ObjectiveCard {
     }
 
     public ObjectiveCard() {
-        id = getIncrementalId();
-    }
-
-    public int getId() {
-        return id;
+        frontId = getIncrementalId();
+        backId = COMMON_BACK_ID;
     }
 
     /**
@@ -38,6 +42,8 @@ public abstract class ObjectiveCard {
      */
     public ObjectiveCard(int multiplier) {
         this.multiplier = multiplier;
+        this.frontId = getIncrementalId();
+        this.backId = getIncrementalId();
     }
 
     public void getObjective() {
@@ -53,6 +59,21 @@ public abstract class ObjectiveCard {
     }
 
     public abstract int calculatePoints(Playground p);
+
+    @Override
+    public int getFrontId() {
+        return frontId;
+    }
+
+    @Override
+    public int getBackId() {
+        return backId;
+    }
+
+    @Override
+    public Map<Symbol, Integer> getRequiredResources() {
+        return new HashMap<>();
+    }
 
     @Override
     public boolean equals(Object o) {
