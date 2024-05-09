@@ -3,8 +3,8 @@ package it.polimi.ingsw.model.player;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.card.Color.CardColor;
+import it.polimi.ingsw.model.player.action.*;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -93,7 +93,7 @@ class PlayerActionTest {
 
         //random card to add to player's hand
         Card myCard = player.getCards().getFirst();
-        if (playerAction.getClass().equals(Draw.class)) {
+        if (playerAction.getPlayerState()==PlayerState.Draw) {
             // impossible situation to draw with 3 cards
             player.getCards().removeFirst();
 

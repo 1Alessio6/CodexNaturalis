@@ -2,8 +2,10 @@ package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.model.board.*;
 import it.polimi.ingsw.model.card.*;
-import it.polimi.ingsw.model.card.Color.CardColor;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.player.action.ChooseStarter;
+import it.polimi.ingsw.model.player.action.PlayerAction;
+import it.polimi.ingsw.model.player.action.PlayerState;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -20,8 +22,6 @@ import java.util.stream.Stream;
 public class Player {
 
     //attributes
-
-
     /**
      * Indicates the username of the player.
      */
@@ -133,6 +133,9 @@ public class Player {
         return playerAction;
     }
 
+    public ObjectiveCard getObjective() {
+        return objectiveCards.getFirst();
+    }
 
     /**
      * Returns the available positions present in the playground.
@@ -170,15 +173,16 @@ public class Player {
      * @param card to be tested.
      * @return true if the player has the specified card, false otherwise.
      */
-    boolean has(Card card) {
+    public boolean has(Card card) {
         return cards.contains(card);
     }
 
 
     /**
      * Returns the card with the specified front and back ids.
+     *
      * @param frontId the id of the card's front.
-     * @param backId the id of the card's back.
+     * @param backId  the id of the card's back.
      * @return the card matching the two ids.
      * @throws IllegalArgumentException if there's no card matching the provided ids.
      */
@@ -197,7 +201,7 @@ public class Player {
      *
      * @param card to be discarded.
      */
-    void discard(Card card) {
+    public void discard(Card card) {
         assert (cards.remove(card)); // the card must exist
     }
 
@@ -207,7 +211,7 @@ public class Player {
      *
      * @param nextPlayerAction to be set.
      */
-    void setAction(PlayerAction nextPlayerAction) {
+    public void setAction(PlayerAction nextPlayerAction) {
         playerAction = nextPlayerAction;
     }
 
@@ -217,7 +221,7 @@ public class Player {
      *
      * @return the playground.
      */
-    Playground getPlayground() {
+    public Playground getPlayground() {
         return playground;
     }
 
@@ -227,7 +231,7 @@ public class Player {
      *
      * @return a list of objective cards.
      */
-    List<ObjectiveCard> getObjectives() {
+    public List<ObjectiveCard> getObjectives() {
         return objectiveCards;
     }
 
@@ -236,7 +240,7 @@ public class Player {
      *
      * @param color to set
      */
-    void setColor(PlayerColor color) {
+    public void setColor(PlayerColor color) {
         this.colour = color;
     }
 
@@ -247,6 +251,10 @@ public class Player {
      */
     public List<Card> getCards() {
         return cards;
+    }
+
+    public Card getStarter() {
+        return starter;
     }
 
     /**
@@ -297,7 +305,8 @@ public class Player {
      * @return true if the player has finished the set-up, false otherwise.
      */
     public boolean isSetupFinished() {
-        return playerAction.isSetupFinished();
+        return playerAction.getPlayerState() == PlayerState.Place
+                || playerAction.getPlayerState() == PlayerState.Draw;
     }
 
     /**
@@ -317,6 +326,7 @@ public class Player {
 
     /**
      * Calculates extra points from objective cards.
+     *
      * @param commonObjectives the list of common objectives in the game.
      * @return the extra points reached.
      */
