@@ -8,12 +8,17 @@ import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.model.chat.message.Message;
+import it.polimi.ingsw.model.lobby.FullLobbyException;
+import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.player.NotAvailableUsername;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.model.*;
-import it.polimi.ingsw.network.client.model.card.ClientCard;
+import it.polimi.ingsw.network.client.model.card.*;
+import it.polimi.ingsw.network.client.model.player.*;
+import it.polimi.ingsw.network.client.model.board.*;
+
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -55,18 +60,18 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
         //
         while (!isEnded) {
-            switch (game.currentPhase) {
+            switch (game.getCurrentPhase()) {
                 case SETUP:
                     runSetUpPhase();
                 case WAIT:
-                    if (this.game.player.isCurrentPlayer()) {
-                        this.game.currentPhase = ClientPhase.NORMAL_TURN;
+                    if (this.game.getMainPlayer().isCurrentPlayer()) {
+                        this.game.setCurrentPhase(ClientPhase.NORMAL_TURN);
                     }
                 case NORMAL_TURN:
                     runPlayerTurn();
                 case ADDITIONAL_WAIT:
-                    if (this.game.player.isCurrentPlayer()) {
-                        this.game.currentPhase = ClientPhase.ADDITIONAL_TURN;
+                    if (this.game.getMainPlayer().isCurrentPlayer()) {
+                        this.game.setCurrentPhase(ClientPhase.ADDITIONAL_TURN);
                     }
                 case ADDITIONAL_TURN:
                     runPlayerAdditionalTurn();
@@ -87,10 +92,12 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
                 String username = receiveUsername();
                 this.server.connect(this, username);
                 break;
-            }catch(NotAvailableUsername e){
+            }catch(InvalidUsernameException e){
                 System.err.println("Username selected is already taken. Please try again");
             } catch (RemoteException e) {
                 System.err.println("Connection Error");
+            } catch (FullLobbyException e){
+                System.err.println("Error");
             }
         }
     }
@@ -111,14 +118,14 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     private void runPlayerAdditionalTurn() {
         receivePlaceCommand();
         receiveDrawCommand();
-        this.game.player.setIsCurrentPlayer(false);
+        this.game.setCurrentMainPlayer(false);
     }
 
     private void runPlayerTurn() {
         //while(!this.player.isCurrentPlayer()){}
         receivePlaceCommand();
         receiveDrawCommand();
-        this.game.player.setIsCurrentPlayer(false);
+        this.game.setCurrentMainPlayer(false);
     }
 
     private void receivePlaceCommand() {
@@ -133,7 +140,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
                 selectedSide = receiveCardSide();
                 if (selectedSide == Side.FRONT) {
                     try {
-                        checkRequirements(this.game.player.getPlayerCard(numCard));
+                        checkRequirements(this.game.getMainPlayerCard(numCard));
                         position = receivePosition();
                         break;
                     } catch (Playground.NotEnoughResourcesException e) {
@@ -146,7 +153,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
         }
 
         try {
-            server.placeCard(this.game.player.getUsername(), this.game.player.getPlayerCard(numCard).getBackId(), this.game.player.getPlayerCard(numCard).getFrontId(), selectedSide, position);
+            server.placeCard(this.game.getMainPlayerUsername(), this.game.getMainPlayerCard(numCard).getBackId(), this.game.getMainPlayerCard(numCard).getFrontId(), selectedSide, position);
         } catch (Playground.UnavailablePositionException | Playground.NotEnoughResourcesException e) {
             System.err.println("Error check methods should have avoid an incorrect move");
         } catch (InvalidPlayerActionException | SuspendedGameException | InvalidGamePhaseException e) {
@@ -200,7 +207,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
             int posY = scanner.nextInt();
             Position position = new Position(posX, posY);
             try {
-                checkPosition(position, this.game.player.getPlayground());
+                checkPosition(position, this.game.getMainPlayerPlayground());
                 scanner.close();
                 return position;
             } catch (Playground.UnavailablePositionException e) {
@@ -215,7 +222,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
         System.out.println("Insert the card position");
         int cardPosition = scanner.nextInt();
         try {
-            server.draw(this.game.player.getUsername(), cardPosition);
+            server.draw(this.game.getMainPlayerUsername(), cardPosition);
         } catch (InvalidPlayerActionException | EmptyDeckException | InvalidGamePhaseException e) {
             System.out.println("Error");
         }
@@ -229,76 +236,96 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
     private void checkRequirements(ClientCard card) throws Playground.NotEnoughResourcesException {
         for (Symbol s : card.getRequiredResources().keySet()) {
-            if (this.game.player.getAmountResource(s) < card.getRequiredResources().get(s)) {
+            if (this.game.getMainPlayer().getAmountResource(s) < card.getRequiredResources().get(s)) {
                 throw new Playground.NotEnoughResourcesException("You don't have the resources to place this side of the card");
             }
         }
     }
 
     @Override
+    public void updateCreator() throws RemoteException {
+
+    }
+
+    @Override
+    public void updateAfterLobbyCrash() throws RemoteException {
+
+    }
+
+    @Override
+    public void updateAfterConnection(ClientGame clientGame) {
+
+    }
+
+    @Override
     public void showPlayerUsername(String username) throws RemoteException {
-        System.out.println(game.player.getUsername());
+        System.out.println(game.getMainPlayerUsername());
     }
 
     @Override
     public void showUpdatePlayerStatus(boolean isConnected, String username) throws RemoteException {
-        game.player.setNetworkStatus(isConnected);
-        System.out.println(game.player.isConnected());
+        game.getMainPlayer().setNetworkStatus(isConnected);
+        System.out.println(game.getMainPlayer().isConnected());
     }
 
     @Override
-    public void showUpdatePlayerObjectiveCard(int[] privateObjectiveID, ClientCard starterCard, String username) throws RemoteException {
-        this.game.hiddenObjectivesID = privateObjectiveID.clone();
-        game.player.setStarterCard(starterCard);
-        System.out.println("Hidden Objectives ID are: \n");
-        for (int i : game.hiddenObjectivesID) {
-            System.out.println(i + "\n");
-        }
-        System.out.println("Starter card front is: " + game.player.getStarterCard().getFrontId() + "\n");
-        System.out.println("Starter back is: " + game.player.getStarterCard().getBackId() + "\n");
-        System.out.println("The username is: " + username);
-    }
-
-    @Override
-    public void showFirstPlayersCards(Map<String, List<ClientCard>> firstCardsAssigned) {
+    public void showInitialPlayerStatus(ClientPlayer player) throws RemoteException {
 
     }
 
     @Override
     public void showBoardSetUp(int[] commonObjectiveID, int topBackID, int topGoldenBackID, int[] faceUpCards) throws RemoteException {
-        game.clientBoard.setCommonObjectives(commonObjectiveID);
-        game.clientBoard.addGoldenBackID(topGoldenBackID);
-        game.clientBoard.addResourceBackID(topBackID);
-        game.clientBoard.setFaceUpCards(faceUpCards);
+        game.getClientBoard().setCommonObjectives(commonObjectiveID);
+        game.getClientBoard().addGoldenBackID(topGoldenBackID);
+        game.getClientBoard().addResourceBackID(topBackID);
+        game.getClientBoard().setFaceUpCards(faceUpCards);
         System.out.println("Common objectives are: \n");
-        for (int i : game.clientBoard.getCommonObjectives()) {
+        for (int i : game.getClientBoard().getCommonObjectives()) {
             System.out.println(i + "\n");
         }
-        System.out.println("The top back ID is: " + game.clientBoard.getResourceDeck().getLast() + "\n");
-        System.out.println("The top golden back ID is: " + game.clientBoard.getGoldenDeck().getLast() + "\n");
+        System.out.println("The top back ID is: " + game.getClientBoard().getResourceDeck().getLast() + "\n");
+        System.out.println("The top golden back ID is: " + game.getClientBoard().getGoldenDeck().getLast() + "\n");
         System.out.println("Face up cards are: \n");
-        for (int i : game.clientBoard.getFaceUpCards()) {
+        for (int i : game.getClientBoard().getFaceUpCards()) {
             System.out.println(i + "\n");
         }
+    }
+
+    @Override
+    public void showStarterPlacement(String username, int faceId) {
+
     }
 
     @Override
     public void showUpdateColor(PlayerColor color, String username) throws RemoteException {
-        game.player.setColor(color);
-        System.out.println("The color is: " + game.player.getColor().name());
+        for(ClientPlayer player : game.getPlayers()){
+            if(player.getUsername().equals(username)){
+                player.setColor(color);
+            }
+        }
+
     }
 
     @Override
-    public void showUpdateAfterPlace(Map<Position, ClientTile> newAvailablePosition, Map<Symbol, Integer> newResources, int points, String username) throws RemoteException {
-        //todo update after changing with maps
-        game.player.getPlayground().setPoints(points);
-        System.out.println("Playground after place: \n" + game.player.getPlayground().toString());
+    public void showUpdateObjectiveCard(ClientCard chosenObjective, String username) {
+
     }
 
     @Override
-    public void showUpdateAfterDraw(ClientCard card, int cardHandPosition, boolean isEmpty, int newDeckBackID, int deckType, int newFrontFaceUp, int newBackFaceUp, int positionFaceUp, String Username) throws RemoteException {
-        game.player.setPlayerCard(card, cardHandPosition);
+    public void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username) throws RemoteException {
+       //todo urgent!!!
+        // add card to place and his position
+    }
 
+    @Override
+    public void showUpdateAfterDraw(ClientCard drawnCard, boolean isEmpty, ClientCard newTopDeck, ClientCard newFaceUpCard, ClientCard newTopCard, boolean additionalTurn, String username) throws RemoteException {
+
+        //todo urgent !!
+        // add from which deck the user has drawn the card
+
+        game.getPlayer(username).addPlayerCard(drawnCard);
+
+        /*
         if (!isEmpty) {// 4 for normal deck, 5 for golden deck
             if (deckType == 4) {
                 game.clientBoard.addResourceBackID(newDeckBackID);
@@ -324,6 +351,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
             System.out.println("Face up position is not valid \n");
         }
 
+         */
     }
 
     @Override
@@ -333,13 +361,27 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
     @Override
     public void showUpdateCurrentPlayer(ClientPlayer currentPlayer, ClientPhase phase) throws RemoteException {
+        /*
         this.game.currentPhase = phase;
         this.game.player = currentPlayer;
         game.player.setIsCurrentPlayer(true);
 
         System.out.println(this.game.currentPhase.name());
         System.out.println(game.player.isCurrentPlayer() ? game.player.getUsername() : "Error");
+
+         */
     }
+
+    @Override
+    public void showUpdateSuspendedGame() throws RemoteException {
+
+    }
+
+    @Override
+    public void showWinners(List<String> winners) throws RemoteException {
+
+    }
+
     @Override
     public void reportError(String details) throws RemoteException {
         System.err.println(details);
