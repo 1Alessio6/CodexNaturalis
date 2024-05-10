@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.client.model;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.network.client.model.board.ClientBoard;
+import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 
@@ -16,6 +17,30 @@ public class ClientGame {
     private List<Message> messages;
     private ClientBoard clientBoard;
 
+    private ClientPhase currentPhase;
+
+    public ClientPhase getCurrentPhase() {
+        return currentPhase;
+    }
+
+    public List<ClientPlayer> getPlayers() {
+        return players;
+    }
+
+    public ClientPlayer getPlayer(String username) {
+        for(ClientPlayer player : players){
+            if(player.getUsername().equals(username)){
+                return player;
+            }
+        }
+        return null;
+    }
+
+
+    public void setCurrentPhase(ClientPhase currentPhase) {
+        this.currentPhase = currentPhase;
+    }
+
     public List<ClientCard> getFaceUpCards() {
         return faceUpCards;
     }
@@ -28,8 +53,28 @@ public class ClientGame {
         return currentPlayerIdx;
     }
 
-    public List<ClientPlayer> getPlayers() {
-        return players;
+    public ClientPlayer getPlayer(int numPlayer) {
+        return players.get(numPlayer);
+    }
+
+    public ClientPlayer getMainPlayer(){
+        return getPlayer(0);
+    }
+
+    public void setCurrentMainPlayer(boolean isCurrent) {
+        getMainPlayer().setIsCurrentPlayer(isCurrent);
+    }
+
+    public ClientCard getMainPlayerCard(int cardHandPosition){
+        return getMainPlayer().getPlayerCard(cardHandPosition);
+    }
+
+    public String getMainPlayerUsername(){
+        return getMainPlayer().getUsername();
+    }
+
+    public ClientPlayground getMainPlayerPlayground(){
+        return getMainPlayer().getPlayground();
     }
 
     public List<Message> getMessages() {
