@@ -140,7 +140,14 @@ public class ClientController implements ClientActions {
 
     @Override
     public void sendMessage(Message message) throws InvalidMessageException, RemoteException {
+        if (!message.getSender().equals(game.getMainPlayerUsername())) {
+            throw new InvalidMessageException("sender doesn't match the author's username");
+        }
+        if (game.getPlayer(message.getRecipient()) == null) {
+            throw new InvalidMessageException("recipient doesn't exists");
+        }
 
+        server.sendMessage(message); //
     }
 
     @Override
