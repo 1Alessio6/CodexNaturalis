@@ -12,8 +12,6 @@ public class ClientTile {
     //private boolean isUsed; a variable used to check if the card has been already used for redeeming the points of an objective card
     private Availability availability;
 
-    private Map<CornerPosition, Boolean> coveredCorner; //boolean True if the corner at the given position it's covered, if there isn't a position in the map the corner it's considered not existing
-
 
     /**
      * Constructs a tile which doesn't contain a face with the parameter's availability.
@@ -24,7 +22,10 @@ public class ClientTile {
         availability = a;
     }
 
-
+    public ClientTile(ClientFace face){ //this constructor method it's used when we create an empty Tile that could be available or not available
+        this.face = face; //empty tile, equivalent to null into Playground
+        availability = Availability.OCCUPIED;
+    }
 
     /**
      * Returns the face contained in the tile.
@@ -32,11 +33,6 @@ public class ClientTile {
      */
     public ClientFace getFace() {
         return face;
-    }
-
-    public void setCoveredCorner(Map<CornerPosition, Boolean> coveredCorner) {
-        assert(this.face.getFaceID() != -1);
-        this.coveredCorner = coveredCorner;
     }
 
     /**
