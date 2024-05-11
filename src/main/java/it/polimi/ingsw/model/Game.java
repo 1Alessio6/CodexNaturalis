@@ -106,12 +106,8 @@ public class Game {
         this.availableColors = new HashSet<>(
                 Arrays.asList(
                         PlayerColor.RED,
-                        PlayerColor.RED,
-                        PlayerColor.BLUE,
                         PlayerColor.BLUE,
                         PlayerColor.GREEEN,
-                        PlayerColor.GREEEN,
-                        PlayerColor.YELLOW,
                         PlayerColor.YELLOW
                 )
         );
