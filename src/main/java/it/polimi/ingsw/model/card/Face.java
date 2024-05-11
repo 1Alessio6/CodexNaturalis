@@ -86,15 +86,14 @@ abstract public class Face {
      */
     public Map<Symbol, Integer> getResources() {
         Map<Symbol, Integer> resources = new HashMap<>();
-        for(CornerPosition c : this.getCorners().keySet()){
+        for (CornerPosition c : this.getCorners().keySet()) {
             Symbol s = this.getCorners().get(c).getSymbol();
 
-            if(s != null){
-                if(resources.containsKey(s)){
-                    resources.put(s,resources.get(s) + 1);
-                }
-                else{
-                    resources.put(s,1);
+            if (s != null) {
+                if (resources.containsKey(s)) {
+                    resources.put(s, resources.get(s) + 1);
+                } else {
+                    resources.put(s, 1);
                 }
             }
         }
@@ -124,7 +123,9 @@ abstract public class Face {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Face face = (Face) o;
-        return this.id == face.id;
+        return color == face.color
+                && calculator.equals(face.calculator)
+                && corners.equals(face.corners);
     }
 
     @Override
