@@ -12,7 +12,6 @@ import it.polimi.ingsw.model.chat.ChatDatabase;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.model.listenerhandler.ListenerHandler;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
-import it.polimi.ingsw.model.notifier.Notifier;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.gamePhase.PhaseHandler;
@@ -20,7 +19,6 @@ import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.model.ClientGame;
-import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 
 import java.io.FileNotFoundException;
@@ -174,6 +172,14 @@ public class Game {
         return new Player(username, startingCard, userHand, userObjectives);
     }
 
+    private Deck<Card> getAssociatedToFaceUpCard(int faceUpIdx) {
+        if (faceUpIdx <= 1) {
+            return resourceCards;
+        } else {
+            return goldenCards;
+        }
+    }
+
     /**
      * Creates game based on the lobby
      */
@@ -186,6 +192,16 @@ public class Game {
                 players.add(createPlayer(username));
             }
             Collections.shuffle(players);
+
+            faceUpCards = new ArrayList<>();
+            for (int i = 0; i < 4; ++i) {
+                faceUpCards.add(getAssociatedToFaceUpCard(i).draw());
+            }
+
+            commonObjects = new ArrayList<>();
+            for (int i = 0; i < 2; ++i) {
+                commonObjects.add(objectiveCards.draw());
+            }
         } catch (EmptyDeckException e) {
             // there must be enough cards for the beginning
             e.printStackTrace();
@@ -529,25 +545,22 @@ public class Game {
      * @return the deck from which the face up card has been replaced
      */
     private Deck<Card> replaceFaceUpCard(int faceUpCardIdx) {
-        List<Deck<Card>> decks = Arrays.asList(resourceCards, goldenCards);
-        int deckIdx = faceUpCardIdx <= 1 ? 0 : 1;
-
         Card replacement = null;
         Deck<Card> deckForReplacement = null;
         try {
-            // updates the index of deckIdx based on the supposed deck's emptiness
-            deckIdx = deckIdx + (decks.get(deckIdx).isEmpty() ? 0 : 1) % 2;
-            deckForReplacement = decks.get(deckIdx);
+            deckForReplacement = getAssociatedToFaceUpCard(faceUpCardIdx);
             replacement = deckForReplacement.draw();
         } catch (EmptyDeckException e) {
-            // the replacement may be invalid if both decks are empty, so there's no exception to throw
+            // test the other deck
+            try {
+                deckForReplacement = getAssociatedToFaceUpCard((faceUpCardIdx+2) % faceUpCards.size());
+                replacement = deckForReplacement.draw();
+            } catch (EmptyDeckException otherDeckEmptyException) {
+                phaseHandler.setLastNormalTurn();
+            }
         }
 
         faceUpCards.set(faceUpCardIdx, replacement); // null if there's none card for replacement
-
-        if (goldenCards.isEmpty() && resourceCards.isEmpty()) {
-            phaseHandler.setLastNormalTurn();
-        }
 
         return deckForReplacement;
     }
