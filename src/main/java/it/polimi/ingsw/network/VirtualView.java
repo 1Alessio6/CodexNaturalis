@@ -22,7 +22,7 @@ public interface VirtualView extends Remote {
 
     public void updateAfterLobbyCrash() throws RemoteException;
 
-    public void updateAfterConnection(ClientGame clientGame);
+    public void updateAfterConnection(ClientGame clientGame) throws RemoteException;
 
     // game related updates
 
@@ -47,25 +47,13 @@ public interface VirtualView extends Remote {
     //use when a new player is connected
     void showUpdatePlayerStatus(boolean isConnected, String username) throws RemoteException;
 
-    void showInitialPlayerStatus(ClientPlayer player) throws RemoteException;
-
-    //todo check if there are all the methods to show the starter player information
-    //method called only to give the cards the first time, not after the player choice
-    //it's the only method that show information to one player per time
-    // information needed at the beginning of the game.
-    // fixme(readability). to improve readability replace all parameters with a single player.
-    // give info about the player
- //   //before board setUp every player has 3 cards representing his first hand
- //   // todo. merge with showBoardSetup
- //   void showFirstPlayersCards(Map<String, List<ClientCard>> firstCardsAssigned);
-
     void showBoardSetUp(int[] commonObjectiveID, int topBackID, int topGoldenBackID, int[] faceUpCards) throws RemoteException;
 
-    void showStarterPlacement(String username, int faceId);
+    void showStarterPlacement(String username, int faceId) throws RemoteException;
     // all clients receive the information, the ones not being username will remove color from their list of available colors.
     void showUpdateColor(PlayerColor color, String username) throws RemoteException;
 
-    void showUpdateObjectiveCard(ClientCard chosenObjective, String username);
+    void showUpdateObjectiveCard(ClientCard chosenObjective, String username) throws RemoteException;
 
     //method to show updated information after a place
     //The two list positions and tiles represent every new available tile added after the last place invocation
