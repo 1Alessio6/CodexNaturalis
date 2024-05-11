@@ -24,11 +24,11 @@ public abstract class View {
 
     //method used to update after a controller update, invoked by the client class
 
-    public abstract void updateCreator();
+    public abstract void showUpdateCreator();
 
-    public abstract void updateAfterLobbyCrash();
+    public abstract void showUpdateAfterLobbyCrash();
 
-    public abstract void updateAfterConnection();
+    public abstract void showUpdateAfterConnection();
 
     public abstract void showUpdatePlayerStatus();
 
