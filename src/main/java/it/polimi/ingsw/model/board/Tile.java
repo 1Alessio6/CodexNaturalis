@@ -11,6 +11,9 @@ public class Tile {
     //private boolean isUsed; a variable used to check if the card has been already used for redeeming the points of an objective card
     private Availability availability;
 
+    public Availability getAvailability() {
+        return availability;
+    }
 
     /**
      * Constructs a tile which doesn't contain a face with the parameter's availability.
