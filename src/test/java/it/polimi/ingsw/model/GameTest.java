@@ -48,16 +48,16 @@ public class GameTest {
 
     @Test
     void finishSetup_phaseIsPlaceNormal() throws RemoteException {
-        VirtualView vv = new ClientRMI();
         List<String> usernames = createUsernames(2);
         game = new Game(usernames);
+        List<PlayerColor> colors = new ArrayList<>(game.getAvailableColor());
 
         Assertions.assertDoesNotThrow(
                 () -> {
                     // finish setup
                     for (int i = 0; i < usernames.size(); ++i) {
                         game.placeStarter(usernames.get(i), Side.FRONT);
-                        game.assignColor(usernames.get(i), PlayerColor.BLUE);
+                        game.assignColor(usernames.get(i), colors.get(i));
                         game.placeObjectiveCard(usernames.get(i), 1);
                     }
                 }
