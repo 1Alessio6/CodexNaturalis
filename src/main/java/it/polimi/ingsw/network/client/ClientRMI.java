@@ -217,6 +217,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
 
     private void receiveDrawCommand() {
+        /*
         Scanner scanner = new Scanner(System.in);
         System.out.println("Insert the card position");
         int cardPosition = scanner.nextInt();
@@ -225,6 +226,8 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
         } catch (InvalidPlayerActionException | EmptyDeckException | InvalidGamePhaseException e) {
             System.out.println("Error");
         }
+
+         */
     }
 
     @Override
