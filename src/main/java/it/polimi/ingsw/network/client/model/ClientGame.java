@@ -101,8 +101,6 @@ public class ClientGame {
         return clientBoard;
     }
 
-    public ClientGame() {}
-
     public ClientGame(Game game) {
         faceUpCards = new ArrayList<>();
         for (Card faceUpCard : game.getFaceUpCards()) {
@@ -124,6 +122,7 @@ public class ClientGame {
 
         messages = game.getMessages();
 
+        // todo. complete method
         //clientBoard = new ClientBoard();
 
       //  private ClientBoard clientBoard;
