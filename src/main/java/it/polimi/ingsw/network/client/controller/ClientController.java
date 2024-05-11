@@ -236,7 +236,6 @@ public class ClientController implements ClientActions {
         playground.placeTile(position, new ClientTile(placedFace));
         playground.updateResources(newResources);
 
-
     }
 
     void updateAfterDraw(ClientCard drawnCard, boolean isEmpty, ClientCard newTopDeck, ClientCard newFaceUpCard, ClientCard newTopCard, boolean additionalTurn, String username, int boardPosition) throws RemoteException {
