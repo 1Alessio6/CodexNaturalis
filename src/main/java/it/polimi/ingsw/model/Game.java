@@ -597,7 +597,7 @@ public class Game {
                         positionToCornerCovered.put(adjacentPos, cornerPosition);
                     }
                 }
-                receiver.showUpdateAfterPlace(positionToCornerCovered, currentPlayer.getPlayground().getAvailablePositions(), playground.getResources(), currentPlayer.getPoints(), username);
+                receiver.showUpdateAfterPlace(positionToCornerCovered, currentPlayer.getPlayground().getAvailablePositions(), playground.getResources(), currentPlayer.getPoints(), username, new ClientCard(card), position);
             }
         });
 
@@ -656,7 +656,7 @@ public class Game {
         listenerHandler.notifyBroadcast(new Notifier<VirtualView>() {
             @Override
             public void sendUpdate(VirtualView receiver) throws RemoteException {
-                receiver.showUpdateAfterDraw(new ClientCard(newCard), deck.isEmpty(), new ClientCard(deck.getTop()), null, null, phase == GamePhase.PlaceAdditional, username);
+                receiver.showUpdateAfterDraw(new ClientCard(newCard), deck.isEmpty(), new ClientCard(deck.getTop()), null, null, phase == GamePhase.PlaceAdditional, username, convertDeckTypeIntoId(deckType));
             }
         });
     }
@@ -734,7 +734,7 @@ public class Game {
                         new ClientCard(faceUpCards.get(faceUpCardIdx)),
                         new ClientCard(deckForReplacement.getTop()),
                         phase == GamePhase.PlaceAdditional,
-                        username);
+                        username, faceUpCardIdx);
             }
         });
     }
@@ -859,6 +859,15 @@ public class Game {
             });
         } catch (NoSuchElementException noSuchElementException) {
             // empty list: there's no player to notify
+        }
+    }
+
+    private int convertDeckTypeIntoId(DeckType type){
+        if(DeckType.GOLDEN == type){
+            return 4;
+        }
+        else{
+            return 5;
         }
     }
 
