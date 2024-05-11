@@ -32,9 +32,12 @@ import java.util.*;
 public class Controller implements EventListener, GameRequest {
     private Lobby lobby;
     private Game game;
+    private Timer timerForSuspendedGame;
+    private TurnCompletion turnCompletion;
 
     public Controller() {
         lobby = new Lobby();
+        timerForSuspendedGame = new Timer();
     }
 
     private boolean validUsername(String username) {
@@ -80,7 +83,12 @@ public class Controller implements EventListener, GameRequest {
     }
 
     private void joinGame(String username, VirtualView gameListener) throws InvalidUsernameException {
+        boolean statusBeforeJoin = game.isActive();
         game.add(username, gameListener);
+        turnCompletion.handleJoin(game);
+        if (game.isActive()) {
+            timerForSuspendedGame.cancel();
+        }
     }
 
     public void handleDisconnection(String username) throws RemoteException, InvalidUsernameException {
@@ -107,6 +115,15 @@ public class Controller implements EventListener, GameRequest {
      */
     private void leaveGame(String username) throws InvalidUsernameException, RemoteException {
         game.remove(username);
+        turnCompletion.handleLeave(game);
+        if (!game.isActive()) {
+            timerForSuspendedGame.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    game.terminateForInactivity();
+                }
+            }, Game.MAX_DELAY_FOR_SUSPENDED_GAME);
+        }
     }
 
 
