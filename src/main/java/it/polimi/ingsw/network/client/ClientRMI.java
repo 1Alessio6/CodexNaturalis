@@ -18,6 +18,7 @@ import it.polimi.ingsw.network.client.model.*;
 import it.polimi.ingsw.network.client.model.card.*;
 import it.polimi.ingsw.network.client.model.player.*;
 import it.polimi.ingsw.network.client.model.board.*;
+import it.polimi.ingsw.network.client.view.View;
 
 
 import java.rmi.NotBoundException;
@@ -29,11 +30,17 @@ import java.util.*;
 
 public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
-    private final VirtualServer server;
+    private VirtualServer server;
 
     private ClientGame game;
 
-    protected ClientRMI(VirtualServer server) throws RemoteException {
+    private View clientView; //can be tui or gui
+
+    public ClientRMI() throws RemoteException{
+
+    }
+
+    public ClientRMI(VirtualServer server) throws RemoteException {
         this.server = server;
     }
 
@@ -309,14 +316,12 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
     @Override
     public void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Position position) throws RemoteException {
-        //todo add card to place and his position
+
     }
 
     @Override
     public void showUpdateAfterDraw(ClientCard drawnCard, boolean isEmpty, ClientCard newTopDeck, ClientCard newFaceUpCard, ClientCard newTopCard, boolean additionalTurn, String username, int boardPosition) throws RemoteException {
 
-        //todo urgent !!
-        // add from which deck the user has drawn the card
 
         game.getPlayer(username).addPlayerCard(drawnCard);
 
