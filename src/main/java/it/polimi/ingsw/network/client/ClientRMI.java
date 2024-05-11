@@ -258,11 +258,6 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     }
 
     @Override
-    public void showPlayerUsername(String username) throws RemoteException {
-        System.out.println(game.getMainPlayerUsername());
-    }
-
-    @Override
     public void showUpdatePlayerStatus(boolean isConnected, String username) throws RemoteException {
         game.getMainPlayer().setNetworkStatus(isConnected);
         System.out.println(game.getMainPlayer().isConnected());
@@ -306,19 +301,19 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
     }
 
+    //delete
     @Override
     public void showUpdateObjectiveCard(ClientCard chosenObjective, String username) {
 
     }
 
     @Override
-    public void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username) throws RemoteException {
-       //todo urgent!!!
-        // add card to place and his position
+    public void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Position position) throws RemoteException {
+        //todo add card to place and his position
     }
 
     @Override
-    public void showUpdateAfterDraw(ClientCard drawnCard, boolean isEmpty, ClientCard newTopDeck, ClientCard newFaceUpCard, ClientCard newTopCard, boolean additionalTurn, String username) throws RemoteException {
+    public void showUpdateAfterDraw(ClientCard drawnCard, boolean isEmpty, ClientCard newTopDeck, ClientCard newFaceUpCard, ClientCard newTopCard, boolean additionalTurn, String username, int boardPosition) throws RemoteException {
 
         //todo urgent !!
         // add from which deck the user has drawn the card
