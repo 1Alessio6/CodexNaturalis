@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.client.controller;
 
 import it.polimi.ingsw.model.InvalidGamePhaseException;
+import it.polimi.ingsw.model.NonexistentPlayerException;
 import it.polimi.ingsw.model.SuspendedGameException;
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
@@ -129,7 +130,25 @@ public class ClientController implements ClientActions {
     }
 
     @Override
-    public void chooseColor(PlayerColor color) throws InvalidColorException, SuspendedGameException {
+    public void chooseColor(PlayerColor color) throws InvalidColorException, SuspendedGameException, RemoteException, InvalidGamePhaseException {
+
+        if (!game.isGameActive()){
+            throw new SuspendedGameException("The game is suspended, you can only text messages");
+        }
+
+        if(game.getCurrentPhase() != ClientPhase.SETUP){
+            throw new InvalidGamePhaseException("You can only choose your color during the setup phase");
+        }
+
+        if(game.getAlreadyTakenColors().contains(color)){
+            throw new InvalidColorException("The color selected is already taken");
+        }
+
+        try{
+            server.chooseColor(game.getMainPlayerUsername(), color);
+        }catch(InvalidPlayerActionException | InvalidGamePhaseException | NonexistentPlayerException e){
+            System.err.println(e.getMessage());
+        }
 
     }
 
