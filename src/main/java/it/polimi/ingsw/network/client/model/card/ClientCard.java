@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.client.model.card;
 
 import it.polimi.ingsw.GeneralCard;
+import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.card.Symbol;
 
 import java.util.HashMap;
@@ -43,6 +44,13 @@ public class ClientCard implements GeneralCard {
     }
 
     public ClientFace getFront() {
+        return front;
+    }
+
+    public ClientFace getFace(Side side){
+        if(side == Side.BACK){
+            return back;
+        }
         return front;
     }
 

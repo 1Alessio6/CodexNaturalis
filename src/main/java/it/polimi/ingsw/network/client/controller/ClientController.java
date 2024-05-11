@@ -227,15 +227,19 @@ public class ClientController implements ClientActions {
 
     }
 
-    void updateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientFace placedFace, Position position) {
+    //todo update the resto of notify methods
+    //necessary to pass a ClientCard and not a client face
+    void updateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide,Position position) {
 
         ClientPlayground playground = game.getPlaygroundByUsername(username);
 
         playground.setPoints(points);
         playground.addNewAvailablePositions(newAvailablePositions);
         playground.setCoveredCorner(positionToCornerCovered);
-        playground.placeTile(position, new ClientTile(placedFace));
+        playground.placeTile(position, new ClientTile(placedCard.getFace(placedSide)));
         playground.updateResources(newResources);
+
+        game.getPlayer(username).removePlayerCard(placedCard);
 
     }
 
