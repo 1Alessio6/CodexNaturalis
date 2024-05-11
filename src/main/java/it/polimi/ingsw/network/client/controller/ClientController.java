@@ -28,15 +28,19 @@ public class ClientController implements ClientActions {
     private ClientGame game;
 
     @Override
-    public void connect(VirtualView client, String username) throws InvalidUsernameException {
+    public void connect(VirtualView client, String username) throws InvalidUsernameException, RemoteException {
 
     }
 
     @Override
-    public void placeCard(int cardHandPosition, Side selectedSide, Position position) throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException {
+    public void placeCard(int cardHandPosition, Side selectedSide, Position position) throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException, RuntimeException {
 
         if (!game.isGameActive()){
-            throw new SuspendedGameException("The game is suspended, you can only text");
+            throw new SuspendedGameException("The game is suspended, you can only text messages");
+        }
+
+        if(game.getCurrentPhase() != ClientPhase.NORMAL_PLACE && game.getCurrentPhase() != ClientPhase.ADDITIONAL_PLACE){
+            throw new InvalidGamePhaseException("You can't place now");
         }
 
         if (selectedSide == Side.FRONT) {
@@ -59,12 +63,54 @@ public class ClientController implements ClientActions {
     }
 
     @Override
-    public void draw(int IdToDraw) throws InvalidGamePhaseException, EmptyDeckException, NotExistingFaceUp, SuspendedGameException {
+    public void draw(int IdToDraw) throws InvalidGamePhaseException, EmptyDeckException, NotExistingFaceUp, SuspendedGameException, RemoteException {
 
+        if (!game.isGameActive()){
+            throw new SuspendedGameException("The game is suspended, you can only text messages");
+        }
+
+        if(game.getCurrentPhase() != ClientPhase.NORMAL_DRAW){
+            throw new InvalidGamePhaseException("You can't draw now");
+        }
+
+        switch(IdToDraw){
+            case 0:
+                if(game.isFaceUpSlotEmpty(0)){
+                    throw new NotExistingFaceUp("This face up slot is empty");
+                }
+            case 1:
+                if(game.isFaceUpSlotEmpty(1)){
+                    throw new NotExistingFaceUp("This face up slot is empty");
+                }
+            case 2:
+                if(game.isFaceUpSlotEmpty(2)){
+                    throw new NotExistingFaceUp("This face up slot is empty");
+                }
+            case 3:
+                if(game.isFaceUpSlotEmpty(3)){
+                    throw new NotExistingFaceUp("This face up slot is empty");
+                }
+            case 4:
+                if(game.getClientBoard().isGoldenDeckEmpty()){
+                    throw new EmptyDeckException("You chose to draw from an empty deck");
+                }
+            case 5:
+                if(game.getClientBoard().isResourceDeckEmpty()){
+                    throw new EmptyDeckException("You chose to draw from an empty deck");
+                }
+            default:
+                System.err.println("ID not valid");
+        }
+
+        try{
+            server.draw(game.getMainPlayerUsername(), IdToDraw);
+        }catch(EmptyDeckException | InvalidGamePhaseException | InvalidPlayerActionException e){
+            System.err.println(e.getMessage());
+        }
     }
 
     @Override
-    public void placeStarter(Side side) throws SuspendedGameException{
+    public void placeStarter(Side side) throws SuspendedGameException, RemoteException {
 
     }
 
@@ -74,17 +120,17 @@ public class ClientController implements ClientActions {
     }
 
     @Override
-    public void placeObjectiveCard(int chosenObjective) throws SuspendedGameException{
+    public void placeObjectiveCard(int chosenObjective) throws SuspendedGameException, RemoteException {
 
     }
 
     @Override
-    public void sendMessage(Message message) throws InvalidMessageException {
+    public void sendMessage(Message message) throws InvalidMessageException, RemoteException {
 
     }
 
     @Override
-    public void setPlayersNumber(int playersNumber) {
+    public void setPlayersNumber(int playersNumber) throws RemoteException {
 
     }
 
