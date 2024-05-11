@@ -156,6 +156,14 @@ public class ClientGame {
 
         return alreadyTakenColors;
     }
+
+    public boolean containsPlayer(String username){
+        return players.contains(getPlayer(username));
+    }
+
+    public void addPlayer(String username){
+        players.add(new ClientPlayer(username));
+    }
 }
 
 
