@@ -160,7 +160,6 @@ public class Game {
         }
     }
 
-    // todo. change notify create player with notification of the current game's state
     private Player createPlayer(String username) throws EmptyDeckException {
         Card startingCard = starterCards.draw();
 
@@ -172,24 +171,6 @@ public class Game {
         List<ObjectiveCard> userObjectives = new ArrayList<>();
         userObjectives.add(objectiveCards.draw());
         userObjectives.add(objectiveCards.draw());
-
-        listenerHandler.notify(username, receiver -> {
-            // create the client player representation
-            List<ClientCard> clientHand = new ArrayList<>();
-            for (Card c : userHand) {
-                clientHand.add(new ClientCard(c));
-            }
-            List<ClientCard> clientObjectives = new ArrayList<>();
-            for (ObjectiveCard o : userObjectives) {
-                clientObjectives.add(new ClientCard(o));
-            }
-            ClientPlayer clientPlayer = new ClientPlayer(
-                    username,
-                    new ClientCard(startingCard),
-                    clientHand,
-                    clientObjectives);
-            receiver.showInitialPlayerStatus(clientPlayer);
-        });
         return new Player(username, startingCard, userHand, userObjectives);
     }
 
@@ -622,7 +603,7 @@ public class Game {
         if (phase != GamePhase.PlaceNormal && phase != GamePhase.PlaceAdditional) {
             throw new RuntimeException("A turn can be skipped only at the beginning");
         }
-        if (currentPlayer.equals(players.get(currentPlayerIdx).getUsername())) {
+        if (!currentPlayer.equals(players.get(currentPlayerIdx).getUsername())) {
             throw new RuntimeException("Only the current player can skip their turn");
         }
 
@@ -729,11 +710,10 @@ public class Game {
         }
     }
 
-    private int convertDeckTypeIntoId(DeckType type){
-        if(DeckType.GOLDEN == type){
+    private int convertDeckTypeIntoId(DeckType type) {
+        if (DeckType.GOLDEN == type) {
             return 4;
-        }
-        else{
+        } else {
             return 5;
         }
     }
