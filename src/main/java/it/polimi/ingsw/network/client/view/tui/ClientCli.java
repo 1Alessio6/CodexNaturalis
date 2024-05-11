@@ -1,8 +1,5 @@
-package it.polimi.ingsw.network.client;
+package it.polimi.ingsw.network.client.view.tui;
 
-import it.polimi.ingsw.network.client.controller.ClientActions;
-
-import java.io.Reader;
 import java.util.Scanner;
 
 public class ClientCli {

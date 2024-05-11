@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.client;
+package it.polimi.ingsw.network.client.view.tui;
 
 public class ClientUtil {
     protected static void argsHelper(String error) {

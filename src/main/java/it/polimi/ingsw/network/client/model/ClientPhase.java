@@ -6,6 +6,6 @@ public enum ClientPhase {
     ADDITIONAL_WAIT,
     NORMAL_PLACE,
     NORMAL_DRAW,
-    ADDITIONAL_TURN,
+    ADDITIONAL_PLACE,
     END;
 }
