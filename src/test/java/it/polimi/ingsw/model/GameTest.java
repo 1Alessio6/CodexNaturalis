@@ -30,8 +30,7 @@ public class GameTest {
         return usernames;
     }
 
-    // todo. add tests for game correctness
-    //  @Test
+    @Test
     void constructGame_noExceptions() {
         Assertions.assertDoesNotThrow(() -> {
             new Game(createUsernames(4));
@@ -70,7 +69,8 @@ public class GameTest {
     @Test
     void testSkipTurn() throws RemoteException {
         Assertions.assertDoesNotThrow(this::finishSetup_phaseIsPlaceNormal);
-        game.skipTurn();
+        String currentPlayerUsername = game.getCurrentPlayer().getUsername();
+        game.skipTurn(currentPlayerUsername);
         Assertions.assertEquals(GamePhase.PlaceNormal, game.getPhase());
     }
 
