@@ -164,6 +164,10 @@ public class ClientGame {
     public void addPlayer(String username){
         players.add(new ClientPlayer(username));
     }
+
+    public ClientPlayground getPlaygroundByUsername(String username){
+        return getPlayer(username).getPlayground();
+    }
 }
 
 

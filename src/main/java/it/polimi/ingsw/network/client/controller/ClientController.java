@@ -16,7 +16,10 @@ import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.model.ClientGame;
 import it.polimi.ingsw.network.client.model.ClientPhase;
+import it.polimi.ingsw.network.client.model.board.ClientPlayground;
+import it.polimi.ingsw.network.client.model.board.ClientTile;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
+import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 
 import java.rmi.RemoteException;
@@ -51,7 +54,7 @@ public class ClientController implements ClientActions {
         }
 
         if (!checkPosition(position)) {
-            throw new Playground.UnavailablePositionException("The position insert isn't available");
+            throw new Playground.UnavailablePositionException("The position selected isn't available");
         }
 
         try{
@@ -206,9 +209,6 @@ public class ClientController implements ClientActions {
         game.getPlayer(username).setNetworkStatus(isConnected);
     }
 
-    public void updateInitialPlayerStatus(ClientPlayer player) {
-
-    }
 
     public void updateBoardSetUp(int[] commonObjectiveID, int topBackID, int topGoldenBackID, int[] faceUpCards) {
 
@@ -226,7 +226,16 @@ public class ClientController implements ClientActions {
 
     }
 
-    void updateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Position position) {
+    void updateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientFace placedFace, Position position) {
+
+        ClientPlayground playground = game.getPlaygroundByUsername(username);
+
+        playground.setPoints(points);
+        playground.addNewAvailablePositions(newAvailablePositions);
+        playground.setCoveredCorner(positionToCornerCovered);
+        playground.placeTile(position, new ClientTile(placedFace));
+        playground.updateResources(newResources);
+
 
     }
 
@@ -248,7 +257,7 @@ public class ClientController implements ClientActions {
 
     }
 
-    void showWinners(List<String> winners) {
+    void updateWinners(List<String> winners) {
     }
 
     private boolean checkPosition(Position position) {
