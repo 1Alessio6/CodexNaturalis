@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.client.model.board;
 import it.polimi.ingsw.model.board.Availability;
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
+import it.polimi.ingsw.model.board.Tile;
 import it.polimi.ingsw.model.card.CornerPosition;
 import it.polimi.ingsw.model.card.Face;
 import it.polimi.ingsw.model.card.Symbol;
@@ -36,10 +37,20 @@ public class ClientPlayground {
     }
 
     public ClientPlayground(Playground playgroundToCopy) {
-        area = new HashMap<>();
-        // fixme. how to distinguish which card cover the other from the playground representation
+        area = createClientArea(playgroundToCopy.getArea());
         resources = playgroundToCopy.getResources();
         points = playgroundToCopy.getPoints();
+    }
+
+    public Map<Position, ClientTile> createClientArea(Map<Position, Tile> areaToCopy){
+
+        Map<Position, ClientTile> area = new HashMap<>();
+
+        for(Position position : areaToCopy.keySet()){
+            area.put(position, new ClientTile(areaToCopy.get(position)));
+        }
+
+        return area;
     }
 
     public Map<Position, ClientTile> getArea() {
