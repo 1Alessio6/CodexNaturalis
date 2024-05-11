@@ -1,12 +1,17 @@
 package it.polimi.ingsw.network.client.model.player;
 
+import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.card.ObjectiveCard;
 import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import it.polimi.ingsw.model.player.Player;
 
 public class ClientPlayer {
 
@@ -40,6 +45,24 @@ public class ClientPlayer {
         this.starterCard = starterCard;
         this.playerCards = playerCards;
         this.objectiveCards = objectiveCards;
+    }
+
+    public ClientPlayer(Player player) {
+        username = player.getUsername();
+        playground = new ClientPlayground(player.getPlayground());
+        color = player.getColour();
+        isConnected = player.isConnected();
+        starterCard = new ClientCard(player.getStarter());
+        playerCards = new ArrayList<>();
+        for (Card c : player.getCards()) {
+            playerCards.add(new ClientCard(c));
+        }
+        objectiveCards = new ArrayList<>();
+        for (ObjectiveCard c : player.getObjectives()) {
+            objectiveCards.add(new ClientCard(c));
+        }
+        // todo. why is it needed
+        // Map<Integer, Map<Symbol, Integer>> goldenFrontRequirements;
     }
 
     public int getAmountResource(Symbol s) {
