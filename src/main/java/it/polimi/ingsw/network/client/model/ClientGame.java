@@ -16,8 +16,17 @@ public class ClientGame {
     private List<ClientPlayer> players;
     private List<Message> messages;
     private ClientBoard clientBoard;
-
     private ClientPhase currentPhase;
+
+    private boolean isGameActive;
+
+    public boolean isGameActive() {
+        return isGameActive;
+    }
+
+    public void setGameActive(boolean gameActive) {
+        isGameActive = gameActive;
+    }
 
     public ClientPhase getCurrentPhase() {
         return currentPhase;
