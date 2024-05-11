@@ -229,6 +229,10 @@ public class Player {
         return objectiveCards;
     }
 
+    public PlayerColor getColour() {
+        return colour;
+    }
+
     /**
      * Sets <code>this</code>' color.
      *
