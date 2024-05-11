@@ -28,7 +28,7 @@ public class Place extends PlayerAction {
 
     @Override
     public PlayerState getPlayerState() {
-        return null;
+        return PlayerState.Place;
     }
 }
 
