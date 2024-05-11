@@ -65,6 +65,8 @@ public class ClientController implements ClientActions {
     @Override
     public void draw(int IdToDraw) throws InvalidGamePhaseException, EmptyDeckException, NotExistingFaceUp, SuspendedGameException, RemoteException {
 
+        assert(IdToDraw <= 5 && IdToDraw >= 0);   //view should only accept numbers in this range
+
         if (!game.isGameActive()){
             throw new SuspendedGameException("The game is suspended, you can only text messages");
         }
@@ -143,7 +145,8 @@ public class ClientController implements ClientActions {
 
     @Override
     public void setPlayersNumber(int playersNumber) throws RemoteException {
-
+        assert(playersNumber < 5 && playersNumber > 1); //view should only accept numbers in this range
+        server.setPlayersNumber(playersNumber);
     }
 
     public void updateCreator() throws RemoteException {
