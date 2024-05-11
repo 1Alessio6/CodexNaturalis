@@ -215,8 +215,8 @@ public class Controller implements EventListener, GameRequest {
      * @throws InvalidMessageException if the message is invalid.
      */
     @Override
-    public void sendMessage(String author, Message message) throws InvalidMessageException {
-        game.registerMessage(author, message);
+    public void sendMessage(Message message) throws InvalidMessageException {
+        game.registerMessage(message);
     }
 
     @Override

@@ -605,14 +605,11 @@ public class Game {
     /**
      * Registers message sent by author.
      *
-     * @param author  of the message.
      * @param message to register.
      * @throws InvalidMessageException if the author doesn't match the sender or the recipient is an invalid username.
      */
-    public void registerMessage(String author, Message message) throws InvalidMessageException {
-        if (!message.getSender().equals(author)) {
-            throw new InvalidMessageException("sender doesn't match the author's username");
-        }
+    public void registerMessage(Message message) throws InvalidMessageException {
+
         if (getPlayerByUsername(message.getRecipient()) == null) {
             throw new InvalidMessageException("recipient doesn't exists");
         }

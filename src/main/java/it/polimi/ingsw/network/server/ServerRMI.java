@@ -100,8 +100,8 @@ public class ServerRMI implements VirtualServer {
     }
 
     @Override
-    public void sendMessage(String author, Message message) throws InvalidMessageException {
-        myController.sendMessage(author, message);
+    public void sendMessage(Message message) throws InvalidMessageException {
+        myController.sendMessage(message);
     }
 
     @Override

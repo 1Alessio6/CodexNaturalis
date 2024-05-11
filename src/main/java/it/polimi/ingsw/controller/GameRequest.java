@@ -30,7 +30,7 @@ public interface GameRequest {
 
     void draw(String username, int idToDraw) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException;
 
-    void sendMessage(String author, Message message) throws InvalidMessageException;
+    void sendMessage(Message message) throws InvalidMessageException;
 
     void setPlayersNumber(int playersNumber);
 }
