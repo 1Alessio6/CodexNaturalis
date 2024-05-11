@@ -143,4 +143,8 @@ public class ClientPlayer {
 
         return this.username.equals(((ClientPlayer) obj).getUsername());
     }
+
+    public void removePlayerCard(ClientCard cardToRemove){
+        playerCards.removeIf(card -> cardToRemove.getBackId() == card.getBackId() && cardToRemove.getFrontId() == card.getFrontId());
+    }
 }
