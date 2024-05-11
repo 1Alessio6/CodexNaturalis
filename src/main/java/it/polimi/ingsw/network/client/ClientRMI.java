@@ -140,6 +140,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
     private void receivePlaceCommand() {
 
+        /*
         int numCard;
         Side selectedSide;
         Position position;
@@ -148,30 +149,20 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
             numCard = receivePlayerCardPosition();
             try {
                 selectedSide = receiveCardSide();
-                if (selectedSide == Side.FRONT) {
-                    try {
-                        checkRequirements(this.game.getMainPlayerCard(numCard));
-                        position = receivePosition();
-                        break;
-                    } catch (Playground.NotEnoughResourcesException e) {
-                        System.out.println(e.getMessage());
-                    }
-                }
+                position = receivePosition();
 
             } catch (ChangeCard ignored) {
             }
         }
 
-        try {
-            server.placeCard(this.game.getMainPlayerUsername(), this.game.getMainPlayerCard(numCard).getBackId(), this.game.getMainPlayerCard(numCard).getFrontId(), selectedSide, position);
-        } catch (Playground.UnavailablePositionException | Playground.NotEnoughResourcesException e) {
-            System.err.println("Error check methods should have avoid an incorrect move");
-        } catch (InvalidPlayerActionException | SuspendedGameException | InvalidGamePhaseException e) {
-            System.err.println("Error");
-        }
+         */
+
     }
 
+
+    /*
     private int receivePlayerCardPosition() {
+
 
         int numCard = -1;
         Scanner scanner = new Scanner(System.in);
@@ -185,7 +176,10 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
         scanner.close();
 
         return numCard;
+
+
     }
+     */
 
     private Side receiveCardSide() throws ChangeCard {
 
@@ -216,13 +210,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
             int posX = scanner.nextInt();
             int posY = scanner.nextInt();
             Position position = new Position(posX, posY);
-            try {
-                checkPosition(position, this.game.getMainPlayerPlayground());
-                scanner.close();
-                return position;
-            } catch (Playground.UnavailablePositionException e) {
-                System.out.println(e.getMessage());
-            }
+            scanner.close();
         }
     }
 
@@ -235,20 +223,6 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
             server.draw(this.game.getMainPlayerUsername(), cardPosition);
         } catch (InvalidPlayerActionException | EmptyDeckException | InvalidGamePhaseException e) {
             System.out.println("Error");
-        }
-    }
-
-    private void checkPosition(Position position, ClientPlayground playground) throws Playground.UnavailablePositionException {
-        if (!playground.getAvailablePositions().contains(position)) {
-            throw new Playground.UnavailablePositionException("The position insert isn't available");
-        }
-    }
-
-    private void checkRequirements(ClientCard card) throws Playground.NotEnoughResourcesException {
-        for (Symbol s : card.getRequiredResources().keySet()) {
-            if (this.game.getMainPlayer().getAmountResource(s) < card.getRequiredResources().get(s)) {
-                throw new Playground.NotEnoughResourcesException("You don't have the resources to place this side of the card");
-            }
         }
     }
 
@@ -275,6 +249,8 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
     @Override
     public void showBoardSetUp(int[] commonObjectiveID, int topBackID, int topGoldenBackID, int[] faceUpCards) throws RemoteException {
+
+        /*
         game.getClientBoard().setCommonObjectives(commonObjectiveID);
         game.getClientBoard().addGoldenBackID(topGoldenBackID);
         game.getClientBoard().addResourceBackID(topBackID);
@@ -289,6 +265,8 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
         for (int i : game.getClientBoard().getFaceUpCards()) {
             System.out.println(i + "\n");
         }
+
+         */
     }
 
     @Override
