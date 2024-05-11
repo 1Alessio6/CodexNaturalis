@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.client.model.player;
 
 import it.polimi.ingsw.model.card.Card;
+import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.ObjectiveCard;
 import it.polimi.ingsw.model.card.Symbol;
@@ -130,5 +131,16 @@ public class ClientPlayer {
 
     public void setPlayerCard(ClientCard card, int cardHandPosition) {
         this.playerCards.set(cardHandPosition, card);
+    }
+
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || this.getClass() != obj.getClass()) {
+            return false;
+        }
+
+        return this.username.equals(((ClientPlayer) obj).getUsername());
     }
 }
