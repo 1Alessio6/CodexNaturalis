@@ -40,6 +40,7 @@ public class ListenerHandler <ListenerType> {
     }
 
     public void notify(String username, Notifier<ListenerType> notifier) {
+        if (!idToListener.containsKey(username)) return;
         try {
             notifier.sendUpdate(idToListener.get(username));
         } catch (RemoteException remoteException) {
