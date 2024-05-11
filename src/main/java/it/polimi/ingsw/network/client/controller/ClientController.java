@@ -110,8 +110,20 @@ public class ClientController implements ClientActions {
     }
 
     @Override
-    public void placeStarter(Side side) throws SuspendedGameException, RemoteException {
+    public void placeStarter(Side side) throws SuspendedGameException, RemoteException, InvalidGamePhaseException {
+        if (!game.isGameActive()){
+            throw new SuspendedGameException("The game is suspended, you can only text messages");
+        }
 
+        if(game.getCurrentPhase() != ClientPhase.SETUP){
+            throw new InvalidGamePhaseException("You can only place your starter card during the setup phase");
+        }
+
+        try{
+            server.placeStarter(game.getMainPlayerUsername(), side);
+        }catch(InvalidPlayerActionException | InvalidGamePhaseException e){
+            System.err.println(e.getMessage());
+        }
     }
 
     @Override
@@ -120,7 +132,7 @@ public class ClientController implements ClientActions {
     }
 
     @Override
-    public void placeObjectiveCard(int chosenObjective) throws SuspendedGameException, RemoteException {
+    public void placeObjectiveCard(int chosenObjective) throws SuspendedGameException, RemoteException, InvalidGamePhaseException {
 
     }
 

@@ -22,11 +22,11 @@ public interface ClientActions {
     void placeCard(int cardHandPosition, Side selectedSide, Position position) throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException, RuntimeException;
     void draw(int IdToDraw) throws  InvalidGamePhaseException, EmptyDeckException, NotExistingFaceUp, SuspendedGameException, RemoteException;
 
-    void placeStarter(Side side) throws SuspendedGameException, RemoteException;
+    void placeStarter(Side side) throws SuspendedGameException, RemoteException, InvalidGamePhaseException;
 
-    void chooseColor(PlayerColor color) throws InvalidColorException, SuspendedGameException, RemoteException;
+    void chooseColor(PlayerColor color) throws InvalidColorException, SuspendedGameException, RemoteException, InvalidGamePhaseException;
 
-    void placeObjectiveCard(int chosenObjective) throws SuspendedGameException, RemoteException;
+    void placeObjectiveCard(int chosenObjective) throws SuspendedGameException, RemoteException, InvalidGamePhaseException;
 
     void sendMessage(Message message) throws InvalidMessageException, RemoteException;
 
