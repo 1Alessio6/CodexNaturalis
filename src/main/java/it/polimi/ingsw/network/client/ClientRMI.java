@@ -62,10 +62,11 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
     private void readClientCommand() {
 
+        /*
         Scanner scanner = new Scanner(System.in);
         boolean isEnded = false;
 
-        //
+
         while (!isEnded) {
             switch (game.getCurrentPhase()) {
                 case SETUP:
@@ -88,6 +89,8 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
             }
 
         }
+
+         */
     }
 
     //todo check if ClientPlayground it's correctly updated, it should be updated by the methods from observer pattern
