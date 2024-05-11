@@ -98,6 +98,22 @@ public class ClientGame {
         // todo. add logic to construct from a Game
         // note. client board can be obtained from previous information
     }
+
+    public boolean isGoldenDeckEmpty(){
+        return clientBoard.isGoldenDeckEmpty();
+    }
+
+    public boolean isResourceDeckEmpty(){
+        return clientBoard.isResourceDeckEmpty();
+    }
+
+    public ClientCard getFaceUpCard(int index){
+        return clientBoard.getFaceUpCards()[index];
+    }
+
+    public boolean isFaceUpSlotEmpty(int index){
+        return getFaceUpCard(index) == null;
+    }
 }
 
 
