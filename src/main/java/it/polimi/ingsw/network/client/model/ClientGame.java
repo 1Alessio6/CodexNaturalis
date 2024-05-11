@@ -1,13 +1,16 @@
 package it.polimi.ingsw.network.client.model;
 
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.network.client.model.board.ClientBoard;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ClientGame {
     private List<ClientCard> faceUpCards;
@@ -113,6 +116,18 @@ public class ClientGame {
 
     public boolean isFaceUpSlotEmpty(int index){
         return getFaceUpCard(index) == null;
+    }
+
+    public Set<PlayerColor> getAlreadyTakenColors(){
+        Set<PlayerColor> alreadyTakenColors = new HashSet<>();
+
+        for(ClientPlayer player : players){
+            if(player.getColor() != null){
+                alreadyTakenColors.add(player.getColor());
+            }
+        }
+
+        return alreadyTakenColors;
     }
 }
 
