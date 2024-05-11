@@ -70,7 +70,14 @@ public class Lobby {
         }
 
         List<String> usernames = listenerHandler.getIds();
-        return new Game(usernames);
+        Game game = new Game(usernames);
+        for (String user : usernames) {
+            try {
+                game.add(user, listenerHandler.get(user));
+            } catch (InvalidUsernameException ignored) {
+            }
+        }
+        return game;
     }
 
     private void resetLobby() {
