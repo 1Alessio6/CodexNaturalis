@@ -10,12 +10,6 @@ import it.polimi.ingsw.model.player.action.PlayerState;
 import java.util.*;
 import java.util.stream.Stream;
 
-
-// todo. define equals method for Player based on username equality
-
-// designPattern(State, Player) == Contextor
-// The network status is not modelled as a state to avoid storing information related to the previous state to recovery the last state
-
 /**
  * Representation of the player's state.
  */
