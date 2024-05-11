@@ -154,7 +154,19 @@ public class ClientController implements ClientActions {
 
     @Override
     public void placeObjectiveCard(int chosenObjective) throws SuspendedGameException, RemoteException, InvalidGamePhaseException {
+        if (!game.isGameActive()){
+            throw new SuspendedGameException("The game is suspended, you can only text messages");
+        }
 
+        if(game.getCurrentPhase() != ClientPhase.SETUP){
+            throw new InvalidGamePhaseException("You can only choose your private objective during the setup phase");
+        }
+
+        try{
+            server.placeObjectiveCard(game.getMainPlayerUsername(), chosenObjective);
+        }catch(InvalidGamePhaseException | InvalidPlayerActionException e){
+            System.err.println(e.getMessage());
+        }
     }
 
     @Override
