@@ -1,13 +1,17 @@
 package it.polimi.ingsw.network.client.model;
 
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.card.ObjectiveCard;
 import it.polimi.ingsw.model.chat.message.Message;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.client.model.board.ClientBoard;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -97,9 +101,33 @@ public class ClientGame {
         return clientBoard;
     }
 
+    public ClientGame() {}
+
     public ClientGame(Game game) {
-        // todo. add logic to construct from a Game
-        // note. client board can be obtained from previous information
+        faceUpCards = new ArrayList<>();
+        for (Card faceUpCard : game.getFaceUpCards()) {
+            faceUpCards.add(new ClientCard(faceUpCard));
+        }
+        commonObjects = new ArrayList<>();
+        for (ObjectiveCard commonObjective : game.getCommonObjectives()) {
+            commonObjects.add(new ClientCard(commonObjective));
+        }
+        currentPlayerIdx = game.getCurrentPlayerIdx();
+        players = new ArrayList<>();
+        for (Player player : game.getPlayers()) {
+            ClientPlayer clientPlayer = new ClientPlayer(player);
+            if (player.getUsername().equals(game.getCurrentPlayer().getUsername())) {
+                clientPlayer.setIsCurrentPlayer(true);
+            }
+            players.add(clientPlayer);
+        }
+
+        messages = game.getMessages();
+
+        //clientBoard = new ClientBoard();
+
+      //  private ClientBoard clientBoard;
+      //  private ClientPhase currentPhase;
     }
 
     public boolean isGoldenDeckEmpty(){

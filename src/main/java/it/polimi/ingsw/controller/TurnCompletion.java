@@ -30,39 +30,37 @@ public class TurnCompletion {
     }
 
     private List<String> getListOfInactivePlayers(Game game) {
-        List<String> playersInGame = game.getPlayers().stream().map(Player::getUsername).toList();
+        List<String> playersInGame = new ArrayList<>(game.getPlayers().stream().map(Player::getUsername).toList());
         List<String> activePlayers = game.getActivePlayers().stream().map(Player::getUsername).toList();
         playersInGame.removeAll(activePlayers);
         return playersInGame;
     }
 
-    private void completeSetup(Game game, String username) {
-        PlayerState playerState = game.getPlayerByUsername(username).getPlayerAction().getPlayerState();
-
-        if (PlayerState.ChooseStarter == playerState) {
+    private void completeSetup(Game game, Player player) {
+        if (PlayerState.ChooseStarter == player.getPlayerAction().getPlayerState()) {
             List<Side> sides = Arrays.asList(Side.FRONT, Side.BACK);
             Collections.shuffle(sides);
             try {
-                game.placeStarter(username, sides.getFirst());
+                game.placeStarter(player.getUsername(), sides.getFirst());
             } catch (InvalidPlayerActionException | InvalidGamePhaseException ignored) {
             }
         }
 
-        if (PlayerState.ChooseColor == playerState) {
+        if (PlayerState.ChooseColor == player.getPlayerAction().getPlayerState()) {
             List<PlayerColor> remainingColors = new ArrayList<>(game.getAvailableColor());
             Collections.shuffle(remainingColors);
             try {
-                game.assignColor(username, remainingColors.getFirst());
+                game.assignColor(player.getUsername(), remainingColors.getFirst());
             } catch (InvalidPlayerActionException | InvalidColorException | NonexistentPlayerException |
                      InvalidGamePhaseException | RemoteException ignored) {
             }
         }
 
-        if (PlayerState.ChooseObjective == playerState) {
+        if (PlayerState.ChooseObjective == player.getPlayerAction().getPlayerState()) {
             List<Integer> chosenObjective = Arrays.asList(0, 1);
             Collections.shuffle(chosenObjective);
             try {
-                game.placeObjectiveCard(username, chosenObjective.getFirst());
+                game.placeObjectiveCard(player.getUsername(), chosenObjective.getFirst());
             } catch (InvalidPlayerActionException | InvalidGamePhaseException ignored) {
             }
         }
@@ -95,7 +93,9 @@ public class TurnCompletion {
         List<String> inactivePlayers = getListOfInactivePlayers(game);
         for (String username : inactivePlayers) {
             if (game.getPhase() == GamePhase.Setup) {
-                completeSetup(game, username);
+                if (game.getPlayerByUsername(username).getPlayerAction().getPlayerState() != PlayerState.Place) {
+                    completeSetup(game, game.getPlayerByUsername(username));
+                }
             } else {
                 Player currentPlayer = game.getCurrentPlayer();
                 if (currentPlayer.getUsername().equals(username)) {
@@ -115,7 +115,7 @@ public class TurnCompletion {
 
     public void handleLeave(Game game) {
         // game is active: complete turn of the disconnected player.
-        if (game.isActive()) {
+        if (isGameActive) {
             completePendingTurn(game);
         }
         isGameActive = game.isActive();

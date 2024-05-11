@@ -83,7 +83,6 @@ public class Controller implements EventListener, GameRequest {
     }
 
     private void joinGame(String username, VirtualView gameListener) throws InvalidUsernameException {
-        boolean statusBeforeJoin = game.isActive();
         game.add(username, gameListener);
         turnCompletion.handleJoin(game);
         if (game.isActive()) {

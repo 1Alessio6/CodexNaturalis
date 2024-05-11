@@ -267,8 +267,20 @@ public class Game {
         return phase == GamePhase.End;
     }
 
+    public List<ObjectiveCard> getCommonObjectives() {
+        return commonObjects;
+    }
+
     public List<Card> getFaceUpCards() {
         return faceUpCards;
+    }
+
+    public int getCurrentPlayerIdx() {
+        return currentPlayerIdx;
+    }
+
+    public List<Message> getMessages() {
+        return chatDatabase.getMessages();
     }
 
     public Set<PlayerColor> getAvailableColor() {

@@ -37,7 +37,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     private View clientView; //can be tui or gui
 
     public ClientRMI() throws RemoteException{
-
+        game = new ClientGame();
     }
 
     public ClientRMI(VirtualServer server) throws RemoteException {
