@@ -1,19 +1,8 @@
 package it.polimi.ingsw.network.client.view;
 
-import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.card.Color.PlayerColor;
-import it.polimi.ingsw.model.card.CornerPosition;
-import it.polimi.ingsw.model.card.Symbol;
-import it.polimi.ingsw.model.chat.message.Message;
+import it.polimi.ingsw.network.client.controller.ClientActions;
 import it.polimi.ingsw.network.client.controller.ClientController;
-import it.polimi.ingsw.network.client.model.ClientGame;
-import it.polimi.ingsw.network.client.model.ClientPhase;
-import it.polimi.ingsw.network.client.model.card.ClientCard;
-import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 
-import java.rmi.RemoteException;
-import java.util.List;
-import java.util.Map;
 
 public abstract class View {
 

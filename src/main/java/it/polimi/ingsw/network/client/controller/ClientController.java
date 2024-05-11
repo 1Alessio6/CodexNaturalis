@@ -1,11 +1,16 @@
 package it.polimi.ingsw.network.client.controller;
 
+import it.polimi.ingsw.model.InvalidGamePhaseException;
+import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
+import it.polimi.ingsw.model.card.*;
+import it.polimi.ingsw.model.card.Color.InvalidColorException;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
-import it.polimi.ingsw.model.card.CornerPosition;
-import it.polimi.ingsw.model.card.Symbol;
+import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
+import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.network.VirtualServer;
+import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.model.ClientGame;
 import it.polimi.ingsw.network.client.model.ClientPhase;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
@@ -15,10 +20,50 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 
-public class ClientController {
+public class ClientController implements ClientActions{
 
     private VirtualServer server;
-    ClientGame game;
+    private ClientGame game;
+
+    @Override
+    public void connect(VirtualView client, String username) throws InvalidUsernameException {
+
+    }
+
+    @Override
+    public void placeCard(int cardHandPosition, Side selectedSide, Position position) throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException {
+
+    }
+
+    @Override
+    public void draw(int IdToDraw) throws InvalidGamePhaseException, EmptyDeckException, NotExistingFaceUp {
+
+    }
+
+    @Override
+    public void placeStarter(Side side){
+
+    }
+
+    @Override
+    public void chooseColor(PlayerColor color) throws InvalidColorException{
+
+    }
+
+    @Override
+    public void placeObjectiveCard(int chosenObjective){
+
+    }
+
+    @Override
+    public void sendMessage(Message message) throws InvalidMessageException {
+
+    }
+
+    @Override
+    public void setPlayersNumber(int playersNumber) {
+
+    }
 
     public void updateCreator() throws RemoteException {
 
