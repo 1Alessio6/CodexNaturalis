@@ -38,6 +38,14 @@ public class ClientCard implements GeneralCard {
         return front.getFaceID();
     }
 
+    public ClientFace getBack() {
+        return back;
+    }
+
+    public ClientFace getFront() {
+        return front;
+    }
+
     @Override
     public Map<Symbol, Integer> getRequiredResources() {
         return requirements;
