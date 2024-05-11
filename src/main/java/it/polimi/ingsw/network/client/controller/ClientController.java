@@ -34,7 +34,7 @@ public class ClientController implements ClientActions {
     }
 
     @Override
-    public void placeCard(int cardHandPosition, Side selectedSide, Position position) throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException, RuntimeException {
+    public void placeCard(int cardHandPosition, Side selectedSide, Position position) throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException, RemoteException {
 
         if (!game.isGameActive()){
             throw new SuspendedGameException("The game is suspended, you can only text messages");
@@ -178,7 +178,7 @@ public class ClientController implements ClientActions {
             throw new InvalidMessageException("recipient doesn't exists");
         }
 
-        server.sendMessage(message); //
+        server.sendMessage(message);
     }
 
     @Override
@@ -196,11 +196,14 @@ public class ClientController implements ClientActions {
     }
 
     public void updateAfterConnection(ClientGame clientGame) {
-
+        game = clientGame;
     }
 
     public void updatePlayerStatus(boolean isConnected, String username) {
-
+        if(!game.containsPlayer(username)){
+            game.addPlayer(username);
+        }
+        game.getPlayer(username).setNetworkStatus(isConnected);
     }
 
     public void updateInitialPlayerStatus(ClientPlayer player) {
