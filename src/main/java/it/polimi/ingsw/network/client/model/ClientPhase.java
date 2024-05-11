@@ -4,7 +4,8 @@ public enum ClientPhase {
     SETUP,
     WAIT,
     ADDITIONAL_WAIT,
-    NORMAL_TURN,
+    NORMAL_PLACE,
+    NORMAL_DRAW,
     ADDITIONAL_TURN,
     END;
 }

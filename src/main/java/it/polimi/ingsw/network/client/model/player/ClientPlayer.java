@@ -55,6 +55,10 @@ public class ClientPlayer {
         return this.goldenFrontRequirements.get(frontID);
     }
 
+    public void addPlayerCard(ClientCard card){
+        playerCards.add(card);
+    }
+
     public boolean isCurrentPlayer() {
         return isCurrentPlayer;
     }

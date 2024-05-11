@@ -470,17 +470,20 @@ public class Game {
             updateCurrentPlayerIdx();
         }
 
-        listenerHandler.notifyBroadcast(receiver -> {
-            Map<Position, CornerPosition> positionToCornerCovered = new HashMap<>();
-            List<CornerPosition> cornerToTest = Arrays.asList(CornerPosition.LOWER_LEFT, CornerPosition.TOP_LEFT, CornerPosition.TOP_RIGHT, CornerPosition.LOWER_RIGHT);
-            Playground playground = currentPlayer.getPlayground();
-            for (CornerPosition cornerPosition : cornerToTest) {
-                Position adjacentPos = playground.getAdjacentPosition(position, cornerPosition);
-                if (playground.getTile(adjacentPos).sameAvailability(Availability.OCCUPIED)) {
-                    positionToCornerCovered.put(adjacentPos, cornerPosition);
+        listenerHandler.notifyBroadcast(new Notifier<VirtualView>() {
+            @Override
+            public void sendUpdate(VirtualView receiver) throws RemoteException {
+                Map<Position, CornerPosition> positionToCornerCovered = new HashMap<>();
+                List<CornerPosition> cornerToTest = Arrays.asList(CornerPosition.LOWER_LEFT, CornerPosition.TOP_LEFT, CornerPosition.TOP_RIGHT, CornerPosition.LOWER_RIGHT);
+                Playground playground = currentPlayer.getPlayground();
+                for (CornerPosition cornerPosition : cornerToTest) {
+                    Position adjacentPos = playground.getAdjacentPosition(position, cornerPosition);
+                    if (playground.getTile(adjacentPos).sameAvailability(Availability.OCCUPIED)) {
+                        positionToCornerCovered.put(adjacentPos, cornerPosition);
+                    }
                 }
+                receiver.showUpdateAfterPlace(positionToCornerCovered, currentPlayer.getPlayground().getAvailablePositions(), playground.getResources(), currentPlayer.getPoints(), username, new ClientCard(card), position);
             }
-            receiver.showUpdateAfterPlace(positionToCornerCovered, currentPlayer.getPlayground().getAvailablePositions(), playground.getResources(), currentPlayer.getPoints(), username);
         });
 
         if (phase == GamePhase.End) {
@@ -530,7 +533,12 @@ public class Game {
             throw invalidPlayerActionException;
         }
 
-        listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateAfterDraw(new ClientCard(newCard), deck.isEmpty(), new ClientCard(deck.getTop()), null, null, phase == GamePhase.PlaceAdditional, username));
+        listenerHandler.notifyBroadcast(new Notifier<VirtualView>() {
+            @Override
+            public void sendUpdate(VirtualView receiver) throws RemoteException {
+                receiver.showUpdateAfterDraw(new ClientCard(newCard), deck.isEmpty(), new ClientCard(deck.getTop()), null, null, phase == GamePhase.PlaceAdditional, username, convertDeckTypeIntoId(deckType));
+            }
+        });
     }
 
     /**
@@ -595,14 +603,19 @@ public class Game {
             throw new InvalidPlayerActionException();
         }
 
-        listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateAfterDraw(
-                new ClientCard(newCard),
-                deckForReplacement.isEmpty(),
-                new ClientCard(deckForReplacement.getTop()),
-                new ClientCard(faceUpCards.get(faceUpCardIdx)),
-                new ClientCard(deckForReplacement.getTop()),
-                phase == GamePhase.PlaceAdditional,
-                username));
+        listenerHandler.notifyBroadcast(new Notifier<VirtualView>() {
+            @Override
+            public void sendUpdate(VirtualView receiver) throws RemoteException {
+                receiver.showUpdateAfterDraw(
+                        new ClientCard(newCard),
+                        deckForReplacement.isEmpty(),
+                        new ClientCard(deckForReplacement.getTop()),
+                        new ClientCard(faceUpCards.get(faceUpCardIdx)),
+                        new ClientCard(deckForReplacement.getTop()),
+                        phase == GamePhase.PlaceAdditional,
+                        username, faceUpCardIdx);
+            }
+        });
     }
 
     /**
@@ -717,6 +730,15 @@ public class Game {
             listenerHandler.notifyBroadcast(receiver -> receiver.showWinners(Collections.singletonList(lastConnectedPlayer)));
         } catch (NoSuchElementException noSuchElementException) {
             // empty list: there's no player to notify
+        }
+    }
+
+    private int convertDeckTypeIntoId(DeckType type){
+        if(DeckType.GOLDEN == type){
+            return 4;
+        }
+        else{
+            return 5;
         }
     }
 

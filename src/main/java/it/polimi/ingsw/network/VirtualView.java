@@ -43,21 +43,18 @@ public interface VirtualView extends Remote {
     // ping from server
 
     //method to show players base information
-    // notify success
-    void showPlayerUsername(String username) throws RemoteException; //see if it's needed or if it could be handled with an exception
-
     // notify about the player disconnection
+    //use when a new player is connected
     void showUpdatePlayerStatus(boolean isConnected, String username) throws RemoteException;
 
     void showInitialPlayerStatus(ClientPlayer player) throws RemoteException;
 
+    //todo check if there are all the methods to show the starter player information
     //method called only to give the cards the first time, not after the player choice
     //it's the only method that show information to one player per time
     // information needed at the beginning of the game.
     // fixme(readability). to improve readability replace all parameters with a single player.
     // give info about the player
- //   void showUpdatePlayerObjectiveCard(int[] hiddenObjectives, ClientCard starterCard, String username) throws RemoteException;
-
  //   //before board setUp every player has 3 cards representing his first hand
  //   // todo. merge with showBoardSetup
  //   void showFirstPlayersCards(Map<String, List<ClientCard>> firstCardsAssigned);
@@ -74,9 +71,9 @@ public interface VirtualView extends Remote {
     //The two list positions and tiles represent every new available tile added after the last place invocation
     //symbols and total amount represent the new resources added after the last place invocation
     //consider both couples like maps
-    void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username) throws RemoteException;
+    void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard ,Position position) throws RemoteException;
 
-    void showUpdateAfterDraw(ClientCard drawnCard, boolean isEmpty, ClientCard newTopDeck, ClientCard newFaceUpCard, ClientCard newTopCard, boolean additionalTurn, String Username) throws RemoteException;
+    void showUpdateAfterDraw(ClientCard drawnCard, boolean isEmpty, ClientCard newTopDeck, ClientCard newFaceUpCard, ClientCard newTopCard, boolean additionalTurn, String username, int boardPosition) throws RemoteException;
 
     //method to notify update after a draw
 
