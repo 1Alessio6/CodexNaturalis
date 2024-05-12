@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.ObjectiveCard;
 import it.polimi.ingsw.model.chat.message.Message;
+import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.client.model.board.ClientBoard;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
@@ -17,13 +18,14 @@ import java.util.List;
 import java.util.Set;
 
 public class ClientGame {
+
     private List<ClientCard> faceUpCards;
     private List<ClientCard> commonObjects;
     private int currentPlayerIdx; // index in the current player list.
     private List<ClientPlayer> players;
     private List<Message> messages;
     private ClientBoard clientBoard;
-    private ClientPhase currentPhase; // todo. change to GamePhase
+    private GamePhase currentPhase; //todo move inside player
 
     private boolean isGameActive;
 
@@ -35,7 +37,7 @@ public class ClientGame {
         isGameActive = gameActive;
     }
 
-    public ClientPhase getCurrentPhase() {
+    public GamePhase getCurrentPhase() {
         return currentPhase;
     }
 
@@ -52,8 +54,10 @@ public class ClientGame {
         return null;
     }
 
+    //todo update get main player
 
-    public void setCurrentPhase(ClientPhase currentPhase) {
+
+    public void setCurrentPhase(GamePhase currentPhase) {
         this.currentPhase = currentPhase;
     }
 
@@ -71,26 +75,6 @@ public class ClientGame {
 
     public ClientPlayer getPlayer(int numPlayer) {
         return players.get(numPlayer);
-    }
-
-    public ClientPlayer getMainPlayer(){
-        return getPlayer(0);
-    }
-
-    public void setCurrentMainPlayer(boolean isCurrent) {
-        getMainPlayer().setIsCurrentPlayer(isCurrent);
-    }
-
-    public ClientCard getMainPlayerCard(int cardHandPosition){
-        return getMainPlayer().getPlayerCard(cardHandPosition);
-    }
-
-    public String getMainPlayerUsername(){
-        return getMainPlayer().getUsername();
-    }
-
-    public ClientPlayground getMainPlayerPlayground(){
-        return getMainPlayer().getPlayground();
     }
 
     public List<Message> getMessages() {
@@ -114,9 +98,15 @@ public class ClientGame {
         players = new ArrayList<>();
         for (Player player : game.getPlayers()) {
             ClientPlayer clientPlayer = new ClientPlayer(player);
+
+            //todo update with new current player representation
+            //could be removed?
+            /*
             if (player.getUsername().equals(game.getCurrentPlayer().getUsername())) {
                 clientPlayer.setIsCurrentPlayer(true);
             }
+
+             */
             players.add(clientPlayer);
         }
 
@@ -157,6 +147,8 @@ public class ClientGame {
         return alreadyTakenColors;
     }
 
+    //getRemainingColor
+
     public boolean containsPlayer(String username){
         return players.contains(getPlayer(username));
     }
@@ -167,6 +159,10 @@ public class ClientGame {
 
     public ClientPlayground getPlaygroundByUsername(String username){
         return getPlayer(username).getPlayground();
+    }
+
+    public ClientPlayer getCurrentPlayer(){
+        return players.get(currentPlayerIdx);
     }
 
 }
