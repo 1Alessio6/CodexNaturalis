@@ -24,16 +24,12 @@ public class ClientPlayer {
 
     private boolean isConnected;
 
-    private boolean isCurrentPlayer;
-
     private ClientCard starterCard;
 
     // cards in hand
     private List<ClientCard> playerCards;
 
     private List<ClientCard> objectiveCards;
-
-    private Map<Integer, Map<Symbol, Integer>> goldenFrontRequirements; //todo could be changed into an array list of map
 
     public ClientPlayer(String username) {
         this.username = username;
@@ -62,33 +58,14 @@ public class ClientPlayer {
         for (ObjectiveCard c : player.getObjectives()) {
             objectiveCards.add(new ClientCard(c));
         }
-        // todo. why is it needed
-        // Map<Integer, Map<Symbol, Integer>> goldenFrontRequirements;
     }
 
     public int getAmountResource(Symbol s) {
         return this.getPlayground().getResources().get(s);
     }
 
-    public boolean isGoldenFront(int frontID) {
-        return this.goldenFrontRequirements.containsKey(frontID);
-    }
-
-    public Map<Symbol, Integer> getGoldenFrontRequirements(int frontID) {
-        assert (isGoldenFront(frontID));
-        return this.goldenFrontRequirements.get(frontID);
-    }
-
     public void addPlayerCard(ClientCard card) {
         playerCards.add(card);
-    }
-
-    public boolean isCurrentPlayer() {
-        return isCurrentPlayer;
-    }
-
-    public void setIsCurrentPlayer(boolean currentPlayer) {
-        isCurrentPlayer = currentPlayer;
     }
 
     public ClientPlayground getPlayground() {
