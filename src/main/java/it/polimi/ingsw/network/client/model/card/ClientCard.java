@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.client.model.card;
 
-import it.polimi.ingsw.GeneralCard;
+import it.polimi.ingsw.model.card.GeneralCard;
 import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.card.Symbol;
 

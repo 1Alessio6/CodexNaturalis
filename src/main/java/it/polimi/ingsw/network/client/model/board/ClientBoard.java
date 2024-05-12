@@ -3,8 +3,6 @@ package it.polimi.ingsw.network.client.model.board;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 
-import java.util.ArrayList;
-
 
 public class ClientBoard {
 
@@ -14,11 +12,11 @@ public class ClientBoard {
 
     private ClientFace resourceDeckTopBack; //contains only backID numbers
 
-    private int[] commonObjectives;
+    private ClientCard[] commonObjectives;
 
     public ClientBoard() {
         faceUpCards = new ClientCard[4];
-        commonObjectives = new int[2];
+        commonObjectives = new ClientCard[2];
     }
 
     //getter methods
@@ -36,7 +34,7 @@ public class ClientBoard {
         return faceUpCards;
     }
 
-    public int[] getCommonObjectives() {return commonObjectives;}
+    public ClientCard[] getCommonObjectives() {return commonObjectives;}
 
     //setter methods
 
@@ -48,7 +46,7 @@ public class ClientBoard {
         this.resourceDeckTopBack = resourceDeckTopBack;
     }
 
-    public void setCommonObjectives(int[] commonObjectives) {
+    public void setCommonObjectives(ClientCard[] commonObjectives) {
         this.commonObjectives = commonObjectives;
     }
 
