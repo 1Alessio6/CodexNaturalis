@@ -159,7 +159,18 @@ public class ClientGame {
         return alreadyTakenColors;
     }
 
-    //getRemainingColor
+    public Set<PlayerColor> getRemainingColors(){
+        Set<PlayerColor> remainingColors = new HashSet<>();
+        Set<PlayerColor> alreadyTakenColors = getAlreadyTakenColors();
+
+        for(PlayerColor color : PlayerColor.values()){
+            if(!alreadyTakenColors.contains(color)){
+                remainingColors.add(color);
+            }
+        }
+
+        return remainingColors;
+    }
 
     public boolean containsPlayer(String username){
         return players.contains(getPlayer(username));

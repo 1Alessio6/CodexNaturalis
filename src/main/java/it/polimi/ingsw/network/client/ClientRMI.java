@@ -10,6 +10,7 @@ import it.polimi.ingsw.model.lobby.FullLobbyException;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
+import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.model.*;
 import it.polimi.ingsw.network.client.model.card.*;
 import it.polimi.ingsw.network.client.model.player.*;
@@ -25,19 +26,14 @@ import java.util.*;
 
 public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
-    private VirtualServer server;
-
-    private ClientGame game;
+    private ClientController controller;
 
     private View clientView; //can be tui or gui
 
-    public ClientRMI(VirtualServer server) throws RemoteException {
-        this.server = server;
-    }
-
-    // mainly used for tests
-    public ClientRMI(ClientGame game) throws RemoteException{
-        this.game = game;
+    protected ClientRMI(VirtualServer server) throws RemoteException {
+        controller = new ClientController(server);
+        //check which view
+        //clientView = new view(controller)
     }
 
     public static void main(String[] args) throws RemoteException, NotBoundException {
@@ -53,40 +49,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     //this method assume the client tries to connect to the server till the server is available
     private void run() {
         connect();
-        this.readClientCommand();
-    }
-
-    private void readClientCommand() {
-
-        /*
-        Scanner scanner = new Scanner(System.in);
-        boolean isEnded = false;
-
-
-        while (!isEnded) {
-            switch (game.getCurrentPhase()) {
-                case SETUP:
-                    runSetUpPhase();
-                case WAIT:
-                    if (this.game.getMainPlayer().isCurrentPlayer()) {
-                        this.game.setCurrentPhase(ClientPhase.NORMAL_TURN);
-                    }
-                case NORMAL_TURN:
-                    runPlayerTurn();
-                case ADDITIONAL_WAIT:
-                    if (this.game.getMainPlayer().isCurrentPlayer()) {
-                        this.game.setCurrentPhase(ClientPhase.ADDITIONAL_TURN);
-                    }
-                case ADDITIONAL_TURN:
-                    runPlayerAdditionalTurn();
-                case END:
-                    //todo run end of the game
-                    isEnded = true;
-            }
-
-        }
-
-         */
+        //run.view
     }
 
     //todo check if ClientPlayground it's correctly updated, it should be updated by the methods from observer pattern
@@ -117,128 +80,14 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
         return username;
     }
 
-    private void runSetUpPhase() {
-
-    }
-
-    private void runPlayerAdditionalTurn() {
-        /*
-        receivePlaceCommand();
-        receiveDrawCommand();
-        this.game.setCurrentMainPlayer(false);
-
-         */
-    }
-
-    private void runPlayerTurn() {
-        /*
-        //while(!this.player.isCurrentPlayer()){}
-        receivePlaceCommand();
-        receiveDrawCommand();
-        this.game.setCurrentMainPlayer(false);
-
-         */
-    }
-
-    private void receivePlaceCommand() {
-
-        /*
-        int numCard;
-        Side selectedSide;
-        Position position;
-
-        while (true) {
-            numCard = receivePlayerCardPosition();
-            try {
-                selectedSide = receiveCardSide();
-                position = receivePosition();
-
-            } catch (ChangeCard ignored) {
-            }
-        }
-
-         */
-
-    }
-
-
-    /*
-    private int receivePlayerCardPosition() {
-
-
-        int numCard = -1;
-        Scanner scanner = new Scanner(System.in);
-        while (numCard < 0 || numCard > 2) {
-            System.out.println("Which card from your hand do you select? { 0 1 2}");
-            numCard = scanner.nextInt();
-            if (numCard < 0 || numCard > 2) {
-                System.out.println("You don't have that card in your hand");
-            }
-        }
-        scanner.close();
-
-        return numCard;
-
-
-    }
-     */
-
-    private Side receiveCardSide() throws ChangeCard {
-
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Which face of the card do you want to place?\nWrite 0 for FRONT or 1 for BACK, or write any other number to change the card selected");
-        int selectedSide = scanner.nextInt();
-
-        return switch (selectedSide) {
-            case 0 -> {
-                scanner.close();
-                yield Side.FRONT;
-            }
-            case 1 -> {
-                scanner.close();
-                yield Side.BACK;
-            }
-            default -> {
-                scanner.close();
-                throw new ChangeCard();
-            }
-        };
-    }
-
-    private Position receivePosition() {
-        Scanner scanner = new Scanner(System.in);
-        while (true) {
-            System.out.println("Which position?");
-            int posX = scanner.nextInt();
-            int posY = scanner.nextInt();
-            Position position = new Position(posX, posY);
-            scanner.close();
-        }
-    }
-
-
-    private void receiveDrawCommand() {
-        /*
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Insert the card position");
-        int cardPosition = scanner.nextInt();
-        try {
-            server.draw(this.game.getMainPlayerUsername(), cardPosition);
-        } catch (InvalidPlayerActionException | EmptyDeckException | InvalidGamePhaseException e) {
-            System.out.println("Error");
-        }
-
-         */
-    }
-
     @Override
     public void updateCreator() throws RemoteException {
-
+        clientView.showUpdateCreator();
     }
 
     @Override
     public void updateAfterLobbyCrash() throws RemoteException {
-
+        clientView.showUpdateAfterLobbyCrash();
     }
 
     @Override
@@ -272,11 +121,6 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
     @Override
     public void showUpdateColor(PlayerColor color, String username) throws RemoteException {
-        for(ClientPlayer player : game.getPlayers()){
-            if(player.getUsername().equals(username)){
-                player.setColor(color);
-            }
-        }
 
     }
 
@@ -294,36 +138,6 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     @Override
     public void showUpdateAfterDraw(ClientCard drawnCard, ClientCard newTopDeck, ClientCard newFaceUpCard, String username, int boardPosition) throws RemoteException {
 
-
-        game.getPlayer(username).addPlayerCard(drawnCard);
-
-        /*
-        if (!isEmpty) {// 4 for normal deck, 5 for golden deck
-            if (deckType == 4) {
-                game.clientBoard.addResourceBackID(newDeckBackID);
-                System.out.println("Top back ID in normal deck is: " + game.clientBoard.getResourceDeck().getLast() + "\n");
-            } else if (deckType == 5) {
-                game.clientBoard.addGoldenBackID(newDeckBackID);
-                System.out.println("Top back ID in golden deck is: " + game.clientBoard.getGoldenDeck().getLast() + "\n");
-            }
-            else{
-                System.err.println("Error, this deck doesn't exist");
-            }
-        } else {
-            System.out.println("The deck is empty \n");
-        }
-
-        if (positionFaceUp >= 0 && positionFaceUp <= 4) {
-            game.clientBoard.addFaceUpCards(newFrontFaceUp, newBackFaceUp, positionFaceUp);
-            System.out.println("Face up cards are: \n");
-            for (int i : game.clientBoard.getFaceUpCards()) {
-                System.out.println(i + "\n");
-            }
-        } else {
-            System.out.println("Face up position is not valid \n");
-        }
-
-         */
     }
 
     @Override
@@ -338,15 +152,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
     @Override
     public void showUpdateCurrentPlayer(int currentPlayerIdx, GamePhase phase) throws RemoteException {
-        /*
-        this.game.currentPhase = phase;
-        this.game.player = currentPlayer;
-        game.player.setIsCurrentPlayer(true);
 
-        System.out.println(this.game.currentPhase.name());
-        System.out.println(game.player.isCurrentPlayer() ? game.player.getUsername() : "Error");
-
-         */
     }
 
     @Override
@@ -362,9 +168,6 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     @Override
     public void reportError(String details) throws RemoteException {
         System.err.println(details);
-    }
-
-    public static class ChangeCard extends Exception {
     }
 
 }
