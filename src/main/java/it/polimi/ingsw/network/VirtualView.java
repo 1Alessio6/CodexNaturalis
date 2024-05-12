@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.board.*;
 import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.Message;
+import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.network.client.model.ClientGame;
 import it.polimi.ingsw.network.client.model.ClientPhase;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
@@ -24,6 +25,8 @@ public interface VirtualView extends Remote {
     public void updateAfterLobbyCrash() throws RemoteException;
 
     public void updateAfterConnection(ClientGame clientGame) throws RemoteException;
+
+    public void showUpdatePlayersInLobby(List<String> usernames) throws RemoteException;
 
     // game related updates
 
@@ -50,17 +53,17 @@ public interface VirtualView extends Remote {
 
     void showBoardSetUp(int[] commonObjectiveID, int topBackID, int topGoldenBackID, int[] faceUpCards) throws RemoteException;
 
-    void showStarterPlacement(String username, int faceId) throws RemoteException;
     // all clients receive the information, the ones not being username will remove color from their list of available colors.
     void showUpdateColor(PlayerColor color, String username) throws RemoteException;
 
     void showUpdateObjectiveCard(ClientCard chosenObjective, String username) throws RemoteException;
 
+    // todo. add parameter in after draw and place to notify which player has triggered the events.
     //method to show updated information after a place
     //The two list positions and tiles represent every new available tile added after the last place invocation
     //symbols and total amount represent the new resources added after the last place invocation
     //consider both couples like maps
-    void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientFace placedface , Position position) throws RemoteException;
+    void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientFace placedface, Position position) throws RemoteException;
 
     void showUpdateAfterDraw(ClientCard drawnCard, boolean isEmpty, ClientCard newTopDeck, ClientCard newFaceUpCard, ClientCard newTopCard, boolean additionalTurn, String username, int boardPosition) throws RemoteException;
 
@@ -68,7 +71,13 @@ public interface VirtualView extends Remote {
 
     void showUpdateChat(Message message) throws RemoteException;
 
-    void showUpdateCurrentPlayer(ClientPlayer currentPlayer, ClientPhase phase) throws RemoteException;
+    // method to notify about the reach of 20 points
+    //void showUpdateTriggeredEndGame(String username);
+
+    // todo. delete: now a GamePhase is passed
+    void showUpdateCurrentPlayer(int currentPlayerIdx, ClientPhase phase) throws RemoteException;
+
+    void showUpdateCurrentPlayer(int currentPlayerIdx, GamePhase phase) throws RemoteException;
 
     void showUpdateSuspendedGame() throws RemoteException;
 

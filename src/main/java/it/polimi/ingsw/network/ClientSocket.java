@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.CornerPosition;
 import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.model.chat.message.Message;
+import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.network.client.model.ClientGame;
 import it.polimi.ingsw.network.client.model.ClientPhase;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
@@ -32,6 +33,16 @@ public class ClientSocket implements VirtualView{
     }
 
     @Override
+    public void showUpdatePlayersInLobby(List<String> usernames) throws RemoteException {
+
+    }
+
+ //   @Override
+ //   public void showUpdateJoinedPlayers(List<String> usernames) throws RemoteException {
+
+ //   }
+
+    @Override
     public void showUpdatePlayerStatus(boolean isConnected, String username) throws RemoteException {
 
     }
@@ -41,10 +52,10 @@ public class ClientSocket implements VirtualView{
 
     }
 
-    @Override
-    public void showStarterPlacement(String username, int faceId) {
+ //   @Override
+ //   public void showStarterPlacement(String username, int faceId) {
 
-    }
+ //   }
 
     @Override
     public void showUpdateColor(PlayerColor color, String username) throws RemoteException {
@@ -70,8 +81,18 @@ public class ClientSocket implements VirtualView{
 
     }
 
+    //@Override
+    //public void showUpdateTriggeredEndGame(String username) {
+
+    //}
+
     @Override
-    public void showUpdateCurrentPlayer(ClientPlayer currentPlayer, ClientPhase phase) throws RemoteException {
+    public void showUpdateCurrentPlayer(int currentPlayerIdx, ClientPhase phase) throws RemoteException {
+
+    }
+
+    @Override
+    public void showUpdateCurrentPlayer(int currentPlayerIdx, GamePhase phase) throws RemoteException {
 
     }
 

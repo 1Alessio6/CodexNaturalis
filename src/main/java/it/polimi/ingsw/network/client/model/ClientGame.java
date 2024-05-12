@@ -23,7 +23,7 @@ public class ClientGame {
     private List<ClientPlayer> players;
     private List<Message> messages;
     private ClientBoard clientBoard;
-    private ClientPhase currentPhase;
+    private ClientPhase currentPhase; // todo. change to GamePhase
 
     private boolean isGameActive;
 

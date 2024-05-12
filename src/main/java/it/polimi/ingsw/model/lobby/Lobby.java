@@ -52,6 +52,7 @@ public class Lobby {
             creator = username;
             listenerHandler.notify(creator, VirtualView::updateCreator);
         }
+        listenerHandler.notifyBroadcast(receiver -> receiver.showUpdatePlayersInLobby(listenerHandler.getIds()));
     }
 
     /**
@@ -82,12 +83,7 @@ public class Lobby {
 
     private void resetLobby() {
         System.out.println("Lobby crashed");
-        listenerHandler.notifyBroadcast(new Notifier<VirtualView>() {
-            @Override
-            public void sendUpdate(VirtualView receiver) throws RemoteException {
-                receiver.reportError("Lobby has crashed");
-            }
-        });
+        listenerHandler.notifyBroadcast(VirtualView::updateAfterLobbyCrash);
 
         listenerHandler.clear();
         creator = null;
@@ -106,6 +102,8 @@ public class Lobby {
         // if the creator leaves the lobby before setting the number of players
         if (creator.equals(username) && numPlayersToStartTheGame == -1) {
             resetLobby();
+        } else {
+            listenerHandler.notifyBroadcast(receiver -> receiver.showUpdatePlayerStatus(false, username));
         }
     }
 
@@ -115,9 +113,9 @@ public class Lobby {
      * @param numPlayersToStartTheGame the maximum number of players in the lobby
      * @throws IllegalArgumentException if the specified number doesn't respect the game's constraint: min 2 players, max 4 players.
      */
-    public void setNumPlayersToStartTheGame(int numPlayersToStartTheGame) throws IllegalArgumentException {
+    public void setNumPlayersToStartTheGame(int numPlayersToStartTheGame) throws InvalidPlayersNumberException {
         if (numPlayersToStartTheGame < MIN_NUMBER || numPlayersToStartTheGame > MAX_NUMBER) {
-            throw new IllegalArgumentException();
+            throw new InvalidPlayersNumberException();
         }
         // method is called once.
         this.numPlayersToStartTheGame = numPlayersToStartTheGame;

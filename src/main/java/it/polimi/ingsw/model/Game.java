@@ -12,6 +12,7 @@ import it.polimi.ingsw.model.chat.ChatDatabase;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.model.listenerhandler.ListenerHandler;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
+import it.polimi.ingsw.model.notifier.Notifier;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.gamePhase.PhaseHandler;
@@ -327,6 +328,7 @@ public class Game {
         }
         listenerHandler.remove(username);
         setNetworkStatus(username, false);
+        listenerHandler.notifyBroadcast(receiver -> receiver.showUpdatePlayerStatus(false, username));
         if (getActivePlayers().size() <= 1) {
             listenerHandler.notifyBroadcast(VirtualView::showUpdateSuspendedGame);
             isActive = false;
@@ -371,7 +373,20 @@ public class Game {
 
         try {
             player.placeStarter(side);
-            listenerHandler.notifyBroadcast(receiver -> receiver.showStarterPlacement(username, player.getStarter().getFace(side).getId()));
+            listenerHandler.notifyBroadcast(receiver -> {
+                Position starterPosition = new Position(0, 0);
+                Playground playground = player.getPlayground();
+                receiver.showUpdateAfterPlace(
+                        playground.getCornerCoveredForAdjacentPosition(starterPosition),
+                        playground.getAvailablePositions(),
+                        playground.getResources(),
+                        0,
+                        username,
+                        new ClientFace(player.getStarter().getFace(side)),
+                        starterPosition
+                );
+            });
+            // todo. maybe remove listenerHandler.notifyBroadcast(receiver -> receiver.showStarterPlacement(username, player.getStarter().getFace(side).getId()));
         }
         // the starter card shouldn't cause any exception related to the playground
         catch (Playground.UnavailablePositionException | Playground.NotEnoughResourcesException e) {
@@ -426,10 +441,14 @@ public class Game {
 
         phase = phaseHandler.getNextPhase(phase, currentPlayerIdx);
 
-        listenerHandler.notify(username, receiver -> {
+        listenerHandler.notifyBroadcast(receiver -> {
             ObjectiveCard secretObjective = player.getObjective();
             receiver.showUpdateObjectiveCard(new ClientCard(secretObjective), username);
         });
+
+        if (phase == GamePhase.PlaceNormal) {
+            listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateCurrentPlayer(currentPlayerIdx, phase));
+        }
     }
 
     /**
@@ -438,7 +457,7 @@ public class Game {
      * @param username of the player.
      * @param card     to place.
      * @param side     of the card.
-     * @param position in the playground.
+     * @param position in the playgroundplayground
      * @throws InvalidPlayerActionException            if the player cannot perform the operation.
      * @throws Playground.UnavailablePositionException if the position is not available. For example the player is trying to place the card in an already covered corner.
      * @throws Playground.NotEnoughResourcesException  if the player's resource are not enough to place the card.
@@ -474,19 +493,20 @@ public class Game {
 
         if (phase == GamePhase.PlaceAdditional) {
             updateCurrentPlayerIdx();
+            listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateCurrentPlayer(currentPlayerIdx, phase));
         }
 
         listenerHandler.notifyBroadcast(receiver -> {
-            Map<Position, CornerPosition> positionToCornerCovered = new HashMap<>();
-            List<CornerPosition> cornerToTest = Arrays.asList(CornerPosition.LOWER_LEFT, CornerPosition.TOP_LEFT, CornerPosition.TOP_RIGHT, CornerPosition.LOWER_RIGHT);
             Playground playground = currentPlayer.getPlayground();
-            for (CornerPosition cornerPosition : cornerToTest) {
-                Position adjacentPos = playground.getAdjacentPosition(position, cornerPosition);
-                if (playground.getTile(adjacentPos).sameAvailability(Availability.OCCUPIED)) {
-                    positionToCornerCovered.put(adjacentPos, cornerPosition);
-                }
-            }
-            receiver.showUpdateAfterPlace(positionToCornerCovered, currentPlayer.getPlayground().getAvailablePositions(), playground.getResources(), currentPlayer.getPoints(), username, new ClientFace(card.getFace(side)), position);
+            receiver.showUpdateAfterPlace(
+                    playground.getCornerCoveredForAdjacentPosition(position),
+                    playground.getAvailablePositions(),
+                    playground.getResources(),
+                    currentPlayer.getPoints(),
+                    username,
+                    new ClientFace(card.getFace(side)),
+                    position
+            );
         });
 
         if (phase == GamePhase.End) {
@@ -537,6 +557,7 @@ public class Game {
         }
 
         listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateAfterDraw(new ClientCard(newCard), deck.isEmpty(), new ClientCard(deck.getTop()), null, null, phase == GamePhase.PlaceAdditional, username, convertDeckTypeIntoId(deckType)));
+        listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateCurrentPlayer(currentPlayerIdx, phase));
     }
 
     /**
@@ -606,6 +627,7 @@ public class Game {
                 new ClientCard(deckForReplacement.getTop()),
                 phase == GamePhase.PlaceAdditional,
                 username, faceUpCardIdx));
+        listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateCurrentPlayer(currentPlayerIdx, phase));
     }
 
     private void simulateTurn(String currentPlayer) {
@@ -667,7 +689,7 @@ public class Game {
      * @param backId   the id of the card's back.
      * @return the player's card associated with <code>cardId</code>.
      */
-    public Card getCard(String username, int frontId, int backId) {
+    public Card getCard(String username, int frontId, int backId) throws InvalidCardIdException {
         Player player = getPlayerByUsername(username);
         return player.getCard(frontId, backId);
     }

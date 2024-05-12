@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.model.chat.message.Message;
+import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.model.lobby.FullLobbyException;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.network.VirtualServer;
@@ -240,6 +241,16 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     }
 
     @Override
+    public void showUpdatePlayersInLobby(List<String> usernames) throws RemoteException {
+
+    }
+
+  //  @Override
+  //  public void showUpdateJoinedPlayers(List<String> usernames) throws RemoteException {
+
+  //  }
+
+    @Override
     public void showUpdatePlayerStatus(boolean isConnected, String username) throws RemoteException {
         game.getMainPlayer().setNetworkStatus(isConnected);
         System.out.println(game.getMainPlayer().isConnected());
@@ -267,10 +278,10 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
          */
     }
 
-    @Override
-    public void showStarterPlacement(String username, int faceId) {
+    //@Override
+    //public void showStarterPlacement(String username, int faceId) {
 
-    }
+    //}
 
     @Override
     public void showUpdateColor(PlayerColor color, String username) throws RemoteException {
@@ -333,17 +344,19 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
         System.out.println(message.getContent());
     }
 
+    //@Override
+    //public void showUpdateTriggeredEndGame(String username) {
+
+    //}
+
     @Override
-    public void showUpdateCurrentPlayer(ClientPlayer currentPlayer, ClientPhase phase) throws RemoteException {
-        /*
-        this.game.currentPhase = phase;
-        this.game.player = currentPlayer;
-        game.player.setIsCurrentPlayer(true);
+    public void showUpdateCurrentPlayer(int currentPlayerIdx, ClientPhase phase) throws RemoteException {
 
-        System.out.println(this.game.currentPhase.name());
-        System.out.println(game.player.isCurrentPlayer() ? game.player.getUsername() : "Error");
+    }
 
-         */
+    @Override
+    public void showUpdateCurrentPlayer(int currentPlayerIdx, GamePhase phase) throws RemoteException {
+
     }
 
     @Override
