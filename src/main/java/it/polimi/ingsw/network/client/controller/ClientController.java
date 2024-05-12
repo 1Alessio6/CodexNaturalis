@@ -16,7 +16,10 @@ import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.model.ClientGame;
 import it.polimi.ingsw.network.client.model.ClientPhase;
+import it.polimi.ingsw.network.client.model.board.ClientPlayground;
+import it.polimi.ingsw.network.client.model.board.ClientTile;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
+import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 
 import java.rmi.RemoteException;
@@ -34,13 +37,13 @@ public class ClientController implements ClientActions {
     }
 
     @Override
-    public void placeCard(int cardHandPosition, Side selectedSide, Position position) throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException, RuntimeException {
+    public void placeCard(int cardHandPosition, Side selectedSide, Position position) throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException, RemoteException {
 
-        if (!game.isGameActive()){
+        if (!game.isGameActive()) {
             throw new SuspendedGameException("The game is suspended, you can only text messages");
         }
 
-        if(game.getCurrentPhase() != ClientPhase.NORMAL_PLACE && game.getCurrentPhase() != ClientPhase.ADDITIONAL_PLACE){
+        if (game.getCurrentPhase() != ClientPhase.NORMAL_PLACE && game.getCurrentPhase() != ClientPhase.ADDITIONAL_PLACE) {
             throw new InvalidGamePhaseException("You can't place now");
         }
 
@@ -51,10 +54,10 @@ public class ClientController implements ClientActions {
         }
 
         if (!checkPosition(position)) {
-            throw new Playground.UnavailablePositionException("The position insert isn't available");
+            throw new Playground.UnavailablePositionException("The position selected isn't available");
         }
 
-        try{
+        try {
             server.placeCard(this.game.getMainPlayerUsername(), this.game.getMainPlayerCard(cardHandPosition).getBackId(), this.game.getMainPlayerCard(cardHandPosition).getFrontId(), selectedSide, position);
         } catch (Playground.UnavailablePositionException | Playground.NotEnoughResourcesException e) {
             System.err.println("Error check methods should have avoid an incorrect move");
@@ -66,65 +69,65 @@ public class ClientController implements ClientActions {
     @Override
     public void draw(int IdToDraw) throws InvalidGamePhaseException, EmptyDeckException, NotExistingFaceUp, SuspendedGameException, RemoteException {
 
-        assert(IdToDraw <= 5 && IdToDraw >= 0);   //view should only accept numbers in this range
+        assert (IdToDraw <= 5 && IdToDraw >= 0);   //view should only accept numbers in this range
 
-        if (!game.isGameActive()){
+        if (!game.isGameActive()) {
             throw new SuspendedGameException("The game is suspended, you can only text messages");
         }
 
-        if(game.getCurrentPhase() != ClientPhase.NORMAL_DRAW){
+        if (game.getCurrentPhase() != ClientPhase.NORMAL_DRAW) {
             throw new InvalidGamePhaseException("You can't draw now");
         }
 
-        switch(IdToDraw){
+        switch (IdToDraw) {
             case 0:
-                if(game.isFaceUpSlotEmpty(0)){
+                if (game.isFaceUpSlotEmpty(0)) {
                     throw new NotExistingFaceUp("This face up slot is empty");
                 }
             case 1:
-                if(game.isFaceUpSlotEmpty(1)){
+                if (game.isFaceUpSlotEmpty(1)) {
                     throw new NotExistingFaceUp("This face up slot is empty");
                 }
             case 2:
-                if(game.isFaceUpSlotEmpty(2)){
+                if (game.isFaceUpSlotEmpty(2)) {
                     throw new NotExistingFaceUp("This face up slot is empty");
                 }
             case 3:
-                if(game.isFaceUpSlotEmpty(3)){
+                if (game.isFaceUpSlotEmpty(3)) {
                     throw new NotExistingFaceUp("This face up slot is empty");
                 }
             case 4:
-                if(game.getClientBoard().isGoldenDeckEmpty()){
+                if (game.getClientBoard().isGoldenDeckEmpty()) {
                     throw new EmptyDeckException("You chose to draw from an empty deck");
                 }
             case 5:
-                if(game.getClientBoard().isResourceDeckEmpty()){
+                if (game.getClientBoard().isResourceDeckEmpty()) {
                     throw new EmptyDeckException("You chose to draw from an empty deck");
                 }
             default:
                 System.err.println("ID not valid");
         }
 
-        try{
+        try {
             server.draw(game.getMainPlayerUsername(), IdToDraw);
-        }catch(EmptyDeckException | InvalidGamePhaseException | InvalidPlayerActionException e){
+        } catch (EmptyDeckException | InvalidGamePhaseException | InvalidPlayerActionException e) {
             System.err.println(e.getMessage());
         }
     }
 
     @Override
     public void placeStarter(Side side) throws SuspendedGameException, RemoteException, InvalidGamePhaseException {
-        if (!game.isGameActive()){
+        if (!game.isGameActive()) {
             throw new SuspendedGameException("The game is suspended, you can only text messages");
         }
 
-        if(game.getCurrentPhase() != ClientPhase.SETUP){
+        if (game.getCurrentPhase() != ClientPhase.SETUP) {
             throw new InvalidGamePhaseException("You can only place your starter card during the setup phase");
         }
 
-        try{
+        try {
             server.placeStarter(game.getMainPlayerUsername(), side);
-        }catch(InvalidPlayerActionException | InvalidGamePhaseException e){
+        } catch (InvalidPlayerActionException | InvalidGamePhaseException e) {
             System.err.println(e.getMessage());
         }
     }
@@ -132,21 +135,21 @@ public class ClientController implements ClientActions {
     @Override
     public void chooseColor(PlayerColor color) throws InvalidColorException, SuspendedGameException, RemoteException, InvalidGamePhaseException {
 
-        if (!game.isGameActive()){
+        if (!game.isGameActive()) {
             throw new SuspendedGameException("The game is suspended, you can only text messages");
         }
 
-        if(game.getCurrentPhase() != ClientPhase.SETUP){
+        if (game.getCurrentPhase() != ClientPhase.SETUP) {
             throw new InvalidGamePhaseException("You can only choose your color during the setup phase");
         }
 
-        if(game.getAlreadyTakenColors().contains(color)){
+        if (game.getAlreadyTakenColors().contains(color)) {
             throw new InvalidColorException("The color selected is already taken");
         }
 
-        try{
+        try {
             server.chooseColor(game.getMainPlayerUsername(), color);
-        }catch(InvalidPlayerActionException | InvalidGamePhaseException | NonexistentPlayerException e){
+        } catch (InvalidPlayerActionException | InvalidGamePhaseException | NonexistentPlayerException e) {
             System.err.println(e.getMessage());
         }
 
@@ -154,17 +157,17 @@ public class ClientController implements ClientActions {
 
     @Override
     public void placeObjectiveCard(int chosenObjective) throws SuspendedGameException, RemoteException, InvalidGamePhaseException {
-        if (!game.isGameActive()){
+        if (!game.isGameActive()) {
             throw new SuspendedGameException("The game is suspended, you can only text messages");
         }
 
-        if(game.getCurrentPhase() != ClientPhase.SETUP){
+        if (game.getCurrentPhase() != ClientPhase.SETUP) {
             throw new InvalidGamePhaseException("You can only choose your private objective during the setup phase");
         }
 
-        try{
+        try {
             server.placeObjectiveCard(game.getMainPlayerUsername(), chosenObjective);
-        }catch(InvalidGamePhaseException | InvalidPlayerActionException e){
+        } catch (InvalidGamePhaseException | InvalidPlayerActionException e) {
             System.err.println(e.getMessage());
         }
     }
@@ -178,12 +181,12 @@ public class ClientController implements ClientActions {
             throw new InvalidMessageException("recipient doesn't exists");
         }
 
-        server.sendMessage(message); //
+        server.sendMessage(message);
     }
 
     @Override
     public void setPlayersNumber(int playersNumber) throws RemoteException {
-        assert(playersNumber < 5 && playersNumber > 1); //view should only accept numbers in this range
+        assert (playersNumber < 5 && playersNumber > 1); //view should only accept numbers in this range
         server.setPlayersNumber(playersNumber);
     }
 
@@ -196,38 +199,65 @@ public class ClientController implements ClientActions {
     }
 
     public void updateAfterConnection(ClientGame clientGame) {
-
+        game = clientGame;
     }
 
     public void updatePlayerStatus(boolean isConnected, String username) {
-
+        if (!game.containsPlayer(username)) {
+            game.addPlayer(username);
+        }
+        game.getPlayer(username).setNetworkStatus(isConnected);
     }
 
-    public void updateInitialPlayerStatus(ClientPlayer player) {
-
-    }
 
     public void updateBoardSetUp(int[] commonObjectiveID, int topBackID, int topGoldenBackID, int[] faceUpCards) {
 
     }
 
+    //todo update needs to add at least the resources
     public void updateStarterPlacement(String username, int faceId) {
 
     }
 
     public void updateColor(PlayerColor color, String username) {
-
+        game.getPlayer(username).setColor(color);
     }
 
     public void updateObjectiveCard(ClientCard chosenObjective, String username) {
 
     }
 
-    void updateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Position position) {
+    //todo update the resto of notify methods
+    //necessary to pass a ClientCard and not a client face
+    void updateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide,Position position) {
+
+        ClientPlayground playground = game.getPlaygroundByUsername(username);
+
+        playground.setPoints(points);
+        playground.addNewAvailablePositions(newAvailablePositions);
+        playground.setCoveredCorner(positionToCornerCovered);
+        playground.placeTile(position, new ClientTile(placedCard.getFace(placedSide)));
+        playground.updateResources(newResources);
+
+        game.getPlayer(username).removePlayerCard(placedCard);
 
     }
 
-    void updateAfterDraw(ClientCard drawnCard, boolean isEmpty, ClientCard newTopDeck, ClientCard newFaceUpCard, ClientCard newTopCard, boolean additionalTurn, String username, int boardPosition) throws RemoteException {
+    //isEmpty is not needed, additional turn not need it is updated by another notify method, it's necessary only a face for deck
+    void updateAfterDraw(ClientCard drawnCard, ClientFace newTopBackDeck, ClientCard newFaceUpCard, String username, int boardPosition) throws RemoteException {
+        assert (boardPosition <= 5 && boardPosition >= 0);
+
+        game.getPlayer(username).addPlayerCard(drawnCard);
+
+        if (boardPosition < 4) {
+            game.getClientBoard().addFaceUpCards(newFaceUpCard, boardPosition);
+        }
+        else if(boardPosition == 4){
+            game.getClientBoard().setGoldenDeckTopBack(newTopBackDeck);
+        }
+        else{
+            game.getClientBoard().setResourceDeckTopBack(newTopBackDeck);
+        }
 
     }
 
@@ -237,15 +267,17 @@ public class ClientController implements ClientActions {
 
     }
 
+    //todo change, use username
     void updateCurrentPlayer(ClientPlayer currentPlayer, ClientPhase phase) {
 
     }
 
     void updateSuspendedGame() {
-
+        game.setGameActive(!game.isGameActive());
     }
 
-    void showWinners(List<String> winners) {
+    //todo check if it could be removed and only to keep only on the view
+    void updateWinners(List<String> winners) {
     }
 
     private boolean checkPosition(Position position) {

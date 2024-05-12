@@ -20,6 +20,7 @@ import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.model.ClientGame;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
+import it.polimi.ingsw.network.client.model.card.ClientFace;
 
 import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
@@ -485,7 +486,7 @@ public class Game {
                     positionToCornerCovered.put(adjacentPos, cornerPosition);
                 }
             }
-            receiver.showUpdateAfterPlace(positionToCornerCovered, currentPlayer.getPlayground().getAvailablePositions(), playground.getResources(), currentPlayer.getPoints(), username, new ClientCard(card), position);
+            receiver.showUpdateAfterPlace(positionToCornerCovered, currentPlayer.getPlayground().getAvailablePositions(), playground.getResources(), currentPlayer.getPoints(), username, new ClientFace(card.getFace(side)), position);
         });
 
         if (phase == GamePhase.End) {

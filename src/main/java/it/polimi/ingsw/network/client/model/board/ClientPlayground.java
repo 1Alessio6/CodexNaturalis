@@ -3,6 +3,9 @@ package it.polimi.ingsw.network.client.model.board;
 import it.polimi.ingsw.model.board.Availability;
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
+import it.polimi.ingsw.model.board.Tile;
+import it.polimi.ingsw.model.card.CornerPosition;
+import it.polimi.ingsw.model.card.Face;
 import it.polimi.ingsw.model.card.Symbol;
 
 import java.util.HashMap;
@@ -34,10 +37,20 @@ public class ClientPlayground {
     }
 
     public ClientPlayground(Playground playgroundToCopy) {
-        area = new HashMap<>();
-        // fixme. how to distinguish which card cover the other from the playground representation
+        area = createClientArea(playgroundToCopy.getArea());
         resources = playgroundToCopy.getResources();
         points = playgroundToCopy.getPoints();
+    }
+
+    public Map<Position, ClientTile> createClientArea(Map<Position, Tile> areaToCopy){
+
+        Map<Position, ClientTile> area = new HashMap<>();
+
+        for(Position position : areaToCopy.keySet()){
+            area.put(position, new ClientTile(areaToCopy.get(position)));
+        }
+
+        return area;
     }
 
     public Map<Position, ClientTile> getArea() {
@@ -56,8 +69,8 @@ public class ClientPlayground {
         this.points = points;
     }
 
-    public void placeTile(Position position, ClientTile tile){
-        this.area.put(position,tile);
+    public void placeTile(Position position, ClientTile tile) {
+        this.area.put(position, tile);
     }
 
     public List<Position> getAvailablePositions() {
@@ -79,9 +92,35 @@ public class ClientPlayground {
 
         return String.valueOf(areaString);
     }
-    public void updateResources(Symbol symbol,int amount){
-        this.resources.put(symbol,amount);
+
+    public void updateResources(Symbol symbol, int amount) {
+        this.resources.put(symbol, amount);
     }// updateResources doesn't calculate the sum of the different calculated points, it only updates the actual amount of a particular
     // symbol in the resources map
+
+    public void addNewAvailablePositions(List <Position> newAvailablePosition){
+        for(Position position : newAvailablePosition){
+            placeTile(position, new ClientTile(Availability.EMPTY));
+        }
+    }
+
+    public ClientTile getTile(Position position){
+        if(area.containsKey(position)){
+            return area.get(position);
+        }
+        return null;
+    }
+
+    public void setCoveredCorner(Map<Position, CornerPosition> coveredCorner){
+        for(Position position : coveredCorner.keySet()){
+            getTile(position).getFace().setCornerCovered(coveredCorner.get(position));
+        }
+    }
+
+    public void updateResources(Map<Symbol, Integer> newResources) {
+        for (Symbol symbol : newResources.keySet()) {
+            updateResources(symbol, newResources.get(symbol));
+        }
+    }
 
 }

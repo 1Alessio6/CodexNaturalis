@@ -40,6 +40,10 @@ public class Playground {
     }
 
 
+    public Map<Position, Tile> getArea() {
+        return area;
+    }
+
     /**
      * Returns the tile at the position pos.
      *

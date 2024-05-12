@@ -67,7 +67,7 @@ public class GameTest {
     }
 
     @Test
-    void testSkipTurn() throws RemoteException {
+    void testSkipTurn() {
         Assertions.assertDoesNotThrow(this::finishSetup_phaseIsPlaceNormal);
         String currentPlayerUsername = game.getCurrentPlayer().getUsername();
         game.skipTurn(currentPlayerUsername);
