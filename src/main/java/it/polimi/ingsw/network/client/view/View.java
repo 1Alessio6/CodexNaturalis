@@ -1,7 +1,11 @@
 package it.polimi.ingsw.network.client.view;
 
+import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.controller.ClientActions;
 import it.polimi.ingsw.network.client.controller.ClientController;
+
+import java.rmi.RemoteException;
+import java.util.List;
 
 
 public abstract class View {
@@ -9,9 +13,11 @@ public abstract class View {
     private ClientController controller;
 
     //method used to read client input
-    public abstract void run();
+    public abstract void run(VirtualView client);
 
     //method used to update after a controller update, invoked by the client class
+
+    public abstract void showUpdatePlayersInLobby();
 
     public abstract void showUpdateCreator();
 

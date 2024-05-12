@@ -110,6 +110,11 @@ public class ClientPlayer {
         this.playerCards.set(cardHandPosition, card);
     }
 
+    public void updateObjectiveCard(ClientCard chosenObjectiveCard){
+        objectiveCards = new ArrayList<>();
+        objectiveCards.add(chosenObjectiveCard);
+    }
+
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;

@@ -381,7 +381,7 @@ public class Game {
                         playground.getResources(),
                         0,
                         username,
-                        new ClientFace(player.getStarter().getFace(side)),
+                        new ClientCard(player.getStarter()),side,
                         starterPosition
                 );
             });
@@ -492,7 +492,8 @@ public class Game {
                     playground.getResources(),
                     currentPlayer.getPoints(),
                     username,
-                    new ClientFace(card.getFace(side)),
+                    new ClientCard(card),
+                    side,
                     position
             );
         });
@@ -548,7 +549,7 @@ public class Game {
             throw invalidPlayerActionException;
         }
 
-        listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateAfterDraw(new ClientCard(newCard), deck.isEmpty(), deck.isEmpty() ? null : new ClientCard(deck.getTop()), null, null, phase == GamePhase.PlaceAdditional, username, convertDeckTypeIntoId(deckType)));
+        listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateAfterDraw(new ClientCard(newCard), new ClientFace(deck.getTop().getFace(Side.BACK)), null, username, convertDeckTypeIntoId(deckType)));
         listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateCurrentPlayer(currentPlayerIdx, phase));
     }
 
@@ -618,11 +619,8 @@ public class Game {
         // todo(creation of null card).
         listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateAfterDraw(
                 new ClientCard(newCard),
-                deckForReplacement.isEmpty(),
-                new ClientCard(deckForReplacement.getTop()),
+                new ClientFace(deckForReplacement.getTop().getFace(Side.BACK)),
                 new ClientCard(faceUpCards.get(faceUpCardIdx)),
-                new ClientCard(deckForReplacement.getTop()),
-                phase == GamePhase.PlaceAdditional,
                 username, faceUpCardIdx));
         listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateCurrentPlayer(currentPlayerIdx, phase));
     }
@@ -741,6 +739,13 @@ public class Game {
         } catch (NoSuchElementException noSuchElementException) {
             // empty list: there's no player to notify
         }
+    }
+
+    public Face getTopDeckBack(DeckType type){
+        if(type == DeckType.GOLDEN){
+            return goldenCards.getTop().getFace(Side.BACK);
+        }
+        return resourceCards.getTop().getFace(Side.BACK);
     }
 
     private int convertDeckTypeIntoId(DeckType type) {

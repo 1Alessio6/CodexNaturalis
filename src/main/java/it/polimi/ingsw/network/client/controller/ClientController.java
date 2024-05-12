@@ -12,6 +12,7 @@ import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
+import it.polimi.ingsw.model.lobby.FullLobbyException;
 import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
@@ -35,9 +36,13 @@ public class ClientController implements ClientActions {
 
     private String mainPlayerUsername;
 
-    @Override
-    public void connect(VirtualView client, String username) throws InvalidUsernameException, RemoteException {
+    public ClientController(VirtualServer server){
+        this.server = server;
+    }
 
+    @Override
+    public void connect(VirtualView client, String username) throws InvalidUsernameException, RemoteException, FullLobbyException {
+        server.connect(client,username);
     }
 
     @Override
@@ -221,10 +226,8 @@ public class ClientController implements ClientActions {
         game.getPlayer(username).setNetworkStatus(isConnected);
     }
 
-
-    //todo update
-    public void updateBoardSetUp(int[] commonObjectiveID, int topBackID, int topGoldenBackID, int[] faceUpCards) {
-
+    public void updatePlayersInLobby(List<String> usernames){
+        game = new ClientGame(usernames);
     }
 
     public void updateColor(PlayerColor color, String username) {
@@ -232,13 +235,10 @@ public class ClientController implements ClientActions {
     }
 
     public void updateObjectiveCard(ClientCard chosenObjective, String username) {
-
+        game.getPlayer(username).updateObjectiveCard(chosenObjective);
     }
 
-    //todo update the rest of notify methods
-    //necessary to pass a ClientCard and not a client face
-    //used also for placing a starter card
-    void updateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide, Position position) {
+    public void updateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide, Position position) {
 
         ClientPlayground playground = game.getPlaygroundByUsername(username);
 
@@ -252,7 +252,7 @@ public class ClientController implements ClientActions {
 
     }
 
-    void updateAfterDraw(ClientCard drawnCard, ClientFace newTopBackDeck, ClientCard newFaceUpCard, String username, int boardPosition) throws RemoteException {
+    public void updateAfterDraw(ClientCard drawnCard, ClientFace newTopBackDeck, ClientCard newFaceUpCard, String username, int boardPosition) throws RemoteException {
         assert (boardPosition <= 5 && boardPosition >= 0);
 
         game.getPlayer(username).addPlayerCard(drawnCard);
@@ -275,23 +275,18 @@ public class ClientController implements ClientActions {
 
     }
 
-    //method to notify update after a draw
-
-    void updateChat(Message message) {
-
+    //todo check if other players discard private message of others or if they save them but the view avoid the to show to the players
+    public void updateChat(Message message) {
+        game.getMessages().add(message);
     }
 
-    //todo change, use username
-    void updateCurrentPlayer(int currentPlayerIdx, GamePhase phase) {
-
+    public void updateCurrentPlayer(int currentPlayerIdx, GamePhase phase) {
+        game.setCurrentPlayerIdx(currentPlayerIdx);
+        game.setCurrentPhase(phase);
     }
 
-    void updateSuspendedGame() {
+    public void updateSuspendedGame() {
         game.setGameActive(!game.isGameActive());
-    }
-
-    //todo check if it could be removed and only to keep only on the view
-    void updateWinners(List<String> winners) {
     }
 
     private boolean checkPosition(Position position) {

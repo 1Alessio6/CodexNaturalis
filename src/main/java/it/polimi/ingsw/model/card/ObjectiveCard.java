@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.card;
 
-import it.polimi.ingsw.GeneralCard;
 import it.polimi.ingsw.model.board.Playground;
 
 import java.util.HashMap;

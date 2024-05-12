@@ -49,8 +49,6 @@ public interface VirtualView extends Remote {
     //use when a new player is connected
     void showUpdatePlayerStatus(boolean isConnected, String username) throws RemoteException;
 
-    void showBoardSetUp(int[] commonObjectiveID, int topBackID, int topGoldenBackID, int[] faceUpCards) throws RemoteException;
-
     // all clients receive the information, the ones not being username will remove color from their list of available colors.
     void showUpdateColor(PlayerColor color, String username) throws RemoteException;
 
@@ -61,9 +59,9 @@ public interface VirtualView extends Remote {
     //The two list positions and tiles represent every new available tile added after the last place invocation
     //symbols and total amount represent the new resources added after the last place invocation
     //consider both couples like maps
-    void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientFace placedface , Position position) throws RemoteException;
+    void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide , Position position) throws RemoteException;
 
-    void showUpdateAfterDraw(ClientCard drawnCard, boolean isEmpty, ClientCard newTopDeck, ClientCard newFaceUpCard, ClientCard newTopCard, boolean additionalTurn, String username, int boardPosition) throws RemoteException;
+    void showUpdateAfterDraw(ClientCard drawnCard, ClientFace newTopDeck, ClientCard newFaceUpCard, String username, int boardPosition) throws RemoteException;
 
     //method to notify update after a draw
 

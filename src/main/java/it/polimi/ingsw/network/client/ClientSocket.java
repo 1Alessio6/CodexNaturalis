@@ -1,11 +1,13 @@
-package it.polimi.ingsw.network;
+package it.polimi.ingsw.network.client;
 
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.CornerPosition;
+import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
+import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.model.ClientGame;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
@@ -14,7 +16,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 
-public class ClientSocket implements VirtualView{
+public class ClientSocket implements VirtualView {
     @Override
     public void updateCreator() throws RemoteException {
 
@@ -45,11 +47,6 @@ public class ClientSocket implements VirtualView{
 
     }
 
-    @Override
-    public void showBoardSetUp(int[] commonObjectiveID, int topBackID, int topGoldenBackID, int[] faceUpCards) throws RemoteException {
-
-    }
-
  //   @Override
  //   public void showStarterPlacement(String username, int faceId) {
 
@@ -66,12 +63,12 @@ public class ClientSocket implements VirtualView{
     }
 
     @Override
-    public void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientFace placedface, Position position) throws RemoteException {
+    public void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide, Position position) throws RemoteException {
 
     }
 
     @Override
-    public void showUpdateAfterDraw(ClientCard drawnCard, boolean isEmpty, ClientCard newTopDeck, ClientCard newFaceUpCard, ClientCard newTopCard, boolean additionalTurn, String username, int boardPosition) throws RemoteException {
+    public void showUpdateAfterDraw(ClientCard drawnCard, ClientFace newTopDeck, ClientCard newFaceUpCard, String username, int boardPosition) throws RemoteException {
 
     }
 
