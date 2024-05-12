@@ -34,7 +34,7 @@ public class ClientController implements ClientActions {
     private VirtualServer server;
     private ClientGame game;
 
-    private String mainPlayerUsername;
+    private String mainPlayerUsername=""; // todo. set by the view after user's input
 
     public ClientController(VirtualServer server){
         this.server = server;
