@@ -35,6 +35,10 @@ public class ClientController implements ClientActions {
 
     private String mainPlayerUsername;
 
+    public ClientController(VirtualServer server){
+        this.server = server;
+    }
+
     @Override
     public void connect(VirtualView client, String username) throws InvalidUsernameException, RemoteException {
 
@@ -221,10 +225,8 @@ public class ClientController implements ClientActions {
         game.getPlayer(username).setNetworkStatus(isConnected);
     }
 
-
-    //todo update
-    public void updateBoardSetUp(int[] commonObjectiveID, int topBackID, int topGoldenBackID, int[] faceUpCards) {
-
+    public void updatePlayersInLobby(List<String> usernames) throws RemoteException{
+        game = new ClientGame(usernames);
     }
 
     public void updateColor(PlayerColor color, String username) {
@@ -232,12 +234,9 @@ public class ClientController implements ClientActions {
     }
 
     public void updateObjectiveCard(ClientCard chosenObjective, String username) {
-
+        game.getPlayer(username).updateObjectiveCard(chosenObjective);
     }
 
-    //todo update the rest of notify methods
-    //necessary to pass a ClientCard and not a client face
-    //used also for placing a starter card
     void updateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide, Position position) {
 
         ClientPlayground playground = game.getPlaygroundByUsername(username);
@@ -275,23 +274,18 @@ public class ClientController implements ClientActions {
 
     }
 
-    //method to notify update after a draw
-
+    //todo check if other players discard private message of others or if they save them but the view avoid the to show to the players
     void updateChat(Message message) {
-
+        game.getMessages().add(message);
     }
 
-    //todo change, use username
     void updateCurrentPlayer(int currentPlayerIdx, GamePhase phase) {
-
+        game.setCurrentPlayerIdx(currentPlayerIdx);
+        game.setCurrentPhase(phase);
     }
 
     void updateSuspendedGame() {
         game.setGameActive(!game.isGameActive());
-    }
-
-    //todo check if it could be removed and only to keep only on the view
-    void updateWinners(List<String> winners) {
     }
 
     private boolean checkPosition(Position position) {
