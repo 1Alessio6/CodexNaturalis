@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.network.client.model.ClientGame;
-import it.polimi.ingsw.network.client.model.ClientPhase;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
@@ -63,19 +62,13 @@ public interface VirtualView extends Remote {
     //The two list positions and tiles represent every new available tile added after the last place invocation
     //symbols and total amount represent the new resources added after the last place invocation
     //consider both couples like maps
-    void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientFace placedface, Position position) throws RemoteException;
+    void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientFace placedface , Position position) throws RemoteException;
 
     void showUpdateAfterDraw(ClientCard drawnCard, boolean isEmpty, ClientCard newTopDeck, ClientCard newFaceUpCard, ClientCard newTopCard, boolean additionalTurn, String username, int boardPosition) throws RemoteException;
 
     //method to notify update after a draw
 
     void showUpdateChat(Message message) throws RemoteException;
-
-    // method to notify about the reach of 20 points
-    //void showUpdateTriggeredEndGame(String username);
-
-    // todo. delete: now a GamePhase is passed
-    void showUpdateCurrentPlayer(int currentPlayerIdx, ClientPhase phase) throws RemoteException;
 
     void showUpdateCurrentPlayer(int currentPlayerIdx, GamePhase phase) throws RemoteException;
 

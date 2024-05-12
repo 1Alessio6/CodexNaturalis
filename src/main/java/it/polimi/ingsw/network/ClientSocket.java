@@ -7,10 +7,8 @@ import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.network.client.model.ClientGame;
-import it.polimi.ingsw.network.client.model.ClientPhase;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
-import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -85,11 +83,6 @@ public class ClientSocket implements VirtualView{
     //public void showUpdateTriggeredEndGame(String username) {
 
     //}
-
-    @Override
-    public void showUpdateCurrentPlayer(int currentPlayerIdx, ClientPhase phase) throws RemoteException {
-
-    }
 
     @Override
     public void showUpdateCurrentPlayer(int currentPlayerIdx, GamePhase phase) throws RemoteException {

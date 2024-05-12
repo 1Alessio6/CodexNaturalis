@@ -122,16 +122,22 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     }
 
     private void runPlayerAdditionalTurn() {
+        /*
         receivePlaceCommand();
         receiveDrawCommand();
         this.game.setCurrentMainPlayer(false);
+
+         */
     }
 
     private void runPlayerTurn() {
+        /*
         //while(!this.player.isCurrentPlayer()){}
         receivePlaceCommand();
         receiveDrawCommand();
         this.game.setCurrentMainPlayer(false);
+
+         */
     }
 
     private void receivePlaceCommand() {
@@ -252,8 +258,11 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
     @Override
     public void showUpdatePlayerStatus(boolean isConnected, String username) throws RemoteException {
+        /*
         game.getMainPlayer().setNetworkStatus(isConnected);
         System.out.println(game.getMainPlayer().isConnected());
+
+         */
     }
 
     @Override
@@ -350,13 +359,16 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     //}
 
     @Override
-    public void showUpdateCurrentPlayer(int currentPlayerIdx, ClientPhase phase) throws RemoteException {
-
-    }
-
-    @Override
     public void showUpdateCurrentPlayer(int currentPlayerIdx, GamePhase phase) throws RemoteException {
+        /*
+        this.game.currentPhase = phase;
+        this.game.player = currentPlayer;
+        game.player.setIsCurrentPlayer(true);
 
+        System.out.println(this.game.currentPhase.name());
+        System.out.println(game.player.isCurrentPlayer() ? game.player.getUsername() : "Error");
+
+         */
     }
 
     @Override
