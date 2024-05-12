@@ -1,9 +1,5 @@
 package it.polimi.ingsw.model.gamePhase;
 
-import it.polimi.ingsw.model.player.Player;
-
-import java.util.List;
-
 /**
  * Class that handles the game's phases.
  * The FSM looks like
@@ -15,15 +11,15 @@ import java.util.List;
 
 public class PhaseHandler {
     private boolean lastNormalTurn;
-
-    private List<Player> players;
-
+    private final int numPlayers;
+    private int counterSetupPlayers;
     private final int lastPlayerIdx;
 
-    public PhaseHandler(List<Player> players) {
-        this.players = players;
+    public PhaseHandler(int numPlayers) {
+        this.numPlayers = numPlayers;
+        counterSetupPlayers = 0;
         this.lastNormalTurn = false;
-        this.lastPlayerIdx = players.size() - 1;
+        this.lastPlayerIdx = numPlayers - 1;
     }
 
     public void setLastNormalTurn() {
@@ -40,12 +36,11 @@ public class PhaseHandler {
         GamePhase nextPhase = null;
         switch (currentPhase) {
             case Setup:
-                nextPhase = GamePhase.PlaceNormal;
-                for (Player p : players) {
-                    if (!p.isSetupFinished()) {
-                        nextPhase = GamePhase.Setup;
-                        break;
-                    }
+                counterSetupPlayers += 1;
+                if (counterSetupPlayers == numPlayers) {
+                    nextPhase = GamePhase.PlaceNormal;
+                } else {
+                    nextPhase = GamePhase.Setup;
                 }
                 break;
             case PlaceNormal:
