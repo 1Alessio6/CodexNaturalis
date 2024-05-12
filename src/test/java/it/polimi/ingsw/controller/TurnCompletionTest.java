@@ -50,14 +50,14 @@ class TurnCompletionTest {
         Assertions.assertEquals(lastPlayerState, PlayerState.ChooseStarter);
 
         Assertions.assertDoesNotThrow(() -> {
-            game.add(users.getFirst(), new ClientRMI(new ClientGame(game)));
+            game.add(users.getFirst(), new ClientRMI());
             turnCompletion.handleJoin(game);
         });
         Assertions.assertFalse(game.isActive());
 
         // add another player to make the game active again
         Assertions.assertDoesNotThrow(() -> {
-            game.add(users.get(1), new ClientRMI(new ClientGame(game)));
+            game.add(users.get(1), new ClientRMI());
             turnCompletion.handleJoin(game);
         });
         Assertions.assertTrue(game.isActive());

@@ -116,11 +116,6 @@ public class ClientGame {
 
         messages = game.getMessages();
 
-        // todo. complete method
-        //clientBoard = new ClientBoard();
-
-      //  private ClientBoard clientBoard;
-      //  private ClientPhase currentPhase;
     }
 
     public ClientGame(List<String> usernames) {

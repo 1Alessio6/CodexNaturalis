@@ -15,6 +15,8 @@ import it.polimi.ingsw.network.client.model.*;
 import it.polimi.ingsw.network.client.model.card.*;
 import it.polimi.ingsw.network.client.model.player.*;
 import it.polimi.ingsw.network.client.view.View;
+import it.polimi.ingsw.network.client.view.tui.ClientCli;
+import it.polimi.ingsw.network.server.ServerRMI;
 
 
 import java.rmi.NotBoundException;
@@ -30,54 +32,25 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
     private View clientView; //can be tui or gui
 
-    protected ClientRMI(VirtualServer server) throws RemoteException {
+    public ClientRMI() throws RemoteException{
+        controller = new ClientController(new ServerRMI());
+        clientView = new ClientCli();
+    }
+
+    public ClientRMI(VirtualServer server, View clientView) throws RemoteException {
         controller = new ClientController(server);
         //check which view
         //clientView = new view(controller)
     }
 
-    public static void main(String[] args) throws RemoteException, NotBoundException {
+    private void run(String host, int port) throws RemoteException, NotBoundException {
         String serverName = "ServerRmi";
-        Registry registry = LocateRegistry.getRegistry(args[0], 1234); //todo change port and args and decide how to handle the exception
+        Registry registry = LocateRegistry.getRegistry(host, port); //todo change port and args and decide how to handle the exception
 
         VirtualServer server = (VirtualServer) registry.lookup(serverName);
 
-        new ClientRMI(server).run();
-    }
-
-
-    //this method assume the client tries to connect to the server till the server is available
-    private void run() {
-        connect();
-        //run.view
-    }
-
-    //todo check if ClientPlayground it's correctly updated, it should be updated by the methods from observer pattern
-    //todo the server needs to send the map of corner
-
-    private void connect(){
-        while(true) {
-            try {
-                String username = receiveUsername();
-                this.server.connect(this, username);
-                break;
-            }catch(InvalidUsernameException e){
-                System.err.println("Username selected is already taken. Please try again");
-            } catch (RemoteException e) {
-                System.err.println("Connection Error");
-            } catch (FullLobbyException e){
-                System.err.println("Error");
-            }
-        }
-    }
-
-    private String receiveUsername(){
-        System.out.println("Insert username");
-        Scanner scanner = new Scanner(System.in);
-        String username = scanner.next();
-        scanner.close();
-
-        return username;
+        clientView.run(this);
+        //runView (view has to select connect)
     }
 
     @Override

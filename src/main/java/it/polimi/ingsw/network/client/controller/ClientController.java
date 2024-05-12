@@ -12,6 +12,7 @@ import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
+import it.polimi.ingsw.model.lobby.FullLobbyException;
 import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
@@ -40,8 +41,8 @@ public class ClientController implements ClientActions {
     }
 
     @Override
-    public void connect(VirtualView client, String username) throws InvalidUsernameException, RemoteException {
-
+    public void connect(VirtualView client, String username) throws InvalidUsernameException, RemoteException, FullLobbyException {
+        server.connect(client,username);
     }
 
     @Override
