@@ -745,6 +745,13 @@ public class Game {
         }
     }
 
+    public Face getTopDeckBack(DeckType type){
+        if(type == DeckType.GOLDEN){
+            return goldenCards.getTop().getFace(Side.BACK);
+        }
+        return resourceCards.getTop().getFace(Side.BACK);
+    }
+
     private int convertDeckTypeIntoId(DeckType type) {
         if (DeckType.GOLDEN == type) {
             return 4;
@@ -752,6 +759,7 @@ public class Game {
             return 5;
         }
     }
+
 
 }
 
