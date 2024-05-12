@@ -58,7 +58,7 @@ public class Controller implements EventListener, GameRequest {
      * @throws InvalidUsernameException if the username provided is null or an empty string.
      * @throws RemoteException          if the user disconnects after calling the method.
      */
-    public void handleConnection(String username, VirtualView user) throws FullLobbyException, InvalidUsernameException, RemoteException {
+    public synchronized void handleConnection(String username, VirtualView user) throws FullLobbyException, InvalidUsernameException, RemoteException {
         if (!validUsername(username)) {
             throw new InvalidUsernameException();
         }
@@ -92,7 +92,7 @@ public class Controller implements EventListener, GameRequest {
         }
     }
 
-    public void handleDisconnection(String username) throws RemoteException, InvalidUsernameException {
+    public synchronized void handleDisconnection(String username) throws RemoteException, InvalidUsernameException {
         if (this.game == null) {
             leaveLobby(username);
         } else {
@@ -115,6 +115,9 @@ public class Controller implements EventListener, GameRequest {
      * @param username the user's name.
      */
     private void leaveGame(String username) throws InvalidUsernameException, RemoteException {
+        if (game == null) {
+            return;
+        }
         game.remove(username);
         turnCompletion.handleLeave(game);
         if (!game.isActive()) {
@@ -137,8 +140,10 @@ public class Controller implements EventListener, GameRequest {
      * @throws InvalidGamePhaseException    if the player has already finished their setup.
      */
     @Override
-    public void placeStarter(String username, Side side) throws InvalidPlayerActionException, InvalidGamePhaseException {
-        game.placeStarter(username, side);
+    public synchronized void placeStarter(String username, Side side) throws InvalidPlayerActionException, InvalidGamePhaseException {
+        if (game != null) {
+            game.placeStarter(username, side);
+        }
     }
 
     /**
@@ -151,8 +156,10 @@ public class Controller implements EventListener, GameRequest {
      * @throws InvalidGamePhaseException    if the player has already finished their setup.
      */
     @Override
-    public void chooseColor(String username, PlayerColor color) throws NonexistentPlayerException, InvalidColorException, InvalidPlayerActionException, InvalidGamePhaseException, RemoteException {
-        game.assignColor(username, color);
+    public synchronized void chooseColor(String username, PlayerColor color) throws NonexistentPlayerException, InvalidColorException, InvalidPlayerActionException, InvalidGamePhaseException, RemoteException {
+        if (game != null) {
+            game.assignColor(username, color);
+        }
     }
 
     /**
@@ -164,11 +171,13 @@ public class Controller implements EventListener, GameRequest {
      * @throws InvalidGamePhaseException    if the player has already finished the setup.
      */
     @Override
-    public void placeObjectiveCard(String username, int chosenObjective) throws InvalidPlayerActionException, InvalidGamePhaseException {
+    public synchronized void placeObjectiveCard(String username, int chosenObjective) throws InvalidPlayerActionException, InvalidGamePhaseException {
         if (chosenObjective < 0 || chosenObjective > 1) {
             throw new IllegalArgumentException();
         }
-        game.placeObjectiveCard(username, chosenObjective);
+        if (game != null) {
+            game.placeObjectiveCard(username, chosenObjective);
+        }
     }
 
     /**
@@ -186,9 +195,11 @@ public class Controller implements EventListener, GameRequest {
      * @throws SuspendedGameException                  if the game is suspended, thus no placement is allowed.
      */
     @Override
-    public void placeCard(String username, int frontId, int backId, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException, InvalidCardIdException {
-        Card cardToPlace = game.getCard(username, frontId, backId);
-        game.placeCard(username, cardToPlace, side, position);
+    public synchronized void placeCard(String username, int frontId, int backId, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException, InvalidCardIdException {
+        if (game != null) {
+            Card cardToPlace = game.getCard(username, frontId, backId);
+            game.placeCard(username, cardToPlace, side, position);
+        }
     }
 
     /**
@@ -201,16 +212,18 @@ public class Controller implements EventListener, GameRequest {
      * @throws InvalidGamePhaseException    if the game phase doesn't allow the operation.
      */
     @Override
-    public void draw(String username, int idToDraw) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException, InvalidIdForDrawingException {
+    public synchronized void draw(String username, int idToDraw) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException, InvalidIdForDrawingException {
         if (idToDraw < 0 || idToDraw > 5) {
             throw new InvalidIdForDrawingException();
         }
-        if (idToDraw == 4) {
-            game.drawFromDeck(username, DeckType.GOLDEN);
-        } else if (idToDraw == 5) {
-            game.drawFromDeck(username, DeckType.RESOURCE);
-        } else {
-            game.drawFromFaceUpCards(username, idToDraw);
+        if (game != null) {
+            if (idToDraw == 4) {
+                game.drawFromDeck(username, DeckType.GOLDEN);
+            } else if (idToDraw == 5) {
+                game.drawFromDeck(username, DeckType.RESOURCE);
+            } else {
+                game.drawFromFaceUpCards(username, idToDraw);
+            }
         }
     }
 
@@ -221,8 +234,10 @@ public class Controller implements EventListener, GameRequest {
      * @throws InvalidMessageException if the message is invalid.
      */
     @Override
-    public void sendMessage(Message message) throws InvalidMessageException {
-        game.registerMessage(message);
+    public synchronized void sendMessage(Message message) throws InvalidMessageException {
+        if (game != null) {
+            game.registerMessage(message);
+        }
     }
 
     @Override
