@@ -95,7 +95,7 @@ public class Deck<T> {
     }
 
     public T getTop() {
-        return deck.peek();
+        return deck.isEmpty() ? null : deck.peek();
     }
 
     //    /**
