@@ -215,7 +215,7 @@ public class Game {
         isFinished = false;
         isActive = true;
         chatDatabase = new ChatDatabase();
-        phaseHandler = new PhaseHandler(players);
+        phaseHandler = new PhaseHandler(validUsernames.size());
         listenerHandler = new ListenerHandler<>();
     }
 
@@ -319,7 +319,7 @@ public class Game {
             isActive = true;
         }
 
-        listenerHandler.notifyBroadcast(receiver -> receiver.updateAfterConnection(new ClientGame(Game.this)));
+        listenerHandler.notify(username, receiver -> receiver.updateAfterConnection(new ClientGame(Game.this)));
     }
 
     public void remove(String username) throws InvalidUsernameException, RemoteException {
@@ -365,10 +365,9 @@ public class Game {
     public void placeStarter(String username, Side side)
             throws InvalidPlayerActionException,
             InvalidGamePhaseException {
-        if (!phase.equals(GamePhase.Setup)) {
+        if (phase != GamePhase.Setup) {
             throw new InvalidGamePhaseException();
         }
-
         Player player = getPlayerByUsername(username);
 
         try {
@@ -386,10 +385,9 @@ public class Game {
                         starterPosition
                 );
             });
-            // todo. maybe remove listenerHandler.notifyBroadcast(receiver -> receiver.showStarterPlacement(username, player.getStarter().getFace(side).getId()));
         }
-        // the starter card shouldn't cause any exception related to the playground
         catch (Playground.UnavailablePositionException | Playground.NotEnoughResourcesException e) {
+            // the starter card shouldn't cause any exception related to the playground
             e.printStackTrace();
         }
     }
@@ -405,7 +403,7 @@ public class Game {
      * @throws InvalidGamePhaseException    if the player has already finished their setup.
      */
     public void assignColor(String username, PlayerColor color) throws InvalidPlayerActionException, InvalidColorException, NonexistentPlayerException, InvalidGamePhaseException, RemoteException {
-        if (!phase.equals(GamePhase.Setup)) {
+        if (phase != GamePhase.Setup) {
             throw new InvalidGamePhaseException();
         }
 
@@ -431,7 +429,7 @@ public class Game {
         if (chosenObjective != 0 && chosenObjective != 1) {
             throw new IllegalArgumentException();
         }
-        if (!phase.equals(GamePhase.Setup)) {
+        if (phase != GamePhase.Setup) {
             throw new InvalidGamePhaseException();
         }
 
@@ -439,13 +437,12 @@ public class Game {
 
         player.placeObjectiveCard(chosenObjective);
 
-        phase = phaseHandler.getNextPhase(phase, currentPlayerIdx);
-
         listenerHandler.notifyBroadcast(receiver -> {
             ObjectiveCard secretObjective = player.getObjective();
             receiver.showUpdateObjectiveCard(new ClientCard(secretObjective), username);
         });
 
+        phase = phaseHandler.getNextPhase(phase, currentPlayerIdx);
         if (phase == GamePhase.PlaceNormal) {
             listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateCurrentPlayer(currentPlayerIdx, phase));
         }
@@ -457,7 +454,7 @@ public class Game {
      * @param username of the player.
      * @param card     to place.
      * @param side     of the card.
-     * @param position in the playgroundplayground
+     * @param position in the playground
      * @throws InvalidPlayerActionException            if the player cannot perform the operation.
      * @throws Playground.UnavailablePositionException if the position is not available. For example the player is trying to place the card in an already covered corner.
      * @throws Playground.NotEnoughResourcesException  if the player's resource are not enough to place the card.
@@ -468,17 +465,13 @@ public class Game {
             Playground.UnavailablePositionException,
             Playground.NotEnoughResourcesException,
             InvalidGamePhaseException, SuspendedGameException {
-
         if (!isActive) {
             throw new SuspendedGameException();
         }
-
-        if (!phase.equals(GamePhase.PlaceNormal) && !phase.equals(GamePhase.PlaceAdditional)) {
+        if (phase != GamePhase.PlaceNormal && phase != GamePhase.PlaceAdditional) {
             throw new InvalidGamePhaseException();
         }
-
         Player currentPlayer = getPlayerByUsername(username);
-
         if (!currentPlayer.getUsername().equals(username)) {
             throw new InvalidPlayerActionException();
         }
@@ -490,11 +483,6 @@ public class Game {
         }
 
         phase = phaseHandler.getNextPhase(phase, currentPlayerIdx);
-
-        if (phase == GamePhase.PlaceAdditional) {
-            updateCurrentPlayerIdx();
-            listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateCurrentPlayer(currentPlayerIdx, phase));
-        }
 
         listenerHandler.notifyBroadcast(receiver -> {
             Playground playground = currentPlayer.getPlayground();
@@ -509,6 +497,10 @@ public class Game {
             );
         });
 
+        if (phase == GamePhase.PlaceAdditional) {
+            updateCurrentPlayerIdx();
+            listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateCurrentPlayer(currentPlayerIdx, phase));
+        }
         if (phase == GamePhase.End) {
             listenerHandler.notifyBroadcast(receiver -> receiver.showWinners(getWinners()));
         }
@@ -556,7 +548,7 @@ public class Game {
             throw invalidPlayerActionException;
         }
 
-        listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateAfterDraw(new ClientCard(newCard), deck.isEmpty(), new ClientCard(deck.getTop()), null, null, phase == GamePhase.PlaceAdditional, username, convertDeckTypeIntoId(deckType)));
+        listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateAfterDraw(new ClientCard(newCard), deck.isEmpty(), deck.isEmpty() ? null : new ClientCard(deck.getTop()), null, null, phase == GamePhase.PlaceAdditional, username, convertDeckTypeIntoId(deckType)));
         listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateCurrentPlayer(currentPlayerIdx, phase));
     }
 
@@ -607,6 +599,11 @@ public class Game {
 
         assert (isValidIdx(faceUpCardIdx));
 
+        // todo(ask Ale). maybe required a specific exception
+        if (faceUpCards.get(faceUpCardIdx) == null) {
+
+        }
+
         Card newCard = faceUpCards.get(faceUpCardIdx);
 
         Deck<Card> deckForReplacement;
@@ -619,6 +616,7 @@ public class Game {
             throw new InvalidPlayerActionException();
         }
 
+        // todo(creation of null card).
         listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateAfterDraw(
                 new ClientCard(newCard),
                 deckForReplacement.isEmpty(),
@@ -662,7 +660,6 @@ public class Game {
      * @throws InvalidMessageException if the author doesn't match the sender or the recipient is an invalid username.
      */
     public void registerMessage(Message message) throws InvalidMessageException {
-
         if (getPlayerByUsername(message.getRecipient()) == null) {
             throw new InvalidMessageException("recipient doesn't exists");
         }
