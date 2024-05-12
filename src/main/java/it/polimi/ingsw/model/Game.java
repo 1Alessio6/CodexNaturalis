@@ -557,7 +557,7 @@ public class Game {
             throw invalidPlayerActionException;
         }
 
-        listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateAfterDraw(new ClientCard(newCard), deck.isEmpty(), new ClientCard(deck.getTop()), null, null, phase == GamePhase.PlaceAdditional, username, convertDeckTypeIntoId(deckType)));
+        listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateAfterDraw(new ClientCard(newCard), new ClientCard(deck.getTop()), null, username, convertDeckTypeIntoId(deckType)));
         listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateCurrentPlayer(currentPlayerIdx, phase));
     }
 
@@ -622,11 +622,8 @@ public class Game {
 
         listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateAfterDraw(
                 new ClientCard(newCard),
-                deckForReplacement.isEmpty(),
                 new ClientCard(deckForReplacement.getTop()),
                 new ClientCard(faceUpCards.get(faceUpCardIdx)),
-                new ClientCard(deckForReplacement.getTop()),
-                phase == GamePhase.PlaceAdditional,
                 username, faceUpCardIdx));
         listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateCurrentPlayer(currentPlayerIdx, phase));
     }
