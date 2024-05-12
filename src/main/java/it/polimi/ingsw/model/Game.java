@@ -382,7 +382,7 @@ public class Game {
                         playground.getResources(),
                         0,
                         username,
-                        new ClientFace(player.getStarter().getFace(side)),
+                        new ClientCard(player.getStarter()),side,
                         starterPosition
                 );
             });
@@ -504,7 +504,8 @@ public class Game {
                     playground.getResources(),
                     currentPlayer.getPoints(),
                     username,
-                    new ClientFace(card.getFace(side)),
+                    new ClientCard(card),
+                    side,
                     position
             );
         });
