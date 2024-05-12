@@ -1,6 +1,8 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.card.Card;
+import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.action.PlayerAction;
@@ -11,6 +13,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,7 +31,7 @@ class TurnCompletionTest {
 
     @Test
     void disconnectsPlayersInSetup_CompleteSetup() {
-        List<String> users  = game.getPlayers().stream().map(Player::getUsername).toList();
+        List<String> users = game.getPlayers().stream().map(Player::getUsername).toList();
         for (String user : users) {
             Assertions.assertDoesNotThrow(() -> {
                 game.remove(user);
@@ -64,5 +67,74 @@ class TurnCompletionTest {
         PlayerState playerState = game.getPlayerByUsername(users.getLast()).getPlayerAction().getPlayerState();
         Assertions.assertEquals(playerState, PlayerState.Place);
         Assertions.assertEquals(GamePhase.PlaceNormal, game.getPhase());
+    }
+
+    private void completeSetup(Game game, String user) {
+        Assertions.assertDoesNotThrow(() -> {
+            game.placeStarter(user, Side.FRONT);
+            game.assignColor(user, new ArrayList<>(game.getAvailableColor()).getFirst());
+            game.placeObjectiveCard(user, 0);
+        });
+    }
+
+    private void place(Game game, Player currentPlayer) {
+        Assertions.assertDoesNotThrow(() -> {
+            game.placeCard(currentPlayer.getUsername(), currentPlayer.getCards().getFirst(), Side.FRONT, currentPlayer.getAvailablePositions().getFirst());
+        });
+    }
+
+    @Test
+    void disconnectsCurrentPlayer_completePlace() {
+        List<String> users = game.getPlayers().stream().map(Player::getUsername).toList();
+        for (String user : users) {
+            completeSetup(game, user);
+        }
+
+        String currentPlayerUsername = game.getCurrentPlayer().getUsername();
+        Assertions.assertDoesNotThrow(() -> game.remove(currentPlayerUsername));
+        turnCompletion.handleLeave(game);
+        // correct evolution of the current player
+        Assertions.assertNotEquals(currentPlayerUsername, game.getCurrentPlayer().getUsername());
+        Assertions.assertEquals(game.getPlayerByUsername(currentPlayerUsername).getPlayerAction().getPlayerState(), PlayerState.Place);
+    }
+
+    @Test
+    void disconnectsCurrentPlayer_completeDraw() {
+        List<String> users = game.getPlayers().stream().map(Player::getUsername).toList();
+        for (String user : users) {
+            completeSetup(game, user);
+        }
+        Player currentPlayer = game.getCurrentPlayer();
+        place(game, currentPlayer);
+        Assertions.assertDoesNotThrow(() -> game.remove(currentPlayer.getUsername()));
+        List<Card> inHandBefore = new ArrayList<>(currentPlayer.getCards());
+        turnCompletion.handleLeave(game);
+        List<Card> inHandAfter = new ArrayList<>(currentPlayer.getCards());
+        Assertions.assertEquals(currentPlayer.getPlayerAction().getPlayerState(), PlayerState.Place);
+        Assertions.assertFalse(inHandBefore.equals(inHandAfter));
+    }
+
+    @Test
+    void disconnectsCurrentPlayerInSuspendedGame_doNothing() {
+        List<String> users = game.getPlayers().stream().map(Player::getUsername).toList();
+        for (String user : users) {
+            completeSetup(game, user);
+        }
+        Player currentPlayer = game.getCurrentPlayer();
+        for (String user : users) {
+            if (!user.equals(currentPlayer.getUsername())) {
+                Assertions.assertDoesNotThrow(() -> {
+                    game.remove(user);
+                });
+            }
+        }
+
+        Assertions.assertDoesNotThrow(() -> {
+            game.remove(currentPlayer.getUsername());
+        });
+        List<Card> inHandBefore = currentPlayer.getCards();
+        turnCompletion.handleLeave(game);
+        List<Card> inHandAfter = currentPlayer.getCards();
+        Assertions.assertEquals(inHandBefore, inHandAfter);
     }
 }
