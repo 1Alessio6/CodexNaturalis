@@ -57,6 +57,10 @@ public class ClientGame {
     //todo update get main player
 
 
+    public void setCurrentPlayerIdx(int currentPlayerIdx) {
+        this.currentPlayerIdx = currentPlayerIdx;
+    }
+
     public void setCurrentPhase(GamePhase currentPhase) {
         this.currentPhase = currentPhase;
     }
@@ -119,6 +123,14 @@ public class ClientGame {
       //  private ClientPhase currentPhase;
     }
 
+    public ClientGame(List<String> usernames) {
+        for(String username : usernames){
+            if(getPlayer(username) == null){
+                players.add(new ClientPlayer(username));
+            }
+        }
+    }
+
     public boolean isGoldenDeckEmpty(){
         return clientBoard.isGoldenDeckEmpty();
     }
@@ -163,6 +175,10 @@ public class ClientGame {
 
     public ClientPlayer getCurrentPlayer(){
         return players.get(currentPlayerIdx);
+    }
+
+    public void addMessage(Message newMessage){
+        messages.add(newMessage);
     }
 
 }
