@@ -126,7 +126,7 @@ public class ClientController implements ClientActions {
 
         try {
             server.draw(getMainPlayerUsername(), IdToDraw);
-        } catch (EmptyDeckException | InvalidGamePhaseException | InvalidPlayerActionException | InvalidIdForDrawingException e) {
+        } catch (EmptyDeckException | InvalidGamePhaseException | InvalidPlayerActionException | InvalidIdForDrawingException | InvalidFaceUpCardException e) {
             System.err.println(e.getMessage());
         }
     }

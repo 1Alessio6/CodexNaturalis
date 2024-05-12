@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.card.Color.InvalidColorException;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.EmptyDeckException;
 import it.polimi.ingsw.model.card.InvalidCardIdException;
+import it.polimi.ingsw.model.card.InvalidFaceUpCardException;
 import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
@@ -30,7 +31,7 @@ public interface GameRequest {
 
     void placeCard(String username, int frontId, int backId, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException, InvalidCardIdException;
 
-    void draw(String username, int idToDraw) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException, InvalidIdForDrawingException;
+    void draw(String username, int idToDraw) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException, InvalidIdForDrawingException, InvalidFaceUpCardException;
 
     void sendMessage(Message message) throws InvalidMessageException;
 

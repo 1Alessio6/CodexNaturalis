@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.NonexistentPlayerException;
 import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.card.Color.InvalidColorException;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.card.InvalidFaceUpCardException;
 import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
@@ -77,7 +78,7 @@ public class TurnCompletion {
         Collections.shuffle(faceUpCardIdx);
         try {
             game.drawFromFaceUpCards(username, faceUpCardIdx.getFirst());
-        } catch (InvalidPlayerActionException | InvalidGamePhaseException ignored) {
+        } catch (InvalidPlayerActionException | InvalidGamePhaseException | InvalidFaceUpCardException ignored) {
         }
     }
 

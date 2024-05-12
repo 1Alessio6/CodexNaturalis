@@ -79,7 +79,7 @@ public class ServerRMI implements VirtualServer {
     }
 
     @Override
-    public void draw(String username, int idToDraw) throws InvalidPlayerActionException, InvalidIdForDrawingException, EmptyDeckException, InvalidGamePhaseException {
+    public void draw(String username, int idToDraw) throws InvalidPlayerActionException, InvalidIdForDrawingException, EmptyDeckException, InvalidGamePhaseException, InvalidFaceUpCardException {
         myController.draw(username, idToDraw);
     }
 

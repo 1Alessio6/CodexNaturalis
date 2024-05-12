@@ -586,7 +586,7 @@ public class Game {
      * @param faceUpCardIdx specifying the face up card.
      * @throws InvalidPlayerActionException if the player cannot perform the operation.
      */
-    public void drawFromFaceUpCards(String username, int faceUpCardIdx) throws InvalidPlayerActionException, InvalidGamePhaseException {
+    public void drawFromFaceUpCards(String username, int faceUpCardIdx) throws InvalidPlayerActionException, InvalidGamePhaseException, InvalidFaceUpCardException {
         if (!phase.equals(GamePhase.DrawNormal)) {
             throw new InvalidGamePhaseException();
         }
@@ -599,9 +599,8 @@ public class Game {
 
         assert (isValidIdx(faceUpCardIdx));
 
-        // todo(ask Ale). maybe required a specific exception
         if (faceUpCards.get(faceUpCardIdx) == null) {
-
+            throw new InvalidFaceUpCardException("No face up card there");
         }
 
         Card newCard = faceUpCards.get(faceUpCardIdx);

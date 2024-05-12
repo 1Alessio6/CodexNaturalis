@@ -5,11 +5,9 @@ import it.polimi.ingsw.model.InvalidGamePhaseException;
 import it.polimi.ingsw.model.NonexistentPlayerException;
 import it.polimi.ingsw.model.SuspendedGameException;
 import it.polimi.ingsw.model.board.Playground;
-import it.polimi.ingsw.model.card.Card;
+import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.card.Color.InvalidColorException;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
-import it.polimi.ingsw.model.card.EmptyDeckException;
-import it.polimi.ingsw.model.card.InvalidCardIdException;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
@@ -19,7 +17,6 @@ import it.polimi.ingsw.model.lobby.Lobby;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.network.VirtualView;
 
 import java.rmi.RemoteException;
@@ -212,7 +209,7 @@ public class Controller implements EventListener, GameRequest {
      * @throws InvalidGamePhaseException    if the game phase doesn't allow the operation.
      */
     @Override
-    public synchronized void draw(String username, int idToDraw) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException, InvalidIdForDrawingException {
+    public synchronized void draw(String username, int idToDraw) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException, InvalidIdForDrawingException, InvalidFaceUpCardException {
         if (idToDraw < 0 || idToDraw > 5) {
             throw new InvalidIdForDrawingException();
         }
