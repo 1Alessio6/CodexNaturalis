@@ -265,28 +265,6 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
          */
     }
 
-    @Override
-    public void showBoardSetUp(int[] commonObjectiveID, int topBackID, int topGoldenBackID, int[] faceUpCards) throws RemoteException {
-
-        /*
-        game.getClientBoard().setCommonObjectives(commonObjectiveID);
-        game.getClientBoard().addGoldenBackID(topGoldenBackID);
-        game.getClientBoard().addResourceBackID(topBackID);
-        game.getClientBoard().setFaceUpCards(faceUpCards);
-        System.out.println("Common objectives are: \n");
-        for (int i : game.getClientBoard().getCommonObjectives()) {
-            System.out.println(i + "\n");
-        }
-        System.out.println("The top back ID is: " + game.getClientBoard().getResourceDeck().getLast() + "\n");
-        System.out.println("The top golden back ID is: " + game.getClientBoard().getGoldenDeck().getLast() + "\n");
-        System.out.println("Face up cards are: \n");
-        for (int i : game.getClientBoard().getFaceUpCards()) {
-            System.out.println(i + "\n");
-        }
-
-         */
-    }
-
     //@Override
     //public void showStarterPlacement(String username, int faceId) {
 

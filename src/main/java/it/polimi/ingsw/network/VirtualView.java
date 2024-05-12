@@ -49,8 +49,6 @@ public interface VirtualView extends Remote {
     //use when a new player is connected
     void showUpdatePlayerStatus(boolean isConnected, String username) throws RemoteException;
 
-    void showBoardSetUp(int[] commonObjectiveID, int topBackID, int topGoldenBackID, int[] faceUpCards) throws RemoteException;
-
     // all clients receive the information, the ones not being username will remove color from their list of available colors.
     void showUpdateColor(PlayerColor color, String username) throws RemoteException;
 

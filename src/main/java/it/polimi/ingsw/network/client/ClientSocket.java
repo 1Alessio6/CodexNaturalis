@@ -47,11 +47,6 @@ public class ClientSocket implements VirtualView {
 
     }
 
-    @Override
-    public void showBoardSetUp(int[] commonObjectiveID, int topBackID, int topGoldenBackID, int[] faceUpCards) throws RemoteException {
-
-    }
-
  //   @Override
  //   public void showStarterPlacement(String username, int faceId) {
 
