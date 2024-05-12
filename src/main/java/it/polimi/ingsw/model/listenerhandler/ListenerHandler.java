@@ -19,27 +19,27 @@ public class ListenerHandler <ListenerType> {
         this.idToListener = new HashMap<>(idToListener);
     }
 
-    public void add(String username, ListenerType listener) {
+    public synchronized void add(String username, ListenerType listener) {
         idToListener.put(username, listener);
     }
 
-    public void remove(String username) {
+    public synchronized void remove(String username) {
         idToListener.remove(username);
     }
 
-    public ListenerType get(String username) {
+    public synchronized ListenerType get(String username) {
         return idToListener.get(username);
     }
 
-    public List<String> getIds() {
+    public synchronized List<String> getIds() {
         return new ArrayList<>(idToListener.keySet());
     }
 
-    public int getNumListener() {
+    public synchronized int getNumListener() {
         return idToListener.size();
     }
 
-    public void notify(String username, Notifier<ListenerType> notifier) {
+    public synchronized void notify(String username, Notifier<ListenerType> notifier) {
         if (!idToListener.containsKey(username)) return;
         try {
             notifier.sendUpdate(idToListener.get(username));
@@ -49,7 +49,7 @@ public class ListenerHandler <ListenerType> {
         }
     }
 
-    public void notifyBroadcast(Notifier<ListenerType> notifier) {
+    public synchronized void notifyBroadcast(Notifier<ListenerType> notifier) {
         List<String> toRemove = new ArrayList<>();
         for (Map.Entry<String, ListenerType> entry : idToListener.entrySet()) {
             try {
@@ -65,7 +65,7 @@ public class ListenerHandler <ListenerType> {
         }
     }
 
-    public void clear() {
+    public synchronized void clear() {
         idToListener.clear();
     }
 }
