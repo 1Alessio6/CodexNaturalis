@@ -41,7 +41,7 @@ public class PhaseHandlerTest {
                         new ArrayList<>(cards),
                         new ArrayList<>(objectives))));
 
-        phaseHandler = new PhaseHandler(genericPlayers);
+        phaseHandler = new PhaseHandler(genericPlayers.size());
     }
 
     @Test
@@ -51,6 +51,9 @@ public class PhaseHandlerTest {
 
     @Test
     void transitionFromSetup_nextPhasePlaceNormal() {
+        var ref = new Object() {
+            GamePhase phase;
+        };
         Assertions.assertDoesNotThrow(
                 () -> {
                     // finish setup
@@ -58,11 +61,12 @@ public class PhaseHandlerTest {
                         genericPlayer.placeStarter(Side.FRONT);
                         genericPlayer.assignColor(PlayerColor.BLUE);
                         genericPlayer.placeObjectiveCard(0);
+                        ref.phase = phaseHandler.getNextPhase(GamePhase.Setup, 0);
                     }
                 }
         );
 
-        Assertions.assertEquals(GamePhase.PlaceNormal, phaseHandler.getNextPhase(GamePhase.Setup, 0));
+        Assertions.assertEquals(GamePhase.PlaceNormal, ref.phase);
     }
 
     @Test
