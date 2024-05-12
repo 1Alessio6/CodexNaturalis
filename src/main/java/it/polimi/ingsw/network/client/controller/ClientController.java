@@ -77,9 +77,11 @@ public class ClientController implements ClientActions {
     }
 
     @Override
-    public void draw(int IdToDraw) throws InvalidGamePhaseException, EmptyDeckException, NotExistingFaceUp, SuspendedGameException, RemoteException {
+    public void draw(int IdToDraw) throws InvalidGamePhaseException, EmptyDeckException, NotExistingFaceUp, SuspendedGameException, RemoteException, InvalidIdForDrawingException {
 
-        assert (IdToDraw <= 5 && IdToDraw >= 0);   //view should only accept numbers in this range
+        if(IdToDraw > 5 || IdToDraw < 0){
+            throw new InvalidIdForDrawingException();
+        }
 
         if (!game.isGameActive()) {
             throw new SuspendedGameException("The game is suspended, you can only text messages");
@@ -124,7 +126,7 @@ public class ClientController implements ClientActions {
 
         try {
             server.draw(getMainPlayerUsername(), IdToDraw);
-        } catch (EmptyDeckException | InvalidGamePhaseException | InvalidPlayerActionException e) {
+        } catch (EmptyDeckException | InvalidGamePhaseException | InvalidPlayerActionException | InvalidIdForDrawingException e) {
             System.err.println(e.getMessage());
         }
     }
@@ -202,7 +204,9 @@ public class ClientController implements ClientActions {
 
     @Override
     public void setPlayersNumber(int playersNumber) throws RemoteException, InvalidPlayersNumberException {
-        assert (playersNumber < 5 && playersNumber > 1); //view should only accept numbers in this range
+        if(playersNumber > 4 || playersNumber < 2){
+            throw new InvalidPlayersNumberException();
+        }
         server.setPlayersNumber(playersNumber);
     }
 
