@@ -16,7 +16,8 @@ public class ClientTile {
 
     public ClientTile(Tile tile){
         availability = tile.getAvailability();
-        face = new ClientFace(tile.getFace());
+        // null if it refers to a tile which has not already a face on it, because it represents an available position
+        face = tile.getFace() == null ? null : new ClientFace(tile.getFace());
     }
 
     /**
