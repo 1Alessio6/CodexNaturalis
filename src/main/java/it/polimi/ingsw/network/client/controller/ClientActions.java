@@ -11,6 +11,7 @@ import it.polimi.ingsw.model.card.NotExistingFaceUp;
 import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
+import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.network.VirtualView;
 
@@ -30,6 +31,6 @@ public interface ClientActions {
 
     void sendMessage(Message message) throws InvalidMessageException, RemoteException;
 
-    void setPlayersNumber(int playersNumber) throws RemoteException;
+    void setPlayersNumber(int playersNumber) throws RemoteException, InvalidPlayersNumberException;
 
 }

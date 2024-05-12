@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.controller.InvalidIdForDrawingException;
 import it.polimi.ingsw.model.InvalidGamePhaseException;
 import it.polimi.ingsw.model.NonexistentPlayerException;
 import it.polimi.ingsw.model.SuspendedGameException;
@@ -12,9 +13,9 @@ import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.lobby.FullLobbyException;
+import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
-import it.polimi.ingsw.model.player.NotAvailableUsername;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
 
@@ -68,35 +69,18 @@ public class ServerRMI implements VirtualServer {
     }
 
     @Override
-    public void placeObjectiveCard(String username, int chosenObjective) {
-        try {
-            myController.placeObjectiveCard(username, chosenObjective);
-
-            // TODO: notify
-        } catch (InvalidPlayerActionException | InvalidGamePhaseException e) {
-            throw new RuntimeException(e);
-        }
-
-
+    public void placeObjectiveCard(String username, int chosenObjective) throws InvalidPlayerActionException, InvalidGamePhaseException {
+        myController.placeObjectiveCard(username, chosenObjective);
     }
 
     @Override
-    public void placeCard(String username, int frontId, int backId, Side side, Position position) {
-        try {
-            myController.placeCard(username, frontId, backId, side, position);
-        } catch (InvalidPlayerActionException | Playground.UnavailablePositionException |
-                 Playground.NotEnoughResourcesException | InvalidGamePhaseException | SuspendedGameException e) {
-            throw new RuntimeException(e);
-        }
+    public void placeCard(String username, int frontId, int backId, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException, InvalidCardIdException {
+        myController.placeCard(username, frontId, backId, side, position);
     }
 
     @Override
-    public void draw(String username, int idToDraw) {
-        try {
-            myController.draw(username, idToDraw);
-        } catch (InvalidPlayerActionException | EmptyDeckException | InvalidGamePhaseException e) {
-            throw new RuntimeException(e);
-        }
+    public void draw(String username, int idToDraw) throws InvalidPlayerActionException, InvalidIdForDrawingException, EmptyDeckException, InvalidGamePhaseException {
+        myController.draw(username, idToDraw);
     }
 
     @Override
@@ -105,7 +89,7 @@ public class ServerRMI implements VirtualServer {
     }
 
     @Override
-    public void setPlayersNumber(int playersNumber) {
+    public void setPlayersNumber(int playersNumber) throws InvalidPlayersNumberException {
         myController.setPlayersNumber(playersNumber);
     }
 

@@ -180,12 +180,12 @@ public class Player {
      * @return the card matching the two ids.
      * @throws IllegalArgumentException if there's no card matching the provided ids.
      */
-    public Card getCard(int frontId, int backId) throws IllegalArgumentException {
+    public Card getCard(int frontId, int backId) throws InvalidCardIdException {
         return cards
                 .stream()
                 .filter(c -> c.getFace(Side.FRONT).getId() == frontId && c.getFace(Side.BACK).getId() == backId)
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("Card not present in player"));
+                .orElseThrow(InvalidCardIdException::new);
     }
 
     // discard the card from the player's hand

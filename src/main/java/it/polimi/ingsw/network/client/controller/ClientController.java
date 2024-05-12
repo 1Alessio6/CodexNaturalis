@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.client.controller;
 
+import it.polimi.ingsw.controller.InvalidIdForDrawingException;
 import it.polimi.ingsw.model.InvalidGamePhaseException;
 import it.polimi.ingsw.model.NonexistentPlayerException;
 import it.polimi.ingsw.model.SuspendedGameException;
@@ -10,6 +11,7 @@ import it.polimi.ingsw.model.card.Color.InvalidColorException;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
+import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.network.VirtualServer;
@@ -63,6 +65,8 @@ public class ClientController implements ClientActions {
             System.err.println("Error check methods should have avoid an incorrect move");
         } catch (InvalidPlayerActionException | SuspendedGameException | InvalidGamePhaseException e) {
             System.err.println("Error");
+        } catch (InvalidCardIdException e) {
+            System.err.println("Error: " + e.getMessage());
         }
     }
 
@@ -110,7 +114,8 @@ public class ClientController implements ClientActions {
 
         try {
             server.draw(game.getMainPlayerUsername(), IdToDraw);
-        } catch (EmptyDeckException | InvalidGamePhaseException | InvalidPlayerActionException e) {
+        } catch (EmptyDeckException | InvalidGamePhaseException | InvalidPlayerActionException |
+                 InvalidIdForDrawingException e) {
             System.err.println(e.getMessage());
         }
     }
@@ -185,7 +190,7 @@ public class ClientController implements ClientActions {
     }
 
     @Override
-    public void setPlayersNumber(int playersNumber) throws RemoteException {
+    public void setPlayersNumber(int playersNumber) throws RemoteException, InvalidPlayersNumberException {
         assert (playersNumber < 5 && playersNumber > 1); //view should only accept numbers in this range
         server.setPlayersNumber(playersNumber);
     }

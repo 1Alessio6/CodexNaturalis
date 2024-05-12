@@ -9,8 +9,10 @@ import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.card.Color.InvalidColorException;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.EmptyDeckException;
+import it.polimi.ingsw.model.card.InvalidCardIdException;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
+import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.model.lobby.FullLobbyException;
 import it.polimi.ingsw.model.lobby.Lobby;
@@ -163,6 +165,9 @@ public class Controller implements EventListener, GameRequest {
      */
     @Override
     public void placeObjectiveCard(String username, int chosenObjective) throws InvalidPlayerActionException, InvalidGamePhaseException {
+        if (chosenObjective < 0 || chosenObjective > 1) {
+            throw new IllegalArgumentException();
+        }
         game.placeObjectiveCard(username, chosenObjective);
     }
 
@@ -181,7 +186,7 @@ public class Controller implements EventListener, GameRequest {
      * @throws SuspendedGameException                  if the game is suspended, thus no placement is allowed.
      */
     @Override
-    public void placeCard(String username, int frontId, int backId, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException {
+    public void placeCard(String username, int frontId, int backId, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException, InvalidCardIdException {
         Card cardToPlace = game.getCard(username, frontId, backId);
         game.placeCard(username, cardToPlace, side, position);
     }
@@ -196,7 +201,10 @@ public class Controller implements EventListener, GameRequest {
      * @throws InvalidGamePhaseException    if the game phase doesn't allow the operation.
      */
     @Override
-    public void draw(String username, int idToDraw) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException {
+    public void draw(String username, int idToDraw) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException, InvalidIdForDrawingException {
+        if (idToDraw < 0 || idToDraw > 5) {
+            throw new InvalidIdForDrawingException();
+        }
         if (idToDraw == 4) {
             game.drawFromDeck(username, DeckType.GOLDEN);
         } else if (idToDraw == 5) {
@@ -218,8 +226,7 @@ public class Controller implements EventListener, GameRequest {
     }
 
     @Override
-    public void setPlayersNumber(int playersNumber) {
+    public void setPlayersNumber(int playersNumber) throws InvalidPlayersNumberException {
         lobby.setNumPlayersToStartTheGame(playersNumber);
-
     }
 }

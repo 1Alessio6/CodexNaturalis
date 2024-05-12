@@ -8,9 +8,11 @@ import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.Color.InvalidColorException;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.EmptyDeckException;
+import it.polimi.ingsw.model.card.InvalidCardIdException;
 import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
+import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 
 import java.rmi.RemoteException;
@@ -26,11 +28,11 @@ public interface GameRequest {
 
     void placeObjectiveCard(String username, int chosenObjective) throws InvalidPlayerActionException, InvalidGamePhaseException;
 
-    void placeCard(String username, int frontId, int backId, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException;
+    void placeCard(String username, int frontId, int backId, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException, InvalidCardIdException;
 
-    void draw(String username, int idToDraw) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException;
+    void draw(String username, int idToDraw) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException, InvalidIdForDrawingException;
 
     void sendMessage(Message message) throws InvalidMessageException;
 
-    void setPlayersNumber(int playersNumber);
+    void setPlayersNumber(int playersNumber) throws InvalidPlayersNumberException;
 }
