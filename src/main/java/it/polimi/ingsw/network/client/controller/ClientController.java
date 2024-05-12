@@ -226,7 +226,7 @@ public class ClientController implements ClientActions {
         game.getPlayer(username).setNetworkStatus(isConnected);
     }
 
-    public void updatePlayersInLobby(List<String> usernames) throws RemoteException{
+    public void updatePlayersInLobby(List<String> usernames){
         game = new ClientGame(usernames);
     }
 

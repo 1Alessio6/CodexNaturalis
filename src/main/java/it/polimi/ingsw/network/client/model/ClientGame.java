@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.client.model;
 
+import it.polimi.ingsw.model.Deck.DeckType;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
@@ -46,8 +47,8 @@ public class ClientGame {
     }
 
     public ClientPlayer getPlayer(String username) {
-        for(ClientPlayer player : players){
-            if(player.getUsername().equals(username)){
+        for (ClientPlayer player : players) {
+            if (player.getUsername().equals(username)) {
                 return player;
             }
         }
@@ -102,51 +103,43 @@ public class ClientGame {
         players = new ArrayList<>();
         for (Player player : game.getPlayers()) {
             ClientPlayer clientPlayer = new ClientPlayer(player);
-
-            //todo update with new current player representation
-            //could be removed?
-            /*
-            if (player.getUsername().equals(game.getCurrentPlayer().getUsername())) {
-                clientPlayer.setIsCurrentPlayer(true);
-            }
-
-             */
             players.add(clientPlayer);
         }
+        clientBoard = new ClientBoard(game.getFaceUpCards(), game.getCommonObjectives(), game.getTopDeckBack(DeckType.GOLDEN), game.getTopDeckBack(DeckType.RESOURCE));
 
         messages = game.getMessages();
 
     }
 
     public ClientGame(List<String> usernames) {
-        for(String username : usernames){
-            if(getPlayer(username) == null){
+        for (String username : usernames) {
+            if (getPlayer(username) == null) {
                 players.add(new ClientPlayer(username));
             }
         }
     }
 
-    public boolean isGoldenDeckEmpty(){
+    public boolean isGoldenDeckEmpty() {
         return clientBoard.isGoldenDeckEmpty();
     }
 
-    public boolean isResourceDeckEmpty(){
+    public boolean isResourceDeckEmpty() {
         return clientBoard.isResourceDeckEmpty();
     }
 
-    public ClientCard getFaceUpCard(int index){
-        return clientBoard.getFaceUpCards()[index];
+    public ClientCard getFaceUpCard(int index) {
+        return clientBoard.getFaceUpCards().get(index);
     }
 
-    public boolean isFaceUpSlotEmpty(int index){
+    public boolean isFaceUpSlotEmpty(int index) {
         return getFaceUpCard(index) == null;
     }
 
-    public Set<PlayerColor> getAlreadyTakenColors(){
+    public Set<PlayerColor> getAlreadyTakenColors() {
         Set<PlayerColor> alreadyTakenColors = new HashSet<>();
 
-        for(ClientPlayer player : players){
-            if(player.getColor() != null){
+        for (ClientPlayer player : players) {
+            if (player.getColor() != null) {
                 alreadyTakenColors.add(player.getColor());
             }
         }
@@ -154,12 +147,12 @@ public class ClientGame {
         return alreadyTakenColors;
     }
 
-    public Set<PlayerColor> getRemainingColors(){
+    public Set<PlayerColor> getRemainingColors() {
         Set<PlayerColor> remainingColors = new HashSet<>();
         Set<PlayerColor> alreadyTakenColors = getAlreadyTakenColors();
 
-        for(PlayerColor color : PlayerColor.values()){
-            if(!alreadyTakenColors.contains(color)){
+        for (PlayerColor color : PlayerColor.values()) {
+            if (!alreadyTakenColors.contains(color)) {
                 remainingColors.add(color);
             }
         }
@@ -167,23 +160,23 @@ public class ClientGame {
         return remainingColors;
     }
 
-    public boolean containsPlayer(String username){
+    public boolean containsPlayer(String username) {
         return players.contains(getPlayer(username));
     }
 
-    public void addPlayer(String username){
+    public void addPlayer(String username) {
         players.add(new ClientPlayer(username));
     }
 
-    public ClientPlayground getPlaygroundByUsername(String username){
+    public ClientPlayground getPlaygroundByUsername(String username) {
         return getPlayer(username).getPlayground();
     }
 
-    public ClientPlayer getCurrentPlayer(){
+    public ClientPlayer getCurrentPlayer() {
         return players.get(currentPlayerIdx);
     }
 
-    public void addMessage(Message newMessage){
+    public void addMessage(Message newMessage) {
         messages.add(newMessage);
     }
 
