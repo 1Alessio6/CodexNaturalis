@@ -252,8 +252,6 @@ public class ClientController implements ClientActions {
 
     }
 
-    //isEmpty is not needed, additional turn not need it is updated by another notify method, it's necessary only a face for deck
-    //todo add update face up draw
     void updateAfterDraw(ClientCard drawnCard, ClientFace newTopBackDeck, ClientCard newFaceUpCard, String username, int boardPosition) throws RemoteException {
         assert (boardPosition <= 5 && boardPosition >= 0);
 
@@ -261,6 +259,12 @@ public class ClientController implements ClientActions {
 
         if (boardPosition < 4) {
             game.getClientBoard().addFaceUpCards(newFaceUpCard, boardPosition);
+            if(boardPosition < 1){
+                game.getClientBoard().setResourceDeckTopBack(newTopBackDeck);
+            }
+            else{
+                game.getClientBoard().setGoldenDeckTopBack(newTopBackDeck);
+            }
         }
         else if(boardPosition == 4){
             game.getClientBoard().setGoldenDeckTopBack(newTopBackDeck);
