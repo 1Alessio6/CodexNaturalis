@@ -11,13 +11,13 @@ import it.polimi.ingsw.model.card.Color.InvalidColorException;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
+import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.model.ClientGame;
-import it.polimi.ingsw.network.client.model.ClientPhase;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.board.ClientTile;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
@@ -33,6 +33,8 @@ public class ClientController implements ClientActions {
     private VirtualServer server;
     private ClientGame game;
 
+    private String mainPlayerUsername;
+
     @Override
     public void connect(VirtualView client, String username) throws InvalidUsernameException, RemoteException {
 
@@ -45,12 +47,16 @@ public class ClientController implements ClientActions {
             throw new SuspendedGameException("The game is suspended, you can only text messages");
         }
 
-        if (game.getCurrentPhase() != ClientPhase.NORMAL_PLACE && game.getCurrentPhase() != ClientPhase.ADDITIONAL_PLACE) {
+        if(!isMainPlayerTurn()){
+            throw new InvalidGamePhaseException("You can't place now, it's not your turn");
+        }
+
+        if (game.getCurrentPhase() != GamePhase.PlaceNormal && game.getCurrentPhase() != GamePhase.PlaceAdditional) {
             throw new InvalidGamePhaseException("You can't place now");
         }
 
         if (selectedSide == Side.FRONT) {
-            if (!checkRequirements(this.game.getMainPlayerCard(cardHandPosition))) {
+            if (!checkRequirements(getMainPlayerCard(cardHandPosition))) {
                 throw new Playground.NotEnoughResourcesException("You don't have the resources to place this side of the card");
             }
         }
@@ -60,7 +66,7 @@ public class ClientController implements ClientActions {
         }
 
         try {
-            server.placeCard(this.game.getMainPlayerUsername(), this.game.getMainPlayerCard(cardHandPosition).getBackId(), this.game.getMainPlayerCard(cardHandPosition).getFrontId(), selectedSide, position);
+            server.placeCard(getMainPlayerUsername(), getMainPlayerCard(cardHandPosition).getBackId(), getMainPlayerCard(cardHandPosition).getFrontId(), selectedSide, position);
         } catch (Playground.UnavailablePositionException | Playground.NotEnoughResourcesException e) {
             System.err.println("Error check methods should have avoid an incorrect move");
         } catch (InvalidPlayerActionException | SuspendedGameException | InvalidGamePhaseException e) {
@@ -79,7 +85,11 @@ public class ClientController implements ClientActions {
             throw new SuspendedGameException("The game is suspended, you can only text messages");
         }
 
-        if (game.getCurrentPhase() != ClientPhase.NORMAL_DRAW) {
+        if(!isMainPlayerTurn()){
+            throw new InvalidGamePhaseException("You can't place now, it's not your turn");
+        }
+
+        if (game.getCurrentPhase() != GamePhase.DrawNormal) {
             throw new InvalidGamePhaseException("You can't draw now");
         }
 
@@ -113,25 +123,25 @@ public class ClientController implements ClientActions {
         }
 
         try {
-            server.draw(game.getMainPlayerUsername(), IdToDraw);
-        } catch (EmptyDeckException | InvalidGamePhaseException | InvalidPlayerActionException |
-                 InvalidIdForDrawingException e) {
+            server.draw(getMainPlayerUsername(), IdToDraw);
+        } catch (EmptyDeckException | InvalidGamePhaseException | InvalidPlayerActionException e) {
             System.err.println(e.getMessage());
         }
     }
 
     @Override
     public void placeStarter(Side side) throws SuspendedGameException, RemoteException, InvalidGamePhaseException {
+
         if (!game.isGameActive()) {
             throw new SuspendedGameException("The game is suspended, you can only text messages");
         }
 
-        if (game.getCurrentPhase() != ClientPhase.SETUP) {
+        if (game.getCurrentPhase() != GamePhase.Setup) {
             throw new InvalidGamePhaseException("You can only place your starter card during the setup phase");
         }
 
         try {
-            server.placeStarter(game.getMainPlayerUsername(), side);
+            server.placeStarter(getMainPlayerUsername(), side);
         } catch (InvalidPlayerActionException | InvalidGamePhaseException e) {
             System.err.println(e.getMessage());
         }
@@ -144,7 +154,7 @@ public class ClientController implements ClientActions {
             throw new SuspendedGameException("The game is suspended, you can only text messages");
         }
 
-        if (game.getCurrentPhase() != ClientPhase.SETUP) {
+        if (game.getCurrentPhase() != GamePhase.Setup) {
             throw new InvalidGamePhaseException("You can only choose your color during the setup phase");
         }
 
@@ -153,7 +163,7 @@ public class ClientController implements ClientActions {
         }
 
         try {
-            server.chooseColor(game.getMainPlayerUsername(), color);
+            server.chooseColor(getMainPlayerUsername(), color);
         } catch (InvalidPlayerActionException | InvalidGamePhaseException | NonexistentPlayerException e) {
             System.err.println(e.getMessage());
         }
@@ -166,12 +176,12 @@ public class ClientController implements ClientActions {
             throw new SuspendedGameException("The game is suspended, you can only text messages");
         }
 
-        if (game.getCurrentPhase() != ClientPhase.SETUP) {
+        if (game.getCurrentPhase() != GamePhase.Setup) {
             throw new InvalidGamePhaseException("You can only choose your private objective during the setup phase");
         }
 
         try {
-            server.placeObjectiveCard(game.getMainPlayerUsername(), chosenObjective);
+            server.placeObjectiveCard(getMainPlayerUsername(), chosenObjective);
         } catch (InvalidGamePhaseException | InvalidPlayerActionException e) {
             System.err.println(e.getMessage());
         }
@@ -179,7 +189,8 @@ public class ClientController implements ClientActions {
 
     @Override
     public void sendMessage(Message message) throws InvalidMessageException, RemoteException {
-        if (!message.getSender().equals(game.getMainPlayerUsername())) {
+
+        if (!message.getSender().equals(getMainPlayerUsername())) {
             throw new InvalidMessageException("sender doesn't match the author's username");
         }
         if (game.getPlayer(message.getRecipient()) == null) {
@@ -195,14 +206,6 @@ public class ClientController implements ClientActions {
         server.setPlayersNumber(playersNumber);
     }
 
-    public void updateCreator() throws RemoteException {
-
-    }
-
-    public void updateAfterLobbyCrash() {
-
-    }
-
     public void updateAfterConnection(ClientGame clientGame) {
         game = clientGame;
     }
@@ -215,12 +218,8 @@ public class ClientController implements ClientActions {
     }
 
 
+    //todo update
     public void updateBoardSetUp(int[] commonObjectiveID, int topBackID, int topGoldenBackID, int[] faceUpCards) {
-
-    }
-
-    //todo update needs to add at least the resources
-    public void updateStarterPlacement(String username, int faceId) {
 
     }
 
@@ -232,9 +231,10 @@ public class ClientController implements ClientActions {
 
     }
 
-    //todo update the resto of notify methods
+    //todo update the rest of notify methods
     //necessary to pass a ClientCard and not a client face
-    void updateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide,Position position) {
+    //used also for placing a starter card
+    void updateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide, Position position) {
 
         ClientPlayground playground = game.getPlaygroundByUsername(username);
 
@@ -249,6 +249,7 @@ public class ClientController implements ClientActions {
     }
 
     //isEmpty is not needed, additional turn not need it is updated by another notify method, it's necessary only a face for deck
+    //todo add update face up draw
     void updateAfterDraw(ClientCard drawnCard, ClientFace newTopBackDeck, ClientCard newFaceUpCard, String username, int boardPosition) throws RemoteException {
         assert (boardPosition <= 5 && boardPosition >= 0);
 
@@ -273,7 +274,7 @@ public class ClientController implements ClientActions {
     }
 
     //todo change, use username
-    void updateCurrentPlayer(ClientPlayer currentPlayer, ClientPhase phase) {
+    void updateCurrentPlayer(int currentPlayerIdx, GamePhase phase) {
 
     }
 
@@ -286,16 +287,36 @@ public class ClientController implements ClientActions {
     }
 
     private boolean checkPosition(Position position) {
-        return game.getMainPlayerPlayground().getAvailablePositions().contains(position);
+        return getMainPlayerPlayground().getAvailablePositions().contains(position);
     }
 
     private boolean checkRequirements(ClientCard card) {
         for (Symbol s : card.getRequiredResources().keySet()) {
-            if (this.game.getMainPlayer().getAmountResource(s) < card.getRequiredResources().get(s)) {
+            if (getMainPlayer().getAmountResource(s) < card.getRequiredResources().get(s)) {
                 return false;
             }
         }
         return true;
+    }
+
+    public ClientPlayer getMainPlayer(){
+        return game.getPlayer(mainPlayerUsername);
+    }
+
+    public ClientCard getMainPlayerCard(int cardHandPosition){
+        return getMainPlayer().getPlayerCard(cardHandPosition);
+    }
+
+    public String getMainPlayerUsername(){
+        return mainPlayerUsername;
+    }
+
+    public ClientPlayground getMainPlayerPlayground(){
+        return getMainPlayer().getPlayground();
+    }
+
+    public boolean isMainPlayerTurn(){
+        return getMainPlayer().getUsername().equals(game.getCurrentPlayer().getUsername());
     }
 
 }
