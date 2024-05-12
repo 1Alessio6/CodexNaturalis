@@ -381,12 +381,11 @@ public class Game {
                         playground.getResources(),
                         0,
                         username,
-                        new ClientCard(player.getStarter()),side,
+                        new ClientCard(player.getStarter()), side,
                         starterPosition
                 );
             });
-        }
-        catch (Playground.UnavailablePositionException | Playground.NotEnoughResourcesException e) {
+        } catch (Playground.UnavailablePositionException | Playground.NotEnoughResourcesException e) {
             // the starter card shouldn't cause any exception related to the playground
             e.printStackTrace();
         }
@@ -549,7 +548,15 @@ public class Game {
             throw invalidPlayerActionException;
         }
 
-        listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateAfterDraw(new ClientCard(newCard), new ClientFace(deck.getTop().getFace(Side.BACK)), null, username, convertDeckTypeIntoId(deckType)));
+        listenerHandler.notifyBroadcast(receiver -> {
+            Card top = deck.getTop();
+            receiver.showUpdateAfterDraw(
+                    new ClientCard(newCard),
+                    top == null ? null : new ClientFace(top.getFace(Side.BACK)),
+                    null,
+                    username,
+                    convertDeckTypeIntoId(deckType));
+        });
         listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateCurrentPlayer(currentPlayerIdx, phase));
     }
 
@@ -616,12 +623,15 @@ public class Game {
             throw new InvalidPlayerActionException();
         }
 
-        // todo(creation of null card).
-        listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateAfterDraw(
-                new ClientCard(newCard),
-                new ClientFace(deckForReplacement.getTop().getFace(Side.BACK)),
-                new ClientCard(faceUpCards.get(faceUpCardIdx)),
-                username, faceUpCardIdx));
+        listenerHandler.notifyBroadcast(receiver -> {
+            Card top = deckForReplacement.getTop();
+            Card faceUpCard = faceUpCards.get(faceUpCardIdx);
+            receiver.showUpdateAfterDraw(
+                    new ClientCard(newCard),
+                    top == null ? null : new ClientFace(top.getFace(Side.BACK)),
+                    faceUpCard == null ? null : new ClientCard(faceUpCard),
+                    username, faceUpCardIdx);
+        });
         listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateCurrentPlayer(currentPlayerIdx, phase));
     }
 
@@ -741,8 +751,8 @@ public class Game {
         }
     }
 
-    public Face getTopDeckBack(DeckType type){
-        if(type == DeckType.GOLDEN){
+    public Face getTopDeckBack(DeckType type) {
+        if (type == DeckType.GOLDEN) {
             return goldenCards.getTop().getFace(Side.BACK);
         }
         return resourceCards.getTop().getFace(Side.BACK);
