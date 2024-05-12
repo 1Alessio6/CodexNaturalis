@@ -42,7 +42,7 @@ public class ClientPlayground {
         points = playgroundToCopy.getPoints();
     }
 
-    public Map<Position, ClientTile> createClientArea(Map<Position, Tile> areaToCopy){
+    private Map<Position, ClientTile> createClientArea(Map<Position, Tile> areaToCopy){
 
         Map<Position, ClientTile> area = new HashMap<>();
 
