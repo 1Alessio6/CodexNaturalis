@@ -5,7 +5,7 @@ import it.polimi.ingsw.network.client.view.View;
 
 import java.util.Scanner;
 
-public class ClientCli extends View {
+public class ClientTUI extends View {
     private Scanner console;
 
     private void parseCommands() {

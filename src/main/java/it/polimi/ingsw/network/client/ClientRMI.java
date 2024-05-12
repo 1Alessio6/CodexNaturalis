@@ -15,7 +15,7 @@ import it.polimi.ingsw.network.client.model.*;
 import it.polimi.ingsw.network.client.model.card.*;
 import it.polimi.ingsw.network.client.model.player.*;
 import it.polimi.ingsw.network.client.view.View;
-import it.polimi.ingsw.network.client.view.tui.ClientCli;
+import it.polimi.ingsw.network.client.view.tui.ClientTUI;
 import it.polimi.ingsw.network.server.ServerRMI;
 
 
@@ -34,7 +34,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
     public ClientRMI() throws RemoteException{
         controller = new ClientController(new ServerRMI());
-        clientView = new ClientCli();
+        clientView = new ClientTUI();
     }
 
     public ClientRMI(VirtualServer server, View clientView) throws RemoteException {
