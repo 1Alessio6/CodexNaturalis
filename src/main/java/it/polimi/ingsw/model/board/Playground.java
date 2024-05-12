@@ -70,7 +70,6 @@ public class Playground {
         return area.get(pos).sameAvailability(availability);
     }
 
-
     /**
      * Checks if there is a Tile in at specific position.
      *
@@ -132,12 +131,29 @@ public class Playground {
     }
 
     /**
+     * Gets the corner covered for each position adjacent to <code>position</code>.
+     * @param position the position of the tile from which the adjacent positions are taken.
+     * @return a map from each adjacent position to the corner covered.
+     */
+    public Map<Position, CornerPosition> getCornerCoveredForAdjacentPosition(Position position) {
+        Map<Position, CornerPosition> positionToCornerCovered = new HashMap<>();
+        List<CornerPosition> cornerToTest = Arrays.asList(CornerPosition.LOWER_LEFT, CornerPosition.TOP_LEFT, CornerPosition.TOP_RIGHT, CornerPosition.LOWER_RIGHT);
+        for (CornerPosition cornerPosition : cornerToTest) {
+            Position adjacentPos = getAdjacentPosition(position, cornerPosition);
+            if (area.get(adjacentPos).sameAvailability(Availability.OCCUPIED)) {
+                positionToCornerCovered.put(adjacentPos, cornerPosition);
+            }
+        }
+        return positionToCornerCovered;
+    }
+
+    /**
      * Gets the adjacent position of <code>pos</code> respect to <code>corner</code>.
      * @param pos the position from which the adjacent position is returned.
      * @param corner the corner of the tile.
      * @return the position of the tile adjacent to the one at <code>pos</code> respect to <code>corner</code>.
      */
-    public Position getAdjacentPosition(Position pos, CornerPosition corner) {
+    private Position getAdjacentPosition(Position pos, CornerPosition corner) {
         return correspondingPosition(pos.getX(), pos.getY(), corner);
     }
 
