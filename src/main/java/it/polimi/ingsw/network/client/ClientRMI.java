@@ -92,57 +92,53 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
     @Override
     public void updateAfterConnection(ClientGame clientGame) {
-
+        controller.updateAfterConnection(clientGame);
+        clientView.showUpdateAfterConnection();
     }
 
     @Override
     public void showUpdatePlayersInLobby(List<String> usernames) throws RemoteException {
-
+        controller.updatePlayersInLobby(usernames);
+        clientView.showUpdatePlayersInLobby();
     }
-
-  //  @Override
-  //  public void showUpdateJoinedPlayers(List<String> usernames) throws RemoteException {
-
-  //  }
 
     @Override
     public void showUpdatePlayerStatus(boolean isConnected, String username) throws RemoteException {
-        /*
-        game.getMainPlayer().setNetworkStatus(isConnected);
-        System.out.println(game.getMainPlayer().isConnected());
-
-         */
+        controller.updatePlayerStatus(isConnected, username);
+        clientView.showUpdatePlayerStatus();
     }
-
-    //@Override
-    //public void showStarterPlacement(String username, int faceId) {
-
-    //}
 
     @Override
     public void showUpdateColor(PlayerColor color, String username) throws RemoteException {
-
+        controller.updateColor(color, username);
+        clientView.showUpdateColor();
     }
 
-    //delete
     @Override
     public void showUpdateObjectiveCard(ClientCard chosenObjective, String username) {
-
+        controller.updateObjectiveCard(chosenObjective, username);
+        //todo: if the objective card isn't of the main player the view should not show the card
+        if(controller.getMainPlayerUsername().equals(username)){
+            clientView.showUpdateObjectiveCard();
+        }
     }
 
     @Override
     public void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide, Position position) throws RemoteException {
-
+        controller.updateAfterPlace(positionToCornerCovered, newAvailablePositions, newResources, points, username, placedCard, placedSide, position);
+        clientView.showUpdateAfterPlace();
     }
 
     @Override
-    public void showUpdateAfterDraw(ClientCard drawnCard, ClientCard newTopDeck, ClientCard newFaceUpCard, String username, int boardPosition) throws RemoteException {
-
+    public void showUpdateAfterDraw(ClientCard drawnCard, ClientFace newTopDeck, ClientCard newFaceUpCard, String username, int boardPosition) throws RemoteException {
+        controller.updateAfterDraw(drawnCard,newTopDeck,newFaceUpCard,username,boardPosition);
+        clientView.showUpdateAfterDraw();
     }
 
     @Override
     public void showUpdateChat(Message message) throws RemoteException {
-        System.out.println(message.getContent());
+        controller.updateChat(message);
+        clientView.showUpdateChat();
     }
 
     //@Override
@@ -152,17 +148,19 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
     @Override
     public void showUpdateCurrentPlayer(int currentPlayerIdx, GamePhase phase) throws RemoteException {
-
+        controller.updateCurrentPlayer(currentPlayerIdx,phase);
+        clientView.showUpdateCurrentPlayer();
     }
 
     @Override
     public void showUpdateSuspendedGame() throws RemoteException {
-
+        controller.updateSuspendedGame();
+        clientView.showUpdateSuspendedGame();
     }
 
     @Override
     public void showWinners(List<String> winners) throws RemoteException {
-
+        clientView.showWinners();
     }
 
     @Override

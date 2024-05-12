@@ -68,7 +68,7 @@ public class ClientSocket implements VirtualView {
     }
 
     @Override
-    public void showUpdateAfterDraw(ClientCard drawnCard, ClientCard newTopDeck, ClientCard newFaceUpCard, String username, int boardPosition) throws RemoteException {
+    public void showUpdateAfterDraw(ClientCard drawnCard, ClientFace newTopDeck, ClientCard newFaceUpCard, String username, int boardPosition) throws RemoteException {
 
     }
 

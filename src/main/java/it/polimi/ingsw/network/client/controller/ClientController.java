@@ -237,7 +237,7 @@ public class ClientController implements ClientActions {
         game.getPlayer(username).updateObjectiveCard(chosenObjective);
     }
 
-    void updateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide, Position position) {
+    public void updateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide, Position position) {
 
         ClientPlayground playground = game.getPlaygroundByUsername(username);
 
@@ -251,7 +251,7 @@ public class ClientController implements ClientActions {
 
     }
 
-    void updateAfterDraw(ClientCard drawnCard, ClientFace newTopBackDeck, ClientCard newFaceUpCard, String username, int boardPosition) throws RemoteException {
+    public void updateAfterDraw(ClientCard drawnCard, ClientFace newTopBackDeck, ClientCard newFaceUpCard, String username, int boardPosition) throws RemoteException {
         assert (boardPosition <= 5 && boardPosition >= 0);
 
         game.getPlayer(username).addPlayerCard(drawnCard);
@@ -275,16 +275,16 @@ public class ClientController implements ClientActions {
     }
 
     //todo check if other players discard private message of others or if they save them but the view avoid the to show to the players
-    void updateChat(Message message) {
+    public void updateChat(Message message) {
         game.getMessages().add(message);
     }
 
-    void updateCurrentPlayer(int currentPlayerIdx, GamePhase phase) {
+    public void updateCurrentPlayer(int currentPlayerIdx, GamePhase phase) {
         game.setCurrentPlayerIdx(currentPlayerIdx);
         game.setCurrentPhase(phase);
     }
 
-    void updateSuspendedGame() {
+    public void updateSuspendedGame() {
         game.setGameActive(!game.isGameActive());
     }
 
