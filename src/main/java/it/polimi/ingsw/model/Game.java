@@ -229,7 +229,7 @@ public class Game {
         Player currentPlayer = players.get(currentPlayerIdx);
         // the next player can only be in place state
         if (!currentPlayer.isConnected()) {
-            skipTurn(currentPlayer.getUsername());
+            simulateTurn(currentPlayer.getUsername());
         }
     }
 
@@ -553,7 +553,7 @@ public class Game {
         } catch (EmptyDeckException e) {
             // test the other deck
             try {
-                deckForReplacement = getAssociatedToFaceUpCard((faceUpCardIdx+2) % faceUpCards.size());
+                deckForReplacement = getAssociatedToFaceUpCard((faceUpCardIdx + 2) % faceUpCards.size());
                 replacement = deckForReplacement.draw();
             } catch (EmptyDeckException otherDeckEmptyException) {
                 phaseHandler.setLastNormalTurn();
@@ -607,11 +607,7 @@ public class Game {
                 username, faceUpCardIdx));
     }
 
-    /**
-     * Skips the current player's turn.
-     * The method is invoked whenever the current player is not active.
-     */
-    public void skipTurn(String currentPlayer) {
+    private void simulateTurn(String currentPlayer) {
         if (phase != GamePhase.PlaceNormal && phase != GamePhase.PlaceAdditional) {
             throw new RuntimeException("A turn can be skipped only at the beginning");
         }
@@ -625,6 +621,15 @@ public class Game {
         }
 
         phase = phaseHandler.getNextPhase(phase, currentPlayerIdx);
+    }
+
+    /**
+     * Skips the current player's turn.
+     * The method is invoked whenever the current player is not active.
+     */
+    public void skipTurn(String currentPlayer) {
+        simulateTurn(currentPlayer);
+        updateCurrentPlayerIdx();
     }
 
     /**
