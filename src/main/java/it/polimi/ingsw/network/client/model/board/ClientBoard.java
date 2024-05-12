@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.card.ObjectiveCard;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -20,11 +21,13 @@ public class ClientBoard {
     private List<ClientCard> commonObjectives;
 
     public ClientBoard(List<Card> faceUpCards, List<ObjectiveCard> commonObjectives, Face goldenDeckTopBack, Face resourceDeckTopBack) {
-        this.goldenDeckTopBack = new ClientFace(goldenDeckTopBack);
-        this.resourceDeckTopBack = new ClientFace(resourceDeckTopBack);
-        for(Card card : faceUpCards){
-            this.faceUpCards.add(new ClientCard(card));
+        this.goldenDeckTopBack = goldenDeckTopBack == null ? null : new ClientFace(goldenDeckTopBack);
+        this.resourceDeckTopBack = resourceDeckTopBack == null ? null : new ClientFace(resourceDeckTopBack);
+        this.faceUpCards = new ArrayList<>();
+        for(Card faceUpCard : faceUpCards){
+            this.faceUpCards.add(faceUpCard == null ? null : new ClientCard(faceUpCard));
         }
+        this.commonObjectives = new ArrayList<>();
         for(ObjectiveCard card : commonObjectives){
             this.commonObjectives.add(new ClientCard(card));
         }
