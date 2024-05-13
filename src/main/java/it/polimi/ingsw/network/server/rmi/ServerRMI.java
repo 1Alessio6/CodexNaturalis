@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.server;
+package it.polimi.ingsw.network.server.rmi;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.InvalidIdForDrawingException;

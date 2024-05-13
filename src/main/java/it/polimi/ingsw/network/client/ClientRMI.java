@@ -6,17 +6,14 @@ import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
-import it.polimi.ingsw.model.lobby.FullLobbyException;
-import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.model.*;
 import it.polimi.ingsw.network.client.model.card.*;
-import it.polimi.ingsw.network.client.model.player.*;
 import it.polimi.ingsw.network.client.view.View;
 import it.polimi.ingsw.network.client.view.tui.ClientTUI;
-import it.polimi.ingsw.network.server.ServerRMI;
+import it.polimi.ingsw.network.server.rmi.ServerRMI;
 
 
 import java.rmi.NotBoundException;
