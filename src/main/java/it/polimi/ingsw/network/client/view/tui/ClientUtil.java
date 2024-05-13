@@ -2,13 +2,13 @@ package it.polimi.ingsw.network.client.view.tui;
 
 import it.polimi.ingsw.model.Deck.DeckType;
 import it.polimi.ingsw.model.board.Position;
+import it.polimi.ingsw.model.card.Color.CardColor;
 import it.polimi.ingsw.model.card.Condition;
 import it.polimi.ingsw.model.card.Corner;
 import it.polimi.ingsw.model.card.CornerPosition;
 import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.network.client.model.ANSIColor;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -91,11 +91,11 @@ public class ClientUtil {
         System.out.println(str.toString());
     }
 
-    private static void printObjectiveCard(ANSIColor color, Map<Position, Color> positionCondition, Map<Symbol, Integer> resourceCondition, int points) {
+    private static void printObjectiveCard(ANSIColor color, Map<Position, CardColor> positionCondition, Map<Symbol, Integer> resourceCondition, int points) {
         StringBuilder str = new StringBuilder();
         int switchCase = positionOrResourcesSwitchCase(positionCondition, resourceCondition);
         if (switchCase == 1) {//it is a card with a position condition
-            printUpperCorners(color, DeckType.GOLDEN, new HashMap<>(), new HashMap<>(), str, 7, 8, null, points);
+            appendPositions(color,positionCondition,str,points);
             System.out.println(str);
         } else if (switchCase == 2) {
             printCard(color, new HashMap<>(), null, new HashMap<>(), resourceCondition, points, DeckType.GOLDEN);
@@ -347,6 +347,83 @@ public class ClientUtil {
 
     }
 
+    public static void appendPositions(ANSIColor color, Map<Position, CardColor> positionCondition, StringBuilder str, int points) {
+
+
+        switch (positionCase(positionCondition)) {
+            case 1:
+                str.append(color.getColor()).append("╔════════════════════════╗\n").append("║            ").append(YELLOW.getColor()).append(printPoints(points)).append(color.getColor()).append("           ║\n");
+                str.append(color.getColor()).append("║            ").append(cardColorConversion(positionCondition.get(new Position(2, 2))).getColor()).append("┌‐‐‐┐       ").append(color.getColor()).append("║\n");
+                str.append(color.getColor()).append("║         ").append(cardColorConversion(positionCondition.get(new Position(1, 1))).getColor()).append("┌‐‐*┐").append(cardColorConversion(positionCondition.get(new Position(2, 2))).getColor()).append("‐‐┘       ").append(color.getColor()).append("║\n");
+                str.append(color.getColor()).append("║     ").append(cardColorConversion(positionCondition.get(new Position(0, 0))).getColor()).append("┌‐‐*┐").append(cardColorConversion(positionCondition.get(new Position(1, 1))).getColor()).append("‐‐‐┘").append(color.getColor()).append("          ║\n");
+                str.append(color.getColor()).append("║     ").append(cardColorConversion(positionCondition.get(new Position(0, 0))).getColor()).append("└‐‐‐┘").append("              ").append("║\n");
+                str.append(color.getColor()).append("╚════════════════════════╝\n");
+                break;
+            case 2:
+                str.append(color.getColor()).append("╔════════════════════════╗\n");
+                str.append(color.getColor()).append("║     ").append(cardColorConversion(positionCondition.get(new Position(0, 0))).getColor()).append("┌‐‐‐┐").append(color.getColor()).append("  ").append(YELLOW.getColor()).append(printPoints(points)).append(color.getColor()).append("           ║\n");
+                str.append(color.getColor()).append("║     ").append(cardColorConversion(positionCondition.get(new Position(0, 0))).getColor()).append("└‐‐‐┘").append(color.getColor()).append("              ║\n");
+                str.append(color.getColor()).append("║     ").append(cardColorConversion(positionCondition.get(new Position(0, -2))).getColor()).append("┌‐‐‐┐").append(color.getColor()).append("              ║\n");
+                str.append(color.getColor()).append("║     ").append(cardColorConversion(positionCondition.get(new Position(0, -2))).getColor()).append("└‐‐‐").append(cardColorConversion(positionCondition.get(new Position(1, -3))).getColor()).append("┌*‐‐┐").append(color.getColor()).append("          ║\n");
+                str.append(color.getColor()).append("║         ").append(cardColorConversion(positionCondition.get(new Position(1, -3))).getColor()).append("└‐‐‐┘").append(color.getColor()).append("          ║\n");
+                str.append(color.getColor()).append("╚════════════════════════╝\n");
+                break;
+
+            case 3:
+                str.append(color.getColor()).append("╔════════════════════════╗\n");
+                str.append(color.getColor()).append("║            ").append(YELLOW.getColor()).append(printPoints(points)).append(color.getColor()).append("           ║\n");
+                str.append(color.getColor()).append("║     ").append(cardColorConversion(positionCondition.get(new Position(0, 0))).getColor()).append("┌‐‐‐┐").append(color.getColor()).append("              ║\n");
+                str.append(color.getColor()).append("║     ").append(cardColorConversion(positionCondition.get(new Position(0, 0))).getColor()).append("└‐‐‐").append(cardColorConversion(positionCondition.get(new Position(1, -1))).getColor()).append("┌*‐‐┐").append(color.getColor()).append("          ║\n");
+                str.append(color.getColor()).append("║         ").append(cardColorConversion(positionCondition.get(new Position(1, -1))).getColor()).append("└‐‐‐").append(cardColorConversion(positionCondition.get(new Position(2, -2))).getColor()).append("┌*‐‐┐").append(color.getColor()).append("      ║\n");
+                str.append(color.getColor()).append("║             ").append(cardColorConversion(positionCondition.get(new Position(2, -2))).getColor()).append("└‐‐‐┘").append(color.getColor()).append("      ║\n");
+                str.append(color.getColor()).append("╚════════════════════════╝\n");
+                break;
+
+            case 4:
+                str.append(color.getColor()).append("╔════════════════════════╗\n");
+                str.append(color.getColor()).append("║     ").append(cardColorConversion(positionCondition.get(new Position(0, 0))).getColor()).append("┌‐‐‐┐ ").append(YELLOW.getColor()).append(printPoints(points)).append(color.getColor()).append("            ║\n");
+                str.append(color.getColor()).append("║     ").append(cardColorConversion(positionCondition.get(new Position(0, 0))).getColor()).append("└‐‐‐").append(cardColorConversion(positionCondition.get(new Position(1, -1))).getColor()).append("┌*‐‐┐").append(color.getColor()).append("          ║\n");
+                str.append(color.getColor()).append("║         ").append(cardColorConversion(positionCondition.get(new Position(1, -1))).getColor()).append("└‐‐‐┘").append(color.getColor()).append("          ║\n");
+                str.append(color.getColor()).append("║         ").append(cardColorConversion(positionCondition.get(new Position(1, -3))).getColor()).append("┌‐‐‐┐").append(color.getColor()).append("          ║\n");
+                str.append(color.getColor()).append("║         ").append(cardColorConversion(positionCondition.get(new Position(1, -3))).getColor()).append("└‐‐‐┘").append(color.getColor()).append("          ║\n");
+                str.append(color.getColor()).append("╚════════════════════════╝\n");
+                break;
+
+            case 5:
+                str.append(color.getColor()).append("╔════════════════════════╗\n");
+                str.append(color.getColor()).append("║           ").append(YELLOW.getColor()).append(printPoints(points)).append(cardColorConversion(positionCondition.get(new Position(1, 3))).getColor()).append(" ┌‐‐‐┐").append(color.getColor()).append("      ║\n");
+                str.append(color.getColor()).append("║          ").append(cardColorConversion(positionCondition.get(new Position(0, 2))).getColor()).append("┌‐‐*┐").append(cardColorConversion(positionCondition.get(new Position(1, 3))).getColor()).append("‐‐┘").append(color.getColor()).append("      ║\n");
+                str.append(color.getColor()).append("║          ").append(cardColorConversion(positionCondition.get(new Position(0, 2))).getColor()).append("└‐‐‐┘").append(color.getColor()).append("         ║\n");
+                str.append(color.getColor()).append("║          ").append(cardColorConversion(positionCondition.get(new Position(0, 0))).getColor()).append("┌‐‐‐┐").append(color.getColor()).append("         ║\n");
+                str.append(color.getColor()).append("║          ").append(cardColorConversion(positionCondition.get(new Position(0, 0))).getColor()).append("└‐‐‐┘").append(color.getColor()).append("         ║\n");
+                str.append(color.getColor()).append("╚════════════════════════╝");
+                break;
+
+            case 6:
+                str.append(color.getColor()).append("╔════════════════════════╗\n");
+                str.append(color.getColor()).append("║           ").append(YELLOW.getColor()).append(printPoints(points)).append(cardColorConversion(positionCondition.get(new Position(1, 3))).getColor()).append(" ┌‐‐‐┐").append(color.getColor()).append("      ║\n");
+                str.append(color.getColor()).append("║             ").append(cardColorConversion(positionCondition.get(new Position(1, 3))).getColor()).append("└‐‐‐┘").append(color.getColor()).append("      ║\n");
+                str.append(color.getColor()).append("║             ").append(cardColorConversion(positionCondition.get(new Position(1, 1))).getColor()).append("┌‐‐‐┐").append(color.getColor()).append("      ║\n");
+                str.append(color.getColor()).append("║         ").append(cardColorConversion(positionCondition.get(new Position(0, 0))).getColor()).append("┌‐‐*┐").append(cardColorConversion(positionCondition.get(new Position(1, 1))).getColor()).append("‐‐‐┘").append(color.getColor()).append("      ║\n");
+                str.append(color.getColor()).append("║         ").append(cardColorConversion(positionCondition.get(new Position(0, 0))).getColor()).append("└‐‐‐┘").append(color.getColor()).append("          ║\n");
+                str.append(color.getColor()).append("╚════════════════════════╝\n");
+                break;
+
+
+        }
+
+    }
+
+    public static ANSIColor cardColorConversion(CardColor color) {
+        return switch (color) {
+            case RED -> ANSIColor.RED;
+            case BLUE -> ANSIColor.BLUE;
+            case GREEN -> ANSIColor.GREEN;
+            case YELLOW -> ANSIColor.YELLOW;
+            case PURPLE -> ANSIColor.PURPLE;
+        };
+    }
+
     private static void appendRequirements(Map<Symbol, Integer> requirements, StringBuilder str) {
         if (requirements.isEmpty()) {
             str.append("            ");
@@ -445,13 +522,41 @@ public class ClientUtil {
 
     }
 
-    public static void positionCase() {
+    public static int positionCase(Map<Position, CardColor> positionCondition) {
         ArrayList<Position> caseOne = new ArrayList<>();
+        ArrayList<Position> caseTwo = new ArrayList<>();
+        ArrayList<Position> caseThree = new ArrayList<>();
+        ArrayList<Position> caseFour = new ArrayList<>();
+        ArrayList<Position> caseFive = new ArrayList<>();
+        ArrayList<Position> caseSix = new ArrayList<>();
+
         Collections.addAll(caseOne, new Position(0, 0), new Position(1, 1), new Position(2, 2));
-        for (Position i : caseOne) {
-            System.out.println(i);
+        Collections.addAll(caseTwo, new Position(0, 0), new Position(0, -2), new Position(1, -3));
+        Collections.addAll(caseThree, new Position(0, 0), new Position(1, -1), new Position(2, -2));
+        Collections.addAll(caseFour, new Position(0, 0), new Position(1, -1), new Position(1, -3));
+        Collections.addAll(caseFive, new Position(0, 0), new Position(0, 2), new Position(1, 3));
+        Collections.addAll(caseSix, new Position(0, 0), new Position(1, 1), new Position(1, 3));
+
+        ArrayList<Position> positions = new ArrayList<>();
+        for (Map.Entry<Position, CardColor> entry : positionCondition.entrySet()) {
+            positions.add(entry.getKey());
         }
 
+        if (positions.equals(caseOne)) {
+            return 1;
+        } else if (positions.equals(caseTwo)) {
+            return 2;
+        } else if (positions.equals(caseThree)) {
+            return 3;
+        } else if (positions.equals(caseFour)) {
+            return 4;
+        } else if (positions.equals(caseFive)) {
+            return 5;
+        } else if (positions.equals(caseSix)) {
+            return 6;
+        } else {
+            return 0;
+        }
     }
 
     public static int upperCornersNumber(Map<CornerPosition, Corner> cornerPositionCornerMap) {
@@ -552,7 +657,7 @@ public class ClientUtil {
         }
     }
 
-    private static int positionOrResourcesSwitchCase(Map<Position, Color> positionCondition, Map<Symbol, Integer> resourcesCondition) {
+    private static int positionOrResourcesSwitchCase(Map<Position, CardColor> positionCondition, Map<Symbol, Integer> resourcesCondition) {
         if (!positionCondition.isEmpty() && resourcesCondition.isEmpty()) {
             return 1;
         } else if (positionCondition.isEmpty() && !resourcesCondition.isEmpty()) {
