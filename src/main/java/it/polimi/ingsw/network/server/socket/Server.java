@@ -1,10 +1,13 @@
 package it.polimi.ingsw.network.server.socket;
 
 import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.network.client.ClientHandler;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Server {
     private final static int PORT = 1234;
@@ -26,13 +29,13 @@ public class Server {
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             System.out.println("Received connection");
             // create the stub related to the client.
-            ClientHandler handler = new ClientHandler(this, in, out);
+           // todo. create clientHandler ClientHandler handler = new ClientHandler(this, in, out);
             new Thread(() -> {
-                try {
-                    handler.run();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                //     try {
+                //    handler.run();
+                //} catch (IOException e) {
+                //    throw new RuntimeException(e);
+                //}
             }).start();
         }
     }

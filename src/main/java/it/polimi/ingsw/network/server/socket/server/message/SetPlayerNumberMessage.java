@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.server.socket.server;
+package it.polimi.ingsw.network.server.socket.server.message;
 
 public class SetPlayerNumberMessage extends ServerMessage {
     private int numPlayers;
