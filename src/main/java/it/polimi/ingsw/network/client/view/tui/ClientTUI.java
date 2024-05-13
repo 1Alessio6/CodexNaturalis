@@ -16,15 +16,19 @@ import it.polimi.ingsw.model.lobby.FullLobbyException;
 import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.network.VirtualView;
+import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.view.View;
 
 import java.rmi.RemoteException;
+import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class ClientTUI extends View {
     private Scanner console;
 
-    public ClientTUI() {
+    public ClientTUI(ClientController controller) {
+        super(controller);
         this.console = new Scanner(System.in);
     }
 
@@ -70,7 +74,6 @@ public class ClientTUI extends View {
             switch (nextCommand[0].toLowerCase()) {
                 case "help" -> ClientUtil.gameActionsHelper();
                 case "quit" -> System.exit(0);
-                case "players" -> setupLobbyPlayerNumber();
                 case "" -> {}
                 default -> {
                     System.out.println("Action invalid");
@@ -81,11 +84,15 @@ public class ClientTUI extends View {
     }
 
     private void setupLobbyPlayerNumber() {
-        System.out.print("Setup lobby player number: ");
-        try {
-            this.getController().setPlayersNumber(console.nextInt());
-        } catch (InvalidPlayersNumberException | RemoteException e) {
-            System.err.println(e.getMessage());
+        while (true) {
+            System.out.print("Please set the lobby size (2 to 4 players allowed): ");
+            try {
+                this.getController().setPlayersNumber(Integer.parseInt(console.nextLine()));
+                break;
+            } catch (InvalidPlayersNumberException | RemoteException | NumberFormatException e) {
+                System.err.println(e.getMessage());
+            }
+
         }
     }
 
@@ -206,7 +213,6 @@ public class ClientTUI extends View {
                 System.err.println(e.getMessage());
             }
         }
-
         beginCommandAcquisition();
     }
 
@@ -216,13 +222,15 @@ public class ClientTUI extends View {
     }
 
     @Override
-    public void showUpdatePlayersInLobby() {
-
+    public void showUpdatePlayersInLobby(List<String> usernames) {
+        StringBuilder sb = new StringBuilder();
+        System.out.println("Users waiting: <" + String.join(",", usernames) + ">");
     }
 
     @Override
     public void showUpdateCreator() {
-
+        System.out.println("Welcome to the new lobby!");
+        setupLobbyPlayerNumber();
     }
 
     @Override
@@ -256,7 +264,7 @@ public class ClientTUI extends View {
     }
 
     @Override
-    public void showUpdateColor() {
+    public void showUpdateColor(PlayerColor color, String username) {
 
     }
 
