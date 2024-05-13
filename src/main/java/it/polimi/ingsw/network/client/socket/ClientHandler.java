@@ -44,7 +44,7 @@ public class ClientHandler implements VirtualView {
 
     @Override
     public void updateCreator() throws RemoteException {
-        ClientMessage message = new UpdateCreatorMessage();
+        UpdateCreatorMessage message = new UpdateCreatorMessage();
         String jsonMessage = gson.toJson(message);
         out.println(jsonMessage);
         out.flush();
@@ -52,7 +52,7 @@ public class ClientHandler implements VirtualView {
 
     @Override
     public void updateAfterLobbyCrash() throws RemoteException {
-        ClientMessage message = new UpdateAfterLobbyCrashMessage();
+        UpdateAfterLobbyCrashMessage message = new UpdateAfterLobbyCrashMessage();
         String jsonMessage = gson.toJson(message);
         out.println(jsonMessage);
         out.flush();
@@ -60,7 +60,7 @@ public class ClientHandler implements VirtualView {
 
     @Override
     public void updateAfterConnection(ClientGame clientGame) throws RemoteException {
-        ClientMessage message = new UpdateAfterConnectionMessage(clientGame);
+        UpdateAfterConnectionMessage message = new UpdateAfterConnectionMessage(clientGame);
         String jsonMessage = gson.toJson(message);
         out.println(jsonMessage);
         out.flush();
@@ -68,7 +68,7 @@ public class ClientHandler implements VirtualView {
 
     @Override
     public void showUpdatePlayersInLobby(List<String> usernames) throws RemoteException {
-        ClientMessage message = new UpdatePlayersInLobbyMessage(usernames);
+        UpdatePlayersInLobbyMessage message = new UpdatePlayersInLobbyMessage(usernames);
         String jsonMessage = gson.toJson(message);
         out.println(jsonMessage);
         out.flush();
@@ -76,7 +76,7 @@ public class ClientHandler implements VirtualView {
 
     @Override
     public void showUpdatePlayerStatus(boolean isConnected, String username) throws RemoteException {
-        ClientMessage message = new UpdatePlayerStatusMessage(isConnected,username);
+        UpdatePlayerStatusMessage message = new UpdatePlayerStatusMessage(isConnected,username);
         String jsonMessage = gson.toJson(message);
         out.println(jsonMessage);
         out.flush();
@@ -84,7 +84,7 @@ public class ClientHandler implements VirtualView {
 
     @Override
     public void showUpdateColor(PlayerColor color, String username) throws RemoteException {
-        ClientMessage message = new UpdateColorMessage(username,color);
+        UpdateColorMessage message = new UpdateColorMessage(username,color);
         String jsonMessage = gson.toJson(message);
         out.println(jsonMessage);
         out.flush();
@@ -92,7 +92,7 @@ public class ClientHandler implements VirtualView {
 
     @Override
     public void showUpdateObjectiveCard(ClientCard chosenObjective, String username) throws RemoteException {
-        ClientMessage message = new UpdateObjectiveCardMessage(chosenObjective, username);
+        UpdateObjectiveCardMessage message = new UpdateObjectiveCardMessage(chosenObjective, username);
         String jsonMessage = gson.toJson(message);
         out.println(jsonMessage);
         out.flush();
@@ -100,7 +100,7 @@ public class ClientHandler implements VirtualView {
 
     @Override
     public void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide, Position position) throws RemoteException {
-        ClientMessage message = new UpdateAfterPlaceMessage(positionToCornerCovered, newAvailablePositions, newResources, points, username, placedCard, placedSide, position);
+        UpdateAfterPlaceMessage message = new UpdateAfterPlaceMessage(positionToCornerCovered, newAvailablePositions, newResources, points, username, placedCard, placedSide, position);
         String jsonMessage = gson.toJson(message);
         out.println(jsonMessage);
         out.flush();
@@ -108,7 +108,7 @@ public class ClientHandler implements VirtualView {
 
     @Override
     public void showUpdateAfterDraw(ClientCard drawnCard, ClientFace newTopDeck, ClientCard newFaceUpCard, String username, int boardPosition) throws RemoteException {
-        ClientMessage message = new UpdateAfterDrawMessage(drawnCard, newTopDeck, newFaceUpCard, username, boardPosition);
+        UpdateAfterDrawMessage message = new UpdateAfterDrawMessage(drawnCard, newTopDeck, newFaceUpCard, username, boardPosition);
         String jsonMessage = gson.toJson(message);
         out.println(jsonMessage);
         out.flush();
@@ -116,7 +116,7 @@ public class ClientHandler implements VirtualView {
 
     @Override
     public void showUpdateChat(Message message) throws RemoteException {
-        ClientMessage clientMessage = new UpdateChatMessage(message);
+        UpdateChatMessage clientMessage = new UpdateChatMessage(message);
         String jsonMessage = gson.toJson(clientMessage);
         out.println(jsonMessage);
         out.flush();
@@ -124,7 +124,7 @@ public class ClientHandler implements VirtualView {
 
     @Override
     public void showUpdateCurrentPlayer(int currentPlayerIdx, GamePhase phase) throws RemoteException {
-        ClientMessage message = new UpdateCurrentPlayerMessage(currentPlayerIdx, phase);
+        UpdateCurrentPlayerMessage message = new UpdateCurrentPlayerMessage(currentPlayerIdx, phase);
         String jsonMessage = gson.toJson(message);
         out.println(jsonMessage);
         out.flush();
@@ -132,7 +132,7 @@ public class ClientHandler implements VirtualView {
 
     @Override
     public void showUpdateSuspendedGame() throws RemoteException {
-        ClientMessage message = new UpdateSuspendedGameMessage();
+        UpdateSuspendedGameMessage message = new UpdateSuspendedGameMessage();
         String jsonMessage = gson.toJson(message);
         out.println(jsonMessage);
         out.flush();
@@ -140,7 +140,7 @@ public class ClientHandler implements VirtualView {
 
     @Override
     public void showWinners(List<String> winners) throws RemoteException {
-        ClientMessage message = new ShowWinnersMessage(winners);
+        ShowWinnersMessage message = new ShowWinnersMessage(winners);
         String jsonMessage = gson.toJson(message);
         out.println(jsonMessage);
         out.flush();
@@ -148,7 +148,7 @@ public class ClientHandler implements VirtualView {
 
     @Override
     public void reportError(String details) throws RemoteException {
-        ClientMessage message = new ReportErrorMessage(details);
+        ReportErrorMessage message = new ReportErrorMessage(details);
         String jsonMessage = gson.toJson(message);
         out.println(jsonMessage);
         out.flush();

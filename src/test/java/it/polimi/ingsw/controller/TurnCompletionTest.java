@@ -6,7 +6,7 @@ import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.action.PlayerState;
-import it.polimi.ingsw.network.rmi.ClientRMI;
+import it.polimi.ingsw.network.client.rmi.ClientRMI;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
