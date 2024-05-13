@@ -26,8 +26,7 @@ public class ClientGame {
     private List<ClientPlayer> players;
     private List<Message> messages;
     private ClientBoard clientBoard;
-    private GamePhase currentPhase; //todo move inside player
-
+    private GamePhase currentPhase;
     private boolean isGameActive;
 
     public boolean isGameActive() {
@@ -112,10 +111,9 @@ public class ClientGame {
     }
 
     public ClientGame(List<String> usernames) {
+        players = new ArrayList<>();
         for (String username : usernames) {
-            if (getPlayer(username) == null) {
-                players.add(new ClientPlayer(username));
-            }
+            players.add(new ClientPlayer(username));
         }
     }
 

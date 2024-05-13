@@ -25,7 +25,7 @@ import java.util.*;
 
 public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
-    private ClientController controller;
+    private final ClientController controller;
 
     private View clientView; //can be tui or gui
 
@@ -48,6 +48,15 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
         clientView.run(this);
         //runView (view has to select connect)
+    }
+
+    private String receiveUsername(){
+        System.out.println("Insert username");
+        Scanner scanner = new Scanner(System.in);
+        String username = scanner.next();
+        scanner.close();
+
+        return username;
     }
 
     @Override

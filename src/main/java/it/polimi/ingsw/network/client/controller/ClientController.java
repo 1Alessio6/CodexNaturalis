@@ -322,4 +322,20 @@ public class ClientController implements ClientActions {
         return getMainPlayer().getUsername().equals(game.getCurrentPlayer().getUsername());
     }
 
+    public GamePhase getGamePhase() {
+        return this.game.getCurrentPhase();
+    }
+
+   public String getLastMessage(){
+       return game.getMessages().getLast().getContent();
+   }
+
+   public PlayerColor getColor(){
+        return game.getPlayer(mainPlayerUsername).getColor();
+   }
+
+   public boolean getPlayerStatus(){
+        return game.getPlayer(mainPlayerUsername).isConnected();
+   }
+
 }
