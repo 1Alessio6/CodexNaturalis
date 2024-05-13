@@ -9,6 +9,10 @@ import it.polimi.ingsw.model.card.Color.CardColor;
 import it.polimi.ingsw.model.card.strategies.CalculateNoCondition;
 import it.polimi.ingsw.model.card.strategies.CalculatePoints;
 import it.polimi.ingsw.model.card.strategies.CalculateResources;
+import it.polimi.ingsw.network.server.socket.server.message.DrawMessage;
+import it.polimi.ingsw.network.server.socket.server.message.PlaceCardMessage;
+import it.polimi.ingsw.network.server.socket.server.message.ServerMessage;
+import it.polimi.ingsw.network.server.socket.server.message.ServerType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -320,5 +324,18 @@ public class JsonDeserializerTest {
         Assertions.assertEquals(expectedObjectiveResourceListJson, actualObjectiveResourceList);
 
         Assertions.assertTrue(objectiveResourceList.equals(gotObjectiveResourceList));
+    }
+
+    @Test
+    void serializeMessage_deserializeCorrectly() {
+        int idToDraw = 100;
+        ServerMessage message = new DrawMessage("gino", idToDraw);
+        gson = new Gson();
+        String json = gson.toJson(message);
+        System.out.println(json);
+
+        DrawMessage received = gson.fromJson(json, DrawMessage.class);
+        Assertions.assertEquals(received.getType(), ServerType.DRAW);
+        Assertions.assertEquals(received.getIdDraw(), idToDraw);
     }
 }
