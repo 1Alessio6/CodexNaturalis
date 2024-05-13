@@ -1,8 +1,7 @@
-package it.polimi.ingsw.network.server.socket.server;
+package it.polimi.ingsw.network.server.socket;
 
 import com.google.gson.Gson;
 import it.polimi.ingsw.controller.InvalidIdForDrawingException;
-import it.polimi.ingsw.jsondeserializer.DeserializationHandler;
 import it.polimi.ingsw.model.InvalidGamePhaseException;
 import it.polimi.ingsw.model.NonexistentPlayerException;
 import it.polimi.ingsw.model.SuspendedGameException;
@@ -22,7 +21,7 @@ import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
-import it.polimi.ingsw.network.server.socket.server.message.*;
+import it.polimi.ingsw.network.server.socket.message.*;
 
 import java.io.PrintWriter;
 import java.rmi.RemoteException;

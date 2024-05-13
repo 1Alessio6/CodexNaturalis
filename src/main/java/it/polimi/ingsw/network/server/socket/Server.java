@@ -1,7 +1,6 @@
 package it.polimi.ingsw.network.server.socket;
 
 import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.network.client.ClientHandler;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -12,12 +11,10 @@ import java.util.List;
 public class Server {
     private final static int PORT = 1234;
     private final ServerSocket listenSocket;
-    private final List<ClientHandler> clients;
     private Controller controller;
 
     public Server(ServerSocket listenSocket) {
         this.listenSocket = listenSocket;
-        clients = new ArrayList<ClientHandler>();
         this.controller = new Controller();
     }
 
