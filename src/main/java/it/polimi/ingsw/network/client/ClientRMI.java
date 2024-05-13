@@ -49,21 +49,8 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
         VirtualServer server = (VirtualServer) registry.lookup(serverName);
 
-        joinGame();
         clientView.run(this);
         //runView (view has to select connect)
-    }
-
-    private void joinGame() {
-        while(true) {
-            try {
-                String username = receiveUsername();
-                this.controller.connect(this, username);
-                break;
-            } catch(InvalidUsernameException | FullLobbyException | RemoteException e){
-                System.err.println(e.getMessage());
-            }
-        }
     }
 
     private String receiveUsername(){
