@@ -4,7 +4,7 @@ public class ServerMessage {
     ServerType type;
     String sender;
 
-        public ServerMessage(String sender, ServerType type) {
+    public ServerMessage(String sender, ServerType type) {
         this.type = type;
         this.sender = sender;
     }
