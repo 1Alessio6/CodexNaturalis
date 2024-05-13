@@ -29,9 +29,9 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
 
     private View clientView; //can be tui or gui
 
-    public ClientRMI() throws RemoteException{
-        controller = new ClientController(new ServerRMI());
-        clientView = new ClientTUI();
+    public ClientRMI() throws RemoteException {
+        controller = new ClientController(locateExistingServer());
+        clientView = new ClientTUI(controller);
     }
 
     public ClientRMI(VirtualServer server, View clientView) throws RemoteException {
@@ -40,23 +40,19 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
         //clientView = new view(controller)
     }
 
-    private void run(String host, int port) throws RemoteException, NotBoundException {
+    private VirtualServer locateExistingServer() {
         String serverName = "ServerRmi";
-        Registry registry = LocateRegistry.getRegistry(host, port); //todo change port and args and decide how to handle the exception
-
-        VirtualServer server = (VirtualServer) registry.lookup(serverName);
-
-        clientView.run(this);
-        //runView (view has to select connect)
+        try {
+            Registry registry = LocateRegistry.getRegistry("127.0.0.1", 1234); //todo change port and args and decide how to handle the exception
+            return (VirtualServer) registry.lookup(serverName);
+        } catch (RemoteException | NotBoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private String receiveUsername(){
-        System.out.println("Insert username");
-        Scanner scanner = new Scanner(System.in);
-        String username = scanner.next();
-        scanner.close();
-
-        return username;
+    public void run() throws RemoteException {
+        clientView.run(this);
+        //runView (view has to select connect)
     }
 
     @Override
@@ -78,7 +74,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     @Override
     public void showUpdatePlayersInLobby(List<String> usernames) throws RemoteException {
         controller.updatePlayersInLobby(usernames);
-        clientView.showUpdatePlayersInLobby();
+        clientView.showUpdatePlayersInLobby(usernames);
     }
 
     @Override
@@ -90,7 +86,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     @Override
     public void showUpdateColor(PlayerColor color, String username) throws RemoteException {
         controller.updateColor(color, username);
-        clientView.showUpdateColor();
+        clientView.showUpdateColor(color, username);
     }
 
     @Override
