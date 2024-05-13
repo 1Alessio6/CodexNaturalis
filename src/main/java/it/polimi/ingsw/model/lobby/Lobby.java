@@ -31,6 +31,12 @@ public class Lobby {
         listenerHandler = new ListenerHandler<>();
     }
 
+    private boolean isValid(String username) {
+        return username != null
+                && !username.isEmpty()
+                && !listenerHandler.getIds().contains(username);
+    }
+
     /**
      * Joins listener with <code>username</code> to the lobby.
      *
@@ -39,10 +45,13 @@ public class Lobby {
      * @throws IllegalArgumentException if the <code>username</code> is <code>null</code> or an empty string.
      * @throws FullLobbyException       if the lobby contains 4 players or the number chosen by the creator of the lobby.
      */
-    public void add(String username, VirtualView listener) throws IllegalArgumentException, FullLobbyException {
+    public void add(String username, VirtualView listener) throws IllegalArgumentException, FullLobbyException, InvalidUsernameException {
         int numListener = listenerHandler.getNumListener();
         if (numListener == numPlayersToStartTheGame || numListener == MAX_NUMBER) {
             throw new FullLobbyException();
+        }
+        if (!isValid(username)) {
+            throw new InvalidUsernameException();
         }
 
         listenerHandler.add(username, listener);
