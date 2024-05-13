@@ -33,10 +33,12 @@ public class Controller implements EventListener, GameRequest {
     private Game game;
     private Timer timerForSuspendedGame;
     private TurnCompletion turnCompletion;
+    private final Object gameLock;
 
     public Controller() {
         lobby = new Lobby();
         timerForSuspendedGame = new Timer();
+        gameLock = new Object();
     }
 
     private boolean validUsername(String username) {
@@ -55,15 +57,17 @@ public class Controller implements EventListener, GameRequest {
      * @throws InvalidUsernameException if the username provided is null or an empty string.
      * @throws RemoteException          if the user disconnects after calling the method.
      */
-    public synchronized void handleConnection(String username, VirtualView user) throws FullLobbyException, InvalidUsernameException, RemoteException {
+    public void handleConnection(String username, VirtualView user) throws FullLobbyException, InvalidUsernameException, RemoteException {
         if (!validUsername(username)) {
             throw new InvalidUsernameException();
         }
-        if (game == null || game.isFinished()) {
-            game = null;
-            joinLobby(username, user);
-        } else {
-            joinGame(username, user);
+        synchronized (gameLock) {
+            if (!lobby.isGameReady() || game.isFinished()) {
+                game = null;
+                joinLobby(username, user);
+            } else {
+                joinGame(username, user);
+            }
         }
     }
 
@@ -89,11 +93,13 @@ public class Controller implements EventListener, GameRequest {
         }
     }
 
-    public synchronized void handleDisconnection(String username) throws RemoteException, InvalidUsernameException {
-        if (this.game == null) {
-            leaveLobby(username);
-        } else {
-            leaveGame(username);
+    public void handleDisconnection(String username) throws RemoteException, InvalidUsernameException {
+        synchronized (gameLock) {
+            if (!lobby.isGameReady()) {
+                leaveLobby(username);
+            } else {
+                leaveGame(username);
+            }
         }
     }
 
@@ -137,9 +143,11 @@ public class Controller implements EventListener, GameRequest {
      * @throws InvalidGamePhaseException    if the player has already finished their setup.
      */
     @Override
-    public synchronized void placeStarter(String username, Side side) throws InvalidPlayerActionException, InvalidGamePhaseException {
-        if (game != null) {
-            game.placeStarter(username, side);
+    public void placeStarter(String username, Side side) throws InvalidPlayerActionException, InvalidGamePhaseException {
+        synchronized (gameLock) {
+            if (lobby.isGameReady()) {
+                game.placeStarter(username, side);
+            }
         }
     }
 
@@ -153,9 +161,11 @@ public class Controller implements EventListener, GameRequest {
      * @throws InvalidGamePhaseException    if the player has already finished their setup.
      */
     @Override
-    public synchronized void chooseColor(String username, PlayerColor color) throws NonexistentPlayerException, InvalidColorException, InvalidPlayerActionException, InvalidGamePhaseException, RemoteException {
-        if (game != null) {
-            game.assignColor(username, color);
+    public void chooseColor(String username, PlayerColor color) throws NonexistentPlayerException, InvalidColorException, InvalidPlayerActionException, InvalidGamePhaseException, RemoteException {
+        synchronized (gameLock) {
+            if (lobby.isGameReady()) {
+                game.assignColor(username, color);
+            }
         }
     }
 
@@ -168,12 +178,14 @@ public class Controller implements EventListener, GameRequest {
      * @throws InvalidGamePhaseException    if the player has already finished the setup.
      */
     @Override
-    public synchronized void placeObjectiveCard(String username, int chosenObjective) throws InvalidPlayerActionException, InvalidGamePhaseException {
+    public void placeObjectiveCard(String username, int chosenObjective) throws InvalidPlayerActionException, InvalidGamePhaseException {
         if (chosenObjective < 0 || chosenObjective > 1) {
             throw new IllegalArgumentException();
         }
-        if (game != null) {
-            game.placeObjectiveCard(username, chosenObjective);
+        synchronized (gameLock) {
+            if (lobby.isGameReady()) {
+                game.placeObjectiveCard(username, chosenObjective);
+            }
         }
     }
 
@@ -192,10 +204,12 @@ public class Controller implements EventListener, GameRequest {
      * @throws SuspendedGameException                  if the game is suspended, thus no placement is allowed.
      */
     @Override
-    public synchronized void placeCard(String username, int frontId, int backId, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException, InvalidCardIdException {
-        if (game != null) {
-            Card cardToPlace = game.getCard(username, frontId, backId);
-            game.placeCard(username, cardToPlace, side, position);
+    public void placeCard(String username, int frontId, int backId, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException, InvalidCardIdException {
+        synchronized (gameLock) {
+            if (lobby.isGameReady()) {
+                Card cardToPlace = game.getCard(username, frontId, backId);
+                game.placeCard(username, cardToPlace, side, position);
+            }
         }
     }
 
@@ -209,17 +223,19 @@ public class Controller implements EventListener, GameRequest {
      * @throws InvalidGamePhaseException    if the game phase doesn't allow the operation.
      */
     @Override
-    public synchronized void draw(String username, int idToDraw) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException, InvalidIdForDrawingException, InvalidFaceUpCardException {
+    public void draw(String username, int idToDraw) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException, InvalidIdForDrawingException, InvalidFaceUpCardException {
         if (idToDraw < 0 || idToDraw > 5) {
             throw new InvalidIdForDrawingException();
         }
-        if (game != null) {
-            if (idToDraw == 4) {
-                game.drawFromDeck(username, DeckType.GOLDEN);
-            } else if (idToDraw == 5) {
-                game.drawFromDeck(username, DeckType.RESOURCE);
-            } else {
-                game.drawFromFaceUpCards(username, idToDraw);
+        synchronized (gameLock) {
+            if (lobby.isGameReady()) {
+                if (idToDraw == 4) {
+                    game.drawFromDeck(username, DeckType.GOLDEN);
+                } else if (idToDraw == 5) {
+                    game.drawFromDeck(username, DeckType.RESOURCE);
+                } else {
+                    game.drawFromFaceUpCards(username, idToDraw);
+                }
             }
         }
     }
@@ -231,14 +247,20 @@ public class Controller implements EventListener, GameRequest {
      * @throws InvalidMessageException if the message is invalid.
      */
     @Override
-    public synchronized void sendMessage(Message message) throws InvalidMessageException {
-        if (game != null) {
+    public void sendMessage(Message message) throws InvalidMessageException {
+        boolean isGameReady;
+        synchronized (gameLock) {
+            isGameReady = lobby.isGameReady();
+        }
+        if (isGameReady) {
             game.registerMessage(message);
         }
     }
 
     @Override
     public void setPlayersNumber(int playersNumber) throws InvalidPlayersNumberException {
-        lobby.setNumPlayersToStartTheGame(playersNumber);
+        synchronized (gameLock) {
+            lobby.setNumPlayersToStartTheGame(playersNumber);
+        }
     }
 }

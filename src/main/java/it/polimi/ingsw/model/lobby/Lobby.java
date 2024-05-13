@@ -37,7 +37,6 @@ public class Lobby {
      * @param listener of the lobby events.
      * @param username of the player who joins the lobby.
      * @throws IllegalArgumentException if the <code>username</code> is <code>null</code> or an empty string.
-     * @throws InvalidUsernameException if the username is associated to a player who has joined the lobby.
      * @throws FullLobbyException       if the lobby contains 4 players or the number chosen by the creator of the lobby.
      */
     public void add(String username, VirtualView listener) throws IllegalArgumentException, FullLobbyException {
