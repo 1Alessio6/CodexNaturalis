@@ -212,7 +212,7 @@ public class ClientController implements ClientActions {
         if(playersNumber > 4 || playersNumber < 2){
             throw new InvalidPlayersNumberException();
         }
-        server.setPlayersNumber(playersNumber);
+        server.setPlayersNumber(mainPlayerUsername, playersNumber);
     }
 
     public void updateAfterConnection(ClientGame clientGame) {

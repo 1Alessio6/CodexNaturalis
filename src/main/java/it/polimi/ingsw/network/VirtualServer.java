@@ -45,7 +45,7 @@ public interface VirtualServer extends Remote {
 
     void sendMessage(Message message) throws InvalidMessageException, RemoteException;
 
-    void setPlayersNumber(int playersNumber) throws RemoteException, InvalidPlayersNumberException;
+    void setPlayersNumber(String username, int playersNumber) throws RemoteException, InvalidPlayersNumberException;
 
     void disconnect(String username) throws InvalidUsernameException, RemoteException;
 

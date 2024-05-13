@@ -89,7 +89,7 @@ public class ServerRMI implements VirtualServer {
     }
 
     @Override
-    public void setPlayersNumber(int playersNumber) throws InvalidPlayersNumberException {
+    public void setPlayersNumber(String username, int playersNumber) throws InvalidPlayersNumberException {
         myController.setPlayersNumber(playersNumber);
     }
 
