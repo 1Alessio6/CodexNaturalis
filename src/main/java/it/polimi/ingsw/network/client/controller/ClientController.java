@@ -322,4 +322,8 @@ public class ClientController implements ClientActions {
         return getMainPlayer().getUsername().equals(game.getCurrentPlayer().getUsername());
     }
 
+    public GamePhase getGamePhase() {
+        return this.game.getCurrentPhase();
+    }
+
 }
