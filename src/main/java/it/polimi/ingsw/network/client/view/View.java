@@ -1,11 +1,7 @@
 package it.polimi.ingsw.network.client.view;
 
 import it.polimi.ingsw.network.VirtualView;
-import it.polimi.ingsw.network.client.controller.ClientActions;
 import it.polimi.ingsw.network.client.controller.ClientController;
-
-import java.rmi.RemoteException;
-import java.util.List;
 
 
 public abstract class View {
@@ -49,4 +45,7 @@ public abstract class View {
 
     public abstract void showWinners();
 
+    public ClientController getController() {
+        return controller;
+    }
 }
