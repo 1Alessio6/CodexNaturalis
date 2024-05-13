@@ -6,12 +6,19 @@ public class UpdateObjectiveCardMessage extends ClientMessage {
 
     private final ClientCard chosenObjective;
 
-    public UpdateObjectiveCardMessage(ClientCard chosenObjective) {
+    private final String username;
+
+    public UpdateObjectiveCardMessage(ClientCard chosenObjective, String username) {
         super(ClientType.SHOW_UPDATE_OBJECTIVE_CARD);
         this.chosenObjective = chosenObjective;
+        this.username = username;
     }
 
     public ClientCard getChosenObjective() {
         return chosenObjective;
+    }
+
+    public String getUsername() {
+        return username;
     }
 }
