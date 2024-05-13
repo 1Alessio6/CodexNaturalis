@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.client;
+package it.polimi.ingsw.network.rmi;
 
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.*;

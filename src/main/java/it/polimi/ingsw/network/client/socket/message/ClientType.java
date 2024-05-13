@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.server.socket.client.clientmessage;
+package it.polimi.ingsw.network.client.socket.message;
 
 public enum ClientType {
     UPDATE_CREATOR,

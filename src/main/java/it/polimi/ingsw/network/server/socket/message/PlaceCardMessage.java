@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.server.socket.server;
+package it.polimi.ingsw.network.server.socket.message;
 
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.Side;
