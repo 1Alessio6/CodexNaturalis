@@ -59,13 +59,8 @@ public class ServerRMI implements VirtualServer {
     }
 
     @Override
-    public void chooseColor(String username, PlayerColor color) {
-        try {
-            myController.chooseColor(username, color);
-        } catch (NonexistentPlayerException | InvalidColorException | InvalidPlayerActionException |
-                 InvalidGamePhaseException | RemoteException e) {
-            e.printStackTrace();
-        }
+    public void chooseColor(String username, PlayerColor color) throws NonexistentPlayerException, InvalidColorException, InvalidPlayerActionException, InvalidGamePhaseException, RemoteException {
+        myController.chooseColor(username, color);
     }
 
     @Override
@@ -111,7 +106,7 @@ public class ServerRMI implements VirtualServer {
         }
 
         try {
-            registry.bind("VirtualServer", stub);
+            registry.bind("ServerRmi", stub);
         } catch (RemoteException | AlreadyBoundException e) {
             throw new RuntimeException(e);
         }
