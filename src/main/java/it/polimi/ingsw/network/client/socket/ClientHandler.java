@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.client;
+package it.polimi.ingsw.network.client.socket;
 
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
@@ -11,7 +11,10 @@ import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.model.ClientGame;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
+import it.polimi.ingsw.network.server.socket.Server;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -19,11 +22,20 @@ import java.util.Map;
 
 public class ClientHandler implements VirtualView {
 
-    private PrintWriter out;
+    private final Server server;
+    private final PrintWriter out;
+    private final BufferedReader input;
 
-    public ClientHandler(PrintWriter out) {
+    public ClientHandler(Server server, BufferedReader input, PrintWriter out) {
+        this.server = server;
         this.out = out;
+        this.input = input;
     }
+
+    public void run() throws IOException {
+    }
+
+
     @Override
     public void updateCreator() throws RemoteException {
 
@@ -93,4 +105,6 @@ public class ClientHandler implements VirtualView {
     public void reportError(String details) throws RemoteException {
 
     }
+
+
 }

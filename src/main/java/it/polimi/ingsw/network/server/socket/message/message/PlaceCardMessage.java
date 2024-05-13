@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:src/main/java/it/polimi/ingsw/network/server/socket/message/message/PlaceCardMessage.java
 package it.polimi.ingsw.network.server.socket.server.message;
+========
+package it.polimi.ingsw.network.server.socket.message;
+>>>>>>>> refs/remotes/origin/main:src/main/java/it/polimi/ingsw/network/server/socket/message/PlaceCardMessage.java
 
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.Side;

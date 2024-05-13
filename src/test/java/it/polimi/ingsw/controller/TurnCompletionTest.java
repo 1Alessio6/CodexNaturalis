@@ -5,10 +5,8 @@ import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.player.action.PlayerAction;
 import it.polimi.ingsw.model.player.action.PlayerState;
-import it.polimi.ingsw.network.client.ClientRMI;
-import it.polimi.ingsw.network.client.model.ClientGame;
+import it.polimi.ingsw.network.rmi.ClientRMI;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,8 +14,6 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class TurnCompletionTest {
     private Game game;

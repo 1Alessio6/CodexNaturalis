@@ -64,7 +64,6 @@ public interface VirtualView extends Remote {
     void showUpdateAfterDraw(ClientCard drawnCard, ClientFace newTopDeck, ClientCard newFaceUpCard, String username, int boardPosition) throws RemoteException;
 
     //method to notify update after a draw
-
     void showUpdateChat(Message message) throws RemoteException;
 
     void showUpdateCurrentPlayer(int currentPlayerIdx, GamePhase phase) throws RemoteException;

@@ -1,16 +1,11 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
-import it.polimi.ingsw.model.card.Front;
 import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.network.VirtualView;
-import it.polimi.ingsw.network.client.ClientRMI;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
