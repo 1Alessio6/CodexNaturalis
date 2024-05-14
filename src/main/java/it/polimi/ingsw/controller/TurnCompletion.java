@@ -13,7 +13,6 @@ import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.action.PlayerState;
 
-import java.rmi.RemoteException;
 import java.util.*;
 import java.util.List;
 
@@ -53,7 +52,7 @@ public class TurnCompletion {
             try {
                 game.assignColor(player.getUsername(), remainingColors.getFirst());
             } catch (InvalidPlayerActionException | InvalidColorException | NonexistentPlayerException |
-                     InvalidGamePhaseException | RemoteException ignored) {
+                     InvalidGamePhaseException ignored) {
             }
         }
 
