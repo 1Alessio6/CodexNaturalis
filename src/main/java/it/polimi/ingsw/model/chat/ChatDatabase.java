@@ -24,7 +24,7 @@ public class ChatDatabase {
      * @param message to be stored.
      * @throws IllegalArgumentException if message is null.
      */
-    public synchronized void addMessage(Message message) throws IllegalArgumentException {
+    public void addMessage(Message message) throws IllegalArgumentException {
         if (message == null) {
             throw new IllegalArgumentException("Message cannot be null");
         }
@@ -36,7 +36,7 @@ public class ChatDatabase {
      *
      * @return messages sent by the players.
      */
-    public synchronized List<Message> getMessages() {
+    public List<Message> getMessages() {
         return messageList;
     }
 }
