@@ -58,16 +58,16 @@ public class ClientHandler implements VirtualView {
             switch (type) {
                 case CONNECT:
                     assert message instanceof ConnectMessage;
-                    ConnectMessage connectMessage = (ConnectMessage)message;
+                    ConnectMessage connectMessage = (ConnectMessage) message;
 
                     try {
-                        server.connect(connectMessage.getClient(),sender);
+                        server.connect(connectMessage.getClient(), sender);
                     } catch (FullLobbyException | InvalidUsernameException e) {
                         System.err.println(e.getMessage());
                     }
 
                 case PLACE_STARTER:
-                    assert message instanceof  PlaceStarterMessage;
+                    assert message instanceof PlaceStarterMessage;
                     PlaceStarterMessage placeStarterMessage = (PlaceStarterMessage) message;
                     try {
                         server.placeStarter(sender, placeStarterMessage.getSide());
@@ -91,7 +91,7 @@ public class ClientHandler implements VirtualView {
                     PlaceObjectiveMessage placeObjectiveMessage = (PlaceObjectiveMessage) message;
 
                     try {
-                        server.placeObjectiveCard(sender,placeObjectiveMessage.getChosenObjective());
+                        server.placeObjectiveCard(sender, placeObjectiveMessage.getChosenObjective());
                     } catch (InvalidPlayerActionException | InvalidGamePhaseException e) {
                         throw new RuntimeException(e);
                     }
@@ -100,7 +100,8 @@ public class ClientHandler implements VirtualView {
                     assert message instanceof PlaceCardMessage;
                     PlaceCardMessage placeCardMessage = (PlaceCardMessage) message;
                     try {
-                        server.placeCard(sender, placeCardMessage.getFrontId(), placeCardMessage.getBackId(), placeCardMessage.getSide(), placeCardMessage.getPosition());
+                        server.placeCard(sender, placeCardMessage.getFrontId(), placeCardMessage.getBackId(),
+                                placeCardMessage.getSide(), placeCardMessage.getPosition());
                     } catch (InvalidPlayerActionException | Playground.UnavailablePositionException |
                              Playground.NotEnoughResourcesException | InvalidGamePhaseException |
                              SuspendedGameException | InvalidCardIdException e) {

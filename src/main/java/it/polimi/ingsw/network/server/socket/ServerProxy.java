@@ -36,7 +36,7 @@ public class ServerProxy implements VirtualServer {
 
     @Override
     public void connect(VirtualView client, String username) throws RemoteException, FullLobbyException, InvalidUsernameException {
-        ConnectMessage message = new ConnectMessage(username);
+        ConnectMessage message = new ConnectMessage(client, username);
         String json = gson.toJson(message);
         out.println(json);
         out.flush();
