@@ -14,6 +14,8 @@ import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.socket.message.*;
 import it.polimi.ingsw.network.server.socket.Server;
+import it.polimi.ingsw.network.server.socket.message.ServerMessage;
+import it.polimi.ingsw.network.server.socket.message.ServerType;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,8 +40,46 @@ public class ClientHandler implements VirtualView {
     }
 
     public void run() throws IOException {
+        String line = input.readLine();
+        while(line != null){
+            ServerMessage message = gson.fromJson(line, ServerMessage.class);
+            ServerType type = message.getType();
 
+            switch (type){
+                case CONNECT:
+
+                case PLACE_STARTER:
+
+                case CHOOSE_COLOR:
+
+                case PLACE_OBJECTIVE:
+
+                case PLACE_CARD:
+
+                case DRAW:
+
+                case SEND_CHAT_MESSAGE:
+
+                case SET_PLAYER_NUMBER:
+
+                case DISCONNECT:
+
+                case SEND_PING:
+
+            }
+
+
+            line = input.readLine();
+        }
     }
+
+    /*
+
+    SEND_CHAT_MESSAGE,
+    SET_PLAYER_NUMBER,
+    DISCONNECT,
+    SEND_PING
+     */
 
 
     @Override
