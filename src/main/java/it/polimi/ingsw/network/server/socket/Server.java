@@ -46,15 +46,8 @@ public class Server {
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             System.out.println("Received connection");
-            // create the stub related to the client.
-           // todo. create clientHandler ClientHandler handler = new ClientHandler(this, in, out);
-            new Thread(() -> {
-                //     try {
-                //    handler.run();
-                //} catch (IOException e) {
-                //    throw new RuntimeException(e);
-                //}
-            }).start();
+            ClientHandler handler = new ClientHandler(this, in, out);
+            new Thread(handler::run).start();
         }
     }
 
