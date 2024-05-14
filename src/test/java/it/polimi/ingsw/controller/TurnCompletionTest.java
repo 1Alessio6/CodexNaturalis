@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.action.PlayerState;
-import it.polimi.ingsw.network.client.rmi.ClientRMI;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,14 +45,14 @@ class TurnCompletionTest {
         Assertions.assertEquals(lastPlayerState, PlayerState.ChooseStarter);
 
         Assertions.assertDoesNotThrow(() -> {
-            game.add(users.getFirst(), new ClientRMI());
+            game.add(users.getFirst(), new PlainVirtualView());
             turnCompletion.handleJoin(game);
         });
         Assertions.assertFalse(game.isActive());
 
         // add another player to make the game active again
         Assertions.assertDoesNotThrow(() -> {
-            game.add(users.get(1), new ClientRMI());
+            game.add(users.get(1), new PlainVirtualView());
             turnCompletion.handleJoin(game);
         });
         Assertions.assertTrue(game.isActive());
