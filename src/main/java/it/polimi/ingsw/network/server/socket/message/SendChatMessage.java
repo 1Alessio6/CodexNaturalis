@@ -8,4 +8,8 @@ public class SendChatMessage extends ServerMessage {
         super(sender, ServerType.SEND_CHAT_MESSAGE);
         this.message = message;
     }
+
+    public Message getMessage() {
+        return message;
+    }
 }
