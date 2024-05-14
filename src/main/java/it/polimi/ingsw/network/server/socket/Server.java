@@ -20,14 +20,11 @@ import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.network.VirtualView;
+import it.polimi.ingsw.network.client.socket.ClientHandler;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class Server {
     private final static int PORT = 1234;
@@ -61,12 +58,12 @@ public class Server {
         new Server(listenSocket).runServer();
     }
 
-    public void connect(VirtualView client, String username) throws RemoteException, FullLobbyException, InvalidUsernameException {
+    public void connect(VirtualView client, String username) throws FullLobbyException, InvalidUsernameException {
         controller.handleConnection(username, client);
     }
 
 
-    public void disconnect(String username) throws InvalidUsernameException, RemoteException {
+    public void disconnect(String username) throws InvalidUsernameException {
         controller.handleDisconnection(username);
     }
 
@@ -78,7 +75,7 @@ public class Server {
         controller.placeStarter(username, side);
     }
 
-    public void chooseColor(String username, PlayerColor color) throws NonexistentPlayerException, InvalidColorException, InvalidPlayerActionException, InvalidGamePhaseException, RemoteException {
+    public void chooseColor(String username, PlayerColor color) throws NonexistentPlayerException, InvalidColorException, InvalidPlayerActionException, InvalidGamePhaseException {
         controller.chooseColor(username, color);
     }
 
