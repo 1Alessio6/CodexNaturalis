@@ -37,6 +37,11 @@ public final class ObjectiveResourceCard extends ObjectiveCard {
     }
 
     @Override
+    public Map<Symbol, Integer> getResourceCondition() {
+        return super.getResourceCondition();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

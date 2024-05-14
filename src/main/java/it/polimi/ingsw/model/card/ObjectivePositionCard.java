@@ -4,7 +4,9 @@ import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.Color.CardColor;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 public class ObjectivePositionCard extends ObjectiveCard {
     private final Map<Position, CardColor> condition;
@@ -30,6 +32,11 @@ public class ObjectivePositionCard extends ObjectiveCard {
     private boolean matchRequirement(Playground playground, Position requiredPosition, CardColor requiredColor) {
         return playground.contains(requiredPosition)
                 && playground.getTile(requiredPosition).getFace().getColor().equals(requiredColor);
+    }
+
+    @Override
+    public Map<Position, CardColor> getPositionCondition() {
+        return condition;
     }
 
     @Override

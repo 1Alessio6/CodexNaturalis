@@ -73,6 +73,11 @@ public class Back extends Face {
     }
 
     @Override
+    public Map<Symbol, Integer> getBackCenterResources() {
+        return resources;
+    }
+
+    @Override
     public Condition getCondition() {
         return null;
     }

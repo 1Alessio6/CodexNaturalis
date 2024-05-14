@@ -1,7 +1,10 @@
 package it.polimi.ingsw.model.card;
 
 import it.polimi.ingsw.model.board.Playground;
+import it.polimi.ingsw.model.board.Position;
+import it.polimi.ingsw.model.card.Color.CardColor;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -9,7 +12,7 @@ import java.util.Objects;
 /**
  * Immutable class representing the objective card.
  */
-public abstract class ObjectiveCard implements GeneralCard {
+public abstract class ObjectiveCard{
 
     /**
      * Represents the number of points won when card is placed.
@@ -59,18 +62,20 @@ public abstract class ObjectiveCard implements GeneralCard {
 
     public abstract int calculatePoints(Playground p);
 
-    @Override
+
     public int getFrontId() {
         return frontId;
     }
 
-    @Override
     public int getBackId() {
         return backId;
     }
 
-    @Override
-    public Map<Symbol, Integer> getRequiredResources() {
+    public Map<Symbol, Integer> getResourceCondition() {
+        return new HashMap<>();
+    }
+
+    public Map<Position, CardColor> getPositionCondition() {
         return new HashMap<>();
     }
 
