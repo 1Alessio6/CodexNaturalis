@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.network.client.model.ClientGame;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
+import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -52,7 +53,7 @@ public interface VirtualView extends Remote {
     // all clients receive the information, the ones not being username will remove color from their list of available colors.
     void showUpdateColor(PlayerColor color, String username) throws RemoteException;
 
-    void showUpdateObjectiveCard(ClientCard chosenObjective, String username) throws RemoteException;
+    void showUpdateObjectiveCard(ClientObjectiveCard chosenObjective, String username) throws RemoteException;
 
     // todo. add parameter in after draw and place to notify which player has triggered the events.
     //method to show updated information after a place

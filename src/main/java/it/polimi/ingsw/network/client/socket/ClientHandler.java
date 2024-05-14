@@ -21,6 +21,7 @@ import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.model.ClientGame;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
+import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 import it.polimi.ingsw.network.client.socket.message.*;
 import it.polimi.ingsw.network.server.socket.Server;
 import it.polimi.ingsw.network.server.socket.message.*;
@@ -204,7 +205,7 @@ public class ClientHandler implements VirtualView {
     }
 
     @Override
-    public void showUpdateObjectiveCard(ClientCard chosenObjective, String username) throws RemoteException {
+    public void showUpdateObjectiveCard(ClientObjectiveCard chosenObjective, String username) throws RemoteException {
         UpdateObjectiveCardMessage message = new UpdateObjectiveCardMessage(chosenObjective, username);
         String jsonMessage = gson.toJson(message);
         out.println(jsonMessage);

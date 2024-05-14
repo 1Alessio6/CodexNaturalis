@@ -23,6 +23,7 @@ import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.board.ClientTile;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
+import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 
 import java.rmi.RemoteException;
@@ -234,7 +235,7 @@ public class ClientController implements ClientActions {
         game.getPlayer(username).setColor(color);
     }
 
-    public void updateObjectiveCard(ClientCard chosenObjective, String username) {
+    public void updateObjectiveCard(ClientObjectiveCard chosenObjective, String username) {
         game.getPlayer(username).updateObjectiveCard(chosenObjective);
     }
 
@@ -294,8 +295,8 @@ public class ClientController implements ClientActions {
     }
 
     private boolean checkRequirements(ClientCard card) {
-        for (Symbol s : card.getRequiredResources().keySet()) {
-            if (getMainPlayer().getAmountResource(s) < card.getRequiredResources().get(s)) {
+        for (Symbol s : card.getFront().getRequirements().keySet()) {
+            if (getMainPlayer().getAmountResource(s) < card.getFront().getRequirements().get(s)) {
                 return false;
             }
         }
