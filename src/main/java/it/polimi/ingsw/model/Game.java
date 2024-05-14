@@ -12,7 +12,6 @@ import it.polimi.ingsw.model.chat.ChatDatabase;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.model.listenerhandler.ListenerHandler;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
-import it.polimi.ingsw.model.notifier.Notifier;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.gamePhase.PhaseHandler;
@@ -25,7 +24,6 @@ import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 
 import java.io.FileNotFoundException;
-import java.rmi.RemoteException;
 import java.util.*;
 
 import static java.lang.Math.min;
@@ -65,9 +63,6 @@ public class Game {
     public static final int MAX_DELAY_FOR_SUSPENDED_GAME = 1000000;
 
     private ListenerHandler<VirtualView> listenerHandler;
-
-    // synchronization
-    //private Object actionLock = new Object();
 
     // Advanced Features
 
@@ -323,7 +318,7 @@ public class Game {
         listenerHandler.notify(username, receiver -> receiver.updateAfterConnection(new ClientGame(Game.this)));
     }
 
-    public void remove(String username) throws InvalidUsernameException, RemoteException {
+    public void remove(String username) throws InvalidUsernameException {
         if (!validUsernames.contains(username)) {
             throw new InvalidUsernameException();
         }
@@ -402,7 +397,7 @@ public class Game {
      * @throws NonexistentPlayerException   if the username is invalid.
      * @throws InvalidGamePhaseException    if the player has already finished their setup.
      */
-    public void assignColor(String username, PlayerColor color) throws InvalidPlayerActionException, InvalidColorException, NonexistentPlayerException, InvalidGamePhaseException, RemoteException {
+    public void assignColor(String username, PlayerColor color) throws InvalidPlayerActionException, InvalidColorException, NonexistentPlayerException, InvalidGamePhaseException {
         if (phase != GamePhase.Setup) {
             throw new InvalidGamePhaseException();
         }
