@@ -32,6 +32,8 @@ import java.io.PrintWriter;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ClientHandler implements VirtualView {
 
@@ -41,118 +43,127 @@ public class ClientHandler implements VirtualView {
 
     private final Gson gson;
 
+    private final ExecutorService executor;
+
     public ClientHandler(Server server, BufferedReader input, PrintWriter out) {
         this.server = server;
         this.out = out;
         this.input = input;
         gson = new Gson();
+        executor = Executors.newSingleThreadExecutor();
     }
 
-    public void run() throws IOException {
-        String line = input.readLine();
-        while (line != null) {
-            ServerMessage message = gson.fromJson(line, ServerMessage.class);
-            ServerType type = message.getType();
-            String sender = message.getSender();
+    public void run() {
+        try {
+            String line = input.readLine();
+            while (line != null) {
+                ServerMessage message = gson.fromJson(line, ServerMessage.class);
+                ServerType type = message.getType();
+                String sender = message.getSender();
 
+                switch (type) {
+                    case CONNECT:
+                        executor.submit(() -> {
+                            try {
+                                server.connect(this, sender);
+                            } catch (FullLobbyException | InvalidUsernameException e) {
+                                System.err.println(e.getMessage());
+                            }
+                        });
+                    case PLACE_STARTER:
+                        PlaceStarterMessage placeStarterMessage = gson.fromJson(line, PlaceStarterMessage.class);
+                        executor.submit(() -> {
+                            try {
+                                server.placeStarter(sender, placeStarterMessage.getSide());
+                            } catch (InvalidPlayerActionException | InvalidGamePhaseException e) {
+                                System.err.println(e.getMessage());
+                            }
+                        });
+                    case CHOOSE_COLOR:
+                        ChooseColorMessage chooseColorMessage = gson.fromJson(line, ChooseColorMessage.class);
+                        executor.submit(() -> {
+                            try {
+                                server.chooseColor(sender, chooseColorMessage.getColor());
+                            } catch (NonexistentPlayerException | InvalidGamePhaseException |
+                                     InvalidPlayerActionException |
+                                     InvalidColorException e) {
+                                System.err.println(e.getMessage());
+                            }
+                        });
 
-            switch (type) {
-                case CONNECT:
-                    assert message instanceof ConnectMessage;
-                    ConnectMessage connectMessage = (ConnectMessage) message;
+                    case PLACE_OBJECTIVE:
+                        PlaceObjectiveMessage placeObjectiveMessage = gson.fromJson(line, PlaceObjectiveMessage.class);
+                        executor.submit(() -> {
+                            try {
+                                server.placeObjectiveCard(sender, placeObjectiveMessage.getChosenObjective());
+                            } catch (InvalidPlayerActionException | InvalidGamePhaseException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
 
-                    try {
-                        server.connect(connectMessage.getClient(), sender);
-                    } catch (FullLobbyException | InvalidUsernameException e) {
-                        System.err.println(e.getMessage());
-                    }
+                    case PLACE_CARD:
+                        PlaceCardMessage placeCardMessage = gson.fromJson(line, PlaceCardMessage.class);
+                        executor.submit(() -> {
+                            try {
+                                server.placeCard(sender, placeCardMessage.getFrontId(), placeCardMessage.getBackId(),
+                                        placeCardMessage.getSide(), placeCardMessage.getPosition());
+                            } catch (InvalidPlayerActionException | Playground.UnavailablePositionException |
+                                     Playground.NotEnoughResourcesException | InvalidGamePhaseException |
+                                     SuspendedGameException | InvalidCardIdException e) {
+                                System.err.println(e.getMessage());
+                            }
+                        });
 
-                case PLACE_STARTER:
-                    assert message instanceof PlaceStarterMessage;
-                    PlaceStarterMessage placeStarterMessage = (PlaceStarterMessage) message;
-                    try {
-                        server.placeStarter(sender, placeStarterMessage.getSide());
-                    } catch (InvalidPlayerActionException | InvalidGamePhaseException e) {
-                        System.err.println(e.getMessage());
-                    }
+                    case DRAW:
+                        DrawMessage drawMessage = gson.fromJson(line, DrawMessage.class);
 
-                case CHOOSE_COLOR:
-                    assert message instanceof ChooseColorMessage;
-                    ChooseColorMessage chooseColorMessage = (ChooseColorMessage) message;
+                        executor.submit(() -> {
+                            try {
+                                server.draw(sender, drawMessage.getIdDraw());
+                            } catch (InvalidGamePhaseException | InvalidPlayerActionException | EmptyDeckException |
+                                     InvalidIdForDrawingException | InvalidFaceUpCardException e) {
+                                System.err.println(e.getMessage());
+                            }
+                        });
 
-                    try {
-                        server.chooseColor(sender, chooseColorMessage.getColor());
-                    } catch (NonexistentPlayerException | InvalidGamePhaseException | InvalidPlayerActionException |
-                             InvalidColorException e) {
-                        System.err.println(e.getMessage());
-                    }
+                    case SEND_CHAT_MESSAGE:
+                        SendChatMessage sendChatMessage = gson.fromJson(line, SendChatMessage.class);
 
-                case PLACE_OBJECTIVE:
-                    assert message instanceof PlaceObjectiveMessage;
-                    PlaceObjectiveMessage placeObjectiveMessage = (PlaceObjectiveMessage) message;
+                        executor.submit(() -> {
+                            try {
+                                server.sendMessage(sendChatMessage.getMessage());
+                            } catch (InvalidMessageException e) {
+                                System.err.println(e.getMessage());
+                            }
+                        });
 
-                    try {
-                        server.placeObjectiveCard(sender, placeObjectiveMessage.getChosenObjective());
-                    } catch (InvalidPlayerActionException | InvalidGamePhaseException e) {
-                        throw new RuntimeException(e);
-                    }
+                    case SET_PLAYER_NUMBER:
+                        SetPlayerNumberMessage setPlayerNumberMessage = gson.fromJson(line, SetPlayerNumberMessage.class);
 
-                case PLACE_CARD:
-                    assert message instanceof PlaceCardMessage;
-                    PlaceCardMessage placeCardMessage = (PlaceCardMessage) message;
-                    try {
-                        server.placeCard(sender, placeCardMessage.getFrontId(), placeCardMessage.getBackId(),
-                                placeCardMessage.getSide(), placeCardMessage.getPosition());
-                    } catch (InvalidPlayerActionException | Playground.UnavailablePositionException |
-                             Playground.NotEnoughResourcesException | InvalidGamePhaseException |
-                             SuspendedGameException | InvalidCardIdException e) {
-                        System.err.println(e.getMessage());
-                    }
+                        executor.submit(() -> {
+                            try {
+                                server.setPlayersNumber(sender, setPlayerNumberMessage.getNumPlayers());
+                            } catch (InvalidPlayersNumberException e) {
+                                System.err.println(e.getMessage());
+                            }
+                        });
 
-                case DRAW:
-                    assert message instanceof DrawMessage;
-                    DrawMessage drawMessage = (DrawMessage) message;
+                    case DISCONNECT:
+                        executor.submit(() -> {
+                            try {
+                                server.disconnect(sender);
+                            } catch (InvalidUsernameException e) {
+                                System.err.println(e.getMessage());
+                            }
+                        });
 
-                    try {
-                        server.draw(sender, drawMessage.getIdDraw());
-                    } catch (InvalidGamePhaseException | InvalidPlayerActionException | EmptyDeckException |
-                             InvalidIdForDrawingException | InvalidFaceUpCardException e) {
-                        System.err.println(e.getMessage());
-                    }
-
-                case SEND_CHAT_MESSAGE:
-                    assert message instanceof SendChatMessage;
-                    SendChatMessage sendChatMessage = (SendChatMessage) message;
-
-                    try {
-                        server.sendMessage(sendChatMessage.getMessage());
-                    } catch (InvalidMessageException e) {
-                        System.err.println(e.getMessage());
-                    }
-
-                case SET_PLAYER_NUMBER:
-                    assert message instanceof SetPlayerNumberMessage;
-                    SetPlayerNumberMessage setPlayerNumberMessage = (SetPlayerNumberMessage) message;
-
-                    try {
-                        server.setPlayersNumber(sender, setPlayerNumberMessage.getNumPlayers());
-                    } catch (InvalidPlayersNumberException e) {
-                        System.err.println(e.getMessage());
-                    }
-
-                case DISCONNECT:
-                    try {
-                        server.disconnect(sender);
-                    } catch (RemoteException | InvalidUsernameException e) {
-                        System.err.println(e.getMessage());
-                    }
-
-
-                case SEND_PING:
-                    server.sendPing(sender);
+                    case SEND_PING:
+                        executor.submit(() -> server.sendPing(sender));
+                }
+                line = input.readLine();
             }
-
-            line = input.readLine();
+        } catch (IOException e) {
+            System.err.println("channel has been closed");
         }
     }
 
