@@ -11,6 +11,7 @@ import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.model.ClientGame;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
+import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -58,7 +59,7 @@ public class ClientSocket implements VirtualView {
     }
 
     @Override
-    public void showUpdateObjectiveCard(ClientCard chosenObjective, String username) {
+    public void showUpdateObjectiveCard(ClientObjectiveCard chosenObjective, String username) {
 
     }
 

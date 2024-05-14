@@ -118,6 +118,10 @@ abstract public class Face {
 
     public abstract Condition getCondition();
 
+    public Map<Symbol, Integer> getBackCenterResources(){
+        return new HashMap<>();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

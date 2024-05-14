@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 
 public class ClientPlayer {
 
@@ -29,7 +30,7 @@ public class ClientPlayer {
     // cards in hand
     private List<ClientCard> playerCards;
 
-    private List<ClientCard> objectiveCards;
+    private List<ClientObjectiveCard> objectiveCards;
 
     public ClientPlayer(String username) {
         this.username = username;
@@ -37,7 +38,7 @@ public class ClientPlayer {
 
     //getter method needed for the view
 
-    public ClientPlayer(String username, ClientCard starterCard, List<ClientCard> playerCards, List<ClientCard> objectiveCards) {
+    public ClientPlayer(String username, ClientCard starterCard, List<ClientCard> playerCards, List<ClientObjectiveCard> objectiveCards) {
         this.username = username;
         this.starterCard = starterCard;
         this.playerCards = playerCards;
@@ -56,7 +57,7 @@ public class ClientPlayer {
         }
         objectiveCards = new ArrayList<>();
         for (ObjectiveCard c : player.getObjectives()) {
-            objectiveCards.add(new ClientCard(c));
+            objectiveCards.add(new ClientObjectiveCard(c));
         }
     }
 
@@ -110,7 +111,7 @@ public class ClientPlayer {
         this.playerCards.set(cardHandPosition, card);
     }
 
-    public void updateObjectiveCard(ClientCard chosenObjectiveCard){
+    public void updateObjectiveCard(ClientObjectiveCard chosenObjectiveCard){
         objectiveCards = new ArrayList<>();
         objectiveCards.add(chosenObjectiveCard);
     }

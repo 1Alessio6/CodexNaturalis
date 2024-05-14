@@ -22,6 +22,7 @@ import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.model.ClientGame;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
+import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 
 import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
@@ -438,7 +439,7 @@ public class Game {
 
         listenerHandler.notifyBroadcast(receiver -> {
             ObjectiveCard secretObjective = player.getObjective();
-            receiver.showUpdateObjectiveCard(new ClientCard(secretObjective), username);
+            receiver.showUpdateObjectiveCard(new ClientObjectiveCard(secretObjective), username);
         });
 
         phase = phaseHandler.getNextPhase(phase, currentPlayerIdx);

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.client.model.card;
 
+import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.card.GeneralCard;
 import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.card.Symbol;
@@ -7,10 +8,9 @@ import it.polimi.ingsw.model.card.Symbol;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ClientCard implements GeneralCard {
+public class ClientCard {
     ClientFace front;
     ClientFace back;
-    Map<Symbol, Integer> requirements; /* set? */
 
     public ClientCard() {
         front = new ClientFace();
@@ -23,18 +23,15 @@ public class ClientCard implements GeneralCard {
     }
 
     // copy constructor
-    public ClientCard(GeneralCard other) {
-        this.front = new ClientFace(other.getFrontId());
-        this.back = new ClientFace(other.getBackId());
-        this.requirements = new HashMap<>(other.getRequiredResources());
+    public ClientCard(Card card) {
+        this.front = new ClientFace(card.getFace(Side.FRONT));
+        this.back = new ClientFace(card.getFace(Side.BACK));
     }
 
-    @Override
     public int getBackId() {
         return back.getFaceID();
     }
 
-    @Override
     public int getFrontId() {
         return front.getFaceID();
     }
@@ -47,15 +44,11 @@ public class ClientCard implements GeneralCard {
         return front;
     }
 
-    public ClientFace getFace(Side side){
-        if(side == Side.BACK){
+    public ClientFace getFace(Side side) {
+        if (side == Side.BACK) {
             return back;
         }
         return front;
     }
 
-    @Override
-    public Map<Symbol, Integer> getRequiredResources() {
-        return requirements;
-    }
 }

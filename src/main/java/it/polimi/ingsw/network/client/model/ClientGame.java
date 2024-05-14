@@ -11,6 +11,7 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.client.model.board.ClientBoard;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
+import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ import java.util.Set;
 public class ClientGame {
 
     private List<ClientCard> faceUpCards;
-    private List<ClientCard> commonObjects;
+    private List<ClientObjectiveCard> commonObjects;
     private int currentPlayerIdx; // index in the current player list.
     private List<ClientPlayer> players;
     private List<Message> messages;
@@ -69,7 +70,7 @@ public class ClientGame {
         return faceUpCards;
     }
 
-    public List<ClientCard> getCommonObjects() {
+    public List<ClientObjectiveCard> getCommonObjects() {
         return commonObjects;
     }
 
@@ -96,7 +97,7 @@ public class ClientGame {
         }
         commonObjects = new ArrayList<>();
         for (ObjectiveCard commonObjective : game.getCommonObjectives()) {
-            commonObjects.add(new ClientCard(commonObjective));
+            commonObjects.add(new ClientObjectiveCard(commonObjective));
         }
         currentPlayerIdx = game.getCurrentPlayerIdx();
         players = new ArrayList<>();

@@ -13,7 +13,6 @@ import it.polimi.ingsw.network.client.model.*;
 import it.polimi.ingsw.network.client.model.card.*;
 import it.polimi.ingsw.network.client.view.View;
 import it.polimi.ingsw.network.client.view.tui.ClientTUI;
-import it.polimi.ingsw.network.server.rmi.ServerRMI;
 
 
 import java.rmi.NotBoundException;
@@ -90,7 +89,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     }
 
     @Override
-    public void showUpdateObjectiveCard(ClientCard chosenObjective, String username) {
+    public void showUpdateObjectiveCard(ClientObjectiveCard chosenObjective, String username) {
         controller.updateObjectiveCard(chosenObjective, username);
         //todo: if the objective card isn't of the main player the view should not show the card
         if(controller.getMainPlayerUsername().equals(username)){
