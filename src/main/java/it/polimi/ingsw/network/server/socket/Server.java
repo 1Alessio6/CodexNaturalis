@@ -32,8 +32,6 @@ public class Server {
     private final static int PORT = 1234;
     private final ServerSocket listenSocket;
 
-    Map<String, VirtualView> connectedClients;
-
     private Controller controller;
 
     public Server(ServerSocket listenSocket) {
