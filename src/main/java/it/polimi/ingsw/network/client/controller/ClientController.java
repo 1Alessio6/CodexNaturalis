@@ -71,15 +71,7 @@ public class ClientController implements ClientActions {
             throw new Playground.UnavailablePositionException("The position selected isn't available");
         }
 
-        try {
-            server.placeCard(getMainPlayerUsername(), getMainPlayerCard(cardHandPosition).getBackId(), getMainPlayerCard(cardHandPosition).getFrontId(), selectedSide, position);
-        } catch (Playground.UnavailablePositionException | Playground.NotEnoughResourcesException e) {
-            System.err.println("Error check methods should have avoid an incorrect move");
-        } catch (InvalidPlayerActionException | SuspendedGameException | InvalidGamePhaseException e) {
-            System.err.println("Error");
-        } catch (InvalidCardIdException e) {
-            System.err.println("Error: " + e.getMessage());
-        }
+        server.placeCard(getMainPlayerUsername(), getMainPlayerCard(cardHandPosition).getBackId(), getMainPlayerCard(cardHandPosition).getFrontId(), selectedSide, position);
     }
 
     @Override
@@ -130,11 +122,7 @@ public class ClientController implements ClientActions {
                 System.err.println("ID not valid");
         }
 
-        try {
-            server.draw(getMainPlayerUsername(), IdToDraw);
-        } catch (EmptyDeckException | InvalidGamePhaseException | InvalidPlayerActionException | InvalidIdForDrawingException | InvalidFaceUpCardException e) {
-            System.err.println(e.getMessage());
-        }
+        server.draw(getMainPlayerUsername(), IdToDraw);
     }
 
     @Override
@@ -148,11 +136,7 @@ public class ClientController implements ClientActions {
             throw new InvalidGamePhaseException("You can only place your starter card during the setup phase");
         }
 
-        try {
-            server.placeStarter(getMainPlayerUsername(), side);
-        } catch (InvalidPlayerActionException | InvalidGamePhaseException e) {
-            System.err.println(e.getMessage());
-        }
+        server.placeStarter(getMainPlayerUsername(), side);
     }
 
     @Override
@@ -170,11 +154,7 @@ public class ClientController implements ClientActions {
             throw new InvalidColorException("The color selected is already taken");
         }
 
-        try {
-            server.chooseColor(getMainPlayerUsername(), color);
-        } catch (InvalidPlayerActionException | InvalidGamePhaseException | NonexistentPlayerException e) {
-            System.err.println(e.getMessage());
-        }
+        server.chooseColor(getMainPlayerUsername(), color);
 
     }
 
@@ -188,11 +168,7 @@ public class ClientController implements ClientActions {
             throw new InvalidGamePhaseException("You can only choose your private objective during the setup phase");
         }
 
-        try {
-            server.placeObjectiveCard(getMainPlayerUsername(), chosenObjective);
-        } catch (InvalidGamePhaseException | InvalidPlayerActionException e) {
-            System.err.println(e.getMessage());
-        }
+        server.placeObjectiveCard(getMainPlayerUsername(), chosenObjective);
     }
 
     @Override

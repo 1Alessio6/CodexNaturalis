@@ -2,7 +2,7 @@ package it.polimi.ingsw.model;
 
 public class SuspendedGameException extends Exception {
     public SuspendedGameException() {
-        super("Suspended game");
+        super("You can't play now, the game is suspended");
     }
 
     public SuspendedGameException(String message) {

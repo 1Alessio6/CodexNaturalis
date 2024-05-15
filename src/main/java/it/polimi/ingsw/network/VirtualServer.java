@@ -28,26 +28,27 @@ import java.rmi.RemoteException;
 public interface VirtualServer extends Remote {
     /**
      * Connect to server
+     *
      * @param client
      * @throws RemoteException
      */
-    void connect(VirtualView client, String username) throws RemoteException, FullLobbyException, InvalidUsernameException;
+    void connect(VirtualView client, String username) throws RemoteException;
 
-    void placeStarter(String username, Side side) throws InvalidPlayerActionException, InvalidGamePhaseException, RemoteException;
+    void placeStarter(String username, Side side) throws RemoteException;
 
-    void chooseColor(String username, PlayerColor color) throws NonexistentPlayerException, InvalidColorException, InvalidPlayerActionException, InvalidGamePhaseException, RemoteException;
+    void chooseColor(String username, PlayerColor color) throws RemoteException;
 
-    void placeObjectiveCard(String username, int chosenObjective) throws InvalidPlayerActionException, InvalidGamePhaseException, RemoteException;
+    void placeObjectiveCard(String username, int chosenObjective) throws RemoteException;
 
-    void placeCard(String username, int frontId, int backId, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException, RemoteException, InvalidCardIdException;
+    void placeCard(String username, int frontId, int backId, Side side, Position position) throws RemoteException;
 
-    void draw(String username, int idToDraw) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException, RemoteException, InvalidIdForDrawingException, InvalidFaceUpCardException;
+    void draw(String username, int idToDraw) throws RemoteException;
 
-    void sendMessage(Message message) throws InvalidMessageException, RemoteException;
+    void sendMessage(Message message) throws RemoteException;
 
-    void setPlayersNumber(String username, int playersNumber) throws RemoteException, InvalidPlayersNumberException;
+    void setPlayersNumber(String username, int playersNumber) throws RemoteException;
 
-    void disconnect(String username) throws InvalidUsernameException, RemoteException;
+    void disconnect(String username) throws RemoteException;
 
     // notify about the existence.
     void sendPing(String username) throws RemoteException;

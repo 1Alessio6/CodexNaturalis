@@ -25,10 +25,15 @@ import it.polimi.ingsw.network.client.socket.ClientHandler;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.rmi.RemoteException;
+import java.util.Map;
 
 public class Server {
     private final static int PORT = 1234;
     private final ServerSocket listenSocket;
+
+    Map<String, VirtualView> connectedClients;
+
     private Controller controller;
 
     public Server(ServerSocket listenSocket) {
@@ -58,12 +63,12 @@ public class Server {
         new Server(listenSocket).runServer();
     }
 
-    public void connect(VirtualView client, String username) throws FullLobbyException, InvalidUsernameException {
+    public void connect(VirtualView client, String username) {
         controller.handleConnection(username, client);
+
     }
 
-
-    public void disconnect(String username) throws InvalidUsernameException {
+    public void disconnect(String username) {
         controller.handleDisconnection(username);
     }
 
@@ -71,31 +76,33 @@ public class Server {
 
     }
 
-    public void placeStarter(String username, Side side) throws InvalidPlayerActionException, InvalidGamePhaseException {
+    public void placeStarter(String username, Side side) {
         controller.placeStarter(username, side);
     }
 
-    public void chooseColor(String username, PlayerColor color) throws NonexistentPlayerException, InvalidColorException, InvalidPlayerActionException, InvalidGamePhaseException {
+    public void chooseColor(String username, PlayerColor color) {
         controller.chooseColor(username, color);
     }
 
-    public void placeObjectiveCard(String username, int chosenObjective) throws InvalidPlayerActionException, InvalidGamePhaseException {
+    public void placeObjectiveCard(String username, int chosenObjective) {
         controller.placeObjectiveCard(username, chosenObjective);
     }
 
-    public void placeCard(String username, int frontId, int backId, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException, InvalidCardIdException {
+    public void placeCard(String username, int frontId, int backId, Side side, Position position) {
         controller.placeCard(username, frontId, backId, side, position);
     }
 
-    public void draw(String username, int idToDraw) throws InvalidPlayerActionException, InvalidIdForDrawingException, EmptyDeckException, InvalidGamePhaseException, InvalidFaceUpCardException {
+    public void draw(String username, int idToDraw) {
         controller.draw(username, idToDraw);
     }
 
-    public void sendMessage(Message message) throws InvalidMessageException {
+    public void sendMessage(Message message) {
         controller.sendMessage(message);
     }
 
-    public void setPlayersNumber(String username, int playersNumber) throws InvalidPlayersNumberException {
-        controller.setPlayersNumber(playersNumber);
+    public void setPlayersNumber(String username, int playersNumber) {
+        controller.setPlayersNumber(username, playersNumber);
     }
+
+
 }

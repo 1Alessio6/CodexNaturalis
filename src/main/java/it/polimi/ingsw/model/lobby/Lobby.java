@@ -129,4 +129,12 @@ public class Lobby {
         this.numPlayersToStartTheGame = numPlayersToStartTheGame;
     }
 
+    private void reportError(String username, String errorDetails) {
+        try {
+            listenerHandler.get(username).reportError(errorDetails);
+        } catch (RemoteException e) {
+            System.err.println("Connection error");
+        }
+    }
+
 }

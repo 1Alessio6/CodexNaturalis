@@ -1,12 +1,7 @@
 package it.polimi.ingsw.network.client.model.card;
 
 import it.polimi.ingsw.model.card.Card;
-import it.polimi.ingsw.model.card.GeneralCard;
 import it.polimi.ingsw.model.card.Side;
-import it.polimi.ingsw.model.card.Symbol;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class ClientCard {
     ClientFace front;

@@ -30,63 +30,12 @@ public class ServerRMI implements VirtualServer {
     private final static int PORT = 1234;
     private final Controller myController;
 
-    Map<String, VirtualView> connectedClients;
-
     public ServerRMI() {
-        this.connectedClients = new HashMap<>();
         this.myController = new Controller();
     }
 
-    @Override
-    public void connect(VirtualView client, String username) throws RemoteException, FullLobbyException, InvalidUsernameException {
-        myController.handleConnection(username, client);
-    }
+    //todo check if we need to add other Suspended game exception on controller methods
 
-
-    @Override
-    public void disconnect(String username) throws InvalidUsernameException, RemoteException {
-        myController.handleDisconnection(username);
-    }
-
-    @Override
-    public void sendPing(String username) {
-
-    }
-
-    @Override
-    public void placeStarter(String username, Side side) throws InvalidPlayerActionException, InvalidGamePhaseException {
-        myController.placeStarter(username, side);
-    }
-
-    @Override
-    public void chooseColor(String username, PlayerColor color) throws NonexistentPlayerException, InvalidColorException, InvalidPlayerActionException, InvalidGamePhaseException, RemoteException {
-        myController.chooseColor(username, color);
-    }
-
-    @Override
-    public void placeObjectiveCard(String username, int chosenObjective) throws InvalidPlayerActionException, InvalidGamePhaseException {
-        myController.placeObjectiveCard(username, chosenObjective);
-    }
-
-    @Override
-    public void placeCard(String username, int frontId, int backId, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException, InvalidCardIdException {
-        myController.placeCard(username, frontId, backId, side, position);
-    }
-
-    @Override
-    public void draw(String username, int idToDraw) throws InvalidPlayerActionException, InvalidIdForDrawingException, EmptyDeckException, InvalidGamePhaseException, InvalidFaceUpCardException {
-        myController.draw(username, idToDraw);
-    }
-
-    @Override
-    public void sendMessage(Message message) throws InvalidMessageException {
-        myController.sendMessage(message);
-    }
-
-    @Override
-    public void setPlayersNumber(String username, int playersNumber) throws InvalidPlayersNumberException {
-        myController.setPlayersNumber(playersNumber);
-    }
 
     public static void main(String[] args) {
         ServerRMI myServer = new ServerRMI();
@@ -114,4 +63,56 @@ public class ServerRMI implements VirtualServer {
         System.out.println("ServerRMI ready");
 
     }
+
+    @Override
+    public void connect(VirtualView client, String username) throws RemoteException {
+        myController.handleConnection(username, client);
+
+    }
+
+    @Override
+    public void disconnect(String username) throws RemoteException {
+        myController.handleDisconnection(username);
+    }
+
+    @Override
+    public void sendPing(String username) {
+
+    }
+
+    @Override
+    public void placeStarter(String username, Side side) throws RemoteException {
+        myController.placeStarter(username, side);
+    }
+
+    @Override
+    public void chooseColor(String username, PlayerColor color) throws RemoteException {
+        myController.chooseColor(username, color);
+    }
+
+    @Override
+    public void placeObjectiveCard(String username, int chosenObjective) throws RemoteException {
+        myController.placeObjectiveCard(username, chosenObjective);
+    }
+
+    @Override
+    public void placeCard(String username, int frontId, int backId, Side side, Position position) throws RemoteException {
+        myController.placeCard(username, frontId, backId, side, position);
+    }
+
+    @Override
+    public void draw(String username, int idToDraw) throws RemoteException {
+        myController.draw(username, idToDraw);
+    }
+
+    @Override
+    public void sendMessage(Message message) throws RemoteException {
+        myController.sendMessage(message);
+    }
+
+    @Override
+    public void setPlayersNumber(String username, int playersNumber) throws RemoteException {
+        myController.setPlayersNumber(username, playersNumber);
+    }
+
 }

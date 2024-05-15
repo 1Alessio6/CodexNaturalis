@@ -24,6 +24,7 @@ import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 
 import java.io.FileNotFoundException;
+import java.rmi.RemoteException;
 import java.util.*;
 
 import static java.lang.Math.min;
@@ -759,6 +760,14 @@ public class Game {
             return 4;
         } else {
             return 5;
+        }
+    }
+
+    private void reportError(String username, String errorDetails) {
+        try {
+            listenerHandler.get(username).reportError(errorDetails);
+        } catch (RemoteException e) {
+            System.err.println("Connection error");
         }
     }
 

@@ -35,7 +35,7 @@ public class ServerProxy implements VirtualServer {
     }
 
     @Override
-    public void connect(VirtualView client, String username) throws RemoteException, FullLobbyException, InvalidUsernameException {
+    public void connect(VirtualView client, String username) {
         ConnectMessage message = new ConnectMessage(username);
         String json = gson.toJson(message);
         out.println(json);
@@ -43,7 +43,7 @@ public class ServerProxy implements VirtualServer {
     }
 
     @Override
-    public void placeStarter(String username, Side side) throws InvalidPlayerActionException, InvalidGamePhaseException, RemoteException {
+    public void placeStarter(String username, Side side) {
         PlaceStarterMessage message = new PlaceStarterMessage(username, side);
         String json = gson.toJson(message);
         out.println(json);
@@ -51,7 +51,7 @@ public class ServerProxy implements VirtualServer {
     }
 
     @Override
-    public void chooseColor(String username, PlayerColor color) throws NonexistentPlayerException, InvalidColorException, InvalidPlayerActionException, InvalidGamePhaseException, RemoteException {
+    public void chooseColor(String username, PlayerColor color) {
         ChooseColorMessage message = new ChooseColorMessage(username, color);
         String json = gson.toJson(message);
         out.println(json);
@@ -59,7 +59,7 @@ public class ServerProxy implements VirtualServer {
     }
 
     @Override
-    public void placeObjectiveCard(String username, int chosenObjective) throws InvalidPlayerActionException, InvalidGamePhaseException, RemoteException {
+    public void placeObjectiveCard(String username, int chosenObjective) {
         PlaceObjectiveMessage message = new PlaceObjectiveMessage(username, chosenObjective);
         String json = gson.toJson(message);
         out.println(json);
@@ -67,7 +67,7 @@ public class ServerProxy implements VirtualServer {
     }
 
     @Override
-    public void placeCard(String username, int frontId, int backId, Side side, Position position) throws InvalidPlayerActionException, Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException, RemoteException, InvalidCardIdException {
+    public void placeCard(String username, int frontId, int backId, Side side, Position position) {
         PlaceCardMessage message = new PlaceCardMessage(username, frontId, backId, side, position);
         String json = gson.toJson(message);
         out.println(json);
@@ -75,7 +75,7 @@ public class ServerProxy implements VirtualServer {
     }
 
     @Override
-    public void draw(String username, int idToDraw) throws InvalidPlayerActionException, EmptyDeckException, InvalidGamePhaseException, RemoteException, InvalidIdForDrawingException, InvalidFaceUpCardException {
+    public void draw(String username, int idToDraw) {
         DrawMessage message = new DrawMessage(username, idToDraw);
         String json = gson.toJson(message);
         out.println(json);
@@ -83,7 +83,7 @@ public class ServerProxy implements VirtualServer {
     }
 
     @Override
-    public void sendMessage(Message chatMessage) throws InvalidMessageException, RemoteException {
+    public void sendMessage(Message chatMessage) {
         SendChatMessage message = new SendChatMessage(chatMessage.getSender(), chatMessage);
         String json = gson.toJson(message);
         out.println(json);
@@ -91,7 +91,7 @@ public class ServerProxy implements VirtualServer {
     }
 
     @Override
-    public void setPlayersNumber(String username, int playersNumber) throws RemoteException, InvalidPlayersNumberException {
+    public void setPlayersNumber(String username, int playersNumber) {
         SetPlayerNumberMessage message = new SetPlayerNumberMessage(username, playersNumber);
         String json = gson.toJson(message);
         out.println(json);
@@ -99,7 +99,7 @@ public class ServerProxy implements VirtualServer {
     }
 
     @Override
-    public void disconnect(String username) throws InvalidUsernameException, RemoteException {
+    public void disconnect(String username) {
         DisconnectMessage message = new DisconnectMessage(username);
         String json = gson.toJson(message);
         out.println(json);
@@ -107,7 +107,7 @@ public class ServerProxy implements VirtualServer {
     }
 
     @Override
-    public void sendPing(String username) throws RemoteException {
+    public void sendPing(String username) {
         PingMessage message = new PingMessage(username);
         String json = gson.toJson(message);
         out.println(json);

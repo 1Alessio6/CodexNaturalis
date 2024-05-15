@@ -64,97 +64,56 @@ public class ClientHandler implements VirtualView {
                 switch (type) {
                     case CONNECT:
                         executor.submit(() -> {
-                            try {
-                                server.connect(this, sender);
-                            } catch (FullLobbyException | InvalidUsernameException e) {
-                                System.err.println(e.getMessage());
-                            }
+                            server.connect(this, sender);
                         });
                     case PLACE_STARTER:
                         PlaceStarterMessage placeStarterMessage = gson.fromJson(line, PlaceStarterMessage.class);
                         executor.submit(() -> {
-                            try {
-                                server.placeStarter(sender, placeStarterMessage.getSide());
-                            } catch (InvalidPlayerActionException | InvalidGamePhaseException e) {
-                                System.err.println(e.getMessage());
-                            }
+                            server.placeStarter(sender, placeStarterMessage.getSide());
                         });
                     case CHOOSE_COLOR:
                         ChooseColorMessage chooseColorMessage = gson.fromJson(line, ChooseColorMessage.class);
                         executor.submit(() -> {
-                            try {
-                                server.chooseColor(sender, chooseColorMessage.getColor());
-                            } catch (NonexistentPlayerException | InvalidGamePhaseException |
-                                     InvalidPlayerActionException |
-                                     InvalidColorException e) {
-                                System.err.println(e.getMessage());
-                            }
+                            server.chooseColor(sender, chooseColorMessage.getColor());
                         });
 
                     case PLACE_OBJECTIVE:
                         PlaceObjectiveMessage placeObjectiveMessage = gson.fromJson(line, PlaceObjectiveMessage.class);
                         executor.submit(() -> {
-                            try {
-                                server.placeObjectiveCard(sender, placeObjectiveMessage.getChosenObjective());
-                            } catch (InvalidPlayerActionException | InvalidGamePhaseException e) {
-                                throw new RuntimeException(e);
-                            }
+                            server.placeObjectiveCard(sender, placeObjectiveMessage.getChosenObjective());
                         });
 
                     case PLACE_CARD:
                         PlaceCardMessage placeCardMessage = gson.fromJson(line, PlaceCardMessage.class);
                         executor.submit(() -> {
-                            try {
-                                server.placeCard(sender, placeCardMessage.getFrontId(), placeCardMessage.getBackId(),
-                                        placeCardMessage.getSide(), placeCardMessage.getPosition());
-                            } catch (InvalidPlayerActionException | Playground.UnavailablePositionException |
-                                     Playground.NotEnoughResourcesException | InvalidGamePhaseException |
-                                     SuspendedGameException | InvalidCardIdException e) {
-                                System.err.println(e.getMessage());
-                            }
+                            server.placeCard(sender, placeCardMessage.getFrontId(), placeCardMessage.getBackId(),
+                                    placeCardMessage.getSide(), placeCardMessage.getPosition());
                         });
 
                     case DRAW:
                         DrawMessage drawMessage = gson.fromJson(line, DrawMessage.class);
 
                         executor.submit(() -> {
-                            try {
-                                server.draw(sender, drawMessage.getIdDraw());
-                            } catch (InvalidGamePhaseException | InvalidPlayerActionException | EmptyDeckException |
-                                     InvalidIdForDrawingException | InvalidFaceUpCardException e) {
-                                System.err.println(e.getMessage());
-                            }
+                            server.draw(sender, drawMessage.getIdDraw());
                         });
 
                     case SEND_CHAT_MESSAGE:
                         SendChatMessage sendChatMessage = gson.fromJson(line, SendChatMessage.class);
 
                         executor.submit(() -> {
-                            try {
-                                server.sendMessage(sendChatMessage.getMessage());
-                            } catch (InvalidMessageException e) {
-                                System.err.println(e.getMessage());
-                            }
+                            server.sendMessage(sendChatMessage.getMessage());
                         });
 
                     case SET_PLAYER_NUMBER:
                         SetPlayerNumberMessage setPlayerNumberMessage = gson.fromJson(line, SetPlayerNumberMessage.class);
 
                         executor.submit(() -> {
-                            try {
-                                server.setPlayersNumber(sender, setPlayerNumberMessage.getNumPlayers());
-                            } catch (InvalidPlayersNumberException e) {
-                                System.err.println(e.getMessage());
-                            }
+                            server.setPlayersNumber(sender, setPlayerNumberMessage.getNumPlayers());
                         });
 
                     case DISCONNECT:
                         executor.submit(() -> {
-                            try {
-                                server.disconnect(sender);
-                            } catch (InvalidUsernameException e) {
-                                System.err.println(e.getMessage());
-                            }
+                            server.disconnect(sender);
                         });
 
                     case SEND_PING:

@@ -35,5 +35,5 @@ public interface GameRequest {
 
     void sendMessage(Message message) throws InvalidMessageException;
 
-    void setPlayersNumber(int playersNumber) throws InvalidPlayersNumberException;
+    void setPlayersNumber(String username, int playersNumber) throws InvalidPlayersNumberException;
 }
