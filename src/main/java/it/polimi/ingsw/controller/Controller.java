@@ -321,6 +321,7 @@ public class Controller implements EventListener, GameRequest {
             listenerHandler.get(username).reportError(errorDetails);
         } catch (RemoteException e) {
             System.err.println("Connection error");
+            handleDisconnection(username);
         }
     }
 }
