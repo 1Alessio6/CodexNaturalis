@@ -7,9 +7,13 @@ import it.polimi.ingsw.network.client.controller.ClientController;
 import java.util.List;
 
 
+/**
+ * Methods do not need any argument, as information are retrieved directly from the
+ * ClientGame after being updated
+ */
 public abstract class View {
 
-    private ClientController controller;
+    private final ClientController controller;
 
     public View(ClientController controller) {
         this.controller = controller;
@@ -36,7 +40,7 @@ public abstract class View {
 
     public abstract void showStarterPlacement();
 
-    public abstract void showUpdateColor(PlayerColor color, String username);
+    public abstract void showUpdateColor();
 
     public abstract void showUpdateObjectiveCard();
 

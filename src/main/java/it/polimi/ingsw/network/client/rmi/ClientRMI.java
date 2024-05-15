@@ -57,6 +57,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     @Override
     public void updateCreator() throws RemoteException {
         clientView.showUpdateCreator();
+
     }
 
     @Override
@@ -85,7 +86,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     @Override
     public void showUpdateColor(PlayerColor color, String username) throws RemoteException {
         controller.updateColor(color, username);
-        clientView.showUpdateColor(color, username);
+        clientView.showUpdateColor();
     }
 
     @Override

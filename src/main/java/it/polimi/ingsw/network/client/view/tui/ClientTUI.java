@@ -20,7 +20,6 @@ import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.view.View;
 
 import java.rmi.RemoteException;
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -84,16 +83,20 @@ public class ClientTUI extends View {
     }
 
     private void setupLobbyPlayerNumber() {
+        int size;
+
         while (true) {
             System.out.print("Please set the lobby size (2 to 4 players allowed): ");
             try {
-                this.getController().setPlayersNumber(Integer.parseInt(console.nextLine()));
+                size = Integer.parseInt(console.nextLine());
+                this.getController().setPlayersNumber(size);
                 break;
             } catch (InvalidPlayersNumberException | RemoteException | NumberFormatException e) {
                 System.err.println(e.getMessage());
             }
-
         }
+
+        System.out.println("Lobby size set to " + size);
     }
 
     private void chooseColor() {
@@ -235,17 +238,17 @@ public class ClientTUI extends View {
 
     @Override
     public void showUpdateAfterLobbyCrash() {
-
+        System.out.println("Lobby crashed! You will be disconnected. Please restart the client...");
     }
 
     @Override
     public void showUpdateAfterConnection() {
+        System.out.println("Game is starting: you just joined");
 
     }
 
     @Override
     public void showUpdatePlayerStatus() {
-
     }
 
     @Override
@@ -264,7 +267,7 @@ public class ClientTUI extends View {
     }
 
     @Override
-    public void showUpdateColor(PlayerColor color, String username) {
+    public void showUpdateColor() {
 
     }
 
