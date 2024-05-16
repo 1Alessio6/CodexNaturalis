@@ -7,11 +7,12 @@ import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class ClientBoard {
+public class ClientBoard implements Serializable {
 
     private List<ClientCard> faceUpCards;
 

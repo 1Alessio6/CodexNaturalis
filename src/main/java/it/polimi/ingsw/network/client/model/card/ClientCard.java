@@ -3,7 +3,9 @@ package it.polimi.ingsw.network.client.model.card;
 import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.card.Side;
 
-public class ClientCard {
+import java.io.Serializable;
+
+public class ClientCard implements Serializable {
     ClientFace front;
     ClientFace back;
 

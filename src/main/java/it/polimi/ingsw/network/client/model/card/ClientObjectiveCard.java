@@ -5,9 +5,10 @@ import it.polimi.ingsw.model.card.Color.CardColor;
 import it.polimi.ingsw.model.card.ObjectiveCard;
 import it.polimi.ingsw.model.card.Symbol;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class ClientObjectiveCard {
+public class ClientObjectiveCard implements Serializable {
 
     private final int frontID;
     private final int backID;

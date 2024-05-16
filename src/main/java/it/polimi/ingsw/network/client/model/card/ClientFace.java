@@ -4,10 +4,11 @@ import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.card.Color.CardColor;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ClientFace {
+public class ClientFace implements Serializable {
     private final int faceID;
 
     private Map<CornerPosition, Corner> corners; //todo could be changed with a client corner which doesn't have a symbol

@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +16,7 @@ import java.util.Map;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 
-public class ClientPlayer {
+public class ClientPlayer implements Serializable {
 
     private final String username;
 

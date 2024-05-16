@@ -14,12 +14,13 @@ import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ClientGame {
+public class ClientGame implements Serializable {
 
     private List<ClientCard> faceUpCards;
     private List<ClientObjectiveCard> commonObjects;
@@ -29,6 +30,10 @@ public class ClientGame {
     private ClientBoard clientBoard;
     private GamePhase currentPhase;
     private boolean isGameActive;
+
+    public ClientGame() {
+        this.players = new ArrayList<>();
+    }
 
     public boolean isGameActive() {
         return isGameActive;
@@ -85,7 +90,6 @@ public class ClientGame {
     public List<Message> getMessages() {
         return messages;
     }
-
     public ClientBoard getClientBoard() {
         return clientBoard;
     }

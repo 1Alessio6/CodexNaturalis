@@ -1,9 +1,11 @@
 package it.polimi.ingsw.model.chat.message;
 
+import java.io.Serializable;
+
 /**
  * Message sent by players.
  */
-public class Message {
+public class Message implements Serializable {
     private static final String NAME_FOR_GROUP = "Everyone"; // Message from X to every user will be displayed as "X to NAME_FOR_GROUP"
     private final String sender;
     private final String receiver;

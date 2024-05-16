@@ -8,12 +8,13 @@ import it.polimi.ingsw.model.card.CornerPosition;
 import it.polimi.ingsw.model.card.Face;
 import it.polimi.ingsw.model.card.Symbol;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ClientPlayground {
+public class ClientPlayground implements Serializable {
     private final Map<Position, ClientTile> area;
     private int points;
     private final Map<Symbol, Integer> resources;

@@ -1,10 +1,12 @@
 package it.polimi.ingsw.model.board;
 
+import java.io.Serializable;
+
 /**
  * This class represents a position on a hypothetical Cartesian plane with x and y axes.
  */
 
-public class Position {
+public class Position implements Serializable {
 
     //attributes
     private final int x;

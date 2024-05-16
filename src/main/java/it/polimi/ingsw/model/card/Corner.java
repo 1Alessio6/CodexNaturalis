@@ -1,8 +1,9 @@
 package it.polimi.ingsw.model.card;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Corner {
+public class Corner implements Serializable {
 
     /**
      * Specifies whether the corner is covered or not.

@@ -6,9 +6,10 @@ import it.polimi.ingsw.model.card.CornerPosition;
 import it.polimi.ingsw.model.card.Face;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class ClientTile {
+public class ClientTile implements Serializable {
     private ClientFace face;
     //private boolean isUsed; a variable used to check if the card has been already used for redeeming the points of an objective card
     private Availability availability;

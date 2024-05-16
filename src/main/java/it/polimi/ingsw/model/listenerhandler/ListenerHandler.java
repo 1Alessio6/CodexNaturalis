@@ -48,6 +48,7 @@ public class ListenerHandler<ListenerType> {
         try {
             notifier.sendUpdate(recipient);
         } catch (RemoteException e) {
+            e.printStackTrace();
             System.out.println("Disconnected player" + id);
             idToListener.remove(id);
         }
