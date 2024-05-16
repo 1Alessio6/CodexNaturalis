@@ -35,4 +35,6 @@ public interface ClientActions {
 
     void setPlayersNumber(int playersNumber) throws RemoteException, InvalidPlayersNumberException;
 
+    void disconnect(String username) throws RemoteException;
+
 }

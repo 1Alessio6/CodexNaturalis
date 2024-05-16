@@ -32,7 +32,7 @@ import java.util.Map;
 
 public class ClientController implements ClientActions {
 
-    private VirtualServer server;
+    private final VirtualServer server;
     private ClientGame game;
 
     private String mainPlayerUsername=""; // todo. set by the view after user's input
@@ -44,6 +44,7 @@ public class ClientController implements ClientActions {
     @Override
     public void connect(VirtualView client, String username) throws InvalidUsernameException, RemoteException, FullLobbyException {
         server.connect(client,username);
+        this.mainPlayerUsername=username;
     }
 
     @Override
@@ -192,6 +193,11 @@ public class ClientController implements ClientActions {
         server.setPlayersNumber(mainPlayerUsername, playersNumber);
     }
 
+    @Override
+    public void disconnect(String username) throws RemoteException {
+        server.disconnect(username);
+    }
+
     public void updateAfterConnection(ClientGame clientGame) {
         game = clientGame;
     }
@@ -315,4 +321,11 @@ public class ClientController implements ClientActions {
         return game.getPlayer(mainPlayerUsername).isConnected();
    }
 
+   public List<String> getConnectedUsernames() {
+        return this.game.getPlayers().stream().filter(ClientPlayer::isConnected).map(ClientPlayer::getUsername).toList();
+   }
+
+   public List<String> getUsernames() {
+        return this.game.getPlayers().stream().map(ClientPlayer::getUsername).toList();
+   }
 }
