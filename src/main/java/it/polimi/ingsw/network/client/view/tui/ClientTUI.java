@@ -44,7 +44,7 @@ public class ClientTUI extends View {
                 case "objective" -> chooseObjective();
                 case "place" -> place();
                 case "/pm","/m" -> sendMessage(nextCommand);
-                case "quit" -> System.exit(0);
+                case "quit" -> quit();
                 case "" -> {}
                 default -> {
                     System.out.println("Game action invalid");
@@ -52,6 +52,17 @@ public class ClientTUI extends View {
                 }
             }
         }
+    }
+
+    private void quit() {
+        ClientController controller = getController();
+        try {
+            controller.disconnect(controller.getMainPlayerUsername());
+        } catch (RemoteException e) {
+            System.out.println("Error disconnecting");
+        }
+
+        System.exit(0);
     }
 
     private void chooseObjective() {
@@ -72,7 +83,7 @@ public class ClientTUI extends View {
 
             switch (nextCommand[0].toLowerCase()) {
                 case "help" -> ClientUtil.gameActionsHelper();
-                case "quit" -> System.exit(0);
+                case "quit" -> quit();
                 case "" -> {}
                 default -> {
                     System.out.println("Action invalid");
@@ -158,7 +169,10 @@ public class ClientTUI extends View {
 
     private void place() {
         try {
-            this.getController().placeCard(receivePlayerCardPosition(), receiveSide(), receivePosition());
+            int handPos = receivePlayerCardPosition();
+            Side cardSide = receiveSide();
+            Position newCardPos = receivePosition();
+            this.getController().placeCard(handPos, cardSide, newCardPos);
         } catch (Playground.UnavailablePositionException | Playground.NotEnoughResourcesException | RemoteException |
                  InvalidGamePhaseException | SuspendedGameException e) {
             System.out.println(e.getMessage());
@@ -210,7 +224,8 @@ public class ClientTUI extends View {
         // connection logic
         while(true) {
             try {
-                this.getController().connect(client, receiveUsername());
+                String username = receiveUsername();
+                this.getController().connect(client, username);
                 break;
             } catch(InvalidUsernameException | FullLobbyException | RemoteException e){
                 System.err.println(e.getMessage());
@@ -225,8 +240,8 @@ public class ClientTUI extends View {
     }
 
     @Override
-    public void showUpdatePlayersInLobby(List<String> usernames) {
-        StringBuilder sb = new StringBuilder();
+    public void showUpdatePlayersInLobby() {
+        List<String> usernames = this.getController().getUsernames();
         System.out.println("Users waiting: <" + String.join(",", usernames) + ">");
     }
 
@@ -249,6 +264,8 @@ public class ClientTUI extends View {
 
     @Override
     public void showUpdatePlayerStatus() {
+        List<String> usernames = getController().getConnectedUsernames();
+        System.out.println("Connected players: <" + String.join(",", usernames) + ">");
     }
 
     @Override
