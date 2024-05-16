@@ -24,7 +24,7 @@ public abstract class View {
 
     //method used to update after a controller update, invoked by the client class
 
-    public abstract void showUpdatePlayersInLobby(List<String> usernames);
+    public abstract void showUpdatePlayersInLobby();
 
     public abstract void showUpdateCreator();
 

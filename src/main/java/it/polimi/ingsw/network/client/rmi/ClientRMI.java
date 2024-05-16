@@ -74,7 +74,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     @Override
     public void showUpdatePlayersInLobby(List<String> usernames) throws RemoteException {
         controller.updatePlayersInLobby(usernames);
-        clientView.showUpdatePlayersInLobby(usernames);
+        clientView.showUpdatePlayersInLobby();
     }
 
     @Override
@@ -142,5 +142,4 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     public void reportError(String details) throws RemoteException {
         System.err.println(details);
     }
-
 }
