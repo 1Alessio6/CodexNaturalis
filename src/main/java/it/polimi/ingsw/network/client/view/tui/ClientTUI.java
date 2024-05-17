@@ -22,9 +22,12 @@ import it.polimi.ingsw.network.client.view.View;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ClientTUI implements View {
-    private Scanner console;
+    private final Scanner console;
+    private Thread thread;
 
     private final ClientController controller;
 
@@ -56,8 +59,26 @@ public class ClientTUI implements View {
         }
     }
 
-    private void quit() {
+    private void parseLobbyCommands() {
+        // TODO: command condition should be changed
+        while (console.hasNextLine()) {
+            // split command with spaces and analyze the first word
+            String[] nextCommand = console.nextLine().split(" ", 2);
 
+            switch (nextCommand[0].toLowerCase()) {
+                case "help" -> ClientUtil.gameActionsHelper();
+                case "quit" -> quit();
+                case "lobbysize" -> setupLobbyPlayerNumber(Integer.parseInt(nextCommand[1]));
+                case "" -> {}
+                default -> {
+                    System.out.println("Action invalid");
+                    ClientUtil.gameActionsHelper();
+                }
+            }
+        }
+    }
+
+    private void quit() {
         try {
             controller.disconnect(controller.getMainPlayerUsername());
         } catch (RemoteException e) {
@@ -77,40 +98,13 @@ public class ClientTUI implements View {
         }
     }
 
-    private void parseLobbyCommands() {
-        // TODO: command condition should be changed
-        while (console.hasNextLine()) {
-            // split command with spaces and analyze the first word
-            String[] nextCommand = console.nextLine().split(" ", 2);
-
-            switch (nextCommand[0].toLowerCase()) {
-                case "help" -> ClientUtil.gameActionsHelper();
-                case "quit" -> quit();
-                case "" -> {}
-                default -> {
-                    System.out.println("Action invalid");
-                    ClientUtil.gameActionsHelper();
-                }
-            }
-        }
-    }
-
-    private void setupLobbyPlayerNumber() {
-        int size;
-
-        while (true) {
-            System.out.print("Please set the lobby size (2 to 4 players allowed): ");
+    private void setupLobbyPlayerNumber(int size) {
             try {
-                size = Integer.parseInt(console.nextLine());
                 controller.setPlayersNumber(size);
-                break;
             } catch (InvalidPlayersNumberException | RemoteException | NumberFormatException e) {
                 System.err.println(e.getMessage());
             }
         }
-
-        System.out.println("Lobby size set to " + size);
-    }
 
     private void chooseColor() {
         try {
@@ -215,10 +209,8 @@ public class ClientTUI implements View {
      * Commands can't be interrupted
      */
     private void beginCommandAcquisition() {
-        new Thread(() -> {
-            console = new Scanner(System.in);
-            setParseLogic();
-        }).start();
+        thread = new Thread(this::setParseLogic);
+        thread.start();
     }
 
     @Override
@@ -250,7 +242,8 @@ public class ClientTUI implements View {
     @Override
     public void showUpdateCreator() {
         System.out.println("Welcome to the new lobby!");
-        setupLobbyPlayerNumber();
+        System.out.println("Please set the lobby size (2 to 4 players allowed)");
+        System.out.println("Type 'lobbysize <number>' to set the lobby size");
     }
 
     @Override
