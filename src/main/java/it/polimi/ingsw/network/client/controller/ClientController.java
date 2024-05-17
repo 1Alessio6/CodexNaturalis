@@ -178,7 +178,7 @@ public class ClientController implements ClientActions {
         if (!message.getSender().equals(getMainPlayerUsername())) {
             throw new InvalidMessageException("sender doesn't match the author's username");
         }
-        if (game.getPlayer(message.getRecipient()) == null) {
+        if (!message.getRecipient().equals("Everyone") && game.getPlayer(message.getRecipient()) == null) {
             throw new InvalidMessageException("recipient doesn't exists");
         }
 
@@ -310,7 +310,8 @@ public class ClientController implements ClientActions {
     }
 
    public String getLastMessage(){
-       return game.getMessages().getLast().getContent();
+        Message lastMessage = game.getMessages().getLast();
+        return lastMessage.getSender() + " -> " + lastMessage.getRecipient() + ": " + lastMessage.getContent();
    }
 
    public PlayerColor getColor(){

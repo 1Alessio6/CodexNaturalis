@@ -289,7 +289,6 @@ public class Controller implements EventListener, GameRequest {
      * Sends message from the author.
      *
      * @param message sent by the author.
-     * @throws InvalidMessageException if the message is invalid.
      */
     @Override
     public synchronized void sendMessage(Message message) {

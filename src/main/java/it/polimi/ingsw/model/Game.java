@@ -664,7 +664,7 @@ public class Game {
      * @throws InvalidMessageException if the author doesn't match the sender or the recipient is an invalid username.
      */
     public void registerMessage(Message message) throws InvalidMessageException {
-        if (getPlayerByUsername(message.getRecipient()) == null) {
+        if (!message.getRecipient().equals("Everyone") && getPlayerByUsername(message.getRecipient()) == null) {
             throw new InvalidMessageException("recipient doesn't exists");
         }
         chatDatabase.addMessage(message);
