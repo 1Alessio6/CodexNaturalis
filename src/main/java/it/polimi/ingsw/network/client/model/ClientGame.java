@@ -94,6 +94,10 @@ public class ClientGame implements Serializable {
         return clientBoard;
     }
 
+    /**
+     * Constructor used to copy the game from server to client
+     * @param game on the server
+     */
     public ClientGame(Game game) {
         faceUpCards = new ArrayList<>();
         for (Card faceUpCard : game.getFaceUpCards()) {
@@ -113,8 +117,13 @@ public class ClientGame implements Serializable {
 
         messages = game.getMessages();
 
+        this.currentPhase = game.getPhase();
     }
 
+    /**
+     * Constructor used update players in lobby
+     * @param usernames of the players that are in the lobby now
+     */
     public ClientGame(List<String> usernames) {
         players = new ArrayList<>();
         for (String username : usernames) {
