@@ -9,10 +9,7 @@ import it.polimi.ingsw.model.card.CornerPosition;
 import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.network.client.model.ANSIColor;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static it.polimi.ingsw.model.card.Symbol.*;
 import static it.polimi.ingsw.network.client.model.ANSIColor.BLUE;
@@ -39,6 +36,12 @@ public class ClientUtil {
     static String three = "\uD835\uDFD1";
     static String four = "\uD835\uDFD2";
     static String five = "\uD835\uDFD3";
+
+    public static void printHelpCommands(Set<GameCommands> consentedCommands) {
+        for (GameCommands command : consentedCommands) {
+            System.out.println(command.toString() + ": " + command.getDescription());
+        }
+    }
 
     protected static void argsHelper(String error) {
         System.out.println(error);

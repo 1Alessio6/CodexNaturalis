@@ -20,60 +20,55 @@ import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.view.View;
 
 import java.rmi.RemoteException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Set;
 
 public class ClientTUI implements View {
     private final Scanner console;
     private Thread thread;
+    private Set<GameCommands> availableCommands = new HashSet<>();
 
     private final ClientController controller;
 
     public ClientTUI(ClientController controller) {
         this.controller = controller;
         this.console = new Scanner(System.in);
+
+        availableCommands.add(GameCommands.HELP);
+        availableCommands.add(GameCommands.QUIT);
     }
 
     private void parseGameCommands() {
         // TODO: command condition should be changed
         while (console.hasNextLine()) {
             // split command with spaces and analyze the first word
-            String[] nextCommand = console.nextLine().split(" ", 2);
+            String[] nextCommand = console.nextLine().toLowerCase().split(" ", 2);
 
-            switch (nextCommand[0].toLowerCase()) {
-                case "color" -> chooseColor();
-                case "draw" -> draw();
-                case "help" -> ClientUtil.gameActionsHelper();
-                case "objective" -> chooseObjective();
-                case "place" -> place();
-                case "/pm","/m" -> sendMessage(nextCommand);
-                case "quit" -> quit();
-                case "" -> {}
-                default -> {
-                    System.out.println("Game action invalid");
-                    ClientUtil.gameActionsHelper();
+            try {
+                if (availableCommands.contains(GameCommands.valueOf(nextCommand[0].toUpperCase()))) {
+                    switch (GameCommands.valueOf(nextCommand[0].toUpperCase())) {
+                        case COLOR -> chooseColor();
+                        case HELP -> ClientUtil.printHelpCommands(availableCommands);
+                        case M, PM -> sendMessage(nextCommand);
+                        case DRAW -> draw();
+                        case PLACE -> place();
+                        case QUIT -> quit();
+                        case LOBBYSIZE -> setupLobbyPlayerNumber(Integer.parseInt(nextCommand[1]));
+                        case OBJECTIVE -> chooseObjective();
+                        case STARTER -> placeStarter();
+                    }
+                } else {
+                    System.out.println("Invalid game command");
+                    // print help for consented commands
+                    ClientUtil.printHelpCommands(availableCommands);
                 }
-            }
-        }
-    }
 
-    private void parseLobbyCommands() {
-        // TODO: command condition should be changed
-        while (console.hasNextLine()) {
-            // split command with spaces and analyze the first word
-            String[] nextCommand = console.nextLine().split(" ", 2);
-
-            switch (nextCommand[0].toLowerCase()) {
-                case "help" -> ClientUtil.gameActionsHelper();
-                case "quit" -> quit();
-                case "lobbysize" -> setupLobbyPlayerNumber(Integer.parseInt(nextCommand[1]));
-                case "" -> {}
-                default -> {
-                    System.out.println("Action invalid");
-                    ClientUtil.gameActionsHelper();
-                }
+            } catch (IllegalArgumentException e) {
+                System.out.println("Invalid game command");
+                // print help for consented commands
+                ClientUtil.printHelpCommands(availableCommands);
             }
         }
     }
@@ -101,6 +96,8 @@ public class ClientTUI implements View {
     private void setupLobbyPlayerNumber(int size) {
             try {
                 controller.setPlayersNumber(size);
+                // remove manually: only creator has this command
+                availableCommands.remove(GameCommands.LOBBYSIZE);
             } catch (InvalidPlayersNumberException | RemoteException | NumberFormatException e) {
                 System.err.println(e.getMessage());
             }
@@ -118,17 +115,9 @@ public class ClientTUI implements View {
         return PlayerColor.valueOf(console.nextLine());
     }
 
-    private void setParseLogic(){
-        if (controller.getGamePhase() == null) {
-            parseLobbyCommands(); //phase does not exist
-        } else {
-            parseGameCommands();
-        }
-    }
-
     private void sendMessage(String[] command) {
         String commandContent = command[1];
-        Message myMessage = command[0].equals("/pm") ? createPrivateMessage(commandContent) : createBroadcastMessage(commandContent);
+        Message myMessage = command[0].equals("pm") ? createPrivateMessage(commandContent) : createBroadcastMessage(commandContent);
         try {
             controller.sendMessage(myMessage);
         } catch (InvalidMessageException | RemoteException e) {
@@ -209,8 +198,8 @@ public class ClientTUI implements View {
      * Commands can't be interrupted
      */
     private void beginCommandAcquisition() {
-        thread = new Thread(this::setParseLogic);
-        thread.start();
+        // todo: synchronize to have correct command list
+        new Thread(this::parseGameCommands).start();
     }
 
     @Override
@@ -226,6 +215,25 @@ public class ClientTUI implements View {
             }
         }
         beginCommandAcquisition();
+    }
+
+    private void setAvailableCommands() {
+        Set<GameCommands> availableCommands = new HashSet<>();
+        availableCommands.add(GameCommands.HELP);
+        availableCommands.add(GameCommands.QUIT);
+
+        if (controller.getGamePhase() != null) {
+            availableCommands.add(GameCommands.M);
+            availableCommands.add(GameCommands.PM);
+        }
+
+        switch (controller.getGamePhase()) {
+            case DrawNormal -> availableCommands.add(GameCommands.DRAW);
+            case Setup -> availableCommands.add(GameCommands.STARTER);
+            case PlaceNormal, PlaceAdditional -> availableCommands.add(GameCommands.PLACE);
+        }
+
+        this.availableCommands = availableCommands;
     }
 
     private String receiveUsername(){
@@ -244,6 +252,9 @@ public class ClientTUI implements View {
         System.out.println("Welcome to the new lobby!");
         System.out.println("Please set the lobby size (2 to 4 players allowed)");
         System.out.println("Type 'lobbysize <number>' to set the lobby size");
+
+        // add manually: only creator has this command
+        availableCommands.add(GameCommands.LOBBYSIZE);
     }
 
     @Override
@@ -255,6 +266,7 @@ public class ClientTUI implements View {
     public void showUpdateAfterConnection() {
         System.out.println("Game is starting: you just joined");
 
+        setAvailableCommands();
     }
 
     @Override
@@ -276,31 +288,36 @@ public class ClientTUI implements View {
     @Override
     public void showStarterPlacement() {
 
+        setAvailableCommands();
     }
 
     @Override
     public void showUpdateColor() {
 
+        setAvailableCommands();
     }
 
     @Override
     public void showUpdateObjectiveCard() {
 
+        setAvailableCommands();
     }
 
     @Override
     public void showUpdateAfterPlace() {
 
+        setAvailableCommands();
     }
 
     @Override
     public void showUpdateAfterDraw() {
 
+        setAvailableCommands();
     }
 
     @Override
     public void showUpdateChat() {
-
+        System.out.println(controller.getLastMessage());
     }
 
     @Override
