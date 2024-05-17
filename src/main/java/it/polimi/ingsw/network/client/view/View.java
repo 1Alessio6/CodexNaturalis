@@ -11,52 +11,43 @@ import java.util.List;
  * Methods do not need any argument, as information are retrieved directly from the
  * ClientGame after being updated
  */
-public abstract class View {
-
-    private final ClientController controller;
-
-    public View(ClientController controller) {
-        this.controller = controller;
-    }
+public interface View {
 
     //method used to read client input
-    public abstract void run(VirtualView client);
+    public void run(VirtualView client);
 
     //method used to update after a controller update, invoked by the client class
 
-    public abstract void showUpdatePlayersInLobby();
+    public void showUpdatePlayersInLobby();
 
-    public abstract void showUpdateCreator();
+    public void showUpdateCreator();
 
-    public abstract void showUpdateAfterLobbyCrash();
+    public void showUpdateAfterLobbyCrash();
 
-    public abstract void showUpdateAfterConnection();
+    public void showUpdateAfterConnection();
 
-    public abstract void showUpdatePlayerStatus();
+    public void showUpdatePlayerStatus();
 
-    public abstract void showInitialPlayerStatus();
+    public void showInitialPlayerStatus();
 
-    public abstract void showBoardSetUp();
+    public void showBoardSetUp();
 
-    public abstract void showStarterPlacement();
+    public void showStarterPlacement();
 
-    public abstract void showUpdateColor();
+    public void showUpdateColor();
 
-    public abstract void showUpdateObjectiveCard();
+    public void showUpdateObjectiveCard();
 
-    public abstract void showUpdateAfterPlace();
+    public void showUpdateAfterPlace();
 
-    public abstract void showUpdateAfterDraw();
+    public void showUpdateAfterDraw();
 
-    public abstract void showUpdateChat();
+    public void showUpdateChat();
 
-    public abstract void showUpdateCurrentPlayer();
+    public void showUpdateCurrentPlayer();
 
-    public abstract void showUpdateSuspendedGame();
+    public void showUpdateSuspendedGame();
 
-    public abstract void showWinners();
+    public void showWinners();
 
-    public ClientController getController() {
-        return controller;
-    }
 }

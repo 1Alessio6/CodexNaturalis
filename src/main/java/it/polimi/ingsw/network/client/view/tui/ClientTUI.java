@@ -23,11 +23,13 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Scanner;
 
-public class ClientTUI extends View {
+public class ClientTUI implements View {
     private Scanner console;
 
+    private final ClientController controller;
+
     public ClientTUI(ClientController controller) {
-        super(controller);
+        this.controller = controller;
         this.console = new Scanner(System.in);
     }
 
@@ -55,7 +57,7 @@ public class ClientTUI extends View {
     }
 
     private void quit() {
-        ClientController controller = getController();
+
         try {
             controller.disconnect(controller.getMainPlayerUsername());
         } catch (RemoteException e) {
@@ -69,7 +71,7 @@ public class ClientTUI extends View {
         System.out.println("Choose objective idx: ");
         try {
             int objectiveIdx = console.nextInt(); // starting from 1
-            this.getController().placeObjectiveCard(objectiveIdx - 1);
+            controller.placeObjectiveCard(objectiveIdx - 1);
         } catch (RemoteException | InvalidGamePhaseException | SuspendedGameException e) {
             System.out.println(e.getMessage());
         }
@@ -100,7 +102,7 @@ public class ClientTUI extends View {
             System.out.print("Please set the lobby size (2 to 4 players allowed): ");
             try {
                 size = Integer.parseInt(console.nextLine());
-                this.getController().setPlayersNumber(size);
+                controller.setPlayersNumber(size);
                 break;
             } catch (InvalidPlayersNumberException | RemoteException | NumberFormatException e) {
                 System.err.println(e.getMessage());
@@ -112,7 +114,7 @@ public class ClientTUI extends View {
 
     private void chooseColor() {
         try {
-            this.getController().chooseColor(receiveColor());
+            controller.chooseColor(receiveColor());
         } catch (InvalidColorException | RemoteException | InvalidGamePhaseException | SuspendedGameException | IllegalArgumentException e) {
             System.err.println(e.getMessage());
         }
@@ -123,7 +125,7 @@ public class ClientTUI extends View {
     }
 
     private void setParseLogic(){
-        if (this.getController().getGamePhase() == null) {
+        if (controller.getGamePhase() == null) {
             parseLobbyCommands(); //phase does not exist
         } else {
             parseGameCommands();
@@ -134,7 +136,7 @@ public class ClientTUI extends View {
         String commandContent = command[1];
         Message myMessage = command[0].equals("/pm") ? createPrivateMessage(commandContent) : createBroadcastMessage(commandContent);
         try {
-            this.getController().sendMessage(myMessage);
+            controller.sendMessage(myMessage);
         } catch (InvalidMessageException | RemoteException e) {
             System.out.println(e.getMessage());
         }
@@ -145,17 +147,17 @@ public class ClientTUI extends View {
         String[] messageSplit = messageDetails.split(" ", 2);
         String recipient = messageSplit[0];
         String messageContent = messageSplit[1];
-        return new Message(this.getController().getMainPlayerUsername(), recipient, messageContent);
+        return new Message(controller.getMainPlayerUsername(), recipient, messageContent);
     }
 
     private Message createBroadcastMessage(String messageContent) {
-        return new Message(this.getController().getMainPlayerUsername(), messageContent);
+        return new Message(controller.getMainPlayerUsername(), messageContent);
     }
 
     private void draw() {
         try {
             int drawFromId = getDrawPosition();
-            this.getController().draw(drawFromId);
+            controller.draw(drawFromId);
         } catch (InvalidIdForDrawingException | EmptyDeckException | NotExistingFaceUp | RemoteException |
                  InvalidGamePhaseException | SuspendedGameException e) {
             System.out.println(e.getMessage());
@@ -172,7 +174,7 @@ public class ClientTUI extends View {
             int handPos = receivePlayerCardPosition();
             Side cardSide = receiveSide();
             Position newCardPos = receivePosition();
-            this.getController().placeCard(handPos, cardSide, newCardPos);
+            controller.placeCard(handPos, cardSide, newCardPos);
         } catch (Playground.UnavailablePositionException | Playground.NotEnoughResourcesException | RemoteException |
                  InvalidGamePhaseException | SuspendedGameException e) {
             System.out.println(e.getMessage());
@@ -181,7 +183,7 @@ public class ClientTUI extends View {
 
     private void placeStarter() {
         try {
-            this.getController().placeStarter(receiveSide());
+            controller.placeStarter(receiveSide());
         } catch (RemoteException | InvalidGamePhaseException | SuspendedGameException e) {
             System.out.println(e.getMessage());
         }
@@ -225,7 +227,7 @@ public class ClientTUI extends View {
         while(true) {
             try {
                 String username = receiveUsername();
-                this.getController().connect(client, username);
+                controller.connect(client, username);
                 break;
             } catch(InvalidUsernameException | FullLobbyException | RemoteException e){
                 System.err.println(e.getMessage());
@@ -241,7 +243,7 @@ public class ClientTUI extends View {
 
     @Override
     public void showUpdatePlayersInLobby() {
-        List<String> usernames = this.getController().getUsernames();
+        List<String> usernames = controller.getUsernames();
         System.out.println("Users waiting: <" + String.join(",", usernames) + ">");
     }
 
@@ -264,7 +266,7 @@ public class ClientTUI extends View {
 
     @Override
     public void showUpdatePlayerStatus() {
-        List<String> usernames = getController().getConnectedUsernames();
+        List<String> usernames = controller.getConnectedUsernames();
         System.out.println("Connected players: <" + String.join(",", usernames) + ">");
     }
 
