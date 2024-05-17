@@ -111,7 +111,7 @@ public class Lobby {
         if (creator.equals(username) && numPlayersToStartTheGame == -1) {
             resetLobby();
         } else {
-            listenerHandler.notifyBroadcast(receiver -> receiver.showUpdatePlayerStatus(false, username));
+            listenerHandler.notifyBroadcast(receiver -> receiver.showUpdatePlayersInLobby(listenerHandler.getIds()));
         }
     }
 
