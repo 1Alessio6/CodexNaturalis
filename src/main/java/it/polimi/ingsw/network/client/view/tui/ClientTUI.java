@@ -314,7 +314,7 @@ public class ClientTUI implements View {
 
     @Override
     public void showStarterPlacement() {
-
+        ClientUtil.printCard(controller.getMainPlayer().getStarterCard());
         setAvailableCommands();
     }
 
@@ -326,7 +326,7 @@ public class ClientTUI implements View {
 
     @Override
     public void showUpdateObjectiveCard() {
-
+        ClientUtil.printObjectiveCard(controller.getMainPlayer().getObjectiveCards().getFirst());
         setAvailableCommands();
     }
 
