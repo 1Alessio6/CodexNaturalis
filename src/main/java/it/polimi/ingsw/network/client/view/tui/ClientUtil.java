@@ -1,8 +1,8 @@
 package it.polimi.ingsw.network.client.view.tui;
 
-import it.polimi.ingsw.model.Deck.DeckType;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.Color.CardColor;
+import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.Condition;
 import it.polimi.ingsw.model.card.Corner;
 import it.polimi.ingsw.model.card.CornerPosition;
@@ -57,6 +57,60 @@ public class ClientUtil {
         System.out.println("Possible moves:");
     }
 
+    // Main methods
+
+    //resources:symbol at the back, requirements:needed symbols that allow to place a card
+    //condition is always 1 or 0
+    public static void printCard(ANSIColor color, Map<CornerPosition, Corner> cornerPositionCornerMap, Condition pointsCondition, Map<Symbol, Integer> requirements, Map<Symbol, Integer> resources, int points) {
+        StringBuilder str = new StringBuilder();
+        int upperSwitchCase = upperCornersNumber(cornerPositionCornerMap);
+        int lowerSwitchCase = lowerCornersNumber(cornerPositionCornerMap);
+
+        str.append(printUpperCorners(color, cornerPositionCornerMap, resources, new StringBuilder(), upperSwitchCase, lowerSwitchCase, pointsCondition, points));
+        printLowerCorners(color, cornerPositionCornerMap, resources, str, lowerSwitchCase, requirements);
+
+        System.out.println(str.toString());
+    }
+
+    public static void printOptionalCard() {
+        StringBuilder str = new StringBuilder();
+        printUpperCorners(BLUE, new HashMap<>(), new HashMap<>(), str, 7, 8, null, 0);
+        printLowerCorners(BLUE, new HashMap<>(), new HashMap<>(), str, 8, new HashMap<>());
+        System.out.println(str.toString());
+    }
+
+    public static void printObjectiveCard(ANSIColor color, Map<Position, CardColor> positionCondition, Map<Symbol, Integer> resourceCondition, int points) {
+        StringBuilder str = new StringBuilder();
+        int switchCase = positionOrResourcesSwitchCase(positionCondition, resourceCondition);
+        if (switchCase == 1) {//it is a card with a position condition
+            appendPositions(color, positionCondition, str, points);
+            System.out.println(str);
+        } else if (switchCase == 2) {
+            printCard(color, new HashMap<>(), null, new HashMap<>(), resourceCondition, points);
+        }
+    }
+
+    // Secondary methods
+
+    public static String calculateSpaces(int availableSpaces, String string) {
+        double numberOfSpaces = ((availableSpaces - string.length()) / 2.0);
+        int indexOfDecimal = String.valueOf(numberOfSpaces).indexOf(".");
+        String decimal = String.valueOf(0).concat(String.valueOf(numberOfSpaces).substring(indexOfDecimal));
+        StringBuilder a = new StringBuilder();
+
+
+        a.append(" ".repeat((int) Math.max(0, numberOfSpaces)));
+        if (decimal.equals(String.valueOf(.5))) {
+            a.append(doubleHairSpace);
+        }
+
+        return a.toString();
+    }
+
+    public static String appendLine(int numberOfLines) {
+        return "═".repeat(Math.max(0, numberOfLines));
+    }
+
     private static int resourcesSize(Map<Symbol, Integer> resources) {
         int i = 0;
         for (Map.Entry<Symbol, Integer> entry : resources.entrySet()) {
@@ -73,102 +127,37 @@ public class ClientUtil {
         return i;
     }
 
-
-    //resources:symbol at the back, requirements:needed symbols that allow to place a card; deckType refers to the card type
-    //condition is always 1 or 0
-    private static void printCard(ANSIColor color, Map<CornerPosition, Corner> cornerPositionCornerMap, Condition pointsCondition, Map<Symbol, Integer> requirements, Map<Symbol, Integer> resources, int points, DeckType type) {
-        StringBuilder str = new StringBuilder();
-        int upperSwitchCase = upperCornersNumber(cornerPositionCornerMap);
-        int lowerSwitchCase = lowerCornersNumber(cornerPositionCornerMap);
-
-        str.append(printUpperCorners(color, type, cornerPositionCornerMap, resources, new StringBuilder(), upperSwitchCase, lowerSwitchCase, pointsCondition, points));
-        printLowerCorners(color, type, cornerPositionCornerMap, resources, str, lowerSwitchCase, requirements);
-
-        System.out.println(str.toString());
-    }
-
-    private static void printOptionalCard() {
-        StringBuilder str = new StringBuilder();
-        printUpperCorners(BLUE, DeckType.RESOURCE, new HashMap<>(), new HashMap<>(), str, 7, 8, null, 0);
-        printLowerCorners(BLUE, DeckType.RESOURCE, new HashMap<>(), new HashMap<>(), str, 8, new HashMap<>());
-        System.out.println(str.toString());
-    }
-
-    private static void printObjectiveCard(ANSIColor color, Map<Position, CardColor> positionCondition, Map<Symbol, Integer> resourceCondition, int points) {
-        StringBuilder str = new StringBuilder();
-        int switchCase = positionOrResourcesSwitchCase(positionCondition, resourceCondition);
-        if (switchCase == 1) {//it is a card with a position condition
-            appendPositions(color,positionCondition,str,points);
-            System.out.println(str);
-        } else if (switchCase == 2) {
-            printCard(color, new HashMap<>(), null, new HashMap<>(), resourceCondition, points, DeckType.GOLDEN);
-        }
-    }
-
-    public static StringBuilder printUpperCorners(ANSIColor color, DeckType type, Map<CornerPosition, Corner> cornerPositionSymbolMap, Map<Symbol, Integer> resources, StringBuilder str, int upperSwitchCase, int lowerSwitchCase, Condition condition, int points) {
+    private static StringBuilder printUpperCorners(ANSIColor color, Map<CornerPosition, Corner> cornerPositionSymbolMap, Map<Symbol, Integer> resources, StringBuilder str, int upperSwitchCase, int lowerSwitchCase, Condition condition, int points) {
         str.setLength(0);
         switch (upperSwitchCase) {
             case 1:
-                if (type == DeckType.GOLDEN) {
-                    str.append(color.getColor()).append("╔═════").append(YELLOW.getColor()).append("╦").append(color.getColor()).append("════════════").append(YELLOW.getColor()).append("╦").append(color.getColor()).append("═════╗\n");
-                    str.append(color.getColor()).append("║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.TOP_LEFT).getSymbol())).append(doubleThinSpace).append(YELLOW.getColor()).append(" ║     ");
-                    if (condition == null) {
-                        str.append(YELLOW.getColor()).append(printPoints(points)).append("    ").append("  ║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.TOP_RIGHT).getSymbol())).append(doubleThinSpace).append(color.getColor()).append(" ║\n");
-                    } else {
-                        str.append(YELLOW.getColor()).append(printPoints(points)).append("|").append(printCondition(condition)).append(doubleThinSpace).append("  ║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.TOP_RIGHT).getSymbol())).append(doubleThinSpace).append(color.getColor()).append(" ║\n");
-                    }
-
+                str.append(color.getColor()).append("╔═════╦════════════╦═════╗\n");
+                str.append(color.getColor()).append("║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.TOP_LEFT).getSymbol())).append(doubleThinSpace).append(color.getColor()).append(" ║     ");
+                if (condition == null) {
+                    str.append(YELLOW.getColor()).append(" ").append(printPoints(points)).append("    ").append(color.getColor()).append(" ║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.TOP_RIGHT).getSymbol())).append(doubleThinSpace).append(" ║\n");
                 } else {
-                    str.append(color.getColor()).append("╔═════╦════════════╦═════╗\n");
-                    str.append(color.getColor()).append("║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.TOP_LEFT).getSymbol())).append(doubleThinSpace).append(color.getColor()).append(" ║     ");
-                    if (condition == null) {
-                        str.append(YELLOW.getColor()).append(printPoints(points)).append("     ").append(color.getColor()).append(" ║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.TOP_RIGHT).getSymbol())).append(doubleThinSpace).append(" ║\n");
-                    } else {
-                        str.append(YELLOW.getColor()).append(printPoints(points)).append("|").append(printCondition(condition)).append(doubleThinSpace).append(color.getColor()).append("  ║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.TOP_RIGHT).getSymbol())).append(doubleThinSpace).append(" ║\n");
-                    }
-
+                    str.append(YELLOW.getColor()).append(printPoints(points)).append("|").append(printCondition(condition)).append(doubleThinSpace).append(color.getColor()).append("  ║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.TOP_RIGHT).getSymbol())).append(doubleThinSpace).append(" ║\n");
                 }
+
                 break;
 
             case 2: // just top_left
-                if (type == DeckType.GOLDEN) {
-                    str.append(color.getColor()).append("╔═════").append(YELLOW.getColor()).append("╦").append(color.getColor()).append("══════════════════╗\n");
-                    str.append(color.getColor()).append("║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.TOP_LEFT).getSymbol())).append(doubleThinSpace).append(YELLOW.getColor()).append(" ║     ");
-                    if (condition == null) {
-                        str.append(YELLOW.getColor()).append(printPoints(points)).append("    ").append(color.getColor()).append("        ║\n");
-                    } else {
-                        str.append(YELLOW.getColor()).append(printPoints(points)).append("|").append(printCondition(condition)).append(doubleThinSpace).append(color.getColor()).append("        ║\n");
-                    }
-
+                str.append(color.getColor()).append("╔═════╦══════════════════╗\n");
+                str.append(color.getColor()).append("║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.TOP_LEFT).getSymbol())).append(doubleThinSpace).append(color.getColor()).append(" ║     ");
+                if (condition == null) {
+                    str.append(YELLOW.getColor()).append(" ").append(printPoints(points)).append("   ").append(color.getColor()).append("        ║\n");
                 } else {
-                    str.append(color.getColor()).append("╔═════╦══════════════════╗\n");
-                    str.append(color.getColor()).append("║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.TOP_LEFT).getSymbol())).append(doubleThinSpace).append(color.getColor()).append(" ║     ");
-                    if (condition == null) {
-                        str.append(YELLOW.getColor()).append(printPoints(points)).append("    ").append(color.getColor()).append("        ║\n");
-                    } else {
-                        str.append(YELLOW.getColor()).append(printPoints(points)).append("|").append(printCondition(condition)).append(doubleThinSpace).append(color.getColor()).append("        ║\n");
-                    }
-
+                    str.append(YELLOW.getColor()).append(printPoints(points)).append("|").append(printCondition(condition)).append(doubleThinSpace).append(color.getColor()).append("        ║\n");
                 }
                 break;
 
             case 3://only Top_right
-                if (type == DeckType.GOLDEN) {
-                    str.append(color.getColor()).append("╔══════════════════").append(YELLOW.getColor()).append("╦").append(color.getColor()).append("═════╗\n");
-                    if (condition == null) {
-                        str.append(color.getColor()).append("║           ").append(YELLOW.getColor()).append(printPoints(points)).append("    ").append("  ║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.TOP_RIGHT).getSymbol())).append(doubleThinSpace).append(color.getColor()).append(" ║\n");
-                    } else {
-                        str.append(color.getColor()).append("║           ").append(YELLOW.getColor()).append(printPoints(points)).append("|").append(printCondition(condition)).append(doubleThinSpace).append("  ║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.TOP_RIGHT).getSymbol())).append(doubleThinSpace).append(color.getColor()).append(" ║\n");
-                    }
 
+                str.append(color.getColor()).append("╔══════════════════╦═════╗\n");
+                if (condition == null) {
+                    str.append(color.getColor()).append("║            ").append(YELLOW.getColor()).append(printPoints(points)).append(color.getColor()).append("     ║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.TOP_RIGHT).getSymbol())).append(doubleThinSpace).append(" ║\n");
                 } else {
-                    str.append(color.getColor()).append("╔══════════════════╦═════╗\n");
-                    if (condition == null) {
-                        str.append(color.getColor()).append("║         ").append(YELLOW.getColor()).append(printPoints(points)).append("    ").append(color.getColor()).append("    ║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.TOP_RIGHT).getSymbol())).append(doubleThinSpace).append(" ║\n");
-                    } else {
-                        str.append(color.getColor()).append("║           ").append(YELLOW.getColor()).append(printPoints(points)).append("|").append(printCondition(condition)).append(doubleThinSpace).append(color.getColor()).append("  ║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.TOP_RIGHT).getSymbol())).append(doubleThinSpace).append(" ║\n");
-                    }
-
+                    str.append(color.getColor()).append("║           ").append(YELLOW.getColor()).append(printPoints(points)).append("|").append(printCondition(condition)).append(doubleThinSpace).append(color.getColor()).append("  ║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.TOP_RIGHT).getSymbol())).append(doubleThinSpace).append(" ║\n");
                 }
                 break;
 
@@ -180,52 +169,40 @@ public class ClientUtil {
                 }
 
         }
-        str.append(drawUpperBorder(resources, upperSwitchCase, lowerSwitchCase, type, color));
+        str.append(drawUpperBorder(resources, upperSwitchCase, lowerSwitchCase, color));
         return str;
     }
 
-    public static void printLowerCorners(ANSIColor color, DeckType type, Map<CornerPosition, Corner> cornerPositionSymbolMap, Map<Symbol, Integer> resources, StringBuilder str, int switchCase, Map<Symbol, Integer> requirements) {
+    private static void printLowerCorners(ANSIColor color, Map<CornerPosition, Corner> cornerPositionSymbolMap, Map<Symbol, Integer> resources, StringBuilder str, int switchCase, Map<Symbol, Integer> requirements) {
 
         switch (switchCase) {
             case 4://lower_left and lower_right
                 if (resourcesSize(resources) < 3) {
-                    if (type == DeckType.GOLDEN) {
-                        str.append(YELLOW.getColor()).append("╠═════╗            ╔═════╣\n");
-                        appendMiddleLowerBorder(switchCase, type, color, cornerPositionSymbolMap, str, requirements);
-                    } else {
-                        str.append(color.getColor()).append("╠═════╗            ╔═════╣\n");
-                        appendMiddleLowerBorder(switchCase, type, color, cornerPositionSymbolMap, str, requirements);
-                    }
+                    str.append(color.getColor()).append("╠═════╗            ╔═════╣\n");
+                    appendMiddleLowerBorder(switchCase, color, cornerPositionSymbolMap, str, requirements);
+
                 } else {
-                    appendMiddleLowerBorder(switchCase, type, color, cornerPositionSymbolMap, str, requirements);
+                    appendMiddleLowerBorder(switchCase, color, cornerPositionSymbolMap, str, requirements);
                 }
                 break;
 
 
             case 5:
                 if (resourcesSize(resources) < 3) {
-                    if (type == DeckType.GOLDEN) {
-                        str.append(color.getColor()).append("║ ").append(YELLOW.getColor()).append("                 ╔═════╣\n");
-                        appendMiddleLowerBorder(switchCase, type, color, cornerPositionSymbolMap, str, requirements);
-                    } else {
-                        str.append(color.getColor()).append("║                  ╔═════╣\n");
-                        appendMiddleLowerBorder(switchCase, type, color, cornerPositionSymbolMap, str, requirements);
-                    }
+                    str.append(color.getColor()).append("║                  ╔═════╣\n");
+                    appendMiddleLowerBorder(switchCase, color, cornerPositionSymbolMap, str, requirements);
+
                 } else {
-                    appendMiddleLowerBorder(switchCase, type, color, cornerPositionSymbolMap, str, requirements);
+                    appendMiddleLowerBorder(switchCase, color, cornerPositionSymbolMap, str, requirements);
                 }
                 break;
             case 6:
                 if (resourcesSize(resources) < 3) {
-                    if (type == DeckType.GOLDEN) {
-                        str.append(YELLOW.getColor()).append("╠═════╗                  ").append(color.getColor()).append("║\n");
-                        appendMiddleLowerBorder(switchCase, type, color, cornerPositionSymbolMap, str, requirements);
-                    } else {
-                        str.append(color.getColor()).append("╠═════╗                  ║\n");
-                        appendMiddleLowerBorder(switchCase, type, color, cornerPositionSymbolMap, str, requirements);
-                    }
+                    str.append(color.getColor()).append("╠═════╗                  ║\n");
+                    appendMiddleLowerBorder(switchCase, color, cornerPositionSymbolMap, str, requirements);
+
                 } else {
-                    appendMiddleLowerBorder(switchCase, type, color, cornerPositionSymbolMap, str, requirements);
+                    appendMiddleLowerBorder(switchCase, color, cornerPositionSymbolMap, str, requirements);
                 }
                 break;
             case 8:
@@ -234,123 +211,74 @@ public class ClientUtil {
                     appendRequirements(requirements, str);
                     str.append("     ║\n").append("╚════════════════════════╝");
                 } else {
-                    appendMiddleLowerBorder(switchCase, type, color, cornerPositionSymbolMap, str, requirements);
+                    appendMiddleLowerBorder(switchCase, color, cornerPositionSymbolMap, str, requirements);
                 }
                 break;
         }
     }
 
-    private static void appendMiddleLowerBorder(int switchCase, DeckType type, ANSIColor color, Map<CornerPosition, Corner> cornerPositionSymbolMap, StringBuilder str, Map<Symbol, Integer> requirements) {
-        if (type == DeckType.GOLDEN) {
-            if (switchCase == 4) {
-                str.append(color.getColor()).append("║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.LOWER_LEFT).getSymbol())).append(doubleThinSpace).append(YELLOW.getColor()).append(" ║");
-                appendRequirements(requirements, str);
-                str.append(YELLOW.getColor()).append("║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.LOWER_RIGHT).getSymbol())).append(color.getColor()).append(doubleThinSpace).append(" ║\n");
-                str.append(color.getColor()).append("╚═════").append(YELLOW.getColor()).append("╩").append(color.getColor()).append("════════════").append(YELLOW.getColor()).append("╩").append(color.getColor()).append("═════╝\n");
-            } else if (switchCase == 5) {//just lower_right
-                str.append(color.getColor()).append("║     ");
-                appendRequirements(requirements, str);
-                str.append(YELLOW.getColor()).append(" ║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.LOWER_RIGHT).getSymbol())).append(doubleThinSpace).append(color.getColor()).append(" ║\n");
-                str.append(color.getColor()).append("╚══════════════════").append(YELLOW.getColor()).append("╩").append(color.getColor()).append("═════╝\n");
-            } else if (switchCase == 6) {//just lower_left
-                str.append(color.getColor()).append("║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.LOWER_LEFT).getSymbol())).append(YELLOW.getColor()).append(doubleThinSpace).append(" ║");
-                appendRequirements(requirements, str);
-                str.append(color.getColor()).append("      ║\n");
-                str.append(color.getColor()).append("╚═════").append(YELLOW.getColor()).append("╩").append(color.getColor()).append("══════════════════╝\n");
+    private static void appendMiddleLowerBorder(int switchCase, ANSIColor color, Map<CornerPosition, Corner> cornerPositionSymbolMap, StringBuilder str, Map<Symbol, Integer> requirements) {
+        if (switchCase == 4) {
+            str.append(color.getColor()).append("║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.LOWER_LEFT).getSymbol())).append(doubleThinSpace).append(color.getColor()).append(" ║");
+            appendRequirements(requirements, str);
+            str.append(color.getColor()).append("║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.LOWER_RIGHT).getSymbol())).append(doubleThinSpace).append(color.getColor()).append(" ║\n");
+            str.append(color.getColor()).append("╚═════╩════════════╩═════╝\n");
+        } else if (switchCase == 5) {//just lower_right
+            str.append(color.getColor()).append("║     ");
+            appendRequirements(requirements, str);
+            str.append(color.getColor()).append(" ║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.LOWER_RIGHT).getSymbol())).append(color.getColor()).append(doubleThinSpace).append(" ║\n");
+            str.append(color.getColor()).append("╚══════════════════╩═════╝\n");
+        } else if (switchCase == 6) {//just lower_left
+            str.append(color.getColor()).append("║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.LOWER_LEFT).getSymbol())).append(color.getColor()).append(doubleThinSpace).append(" ║");
+            appendRequirements(requirements, str);
+            str.append(color.getColor()).append("      ║\n");
+            str.append(color.getColor()).append("╚═════╩══════════════════╝\n");
 
-            } else if (switchCase == 8) {
-                str.append(color.getColor()).append("║     ");
-                appendRequirements(requirements, str);
-                str.append("       ║\n" +
-                        "╚════════════════════════╝");
-            }
-        } else {
-            if (switchCase == 4) {
-                str.append(color.getColor()).append("║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.LOWER_LEFT).getSymbol())).append(doubleThinSpace).append(color.getColor()).append(" ║");
-                appendRequirements(requirements, str);
-                str.append(color.getColor()).append("║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.LOWER_RIGHT).getSymbol())).append(doubleThinSpace).append(color.getColor()).append(" ║\n");
-                str.append(color.getColor()).append("╚═════╩════════════╩═════╝\n");
-            } else if (switchCase == 5) {//just lower_right
-                str.append(color.getColor()).append("║     ");
-                appendRequirements(requirements, str);
-                str.append(color.getColor()).append(" ║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.LOWER_RIGHT).getSymbol())).append(color.getColor()).append(doubleThinSpace).append(" ║\n");
-                str.append(color.getColor()).append("╚══════════════════╩═════╝\n");
-            } else if (switchCase == 6) {//just lower_left
-                str.append(color.getColor()).append("║ ").append(printResources(cornerPositionSymbolMap.get(CornerPosition.LOWER_LEFT).getSymbol())).append(color.getColor()).append(doubleThinSpace).append(" ║");
-                appendRequirements(requirements, str);
-                str.append(color.getColor()).append("      ║\n");
-                str.append(color.getColor()).append("╚═════╩══════════════════╝\n");
-
-            } else if (switchCase == 8) {
-                str.append(color.getColor()).append("║     ");
-                appendRequirements(requirements, str);
-                str.append("       ║\n" +
-                        "╚════════════════════════╝");
-            }
+        } else if (switchCase == 8) {
+            str.append(color.getColor()).append("║     ");
+            appendRequirements(requirements, str);
+            str.append("       ║\n" +
+                    "╚════════════════════════╝");
         }
     }
 
-    private static StringBuilder drawUpperBorder(Map<Symbol, Integer> resources, int upperSwitchCase, int lowerSwitchCase, DeckType type, ANSIColor color) {
+    private static StringBuilder drawUpperBorder(Map<Symbol, Integer> resources, int upperSwitchCase, int lowerSwitchCase, ANSIColor color) {
         StringBuilder str = new StringBuilder();
         if (resources.isEmpty()) {
             switch (upperSwitchCase) {
                 case 1:
-                    if (type == DeckType.GOLDEN) {
-                        str.append(YELLOW.getColor()).append("╠═════╝");
-                        str.append(YELLOW.getColor()).append("            ╚═════╣\n");
-                        str.append(color.getColor()).append("║                        ║\n");
-                    } else {
-                        str.append(color.getColor()).append("╠═════╝");
-                        str.append(color.getColor()).append("            ╚═════╣\n");
-                        str.append(color.getColor()).append("║                        ║\n");
-                    }
+                    str.append(color.getColor()).append("╠═════╝");
+                    str.append(color.getColor()).append("            ╚═════╣\n");
+                    str.append(color.getColor()).append("║                        ║\n");
                     break;
                 case 2:
-                    if (type == DeckType.GOLDEN) {
-                        str.append(YELLOW.getColor()).append("╠═════╝");
-                        str.append(color.getColor()).append("                  ║\n");
-                        str.append(color.getColor()).append("║                        ║\n");
-                    } else {
-                        str.append(color.getColor()).append("╠═════╝");
-                        str.append(color.getColor()).append("                  ║\n");
-                        str.append(color.getColor()).append("║                        ║\n");
-
-                    }
+                    str.append(color.getColor()).append("╠═════╝");
+                    str.append(color.getColor()).append("                  ║\n");
+                    str.append(color.getColor()).append("║                        ║\n");
                     break;
                 case 3:
-                    if (type == DeckType.GOLDEN) {
-                        str.append(color.getColor()).append("║     ");
-                        str.append(YELLOW.getColor()).append("             ╚═════╣\n");
-                        str.append(color.getColor()).append("║                        ║\n");
-                    } else {
-                        str.append(color.getColor()).append("║     ");
-                        str.append(color.getColor()).append("             ╚═════╣\n");
-                        str.append(color.getColor()).append("║                        ║\n");
-                    }
+                    str.append(color.getColor()).append("║     ");
+                    str.append(color.getColor()).append("             ╚═════╣\n");
+                    str.append(color.getColor()).append("║                        ║\n");
                     break;
                 case 7:
                     str.append(color.getColor()).append("║                        ║\n").append("║                        ║\n");
             }
         } else {
             if (upperSwitchCase == 1 || upperSwitchCase == 2) {
-                if (type == DeckType.GOLDEN) {
-                    str.append(YELLOW.getColor()).append("╠═════╝     ").append(thinSpace);
-                } else {
-                    str.append(color.getColor()).append("╠═════╝     ").append(thinSpace);
-                }
+                str.append(color.getColor()).append("╠═════╝     ").append(thinSpace);
             } else if (upperSwitchCase == 3) {
                 str.append(color.getColor()).append("║           ").append(thinSpace);
-
             } else if (upperSwitchCase == 7) {
                 str.append(color.getColor()).append("║           ").append(thinSpace);
             }
-            appendResources(resources, str, type, color, upperSwitchCase, lowerSwitchCase);
+            appendResources(resources, str, color, upperSwitchCase, lowerSwitchCase);
         }
         return str;
 
     }
 
-    public static void appendPositions(ANSIColor color, Map<Position, CardColor> positionCondition, StringBuilder str, int points) {
+    private static void appendPositions(ANSIColor color, Map<Position, CardColor> positionCondition, StringBuilder str, int points) {
 
 
         switch (positionCase(positionCondition)) {
@@ -417,13 +345,23 @@ public class ClientUtil {
 
     }
 
-    public static ANSIColor cardColorConversion(CardColor color) {
+    private static ANSIColor cardColorConversion(CardColor color) {
         return switch (color) {
             case RED -> ANSIColor.RED;
             case BLUE -> ANSIColor.BLUE;
             case GREEN -> ANSIColor.GREEN;
             case YELLOW -> ANSIColor.YELLOW;
             case PURPLE -> ANSIColor.PURPLE;
+        };
+    }
+
+    public static ANSIColor playerColorConversion(PlayerColor color) {
+        return switch (color) {
+            case RED -> ANSIColor.RED_BACKGROUND_BRIGHT;
+            case BLUE -> ANSIColor.BLUE_BACKGROUND_BRIGHT;
+            case GREEEN -> ANSIColor.GREEN_BACKGROUND_BRIGHT;
+            case YELLOW -> ANSIColor.YELLOW_BACKGROUND_BRIGHT;
+            case BLACK -> ANSIColor.BLACK_BOLD_BRIGHT;
         };
     }
 
@@ -456,7 +394,7 @@ public class ClientUtil {
         }
     }
 
-    private static void appendResources(Map<Symbol, Integer> resources, StringBuilder str, DeckType type, ANSIColor color, int upperSwitchCase, int lowerSwitchCase) {
+    private static void appendResources(Map<Symbol, Integer> resources, StringBuilder str, ANSIColor color, int upperSwitchCase, int lowerSwitchCase) {
         //str.setLength(0);
         int i = 0;
         for (Map.Entry<Symbol, Integer> entry : resources.entrySet()) {
@@ -465,12 +403,7 @@ public class ClientUtil {
                     if (resourcesSize(resources) != 1) {
                         str.append(printResources(entry.getKey())).append(thinSpace);
                         if (upperSwitchCase == 1 || upperSwitchCase == 3) {
-                            if (type == DeckType.GOLDEN) {
-                                str.append(YELLOW.getColor()).append("    ╚═════╣\n");
-                            } else {
-                                str.append(color.getColor()).append("    ╚═════╣\n");
-                            }
-
+                            str.append(color.getColor()).append("    ╚═════╣\n");
                         } else if (upperSwitchCase == 2) {
                             str.append(color.getColor()).append("          ║\n");
 
@@ -481,11 +414,7 @@ public class ClientUtil {
                     } else {
                         if (resourcesSize(resources) == 1) {
                             if (upperSwitchCase == 1 || upperSwitchCase == 3) {
-                                if (type == DeckType.GOLDEN) {
-                                    str.append(YELLOW.getColor()).append(thinSpace).append(hairSpace).append("      ╚═════╣\n");
-                                } else {
-                                    str.append(color.getColor()).append(thinSpace).append(hairSpace).append("      ╚═════╣\n");
-                                }
+                                str.append(color.getColor()).append(thinSpace).append(hairSpace).append("      ╚═════╣\n");
                             } else {
                                 str.append(color.getColor()).append(thinSpace).append(hairSpace).append("            ║\n");
                             }
@@ -497,23 +426,11 @@ public class ClientUtil {
                     str.append(color.getColor()).append("║           ").append(thinSpace).append(printResources(entry.getKey())).append(thinSpace).append("          ║\n");
                 } else if (i == 2) {//verify
                     if (lowerSwitchCase == 4) {
-                        if (type == DeckType.GOLDEN) {
-                            str.append(YELLOW.getColor()).append("╠═════╗     ").append(thinSpace).append(printResources(entry.getKey())).append(thinSpace).append("    ╔═════╣\n");
-                        } else {
-                            str.append(color.getColor()).append("╠═════╗     ").append(thinSpace).append(printResources(entry.getKey())).append(thinSpace).append("    ╔═════╣\n");
-                        }
+                        str.append(color.getColor()).append("╠═════╗     ").append(thinSpace).append(printResources(entry.getKey())).append(thinSpace).append("    ╔═════╣\n");
                     } else if (lowerSwitchCase == 5) {
-                        if (type == DeckType.GOLDEN) {
-                            str.append(color.getColor()).append("║           ").append(YELLOW.getColor()).append(thinSpace).append(printResources(entry.getKey())).append(thinSpace).append("    ╔═════╣\n");
-                        } else {
-                            str.append(color.getColor()).append("║           ").append(thinSpace).append(printResources(entry.getKey())).append(thinSpace).append("    ╔═════╣\n");
-                        }
+                        str.append(color.getColor()).append("║           ").append(thinSpace).append(printResources(entry.getKey())).append(thinSpace).append("    ╔═════╣\n");
                     } else if (lowerSwitchCase == 6) {
-                        if (type == DeckType.GOLDEN) {
-                            str.append(YELLOW.getColor()).append("╠═════╗     ").append(thinSpace).append(printResources(entry.getKey())).append(thinSpace).append(color.getColor()).append("          ║\n");
-                        } else {
-                            str.append(color.getColor()).append("╠═════╗     ").append(thinSpace).append(printResources(entry.getKey())).append(thinSpace).append("          ║\n");
-                        }
+                        str.append(color.getColor()).append("╠═════╗     ").append(thinSpace).append(printResources(entry.getKey())).append(thinSpace).append("          ║\n");
                     } else if (lowerSwitchCase == 8) {
                         str.append(color.getColor()).append("║           ").append(thinSpace).append(printResources(entry.getKey())).append(thinSpace).append("          ║\n");
                     }
@@ -525,7 +442,7 @@ public class ClientUtil {
 
     }
 
-    public static int positionCase(Map<Position, CardColor> positionCondition) {
+    private static int positionCase(Map<Position, CardColor> positionCondition) {
         ArrayList<Position> caseOne = new ArrayList<>();
         ArrayList<Position> caseTwo = new ArrayList<>();
         ArrayList<Position> caseThree = new ArrayList<>();
@@ -562,7 +479,7 @@ public class ClientUtil {
         }
     }
 
-    public static int upperCornersNumber(Map<CornerPosition, Corner> cornerPositionCornerMap) {
+    private static int upperCornersNumber(Map<CornerPosition, Corner> cornerPositionCornerMap) {
         ArrayList<CornerPosition> cornerPositions = new ArrayList<>();
 
         for (Map.Entry<CornerPosition, Corner> entry : cornerPositionCornerMap.entrySet()) {
@@ -582,7 +499,7 @@ public class ClientUtil {
         }
     }
 
-    public static int lowerCornersNumber(Map<CornerPosition, Corner> cornerPositionCornerMap) {
+    private static int lowerCornersNumber(Map<CornerPosition, Corner> cornerPositionCornerMap) {
         ArrayList<CornerPosition> cornerPositions = new ArrayList<>();
         for (Map.Entry<CornerPosition, Corner> entry : cornerPositionCornerMap.entrySet()) {
             cornerPositions.add(entry.getKey());
@@ -656,7 +573,7 @@ public class ClientUtil {
         } else if (points == 5) {
             return five;
         } else {
-            return null;
+            return corner;
         }
     }
 
