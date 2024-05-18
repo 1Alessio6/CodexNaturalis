@@ -2,7 +2,6 @@ package it.polimi.ingsw.network.client.controller;
 
 import it.polimi.ingsw.controller.InvalidIdForDrawingException;
 import it.polimi.ingsw.model.InvalidGamePhaseException;
-import it.polimi.ingsw.model.NonexistentPlayerException;
 import it.polimi.ingsw.model.SuspendedGameException;
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
@@ -15,7 +14,6 @@ import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.model.lobby.FullLobbyException;
 import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
-import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.model.ClientGame;
@@ -329,4 +327,9 @@ public class ClientController implements ClientActions {
    public List<String> getUsernames() {
         return this.game.getPlayers().stream().map(ClientPlayer::getUsername).toList();
    }
+
+    public List<ClientPlayer> getPlayers() {
+        return this.game.getPlayers();
+    }
+
 }
