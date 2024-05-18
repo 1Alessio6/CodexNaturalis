@@ -57,6 +57,7 @@ public class ClientHandler implements VirtualView {
         try {
             String line = input.readLine();
             while (line != null) {
+                System.out.println("Received input: " + line);
                 ServerMessage message = gson.fromJson(line, ServerMessage.class);
                 ServerType type = message.getType();
                 String sender = message.getSender();
