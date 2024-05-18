@@ -7,13 +7,11 @@ import it.polimi.ingsw.model.card.Condition;
 import it.polimi.ingsw.model.card.Corner;
 import it.polimi.ingsw.model.card.CornerPosition;
 import it.polimi.ingsw.model.card.Symbol;
-import it.polimi.ingsw.network.client.model.ANSIColor;
 
 import java.util.*;
 
 import static it.polimi.ingsw.model.card.Symbol.*;
-import static it.polimi.ingsw.network.client.model.ANSIColor.BLUE;
-import static it.polimi.ingsw.network.client.model.ANSIColor.YELLOW;
+import static it.polimi.ingsw.network.client.view.tui.ANSIColor.*;
 
 public class ClientUtil {
 

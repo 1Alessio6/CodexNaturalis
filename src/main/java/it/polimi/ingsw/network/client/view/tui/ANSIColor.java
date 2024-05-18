@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.client.model;
+package it.polimi.ingsw.network.client.view.tui;
 
 public enum ANSIColor {
     RESET("\033[0m"),
@@ -7,7 +7,13 @@ public enum ANSIColor {
     GREEN("\033[0;32m"),
     YELLOW("\033[33m"),
     BLUE("\033[0;34m"),
-    PURPLE("\033[0;35m");
+    PURPLE("\033[0;35m"),
+    BLACK_BOLD("\033[1m"),
+    RED_BACKGROUND_BRIGHT("\033[0;101m"),
+    BLUE_BACKGROUND_BRIGHT("\033[0;104m"),
+    YELLOW_BACKGROUND_BRIGHT("\033[0;103m"),
+    BLACK_BOLD_BRIGHT("\033[1;90m"),
+    GREEN_BACKGROUND_BRIGHT("\033[0;102m");
 
     private final String color;
 
