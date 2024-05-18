@@ -17,10 +17,13 @@ import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.controller.ClientController;
+import it.polimi.ingsw.network.client.model.ANSIColor;
+import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 import it.polimi.ingsw.network.client.view.View;
 
 import java.rmi.RemoteException;
 import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -94,14 +97,14 @@ public class ClientTUI implements View {
     }
 
     private void setupLobbyPlayerNumber(int size) {
-            try {
-                controller.setPlayersNumber(size);
-                // remove manually: only creator has this command
-                availableCommands.remove(GameCommands.LOBBYSIZE);
-            } catch (InvalidPlayersNumberException | RemoteException | NumberFormatException e) {
-                System.err.println(e.getMessage());
-            }
+        try {
+            controller.setPlayersNumber(size);
+            // remove manually: only creator has this command
+            availableCommands.remove(GameCommands.LOBBYSIZE);
+        } catch (InvalidPlayersNumberException | RemoteException | NumberFormatException e) {
+            System.err.println(e.getMessage());
         }
+    }
 
     private void chooseColor() {
         try {
@@ -187,10 +190,10 @@ public class ClientTUI implements View {
     }
 
     private Position receivePosition() {
-            System.out.print("Insert position, with x and y space separated (e.g.: 1 2): ");
-            int x = console.nextInt();
-            int y = console.nextInt();
-            return new Position(x, y);
+        System.out.print("Insert position, with x and y space separated (e.g.: 1 2): ");
+        int x = console.nextInt();
+        int y = console.nextInt();
+        return new Position(x, y);
     }
 
     /**
@@ -282,7 +285,32 @@ public class ClientTUI implements View {
 
     @Override
     public void showBoardSetUp() {
+        StringBuilder str = new StringBuilder();
+        int maxString = "Players".length() + 2;
+        for (ClientPlayer i : controller.getPlayers()) {
+            if (i.getUsername().length() >= maxString) {
+                maxString = i.getUsername().length() + 2;
+            }
+        }
 
+        String playerSpaces = ClientUtil.calculateSpaces(maxString, "Player");
+        String pointsSpaces = ClientUtil.calculateSpaces(10, "Points");
+
+        str.append("╔").append(ClientUtil.appendLine(maxString)).append("╦").append(ClientUtil.appendLine(10)).append("╗\n");
+        str.append("║").append(playerSpaces).append("Player").append(playerSpaces).append("║");
+        str.append(pointsSpaces).append("Points").append(pointsSpaces).append("║\n");
+        str.append("╠").append(ClientUtil.appendLine(maxString)).append("╬").append(ClientUtil.appendLine(10)).append("╣\n");
+
+        for (ClientPlayer i : controller.getPlayers()) {
+            String username = i.getUsername();
+            ANSIColor color = ClientUtil.playerColorConversion(i.getColor());
+            int points = i.getPlayground().getPoints();
+
+            str.append("║").append(color.getColor()).append(ClientUtil.calculateSpaces(maxString, username)).append(username).append(ClientUtil.calculateSpaces(maxString, username)).append(ANSIColor.RESET.getColor()).append("║");
+            str.append(ClientUtil.calculateSpaces(10, Integer.toString(points))).append(points).append(ClientUtil.calculateSpaces(10, Integer.toString(points))).append("║\n");
+        }
+        str.append("╚").append(ClientUtil.appendLine(maxString)).append("╩").append(ClientUtil.appendLine(10)).append("╝\n");
+        System.out.println(str);
     }
 
     @Override
@@ -292,8 +320,8 @@ public class ClientTUI implements View {
     }
 
     @Override
-    public void showUpdateColor() {
-
+    public void showUpdateColor() { //showUpdateColor shows the new scoreBoard with the updated colors
+        showBoardSetUp();
         setAvailableCommands();
     }
 
@@ -322,16 +350,34 @@ public class ClientTUI implements View {
 
     @Override
     public void showUpdateCurrentPlayer() {
-
+        System.out.println("\u001B[1mPlayer: \u001B[0m\n" + this.controller.getMainPlayerUsername());
     }
 
     @Override
     public void showUpdateSuspendedGame() {
-
+        System.out.println("\u001B[1m SUSPENDED GAME \u001B[0m\n");
     }
 
     @Override
     public void showWinners() {
+        List<String> winners = new ArrayList<>();
+        int maxPointsReached = 0;
+
+        for (ClientPlayer i : controller.getPlayers()) {
+            if (i.getPlayground().getPoints() > maxPointsReached) {
+                maxPointsReached = i.getPlayground().getPoints();
+                winners.clear();
+                winners.add(i.getUsername());
+            } else if (i.getPlayground().getPoints() == maxPointsReached) {
+                winners.add(i.getUsername());
+            }
+        }
+
+        System.out.println("\u001B[1m\u001B[5m" + "Winners\n" + "\u001B[0m\u001B[5m");
+        for (String i : winners) {
+            System.out.println("\u001B[3m" + i + "\u001B[0m\n");
+        }
 
     }
+
 }
