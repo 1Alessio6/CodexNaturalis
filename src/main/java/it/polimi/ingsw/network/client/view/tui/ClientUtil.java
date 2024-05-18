@@ -1,12 +1,11 @@
 package it.polimi.ingsw.network.client.view.tui;
 
 import it.polimi.ingsw.model.board.Position;
+import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.card.Color.CardColor;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
-import it.polimi.ingsw.model.card.Condition;
-import it.polimi.ingsw.model.card.Corner;
-import it.polimi.ingsw.model.card.CornerPosition;
-import it.polimi.ingsw.model.card.Symbol;
+import it.polimi.ingsw.network.client.model.card.ClientCard;
+import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 
 import java.util.*;
 
@@ -59,15 +58,36 @@ public class ClientUtil {
 
     //resources:symbol at the back, requirements:needed symbols that allow to place a card
     //condition is always 1 or 0
-    public static void printCard(ANSIColor color, Map<CornerPosition, Corner> cornerPositionCornerMap, Condition pointsCondition, Map<Symbol, Integer> requirements, Map<Symbol, Integer> resources, int points) {
+    public static void printCard(ClientCard card, Side side) {
+        ANSIColor color = cardColorConversion(card.getFront().getColor());
         StringBuilder str = new StringBuilder();
-        int upperSwitchCase = upperCornersNumber(cornerPositionCornerMap);
-        int lowerSwitchCase = lowerCornersNumber(cornerPositionCornerMap);
+        if (side == Side.FRONT) {
+            Map<CornerPosition, Corner> cornerPositionCornerMap = card.getFront().getCorners();
+            Condition pointsCondition = card.getFront().getPointsCondition();
+            Map<Symbol, Integer> requirements = card.getFront().getRequirements();
+            Map<Symbol, Integer> resources = card.getFront().getBackCenterResources();
+            int points = card.getFront().getScore();
 
-        str.append(printUpperCorners(color, cornerPositionCornerMap, resources, new StringBuilder(), upperSwitchCase, lowerSwitchCase, pointsCondition, points));
-        printLowerCorners(color, cornerPositionCornerMap, resources, str, lowerSwitchCase, requirements);
+            int upperSwitchCase = upperCornersNumber(cornerPositionCornerMap);
+            int lowerSwitchCase = lowerCornersNumber(cornerPositionCornerMap);
 
+            str.append(printUpperCorners(color, cornerPositionCornerMap, resources, new StringBuilder(), upperSwitchCase, lowerSwitchCase, pointsCondition, points));
+            printLowerCorners(color, cornerPositionCornerMap, resources, str, lowerSwitchCase, requirements);
+        } else {
+            Map<CornerPosition, Corner> cornerPositionCornerMap = card.getBack().getCorners();
+            Condition pointsCondition = card.getBack().getPointsCondition();
+            Map<Symbol, Integer> requirements = card.getBack().getRequirements();
+            Map<Symbol, Integer> resources = card.getBack().getBackCenterResources();
+            int points = card.getBack().getScore();
+
+            int upperSwitchCase = upperCornersNumber(cornerPositionCornerMap);
+            int lowerSwitchCase = lowerCornersNumber(cornerPositionCornerMap);
+
+            str.append(printUpperCorners(color, cornerPositionCornerMap, resources, new StringBuilder(), upperSwitchCase, lowerSwitchCase, pointsCondition, points));
+            printLowerCorners(color, cornerPositionCornerMap, resources, str, lowerSwitchCase, requirements);
+        }
         System.out.println(str.toString());
+
     }
 
     public static void printOptionalCard() {
@@ -77,15 +97,28 @@ public class ClientUtil {
         System.out.println(str.toString());
     }
 
-    public static void printObjectiveCard(ANSIColor color, Map<Position, CardColor> positionCondition, Map<Symbol, Integer> resourceCondition, int points) {
+    public static void printObjectiveCard(ClientObjectiveCard objectiveCard,Side side) {
         StringBuilder str = new StringBuilder();
-        int switchCase = positionOrResourcesSwitchCase(positionCondition, resourceCondition);
-        if (switchCase == 1) {//it is a card with a position condition
-            appendPositions(color, positionCondition, str, points);
-            System.out.println(str);
-        } else if (switchCase == 2) {
-            printCard(color, new HashMap<>(), null, new HashMap<>(), resourceCondition, points);
+        ANSIColor color=YELLOW;
+        if(side==Side.FRONT){
+            Map<Position,CardColor> positionCondition=objectiveCard.getPositionCondition();
+            Map<Symbol,Integer> resourceCondition=objectiveCard.getResourceCondition();
+            int points=objectiveCard.getScore();
+            int switchCase = positionOrResourcesSwitchCase(positionCondition, resourceCondition);
+            if (switchCase == 1) {//it is a card with a position condition
+                appendPositions(color, positionCondition, str, points);
+
+            } else if (switchCase == 2) {
+                printUpperCorners(color,new HashMap<>(),resourceCondition,str,7,8,null,points);
+                printLowerCorners(color,new HashMap<>(),resourceCondition,str,8,new HashMap<>());
+            }
+        }else{
+            Map<Position,CardColor> positionCondition=new HashMap<>();
+            Map<Symbol,Integer> resourceCondition=new HashMap<>();
+            printUpperCorners(color,new HashMap<>(),new HashMap<>(),str,7,8,null,0);
+            printLowerCorners(color,new HashMap<>(),new HashMap<>(),str,8,new HashMap<>());
         }
+        System.out.println(str);
     }
 
     // Secondary methods
