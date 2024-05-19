@@ -389,6 +389,7 @@ public class ClientUtil {
             case GREEN -> ANSIColor.GREEN_BACKGROUND_BRIGHT;
             case YELLOW -> ANSIColor.YELLOW_BACKGROUND_BRIGHT;
             case BLACK -> ANSIColor.BLACK_BOLD_BRIGHT;
+            case null -> ANSIColor.BLACK_BOLD_BRIGHT;
         };
     }
 
