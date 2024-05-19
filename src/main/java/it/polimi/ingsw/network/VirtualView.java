@@ -9,6 +9,7 @@ import it.polimi.ingsw.network.client.model.ClientGame;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
+import it.polimi.ingsw.network.heartbeat.PingSender;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -18,7 +19,7 @@ import java.util.*;
 This class defines a "virtual client" and represent the means with which the client interacts with the server.
 Follow the observer design pattern
  */
-public interface VirtualView extends Remote {
+public interface VirtualView extends Remote, PingSender {
     public void updateCreator() throws RemoteException;
 
     public void updateAfterLobbyCrash() throws RemoteException;
@@ -55,7 +56,6 @@ public interface VirtualView extends Remote {
 
     void showUpdateObjectiveCard(ClientObjectiveCard chosenObjective, String username) throws RemoteException;
 
-    // todo. add parameter in after draw and place to notify which player has triggered the events.
     //method to show updated information after a place
     //The two list positions and tiles represent every new available tile added after the last place invocation
     //symbols and total amount represent the new resources added after the last place invocation
@@ -74,4 +74,5 @@ public interface VirtualView extends Remote {
     void showWinners(List<String> winners) throws RemoteException;
 
     public void reportError(String details) throws RemoteException;
+
 }

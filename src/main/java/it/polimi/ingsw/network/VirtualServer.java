@@ -20,12 +20,13 @@ import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.player.NotAvailableUsername;
+import it.polimi.ingsw.network.heartbeat.PingSender;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 
-public interface VirtualServer extends Remote {
+public interface VirtualServer extends Remote, PingSender {
     /**
      * Connect to server
      *
@@ -49,7 +50,4 @@ public interface VirtualServer extends Remote {
     void setPlayersNumber(String username, int playersNumber) throws RemoteException;
 
     void disconnect(String username) throws RemoteException;
-
-    // notify about the existence.
-    void sendPing(String username) throws RemoteException;
 }
