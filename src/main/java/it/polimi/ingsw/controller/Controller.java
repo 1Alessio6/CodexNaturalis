@@ -57,21 +57,21 @@ public class Controller implements EventListener, GameRequest {
      * @param user     the representation of the user.
      * @param username the user's name.
      */
-    public synchronized void handleConnection(String username, VirtualView user) {
+    public synchronized boolean handleConnection(String username, VirtualView user) {
         if (!validUsername(username)) {
             try {
                 user.reportError(new InvalidUsernameException().getMessage());
-                return;
+                return false;
             } catch (RemoteException remoteException) {
                 System.err.println("Connection error");
-                return;
+                return false;
             }
         }
         if (!lobby.isGameReady() || game.isFinished()) {
             game = null;
-            joinLobby(username, user);
+            return joinLobby(username, user);
         } else {
-            joinGame(username, user);
+            return joinGame(username, user);
         }
     }
 
@@ -80,16 +80,16 @@ public class Controller implements EventListener, GameRequest {
      *
      * @param username the user's name who joins the lobby.
      */
-    private void joinLobby(String username, VirtualView lobbyListener) {
+    private boolean joinLobby(String username, VirtualView lobbyListener) {
         try {
             lobby.add(username, lobbyListener);
         } catch (InvalidUsernameException | FullLobbyException e) {
             try {
                 lobbyListener.reportError(e.getMessage());
-                return;
+                return false;
             } catch (RemoteException remoteException) {
                 System.err.println("Connection error");
-                return;
+                return false;
             }
         }
 
@@ -98,18 +98,19 @@ public class Controller implements EventListener, GameRequest {
         if (lobby.isGameReady()) {
             game = lobby.createGame();
         }
+        return true;
     }
 
-    private void joinGame(String username, VirtualView gameListener) {
+    private boolean joinGame(String username, VirtualView gameListener) {
         try {
             game.add(username, gameListener);
         } catch (InvalidUsernameException e) {
             try {
                 gameListener.reportError(e.getMessage());
-                return;
+                return false;
             } catch (RemoteException remoteException) {
                 System.err.println("Connection error");
-                return;
+                return false;
             }
         }
 
@@ -119,6 +120,7 @@ public class Controller implements EventListener, GameRequest {
         if (game.isActive()) {
             timerForSuspendedGame.cancel();
         }
+        return true;
     }
 
     public synchronized void handleDisconnection(String username) {
