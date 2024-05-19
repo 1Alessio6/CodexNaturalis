@@ -378,6 +378,7 @@ public class ClientUtil {
             case GREEN -> ANSIColor.GREEN;
             case YELLOW -> ANSIColor.YELLOW;
             case PURPLE -> ANSIColor.PURPLE;
+            case null -> RESET;
         };
     }
 
