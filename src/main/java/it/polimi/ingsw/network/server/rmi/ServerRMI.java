@@ -1,45 +1,39 @@
 package it.polimi.ingsw.network.server.rmi;
 
 import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.controller.InvalidIdForDrawingException;
-import it.polimi.ingsw.model.InvalidGamePhaseException;
-import it.polimi.ingsw.model.NonexistentPlayerException;
-import it.polimi.ingsw.model.SuspendedGameException;
-import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.*;
-import it.polimi.ingsw.model.card.Color.InvalidColorException;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
-import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
-import it.polimi.ingsw.model.lobby.FullLobbyException;
-import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
-import it.polimi.ingsw.model.lobby.InvalidUsernameException;
-import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
+import it.polimi.ingsw.network.heartbeat.HeartBeat;
+import it.polimi.ingsw.network.heartbeat.PingReceiver;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.*;
 
-public class ServerRMI implements VirtualServer {
+public class ServerRMI implements VirtualServer, PingReceiver {
     private final static int PORT = 1234;
     private final Controller myController;
+    private final static String SERVER_NAME = "ServerRmi";
+    private final HeartBeat heartBeat;
+
+    public static String getServerName() {
+        return SERVER_NAME;
+    }
 
     public ServerRMI() {
         this.myController = new Controller();
+        heartBeat = new HeartBeat(this);
     }
-
-    //todo check if we need to add other Suspended game exception on controller methods
-
 
     public static void main(String[] args) {
         ServerRMI myServer = new ServerRMI();
-        VirtualServer stub = null;
+        VirtualServer stub;
 
         try {
             stub = (VirtualServer) UnicastRemoteObject.exportObject(myServer, PORT);
@@ -47,7 +41,7 @@ public class ServerRMI implements VirtualServer {
             throw new RuntimeException(e);
         }
 
-        Registry registry = null;
+        Registry registry;
         try {
             registry = LocateRegistry.createRegistry(PORT);
         } catch (RemoteException e) {
@@ -55,29 +49,40 @@ public class ServerRMI implements VirtualServer {
         }
 
         try {
-            registry.bind("ServerRmi", stub);
+            registry.bind(SERVER_NAME, stub);
         } catch (RemoteException | AlreadyBoundException e) {
             throw new RuntimeException(e);
         }
 
         System.out.println("ServerRMI ready");
-
     }
 
     @Override
     public void connect(VirtualView client, String username) throws RemoteException {
-        myController.handleConnection(username, client);
+        boolean accepted = myController.handleConnection(username, client);
+        if (accepted) {
+            heartBeat.addTimerFor(username, client);
+        }
+    }
 
+    private void handleDisconnection(String disconnectedUser) {
+        myController.handleDisconnection(disconnectedUser);
+        heartBeat.removeTimerFor(disconnectedUser);
+    }
+
+    @Override
+    public void handleUnresponsiveness(String unresponsiveUser) {
+        handleDisconnection(unresponsiveUser);
     }
 
     @Override
     public void disconnect(String username) throws RemoteException {
-        myController.handleDisconnection(username);
+        handleDisconnection(username);
     }
 
     @Override
-    public void sendPing(String username) {
-
+    public void sendPing(String username) throws RemoteException{
+        heartBeat.registerResponse(username);
     }
 
     @Override
