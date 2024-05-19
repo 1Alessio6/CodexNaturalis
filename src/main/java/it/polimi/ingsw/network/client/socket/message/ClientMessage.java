@@ -9,7 +9,7 @@ public abstract class ClientMessage {
         this.type = type;
     }
 
-    ClientType getType() {
+    public ClientType getType() {
         return type;
     }
 }
