@@ -170,7 +170,7 @@ public class ClientTUI implements View {
     }
 
     private Side receiveSide() {
-        System.out.print("What side of the card you want to place, front or left?");
+        System.out.print("What side of the card you want to place, front or back?");
         return Side.valueOf(console.nextLine().toUpperCase());
     }
 
@@ -310,13 +310,17 @@ public class ClientTUI implements View {
     @Override
     public void showStarterPlacement() {
         ClientUtil.printCard(controller.getMainPlayer().getStarterCard());
-        setAvailableCommands();
+
+        availableCommands.add(GameCommands.COLOR);
+        availableCommands.remove(GameCommands.STARTER);
     }
 
     @Override
     public void showUpdateColor() { //showUpdateColor shows the new scoreBoard with the updated colors
         showBoardSetUp();
-        setAvailableCommands();
+
+        availableCommands.remove(GameCommands.COLOR);
+        availableCommands.add(GameCommands.OBJECTIVE);
     }
 
     @Override
