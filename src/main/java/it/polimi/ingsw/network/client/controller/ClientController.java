@@ -233,7 +233,7 @@ public class ClientController implements ClientActions {
 
     }
 
-    public void updateAfterDraw(ClientCard drawnCard, ClientFace newTopBackDeck, ClientCard newFaceUpCard, String username, int boardPosition) throws RemoteException {
+    public void updateAfterDraw(ClientCard drawnCard, ClientFace newTopBackDeck, ClientCard newFaceUpCard, String username, int boardPosition) {
         assert (boardPosition <= 5 && boardPosition >= 0);
 
         game.getPlayer(username).addPlayerCard(drawnCard);
