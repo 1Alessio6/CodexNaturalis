@@ -118,6 +118,7 @@ public class ClientGame implements Serializable {
         messages = game.getMessages();
 
         this.currentPhase = game.getPhase();
+        isGameActive = game.isActive();
     }
 
     /**
