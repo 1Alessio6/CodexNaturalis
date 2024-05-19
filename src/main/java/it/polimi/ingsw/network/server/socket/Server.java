@@ -1,35 +1,19 @@
 package it.polimi.ingsw.network.server.socket;
 
 import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.controller.InvalidIdForDrawingException;
-import it.polimi.ingsw.model.InvalidGamePhaseException;
-import it.polimi.ingsw.model.NonexistentPlayerException;
-import it.polimi.ingsw.model.SuspendedGameException;
-import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.card.Color.InvalidColorException;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
-import it.polimi.ingsw.model.card.EmptyDeckException;
-import it.polimi.ingsw.model.card.InvalidCardIdException;
-import it.polimi.ingsw.model.card.InvalidFaceUpCardException;
 import it.polimi.ingsw.model.card.Side;
-import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
-import it.polimi.ingsw.model.lobby.FullLobbyException;
-import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
-import it.polimi.ingsw.model.lobby.InvalidUsernameException;
-import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.socket.ClientHandler;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.rmi.RemoteException;
-import java.util.Map;
+import java.util.List;
 
 public class Server {
-    private final static int PORT = 1234;
     private final ServerSocket listenSocket;
 
     private Controller controller;
@@ -52,20 +36,23 @@ public class Server {
     }
 
     public static void main(String[] args) throws IOException {
-        String host = args[0];
-        int port = Integer.parseInt(args[1]);
-        System.out.println("host: " + host + " waiting on port: " + port);
+        int port = Integer.parseInt(args[0]);
+        System.out.println("Server is ready on port " + port);
         ServerSocket listenSocket = new ServerSocket(port);
         new Server(listenSocket).runServer();
     }
 
-    public void connect(VirtualView client, String username) {
-        controller.handleConnection(username, client);
+    public void addClientHandler(ClientHandler clientHandler) {
 
+    }
+
+    public boolean connect(VirtualView client, String username) {
+        return controller.handleConnection(username, client);
     }
 
     public void disconnect(String username) {
         controller.handleDisconnection(username);
+        // todo. close socket and everything related to the client => username identifier for virtual view
     }
 
     public void sendPing(String username) {
