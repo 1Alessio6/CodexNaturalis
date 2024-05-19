@@ -21,15 +21,10 @@ import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 import it.polimi.ingsw.network.client.view.View;
 
 import java.rmi.RemoteException;
-import java.util.HashSet;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 public class ClientTUI implements View {
     private final Scanner console;
-    private Thread thread;
     private Set<GameCommands> availableCommands = new HashSet<>();
 
     private final ClientController controller;
@@ -57,7 +52,7 @@ public class ClientTUI implements View {
                         case DRAW -> draw();
                         case PLACE -> place();
                         case QUIT -> quit();
-                        case LOBBYSIZE -> setupLobbyPlayerNumber(Integer.parseInt(nextCommand[1]));
+                        case LOBBYSIZE -> setupLobbyPlayerNumber(Integer.parseInt(nextCommand.length == 2 ? nextCommand[1] : "0")); //todo: could be done in a better way?
                         case OBJECTIVE -> chooseObjective();
                         case STARTER -> placeStarter();
                     }
@@ -175,7 +170,7 @@ public class ClientTUI implements View {
     }
 
     private Side receiveSide() {
-        System.out.print("What side of the card you want to place, front or left?");
+        System.out.print("What side of the card you want to place, front or back?");
         return Side.valueOf(console.nextLine().toUpperCase());
     }
 
@@ -314,19 +309,23 @@ public class ClientTUI implements View {
 
     @Override
     public void showStarterPlacement() {
+        ClientUtil.printCard(controller.getMainPlayer().getStarterCard());
 
-        setAvailableCommands();
+        availableCommands.add(GameCommands.COLOR);
+        availableCommands.remove(GameCommands.STARTER);
     }
 
     @Override
     public void showUpdateColor() { //showUpdateColor shows the new scoreBoard with the updated colors
         showBoardSetUp();
-        setAvailableCommands();
+
+        availableCommands.remove(GameCommands.COLOR);
+        availableCommands.add(GameCommands.OBJECTIVE);
     }
 
     @Override
     public void showUpdateObjectiveCard() {
-
+        ClientUtil.printObjectiveCard(controller.getMainPlayer().getObjectiveCards().getFirst());
         setAvailableCommands();
     }
 

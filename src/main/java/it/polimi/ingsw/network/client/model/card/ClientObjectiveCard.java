@@ -15,6 +15,7 @@ public class ClientObjectiveCard implements Serializable {
     private final Map<Position, CardColor> positionCondition;
 
     private final Map<Symbol,Integer> resourceCondition;
+    private int score;
 
 
 
@@ -40,4 +41,6 @@ public class ClientObjectiveCard implements Serializable {
     public Map<Position, CardColor> getPositionCondition() {
         return positionCondition;
     }
+
+    public int getScore(){return score;}
 }
