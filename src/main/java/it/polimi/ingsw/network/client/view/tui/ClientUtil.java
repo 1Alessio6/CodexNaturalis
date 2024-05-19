@@ -386,7 +386,7 @@ public class ClientUtil {
         return switch (color) {
             case RED -> ANSIColor.RED_BACKGROUND_BRIGHT;
             case BLUE -> ANSIColor.BLUE_BACKGROUND_BRIGHT;
-            case GREEEN -> ANSIColor.GREEN_BACKGROUND_BRIGHT;
+            case GREEN -> ANSIColor.GREEN_BACKGROUND_BRIGHT;
             case YELLOW -> ANSIColor.YELLOW_BACKGROUND_BRIGHT;
             case BLACK -> ANSIColor.BLACK_BOLD_BRIGHT;
         };
