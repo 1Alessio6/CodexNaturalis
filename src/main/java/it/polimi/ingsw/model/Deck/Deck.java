@@ -98,36 +98,6 @@ public class Deck<T> {
         return deck.isEmpty() ? null : deck.peek();
     }
 
-    //    /**
-//     * Creates the actual list to be passed to Deck constructor
-//     */
-//    public static List<Card> createCardList(){
-//        // todo: replace with correct paths
-//        List<Front> fronts = createFaceList("aa");
-//        List<Back> backs = createFaceList("aa");
-//
-//        List<Card> cardList = new ArrayList<>();
-//        for (int i = 0; i < fronts.size(); ++i){
-//            cardList.add(new Card(fronts.removeFirst(), backs.removeFirst()));
-//        }
-//
-//        return cardList;
-//    }
-//
-//    /**
-//     * Creates the actual objective list to be passed to Deck constructor
-//     */
-//    public static List<ObjectiveCard> createObjectiveCardList(){
-//        Gson gson = new Gson();
-//        List<ObjectiveCard> objectives = new ArrayList<>();
-//
-//        // todo: replace with correct paths
-//        objectives.addAll(createFaceList("path1"));
-//        objectives.addAll(createFaceList("path2"));
-//
-//        return objectives;
-//    }
-//
     public boolean isEmpty() {
         return deck.isEmpty();
     }
