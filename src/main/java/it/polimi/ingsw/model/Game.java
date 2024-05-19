@@ -104,7 +104,7 @@ public class Game {
                 Arrays.asList(
                         PlayerColor.RED,
                         PlayerColor.BLUE,
-                        PlayerColor.GREEEN,
+                        PlayerColor.GREEN,
                         PlayerColor.YELLOW
                 )
         );
