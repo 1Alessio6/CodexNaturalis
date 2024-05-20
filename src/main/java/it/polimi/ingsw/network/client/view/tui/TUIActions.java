@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.client.view.tui;
 
-public enum GameCommands {
+public enum TUIActions {
     COLOR("choose color"),
     DRAW("draw a card"),
     HELP("show this message"),
@@ -14,7 +14,7 @@ public enum GameCommands {
 
     private final String description;
 
-    GameCommands(String description) {
+    TUIActions(String description) {
         this.description = description;
     }
 

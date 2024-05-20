@@ -12,6 +12,7 @@ import it.polimi.ingsw.model.card.NotExistingFaceUp;
 import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
+import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.model.lobby.FullLobbyException;
 import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
@@ -25,7 +26,7 @@ import java.util.*;
 
 public class ClientTUI implements View {
     private final Scanner console;
-    private Set<GameCommands> availableCommands = new HashSet<>();
+    private Set<TUIActions> availableActions = new HashSet<>();
 
     private final ClientController controller;
 
@@ -33,8 +34,8 @@ public class ClientTUI implements View {
         this.controller = controller;
         this.console = new Scanner(System.in);
 
-        availableCommands.add(GameCommands.HELP);
-        availableCommands.add(GameCommands.QUIT);
+        availableActions.add(TUIActions.HELP);
+        availableActions.add(TUIActions.QUIT);
     }
 
     private void parseGameCommands() {
@@ -44,10 +45,10 @@ public class ClientTUI implements View {
             String[] nextCommand = console.nextLine().toLowerCase().split(" ", 2);
 
             try {
-                if (availableCommands.contains(GameCommands.valueOf(nextCommand[0].toUpperCase()))) {
-                    switch (GameCommands.valueOf(nextCommand[0].toUpperCase())) {
+                if (availableActions.contains(TUIActions.valueOf(nextCommand[0].toUpperCase()))) {
+                    switch (TUIActions.valueOf(nextCommand[0].toUpperCase())) {
                         case COLOR -> chooseColor();
-                        case HELP -> ClientUtil.printHelpCommands(availableCommands);
+                        case HELP -> ClientUtil.printHelpCommands(availableActions);
                         case M, PM -> sendMessage(nextCommand);
                         case DRAW -> draw();
                         case PLACE -> place();
@@ -59,13 +60,13 @@ public class ClientTUI implements View {
                 } else {
                     System.out.println("Invalid game command");
                     // print help for consented commands
-                    ClientUtil.printHelpCommands(availableCommands);
+                    ClientUtil.printHelpCommands(availableActions);
                 }
 
             } catch (IllegalArgumentException e) {
                 System.out.println("Invalid game command");
                 // print help for consented commands
-                ClientUtil.printHelpCommands(availableCommands);
+                ClientUtil.printHelpCommands(availableActions);
             }
         }
     }
@@ -94,7 +95,7 @@ public class ClientTUI implements View {
         try {
             controller.setPlayersNumber(size);
             // remove manually: only creator has this command
-            availableCommands.remove(GameCommands.LOBBYSIZE);
+            availableActions.remove(TUIActions.LOBBYSIZE);
         } catch (InvalidPlayersNumberException | RemoteException | NumberFormatException e) {
             System.err.println(e.getMessage());
         }
@@ -189,7 +190,7 @@ public class ClientTUI implements View {
      * This method is invoked in a new thread at the beginning of a game
      * Commands can't be interrupted
      */
-    private void beginCommandAcquisition() {
+    private void beginInputAcquisition() {
         // todo: synchronize to have correct command list
         new Thread(this::parseGameCommands).start();
     }
@@ -206,26 +207,30 @@ public class ClientTUI implements View {
                 System.err.println(e.getMessage());
             }
         }
-        beginCommandAcquisition();
+        beginInputAcquisition();
     }
 
-    private void setAvailableCommands() {
-        Set<GameCommands> availableCommands = new HashSet<>();
-        availableCommands.add(GameCommands.HELP);
-        availableCommands.add(GameCommands.QUIT);
+    private void setAvailableActions() {
+        GamePhase currentPhase = controller.getGamePhase();
 
-        if (controller.getGamePhase() != null) {
-            availableCommands.add(GameCommands.M);
-            availableCommands.add(GameCommands.PM);
+        Set<TUIActions> availableCommands = new HashSet<>();
+        availableCommands.add(TUIActions.HELP);
+        availableCommands.add(TUIActions.QUIT);
+
+        if (currentPhase != null) {
+            availableCommands.add(TUIActions.M);
+            availableCommands.add(TUIActions.PM);
         }
 
-        switch (controller.getGamePhase()) {
-            case DrawNormal -> availableCommands.add(GameCommands.DRAW);
-            case Setup -> availableCommands.add(GameCommands.STARTER);
-            case PlaceNormal, PlaceAdditional -> availableCommands.add(GameCommands.PLACE);
+        switch (currentPhase) {
+            case DrawNormal -> availableCommands.add(TUIActions.DRAW);
+            case Setup -> availableCommands.add(TUIActions.STARTER);
+            case PlaceNormal, PlaceAdditional -> availableCommands.add(TUIActions.PLACE);
+            case null -> {}
+            case End -> {}
         }
 
-        this.availableCommands = availableCommands;
+        this.availableActions = availableCommands;
     }
 
     private String receiveUsername(){
@@ -246,7 +251,7 @@ public class ClientTUI implements View {
         System.out.println("Type 'lobbysize <number>' to set the lobby size");
 
         // add manually: only creator has this command
-        availableCommands.add(GameCommands.LOBBYSIZE);
+        availableActions.add(TUIActions.LOBBYSIZE);
     }
 
     @Override
@@ -258,7 +263,7 @@ public class ClientTUI implements View {
     public void showUpdateAfterConnection() {
         System.out.println("Game is starting: you just joined");
 
-        setAvailableCommands();
+        setAvailableActions();
     }
 
     @Override
@@ -311,8 +316,8 @@ public class ClientTUI implements View {
 
         // update only user that placed the card
         if (controller.getMainPlayerUsername().equals(username)) {
-            availableCommands.add(GameCommands.COLOR);
-            availableCommands.remove(GameCommands.STARTER);
+            availableActions.add(TUIActions.COLOR);
+            availableActions.remove(TUIActions.STARTER);
 
         }
     }
@@ -322,27 +327,29 @@ public class ClientTUI implements View {
         showBoardSetUp();
 
         if (controller.getMainPlayerUsername().equals(username)) {
-            availableCommands.remove(GameCommands.COLOR);
-            availableCommands.add(GameCommands.OBJECTIVE);
+            availableActions.remove(TUIActions.COLOR);
+            availableActions.add(TUIActions.OBJECTIVE);
         }
     }
 
     @Override
     public void showUpdateObjectiveCard() {
         ClientUtil.printObjectiveCard(controller.getMainPlayer().getObjectiveCards().getFirst());
-        setAvailableCommands();
+
+        // remove action: now actions will be available after current player update
+        availableActions.remove(TUIActions.OBJECTIVE);
     }
 
     @Override
     public void showUpdateAfterPlace() {
 
-        setAvailableCommands();
+        setAvailableActions();
     }
 
     @Override
     public void showUpdateAfterDraw() {
 
-        setAvailableCommands();
+        setAvailableActions();
     }
 
     @Override
@@ -352,7 +359,9 @@ public class ClientTUI implements View {
 
     @Override
     public void showUpdateCurrentPlayer() {
-        System.out.println("\u001B[1mPlayer: \u001B[0m\n" + this.controller.getMainPlayerUsername());
+        System.out.println("It's " + this.controller.getCurrentPlayerUsername() + "'s turn");
+
+        setAvailableActions();
     }
 
     @Override

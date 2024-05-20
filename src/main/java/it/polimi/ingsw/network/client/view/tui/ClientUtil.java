@@ -34,8 +34,8 @@ public class ClientUtil {
     static String four = "\uD835\uDFD2";
     static String five = "\uD835\uDFD3";
 
-    public static void printHelpCommands(Set<GameCommands> consentedCommands) {
-        for (GameCommands command : consentedCommands) {
+    public static void printHelpCommands(Set<TUIActions> consentedCommands) {
+        for (TUIActions command : consentedCommands) {
             System.out.println(command.toString() + ": " + command.getDescription());
         }
     }
