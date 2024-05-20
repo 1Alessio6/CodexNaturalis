@@ -1,10 +1,6 @@
 package it.polimi.ingsw.network.client.view;
 
-import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.network.VirtualView;
-import it.polimi.ingsw.network.client.controller.ClientController;
-
-import java.util.List;
 
 
 /**
@@ -14,40 +10,50 @@ import java.util.List;
 public interface View {
 
     //method used to read client input
-    public void run(VirtualView client);
+    void run(VirtualView client);
 
     //method used to update after a controller update, invoked by the client class
 
-    public void showUpdatePlayersInLobby();
+    void showUpdatePlayersInLobby();
 
-    public void showUpdateCreator();
+    void showUpdateCreator();
 
-    public void showUpdateAfterLobbyCrash();
+    void showUpdateAfterLobbyCrash();
 
-    public void showUpdateAfterConnection();
+    void showUpdateAfterConnection();
 
-    public void showUpdatePlayerStatus();
+    void showUpdatePlayerStatus();
 
-    public void showInitialPlayerStatus();
+    void showInitialPlayerStatus();
 
-    public void showBoardSetUp();
+    void showBoardSetUp();
 
-    public void showStarterPlacement();
+    /**
+     * Method used to show starter placement, and update availableActions for the player notified.
+     * This is a broadcast update
+     * @param username of the player that placed the card
+     */
+    void showStarterPlacement(String username);
 
-    public void showUpdateColor();
+    /**
+     * Method used to show chosen color, and update availableActions for the player notified.
+     * This is a broadcast update
+     * @param username of the player that chose the color
+     */
+    void showUpdateColor(String username);
 
-    public void showUpdateObjectiveCard();
+    void showUpdateObjectiveCard();
 
-    public void showUpdateAfterPlace();
+    void showUpdateAfterPlace();
 
-    public void showUpdateAfterDraw();
+    void showUpdateAfterDraw();
 
-    public void showUpdateChat();
+    void showUpdateChat();
 
-    public void showUpdateCurrentPlayer();
+    void showUpdateCurrentPlayer();
 
-    public void showUpdateSuspendedGame();
+    void showUpdateSuspendedGame();
 
-    public void showWinners();
+    void showWinners();
 
 }

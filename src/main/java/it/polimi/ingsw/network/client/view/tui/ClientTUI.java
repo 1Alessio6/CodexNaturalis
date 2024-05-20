@@ -83,9 +83,9 @@ public class ClientTUI implements View {
     private void chooseObjective() {
         System.out.println("Choose objective idx: ");
         try {
-            int objectiveIdx = console.nextInt(); // starting from 1
+            int objectiveIdx = Integer.parseInt(console.nextLine()); // starting from 1
             controller.placeObjectiveCard(objectiveIdx - 1);
-        } catch (RemoteException | InvalidGamePhaseException | SuspendedGameException e) {
+        } catch (RemoteException | InvalidGamePhaseException | SuspendedGameException | NumberFormatException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -101,15 +101,13 @@ public class ClientTUI implements View {
     }
 
     private void chooseColor() {
+        System.out.println("Choose color: ");
         try {
-            controller.chooseColor(receiveColor());
+            PlayerColor color = PlayerColor.valueOf(console.nextLine().toUpperCase());
+            controller.chooseColor(color);
         } catch (InvalidColorException | RemoteException | InvalidGamePhaseException | SuspendedGameException | IllegalArgumentException e) {
             System.err.println(e.getMessage());
         }
-    }
-
-    private PlayerColor receiveColor() throws IllegalArgumentException {
-        return PlayerColor.valueOf(console.nextLine());
     }
 
     private void sendMessage(String[] command) {
@@ -135,18 +133,14 @@ public class ClientTUI implements View {
     }
 
     private void draw() {
+        System.out.print("Insert the position of the card you want to draw: ");
         try {
-            int drawFromId = getDrawPosition();
+            int drawFromId = Integer.parseInt(console.nextLine());
             controller.draw(drawFromId);
         } catch (InvalidIdForDrawingException | EmptyDeckException | NotExistingFaceUp | RemoteException |
                  InvalidGamePhaseException | SuspendedGameException e) {
             System.out.println(e.getMessage());
         }
-    }
-
-    private int getDrawPosition() {
-        System.out.print("Insert the position of the card you want to draw: ");
-        return console.nextInt();
     }
 
     private void place() {
@@ -176,7 +170,7 @@ public class ClientTUI implements View {
 
     private int receivePlayerCardPosition() {
         System.out.print("Enter card position in your hand: ");
-        int cardPosition = console.nextInt();
+        int cardPosition = Integer.parseInt(console.nextLine());
 
         if(cardPosition >= 1 && cardPosition <= 3) return cardPosition;
         // todo: change exception
@@ -185,6 +179,7 @@ public class ClientTUI implements View {
 
     private Position receivePosition() {
         System.out.print("Insert position, with x and y space separated (e.g.: 1 2): ");
+        // todo: handle wrong input
         int x = console.nextInt();
         int y = console.nextInt();
         return new Position(x, y);
@@ -307,20 +302,29 @@ public class ClientTUI implements View {
         System.out.println(str);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void showStarterPlacement() {
+    public void showStarterPlacement(String username) {
         ClientUtil.printCard(controller.getMainPlayer().getStarterCard());
 
-        availableCommands.add(GameCommands.COLOR);
-        availableCommands.remove(GameCommands.STARTER);
+        // update only user that placed the card
+        if (controller.getMainPlayerUsername().equals(username)) {
+            availableCommands.add(GameCommands.COLOR);
+            availableCommands.remove(GameCommands.STARTER);
+
+        }
     }
 
     @Override
-    public void showUpdateColor() { //showUpdateColor shows the new scoreBoard with the updated colors
+    public void showUpdateColor(String username) { //showUpdateColor shows the new scoreBoard with the updated colors
         showBoardSetUp();
 
-        availableCommands.remove(GameCommands.COLOR);
-        availableCommands.add(GameCommands.OBJECTIVE);
+        if (controller.getMainPlayerUsername().equals(username)) {
+            availableCommands.remove(GameCommands.COLOR);
+            availableCommands.add(GameCommands.OBJECTIVE);
+        }
     }
 
     @Override

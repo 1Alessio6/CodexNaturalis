@@ -86,7 +86,7 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     @Override
     public void showUpdateColor(PlayerColor color, String username) throws RemoteException {
         controller.updateColor(color, username);
-        clientView.showUpdateColor();
+        clientView.showUpdateColor(username);
     }
 
     @Override
@@ -101,7 +101,12 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     @Override
     public void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide, Position position) throws RemoteException {
         controller.updateAfterPlace(positionToCornerCovered, newAvailablePositions, newResources, points, username, placedCard, placedSide, position);
-        clientView.showUpdateAfterPlace();
+
+        if (controller.getGamePhase().equals(GamePhase.Setup)){
+            clientView.showStarterPlacement(username);
+        } else {
+            clientView.showUpdateAfterPlace();
+        }
     }
 
     @Override
