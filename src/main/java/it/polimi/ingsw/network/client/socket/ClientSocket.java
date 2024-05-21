@@ -28,7 +28,60 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 
-public class ClientSocket implements VirtualView {
+public class ClientSocket extends Client implements VirtualView {
+    private Socket socket;
+    private PrintWriter out;
+    private BufferedReader in;
+    private HeartBeat heartBeat;
+    private String name;
+
+    public ClientSocket(String host, Integer port) throws UnReachableServerException {
+        super(host, port);
+        heartBeat = new HeartBeat(this);
+        heartBeat.addHeartBeatListener("server", server);
+    }
+
+    @Override
+    public void runView() {
+        ClientController controller = clientView.run(this);
+        name = controller.getMainPlayerUsername();
+        clientView.beginCommandAcquisition();
+        heartBeat.startPing(name);
+    }
+
+    @Override
+    protected VirtualServer connect(String ip, Integer port) {
+        System.out.println("Connect to ip " + ip + " at port " + port);
+        ServerHandler serverHandler = null;
+
+        try (
+                Socket socket = new Socket(ip, port);
+                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        ) {
+            serverHandler = new ServerHandler(this, in, out);
+            this.socket = socket;
+            this.out = out;
+            this.in = in;
+            new Thread(serverHandler::hear);
+            return serverHandler;
+        } catch (UnknownHostException e) {
+            System.err.println("Don't know about host " + ip);
+        } catch (IOException e) {
+            System.err.println("Couldn't get I/O for the connection to " + ip);
+        }
+        return null;
+    }
+
+ //   public void terminateConnection() {
+ //       try {
+ //           in.close();
+ //           out.close();
+ //           socket.close();
+ //       } catch (IOException ignored) {
+ //       }
+ //   }
+
     @Override
     public void updateCreator() {
         clientView.showUpdateCreator();
