@@ -7,20 +7,21 @@ import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
-import it.polimi.ingsw.network.heartbeat.HeartBeat;
-import it.polimi.ingsw.network.heartbeat.PingReceiver;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.*;
 
-public class ServerRMI implements VirtualServer, PingReceiver {
-    private final static int PORT = 1234;
+public class ServerRMI implements VirtualServer{
     private final Controller myController;
     private final static String SERVER_NAME = "ServerRmi";
-    private final HeartBeat heartBeat;
+    private final Object lockOnClientsNetworkStatus;
+    private final Map<String, Timer> timerForActiveClients;
+    private final Map<String, VirtualView> activeClients;
+    private static final int DELAY_FOR_CLIENTS_RESPONSE = 10000;
 
     public static String getServerName() {
         return SERVER_NAME;
@@ -28,22 +29,25 @@ public class ServerRMI implements VirtualServer, PingReceiver {
 
     public ServerRMI() {
         this.myController = new Controller();
-        heartBeat = new HeartBeat(this);
+        timerForActiveClients = new HashMap<>();
+        activeClients = new HashMap<>();
+        lockOnClientsNetworkStatus = new Object();
     }
 
     public static void main(String[] args) {
         ServerRMI myServer = new ServerRMI();
         VirtualServer stub;
+        int port = Integer.parseInt(args[0]);
 
         try {
-            stub = (VirtualServer) UnicastRemoteObject.exportObject(myServer, PORT);
+            stub = (VirtualServer) UnicastRemoteObject.exportObject(myServer, port);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
 
         Registry registry;
         try {
-            registry = LocateRegistry.createRegistry(PORT);
+            registry = LocateRegistry.createRegistry(port);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
@@ -61,18 +65,20 @@ public class ServerRMI implements VirtualServer, PingReceiver {
     public void connect(VirtualView client, String username) throws RemoteException {
         boolean accepted = myController.handleConnection(username, client);
         if (accepted) {
-            heartBeat.addTimerFor(username, client);
+            synchronized (lockOnClientsNetworkStatus) {
+                timerForActiveClients.put(username, new Timer());
+                activeClients.put(username, client);
+            }
         }
     }
 
     private void handleDisconnection(String disconnectedUser) {
         myController.handleDisconnection(disconnectedUser);
-        heartBeat.removeTimerFor(disconnectedUser);
-    }
-
-    @Override
-    public void handleUnresponsiveness(String unresponsiveUser) {
-        handleDisconnection(unresponsiveUser);
+        synchronized (lockOnClientsNetworkStatus) {
+            timerForActiveClients.remove(disconnectedUser);
+            activeClients.remove(disconnectedUser);
+        }
+        System.out.println("User " + disconnectedUser + " left the server :(");
     }
 
     @Override
@@ -81,8 +87,24 @@ public class ServerRMI implements VirtualServer, PingReceiver {
     }
 
     @Override
-    public void sendPing(String username) throws RemoteException{
-        heartBeat.registerResponse(username);
+    public void receivePing(String username) throws RemoteException {
+        synchronized (lockOnClientsNetworkStatus) {
+            try {
+                activeClients.get(username).notifyStillActive("server");
+                Timer clientTimer = timerForActiveClients.get(username);
+                clientTimer.cancel();
+                clientTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        handleDisconnection(username);
+                    }
+                }, DELAY_FOR_CLIENTS_RESPONSE);
+            } catch (RemoteException e) {
+                activeClients.remove(username);
+                timerForActiveClients.get(username).cancel();
+                timerForActiveClients.remove(username);
+            }
+        }
     }
 
     @Override
