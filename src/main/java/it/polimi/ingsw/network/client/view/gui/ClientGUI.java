@@ -5,17 +5,11 @@ import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.view.View;
 import it.polimi.ingsw.network.server.rmi.ServerRMI;
 import javafx.application.Application;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.io.IOException;
 import java.util.Objects;
 
 public class ClientGUI extends Application implements View {
@@ -52,7 +46,12 @@ public class ClientGUI extends Application implements View {
     }
 
     @Override
-    public void run(VirtualView client) {
+    public ClientController run(VirtualView client) {
+        return controller;
+    }
+
+    @Override
+    public void showServerCrash() {
 
     }
 
@@ -133,6 +132,11 @@ public class ClientGUI extends Application implements View {
 
     @Override
     public void showWinners() {
+
+    }
+
+    @Override
+    public void beginCommandAcquisition() {
 
     }
 }

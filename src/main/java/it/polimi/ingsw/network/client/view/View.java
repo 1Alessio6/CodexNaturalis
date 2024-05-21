@@ -1,10 +1,7 @@
 package it.polimi.ingsw.network.client.view;
 
-import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.controller.ClientController;
-
-import java.util.List;
 
 
 /**
@@ -14,9 +11,10 @@ import java.util.List;
 public interface View {
 
     //method used to read client input
-    public void run(VirtualView client);
+    public ClientController run(VirtualView client);
 
     //method used to update after a controller update, invoked by the client class
+    public void showServerCrash();
 
     public void showUpdatePlayersInLobby();
 
@@ -49,5 +47,7 @@ public interface View {
     public void showUpdateSuspendedGame();
 
     public void showWinners();
+
+    public void beginCommandAcquisition();
 
 }

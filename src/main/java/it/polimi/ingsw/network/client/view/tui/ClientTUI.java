@@ -194,13 +194,15 @@ public class ClientTUI implements View {
      * This method is invoked in a new thread at the beginning of a game
      * Commands can't be interrupted
      */
-    private void beginCommandAcquisition() {
+    @Override
+    public void beginCommandAcquisition() {
         // todo: synchronize to have correct command list
         new Thread(this::parseGameCommands).start();
     }
 
+
     @Override
-    public void run(VirtualView client) {
+    public ClientController run(VirtualView client) {
         // connection logic
         while(true) {
             try {
@@ -211,7 +213,13 @@ public class ClientTUI implements View {
                 System.err.println(e.getMessage());
             }
         }
-        beginCommandAcquisition();
+        //beginCommandAcquisition();
+        return controller;
+    }
+
+    @Override
+    public void showServerCrash() {
+        System.err.println("Server is crashed. To connect again you have to join the game");
     }
 
     private void setAvailableCommands() {
