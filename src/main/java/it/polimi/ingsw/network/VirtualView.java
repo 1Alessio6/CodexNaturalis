@@ -74,5 +74,5 @@ public interface VirtualView extends Remote {
 
     void reportError(String details) throws RemoteException;
 
-    void notifyStillActive(String senderName) throws RemoteException;
+    void notifyStillActive() throws RemoteException;
 }

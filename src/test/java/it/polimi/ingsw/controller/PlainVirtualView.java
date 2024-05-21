@@ -89,7 +89,7 @@ public class PlainVirtualView implements VirtualView {
     }
 
     @Override
-    public void notifyStillActive(String senderName) throws RemoteException {
+    public void notifyStillActive() throws RemoteException {
 
     }
 }
