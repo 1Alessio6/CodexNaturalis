@@ -9,6 +9,7 @@ public enum ANSIColor {
     BLUE("\033[0;34m"),
     PURPLE("\033[0;35m"),
     BLACK_BOLD("\033[1m"),
+    ITALIC("\033[3m"),
     RED_BACKGROUND_BRIGHT("\033[0;101m"),
     BLUE_BACKGROUND_BRIGHT("\033[0;104m"),
     YELLOW_BACKGROUND_BRIGHT("\033[0;103m"),
