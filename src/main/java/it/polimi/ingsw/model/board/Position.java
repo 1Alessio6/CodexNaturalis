@@ -1,6 +1,12 @@
 package it.polimi.ingsw.model.board;
 
+import it.polimi.ingsw.model.card.CornerPosition;
+import org.controlsfx.control.spreadsheet.SpreadsheetCell;
+
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class represents a position on a hypothetical Cartesian plane with x and y axes.
@@ -49,7 +55,6 @@ public class Position implements Serializable {
     }
 
 
-    //todo check if getClass in equals method should be remove
     /**
      * Checks if two objects are equal.
      * Overrides the equals() method in the Object class.
@@ -104,5 +109,14 @@ public class Position implements Serializable {
      */
     public static Position sum(Position lhs, Position rhs) {
         return new Position(lhs.x + rhs.x, lhs.y + rhs.y);
+    }
+
+    public static List<Position> getOffsets() {
+        return Arrays.asList(
+                new Position(1, -1),
+                new Position(1, 1),
+                new Position(-1, 1),
+                new Position(-1, -1)
+        );
     }
 }
