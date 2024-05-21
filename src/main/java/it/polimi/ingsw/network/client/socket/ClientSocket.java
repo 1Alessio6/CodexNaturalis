@@ -7,35 +7,48 @@ import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
+import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
+import it.polimi.ingsw.network.client.Client;
+import it.polimi.ingsw.network.client.UnReachableServerException;
+import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.model.ClientGame;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
+import it.polimi.ingsw.network.heartbeat.HeartBeat;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 
 public class ClientSocket implements VirtualView {
     @Override
-    public void updateCreator() throws RemoteException {
-
+    public void updateCreator() {
+        clientView.showUpdateCreator();
     }
 
     @Override
-    public void updateAfterLobbyCrash() throws RemoteException {
-
+    public void updateAfterLobbyCrash() {
+        clientView.showUpdateAfterLobbyCrash();
     }
 
     @Override
     public void updateAfterConnection(ClientGame clientGame) {
-
+        controller.updateAfterConnection(clientGame);
+        clientView.showUpdateAfterConnection();
     }
 
     @Override
-    public void showUpdatePlayersInLobby(List<String> usernames) throws RemoteException {
-
+    public void showUpdatePlayersInLobby(List<String> usernames) {
+        controller.updatePlayersInLobby(usernames);
+        clientView.showUpdatePlayersInLobby();
     }
 
  //   @Override
@@ -44,8 +57,9 @@ public class ClientSocket implements VirtualView {
  //   }
 
     @Override
-    public void showUpdatePlayerStatus(boolean isConnected, String username) throws RemoteException {
-
+    public void showUpdatePlayerStatus(boolean isConnected, String username){
+        controller.updatePlayerStatus(isConnected, username);
+        clientView.showUpdatePlayerStatus();
     }
 
  //   @Override
@@ -54,27 +68,36 @@ public class ClientSocket implements VirtualView {
  //   }
 
     @Override
-    public void showUpdateColor(PlayerColor color, String username) throws RemoteException {
-
+    public void showUpdateColor(PlayerColor color, String username) {
+        controller.updateColor(color, username);
+        clientView.showUpdateColor();
     }
 
     @Override
     public void showUpdateObjectiveCard(ClientObjectiveCard chosenObjective, String username) {
-
+        controller.updateObjectiveCard(chosenObjective, username);
+        //todo: if the objective card isn't of the main player the view should not show the card
+        if(controller.getMainPlayerUsername().equals(username)){
+            clientView.showUpdateObjectiveCard();
+        }
     }
 
     @Override
-    public void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide, Position position) throws RemoteException {
-
+    public void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide, Position position){
+        controller.updateAfterPlace(positionToCornerCovered, newAvailablePositions, newResources, points, username, placedCard, placedSide, position);
+        clientView.showUpdateAfterPlace();
     }
 
     @Override
-    public void showUpdateAfterDraw(ClientCard drawnCard, ClientFace newTopDeck, ClientCard newFaceUpCard, String username, int boardPosition) throws RemoteException {
-
+    public void showUpdateAfterDraw(ClientCard drawnCard, ClientFace newTopDeck, ClientCard newFaceUpCard, String username, int boardPosition) {
+        controller.updateAfterDraw(drawnCard,newTopDeck,newFaceUpCard,username,boardPosition);
+        clientView.showUpdateAfterDraw();
     }
 
-    public void showUpdateChat(Message message) throws RemoteException {
-
+    @Override
+    public void showUpdateChat(Message message) {
+        controller.updateChat(message);
+        clientView.showUpdateChat();
     }
 
     //@Override
@@ -83,22 +106,42 @@ public class ClientSocket implements VirtualView {
     //}
 
     @Override
-    public void showUpdateCurrentPlayer(int currentPlayerIdx, GamePhase phase) throws RemoteException {
-
+    public void showUpdateCurrentPlayer(int currentPlayerIdx, GamePhase phase) {
+        controller.updateCurrentPlayer(currentPlayerIdx,phase);
+        clientView.showUpdateCurrentPlayer();
     }
 
     @Override
-    public void showUpdateSuspendedGame() throws RemoteException {
-
+    public void showUpdateSuspendedGame() {
+        controller.updateSuspendedGame();
+        clientView.showUpdateSuspendedGame();
     }
 
     @Override
-    public void showWinners(List<String> winners) throws RemoteException {
-
+    public void showWinners(List<String> winners) {
+        clientView.showWinners();
     }
 
     @Override
     public void reportError(String details) {
+        System.err.println(details);
+    }
 
+    @Override
+    public void notifyStillActive(String senderName) throws RemoteException {
+        heartBeat.registerResponse(senderName);
+    }
+
+    @Override
+    public void handleUnresponsiveness(String name) {
+        clientView.showServerCrash();
+        heartBeat.shutDown();
+        try {
+            in.close();
+            out.close();
+            socket.close();
+        } catch (IOException e) {
+        }
+        System.exit(1);
     }
 }
