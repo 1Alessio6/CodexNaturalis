@@ -91,12 +91,12 @@ public class ClientGUI extends Application implements View {
     }
 
     @Override
-    public void showStarterPlacement() {
+    public void showStarterPlacement(String username) {
 
     }
 
     @Override
-    public void showUpdateColor() {
+    public void showUpdateColor(String username) {
 
     }
 
