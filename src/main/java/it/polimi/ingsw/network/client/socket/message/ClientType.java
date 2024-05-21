@@ -14,5 +14,6 @@ public enum ClientType {
     SHOW_UPDATE_CURRENT_PLAYER,
     SHOW_UPDATE_SUSPENDED_GAME,
     SHOW_WINNERS,
+    SEND_PING,
     ERROR
 }
