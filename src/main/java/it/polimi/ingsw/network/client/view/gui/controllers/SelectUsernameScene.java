@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.controller.ClientController;
+import it.polimi.ingsw.network.client.view.gui.ClientGUI;
 import javafx.fxml.FXML;
 
 import javafx.event.ActionEvent;
@@ -24,29 +25,15 @@ import java.util.Objects;
 
 public class SelectUsernameScene {
 
-    ClientController controller;
-
-    VirtualView client;
-
-    Stage primaryStage;
+    ClientGUI gui;
 
     @FXML
     TextField usernameCatcher;
 
-    public SelectUsernameScene(){ //todo try to find a way to remove this constructor
+    public SelectUsernameScene(){}
 
-    }
-
-    public void setPrimaryStage(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-    }
-
-    public SelectUsernameScene(ClientController controller){
-        this.controller = controller;
-    }
-
-    public void setClient(VirtualView client){
-        this.client = client;
+    public void setGui(ClientGUI gui) {
+        this.gui = gui;
     }
 
     @FXML
@@ -55,7 +42,7 @@ public class SelectUsernameScene {
         if(event.getCode() == KeyCode.ENTER){
 
             try{
-                loadScene("/gui/ConnectionScene.fxml");
+                gui.loadScene("/gui/ConnectionScene.fxml");
             }catch (IOException e){
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("IOException");
@@ -64,7 +51,7 @@ public class SelectUsernameScene {
 
 
             try{
-                controller.connect(client, usernameCatcher.getPromptText());
+                gui.getController().connect(gui.getClient(), usernameCatcher.getPromptText());
             }catch (RemoteException e){
                 //todo add a screen
             }
@@ -82,15 +69,7 @@ public class SelectUsernameScene {
         }
     }
 
-    private void loadScene(String fxmlPath) throws IOException {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxmlPath)));
-        primaryStage.setTitle("Codex Naturalis");
 
-        Scene scene = new Scene(root);
-        primaryStage.setScene(scene);
-        primaryStage.show();
-
-    }
 
 
 
