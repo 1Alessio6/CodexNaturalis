@@ -3,11 +3,11 @@ package it.polimi.ingsw.network.client;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.view.View;
-import it.polimi.ingsw.network.heartbeat.PingReceiver;
+import it.polimi.ingsw.network.heartbeat.HeartBeatHandler;
 
 import java.rmi.RemoteException;
 
-public abstract class Client implements PingReceiver {
+public abstract class Client implements HeartBeatHandler {
     protected ClientController controller;
     protected View clientView;
     protected VirtualServer server;

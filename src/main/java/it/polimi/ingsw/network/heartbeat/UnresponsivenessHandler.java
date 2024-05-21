@@ -3,17 +3,17 @@ package it.polimi.ingsw.network.heartbeat;
 import java.util.TimerTask;
 
 class UnresponsivenessHandler extends TimerTask {
-    private PingReceiver pingReceiver;
+    private HeartBeatHandler heartBeatHandler;
     private String user;
 
-    public UnresponsivenessHandler(PingReceiver pingReceiver, String user) {
-        this.pingReceiver = pingReceiver;
+    public UnresponsivenessHandler(HeartBeatHandler heartBeatHandler, String user) {
+        this.heartBeatHandler = heartBeatHandler;
         this.user = user;
     }
 
     @Override
     public void run() {
-        pingReceiver.handleUnresponsiveness(user);
+        heartBeatHandler.handleUnresponsiveness(user);
     }
 }
 
