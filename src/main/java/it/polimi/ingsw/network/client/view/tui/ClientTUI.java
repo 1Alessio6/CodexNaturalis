@@ -367,7 +367,7 @@ public class ClientTUI implements View {
 
     @Override
     public void showUpdateCurrentPlayer() {
-        System.out.println("It's " + this.controller.getCurrentPlayerUsername() + "'s turn");
+        System.out.println("It's " + this.controller.getMainPlayerUsername() + "'s turn");
 
         setAvailableActions();
     }
