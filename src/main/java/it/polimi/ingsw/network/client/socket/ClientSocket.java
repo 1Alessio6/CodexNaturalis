@@ -122,7 +122,7 @@ public class ClientSocket extends Client implements VirtualView {
     @Override
     public void showUpdateColor(PlayerColor color, String username) {
         controller.updateColor(color, username);
-        clientView.showUpdateColor();
+        clientView.showUpdateColor(username);
     }
 
     @Override
