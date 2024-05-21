@@ -18,6 +18,7 @@ import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.controller.ClientController;
+import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 import it.polimi.ingsw.network.client.view.View;
 
@@ -356,6 +357,23 @@ public class ClientTUI implements View {
 
     @Override
     public void showUpdateAfterDraw() {
+        for(ClientCard i: controller.getMainPlayer().getPlayerCards()){
+            //move cursor
+            //print
+            ClientUtil.printCard(i);
+        }
+        //move cursor
+        for(ClientCard i: controller.getFaceUpCards()){
+            ClientUtil.printCard(i);
+            //move cursor
+        }
+        //move cursor
+        //print
+        ClientUtil.printCard(controller.getGoldenDeckTopBack());
+
+        //move cursor
+        //print
+        ClientUtil.printCard(controller.getResourceDeckTopBack());
 
         setAvailableActions();
     }

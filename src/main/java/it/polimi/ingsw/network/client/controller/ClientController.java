@@ -332,4 +332,10 @@ public class ClientController implements ClientActions {
         return this.game.getPlayers();
     }
 
+   public List<ClientCard> getFaceUpCards(){return this.game.getClientBoard().getFaceUpCards();} //review
+
+   public ClientFace getGoldenDeckTopBack(){return this.game.getClientBoard().getGoldenDeckTopBack();} //review
+
+   public ClientFace getResourceDeckTopBack(){return this.game.getClientBoard().getResourceDeckTopBack();}
+
 }
