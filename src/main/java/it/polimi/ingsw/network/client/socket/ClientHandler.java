@@ -70,51 +70,37 @@ public class ClientHandler implements VirtualView {
                         break;
                     case PLACE_STARTER:
                         PlaceStarterMessage placeStarterMessage = gson.fromJson(line, PlaceStarterMessage.class);
-                        executor.submit(() -> {
-                            server.placeStarter(sender, placeStarterMessage.getSide());
-                        });
+                        executor.submit(() -> server.placeStarter(sender, placeStarterMessage.getSide()));
                         break;
                     case CHOOSE_COLOR:
                         ChooseColorMessage chooseColorMessage = gson.fromJson(line, ChooseColorMessage.class);
-                        executor.submit(() -> {
-                            server.chooseColor(sender, chooseColorMessage.getColor());
-                        });
+                        executor.submit(() -> server.chooseColor(sender, chooseColorMessage.getColor()));
                         break;
                     case PLACE_OBJECTIVE:
                         PlaceObjectiveMessage placeObjectiveMessage = gson.fromJson(line, PlaceObjectiveMessage.class);
-                        executor.submit(() -> {
-                            server.placeObjectiveCard(sender, placeObjectiveMessage.getChosenObjective());
-                        });
+                        executor.submit(() -> server.placeObjectiveCard(sender, placeObjectiveMessage.getChosenObjective()));
                         break;
                     case PLACE_CARD:
                         PlaceCardMessage placeCardMessage = gson.fromJson(line, PlaceCardMessage.class);
-                        executor.submit(() -> {
-                            server.placeCard(sender, placeCardMessage.getFrontId(), placeCardMessage.getBackId(),
-                                    placeCardMessage.getSide(), placeCardMessage.getPosition());
-                        });
+                        executor.submit(() -> server.placeCard(sender, placeCardMessage.getFrontId(), placeCardMessage.getBackId(),
+                                placeCardMessage.getSide(), placeCardMessage.getPosition()));
                         break;
                     case DRAW:
                         DrawMessage drawMessage = gson.fromJson(line, DrawMessage.class);
 
-                        executor.submit(() -> {
-                            server.draw(sender, drawMessage.getIdDraw());
-                        });
+                        executor.submit(() -> server.draw(sender, drawMessage.getIdDraw()));
                         break;
 
                     case SEND_CHAT_MESSAGE:
                         SendChatMessage sendChatMessage = gson.fromJson(line, SendChatMessage.class);
 
-                        executor.submit(() -> {
-                            server.sendMessage(sendChatMessage.getMessage());
-                        });
+                        executor.submit(() -> server.sendMessage(sendChatMessage.getMessage()));
                         break;
 
                     case SET_PLAYER_NUMBER:
                         SetPlayerNumberMessage setPlayerNumberMessage = gson.fromJson(line, SetPlayerNumberMessage.class);
 
-                        executor.submit(() -> {
-                            server.setPlayersNumber(sender, setPlayerNumberMessage.getNumPlayers());
-                        });
+                        executor.submit(() -> server.setPlayersNumber(sender, setPlayerNumberMessage.getNumPlayers()));
                         break;
 
                     case DISCONNECT:
