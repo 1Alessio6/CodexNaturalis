@@ -15,13 +15,13 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
-public class ServerRMI implements VirtualServer{
+public class ServerRMI implements VirtualServer {
     private final Controller myController;
     private final static String SERVER_NAME = "ServerRmi";
     private final Object lockOnClientsNetworkStatus;
     private final Map<String, Timer> timerForActiveClients;
     private final Map<String, VirtualView> activeClients;
-    private static final int DELAY_FOR_CLIENTS_RESPONSE = 10000;
+    private static final int DELAY_FOR_CLIENTS_RESPONSE = 20000;
 
     public static String getServerName() {
         return SERVER_NAME;
@@ -63,8 +63,10 @@ public class ServerRMI implements VirtualServer{
 
     @Override
     public void connect(VirtualView client, String username) throws RemoteException {
+        System.out.println("Received connection from " + username);
         boolean accepted = myController.handleConnection(username, client);
         if (accepted) {
+            System.out.println("User " + username + " has been accepted");
             synchronized (lockOnClientsNetworkStatus) {
                 timerForActiveClients.put(username, new Timer());
                 activeClients.put(username, client);
@@ -88,23 +90,29 @@ public class ServerRMI implements VirtualServer{
 
     @Override
     public void receivePing(String username) throws RemoteException {
-        synchronized (lockOnClientsNetworkStatus) {
-            try {
-                activeClients.get(username).notifyStillActive("server");
-                Timer clientTimer = timerForActiveClients.get(username);
-                clientTimer.cancel();
-                clientTimer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        handleDisconnection(username);
+        new Thread(
+                () -> {
+                    synchronized (lockOnClientsNetworkStatus) {
+                        try {
+                            activeClients.get(username).notifyStillActive();
+                            Timer clientTimer = timerForActiveClients.get(username);
+                            clientTimer.cancel();
+                            clientTimer = new Timer();
+                            clientTimer.schedule(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    handleDisconnection(username);
+                                }
+                            }, DELAY_FOR_CLIENTS_RESPONSE);
+                            timerForActiveClients.put(username, clientTimer);
+                        } catch (RemoteException e) {
+                            activeClients.remove(username);
+                            timerForActiveClients.get(username).cancel();
+                            timerForActiveClients.remove(username);
+                        }
                     }
-                }, DELAY_FOR_CLIENTS_RESPONSE);
-            } catch (RemoteException e) {
-                activeClients.remove(username);
-                timerForActiveClients.get(username).cancel();
-                timerForActiveClients.remove(username);
-            }
-        }
+                }
+        ).start();
     }
 
     @Override

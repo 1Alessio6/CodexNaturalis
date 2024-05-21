@@ -35,7 +35,7 @@ public class ClientHandler implements VirtualView, HeartBeatListener {
     private final Gson gson;
     private final ExecutorService executor;
     private String username;
-    private final Timer timerForClientResponse;
+    private Timer timerForClientResponse;
     private static final int DELAY_FOR_CLIENTS_RESPONSE = 10000;
 
     public ClientHandler(Server server, BufferedReader input, PrintWriter out) {
@@ -232,17 +232,20 @@ public class ClientHandler implements VirtualView, HeartBeatListener {
     }
 
     @Override
-    public void notifyStillActive(String senderName) throws RemoteException {
+    public void notifyStillActive() throws RemoteException {
 
     }
 
     @Override
     public void receivePing(String senderName) throws RemoteException {
+        // respond
         ClientPingMessage pingMessage = new ClientPingMessage(senderName);
         String jsonMessage = gson.toJson(pingMessage);
         out.println(jsonMessage);
         out.flush();
+        // update timer for new ping from the client
         timerForClientResponse.cancel();
+        timerForClientResponse = new Timer();
         timerForClientResponse.schedule(new TimerTask() {
             @Override
             public void run() {
