@@ -5,13 +5,11 @@ import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.chat.message.Message;
-import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.socket.ClientHandler;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.List;
 
 public class Server {
     private final ServerSocket listenSocket;
@@ -42,21 +40,16 @@ public class Server {
         new Server(listenSocket).runServer();
     }
 
-    public void addClientHandler(ClientHandler clientHandler) {
-
-    }
-
-    public boolean connect(VirtualView client, String username) {
-        return controller.handleConnection(username, client);
+    public boolean connect(ClientHandler client, String username) {
+        boolean status = controller.handleConnection(username, client);
+        if (status) {
+            client.addClientUsername(username);
+        }
+        return status;
     }
 
     public void disconnect(String username) {
         controller.handleDisconnection(username);
-        // todo. close socket and everything related to the client => username identifier for virtual view
-    }
-
-    public void sendPing(String username) {
-
     }
 
     public void placeStarter(String username, Side side) {
@@ -86,6 +79,4 @@ public class Server {
     public void setPlayersNumber(String username, int playersNumber) {
         controller.setPlayersNumber(username, playersNumber);
     }
-
-
 }
