@@ -26,13 +26,12 @@ import java.util.List;
 import java.util.Map;
 
 public class ClientRMI extends Client implements VirtualView {
-    private HeartBeat heartBeat;
+    private final HeartBeat heartBeat;
     private String name;
 
     public ClientRMI(String host, Integer port) throws UnReachableServerException {
         super(host, port);
-        heartBeat = new HeartBeat(this);
-        heartBeat.addHeartBeatListener("server", server);
+        heartBeat = new HeartBeat(this, server);
     }
 
     @Override
@@ -146,12 +145,12 @@ public class ClientRMI extends Client implements VirtualView {
     }
 
     @Override
-    public void notifyStillActive(String senderName) throws RemoteException {
-        heartBeat.registerResponse(senderName);
+    public void notifyStillActive() throws RemoteException {
+        heartBeat.registerResponse();
     }
 
     @Override
-    public void handleUnresponsiveness(String name) {
+    public void handleUnresponsiveness() {
         clientView.showServerCrash();
         heartBeat.shutDown();
         System.exit(1);
