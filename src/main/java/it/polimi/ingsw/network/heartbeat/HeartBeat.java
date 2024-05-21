@@ -85,4 +85,11 @@ public class HeartBeat {
                 delay
         );
     }
+
+    public synchronized void shutDown() {
+        for (Timer timer : timersForReply.values()) {
+            timer.cancel();
+        }
+        timerToNotifyPresence.cancel();
+    }
 }
