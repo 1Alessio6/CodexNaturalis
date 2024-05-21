@@ -1,28 +1,19 @@
 package it.polimi.ingsw.network.client.socket;
 
 import com.google.gson.Gson;
-import it.polimi.ingsw.controller.InvalidIdForDrawingException;
-import it.polimi.ingsw.model.InvalidGamePhaseException;
-import it.polimi.ingsw.model.NonexistentPlayerException;
-import it.polimi.ingsw.model.SuspendedGameException;
-import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.*;
-import it.polimi.ingsw.model.card.Color.InvalidColorException;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
-import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
-import it.polimi.ingsw.model.lobby.FullLobbyException;
-import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
-import it.polimi.ingsw.model.lobby.InvalidUsernameException;
-import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.model.ClientGame;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 import it.polimi.ingsw.network.client.socket.message.*;
+import it.polimi.ingsw.network.client.socket.message.ClientPingMessage;
+import it.polimi.ingsw.network.heartbeat.HeartBeatListener;
 import it.polimi.ingsw.network.server.socket.Server;
 import it.polimi.ingsw.network.server.socket.message.*;
 
@@ -32,18 +23,20 @@ import java.io.PrintWriter;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ClientHandler implements VirtualView {
-
+public class ClientHandler implements VirtualView, HeartBeatListener {
     private final Server server;
     private final PrintWriter out;
     private final BufferedReader input;
-
     private final Gson gson;
-
     private final ExecutorService executor;
+    private String username;
+    private final Timer timerForClientResponse;
+    private static final int DELAY_FOR_CLIENTS_RESPONSE = 10000;
 
     public ClientHandler(Server server, BufferedReader input, PrintWriter out) {
         this.server = server;
@@ -51,6 +44,11 @@ public class ClientHandler implements VirtualView {
         this.input = input;
         gson = new Gson();
         executor = Executors.newSingleThreadExecutor();
+        timerForClientResponse = new Timer();
+    }
+
+    public void addClientUsername(String username) {
+        this.username = username;
     }
 
     public void run() {
@@ -106,11 +104,12 @@ public class ClientHandler implements VirtualView {
                     case DISCONNECT:
                         executor.submit(() -> {
                             server.disconnect(sender);
+                            terminate();
                         });
                         break;
 
                     case SEND_PING:
-                        executor.submit(() -> server.sendPing(sender));
+                        receivePing(username);
                         break;
                 }
                 line = input.readLine();
@@ -232,8 +231,36 @@ public class ClientHandler implements VirtualView {
         out.flush();
     }
 
-    // todo. implement method to close socket
-    public void terminate() {
+    @Override
+    public void notifyStillActive(String senderName) throws RemoteException {
 
+    }
+
+    @Override
+    public void receivePing(String senderName) throws RemoteException {
+        ClientPingMessage pingMessage = new ClientPingMessage(senderName);
+        String jsonMessage = gson.toJson(pingMessage);
+        out.println(jsonMessage);
+        out.flush();
+        timerForClientResponse.cancel();
+        timerForClientResponse.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                terminate();
+            }
+        }, DELAY_FOR_CLIENTS_RESPONSE);
+    }
+
+    private void terminate() {
+        try {
+            input.close();
+        } catch (IOException e) {
+        }
+        out.close();
+        executor.close();
+        // leave after being registered in the game
+        if (username != null) {
+            server.disconnect(username);
+        }
     }
 }
