@@ -6,6 +6,7 @@ import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.socket.message.*;
 import it.polimi.ingsw.network.server.socket.message.ConnectMessage;
+import it.polimi.ingsw.network.server.socket.message.PingMessage;
 import it.polimi.ingsw.network.server.socket.message.PlaceStarterMessage;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
@@ -24,7 +25,6 @@ public class ServerHandler implements VirtualServer {
     private ClientSocket clientSocket;
     private Gson gson;
     private ExecutorService executorService;
-
 
     public ServerHandler(ClientSocket clientSocket, BufferedReader in, PrintWriter out) {
         this.in = in;
@@ -134,13 +134,14 @@ public class ServerHandler implements VirtualServer {
                                 clientSocket.reportError(errorMessage.getDetails())
                         );
                         break;
+                    case ClientType.SEND_PING:
+                        ClientPingMessage pingMessage = gson.fromJson(line, ClientPingMessage.class);
+                        clientSocket.notifyStillActive(pingMessage.getUsername());
+                        break;
                 }
                 line = in.readLine();
             }
         } catch (IOException e) {
-            // see logic for disconnection
-            clientSocket.reportError("Server unreachable");
-            clientSocket.terminateConnection();
         }
     }
 
@@ -222,11 +223,10 @@ public class ServerHandler implements VirtualServer {
     }
 
     @Override
-    public void sendPing(String username) {
+    public void receivePing(String username) {
         PingMessage message = new PingMessage(username);
         String json = gson.toJson(message);
         out.println(json);
         out.flush();
     }
-
 }
