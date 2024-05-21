@@ -9,7 +9,6 @@ import it.polimi.ingsw.network.client.model.ClientGame;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
-import it.polimi.ingsw.network.heartbeat.PingSender;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -19,14 +18,14 @@ import java.util.*;
 This class defines a "virtual client" and represent the means with which the client interacts with the server.
 Follow the observer design pattern
  */
-public interface VirtualView extends Remote, PingSender {
-    public void updateCreator() throws RemoteException;
+public interface VirtualView extends Remote {
+    void updateCreator() throws RemoteException;
 
-    public void updateAfterLobbyCrash() throws RemoteException;
+    void updateAfterLobbyCrash() throws RemoteException;
 
-    public void updateAfterConnection(ClientGame clientGame) throws RemoteException;
+    void updateAfterConnection(ClientGame clientGame) throws RemoteException;
 
-    public void showUpdatePlayersInLobby(List<String> usernames) throws RemoteException;
+    void showUpdatePlayersInLobby(List<String> usernames) throws RemoteException;
 
     // game related updates
 
@@ -73,6 +72,7 @@ public interface VirtualView extends Remote, PingSender {
 
     void showWinners(List<String> winners) throws RemoteException;
 
-    public void reportError(String details) throws RemoteException;
+    void reportError(String details) throws RemoteException;
 
+    void notifyStillActive(String senderName) throws RemoteException;
 }
