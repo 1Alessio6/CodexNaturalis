@@ -3,13 +3,20 @@ package it.polimi.ingsw.network.client.view.gui;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.view.View;
+import it.polimi.ingsw.network.client.view.gui.controllers.SelectUsernameScene;
 import it.polimi.ingsw.network.server.rmi.ServerRMI;
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.util.Objects;
 
 public class ClientGUI extends Application implements View {
@@ -37,7 +44,13 @@ public class ClientGUI extends Application implements View {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/gui/ClientGUI.fxml")));
+        //add all controllers constructors
+
+        SelectUsernameScene s = new SelectUsernameScene(controller);
+        FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/gui/SelectUsernameScene.fxml")));
+        Parent root = loader.load();
+
+
         primaryStage.setTitle("Codex Naturalis");
 
         Scene scene = new Scene(root);
@@ -139,4 +152,6 @@ public class ClientGUI extends Application implements View {
     public void beginCommandAcquisition() {
 
     }
+
+
 }
