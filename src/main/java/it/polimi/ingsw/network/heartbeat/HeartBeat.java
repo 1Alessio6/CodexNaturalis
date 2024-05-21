@@ -1,46 +1,55 @@
 package it.polimi.ingsw.network.heartbeat;
 
-import it.polimi.ingsw.network.VirtualView;
-
 import java.rmi.RemoteException;
 import java.util.*;
 
 public class HeartBeat {
-    private Map<String, Timer> timers;
-    private PingReceiver pingReceiver;
-    private Map<String, PingSender> pingSenders;
+    private Map<String, Timer> timersForReply;
+    private HeartBeatHandler heartBeatHandler;
+    // the senders waiting for the ping from the PingReceiver
+    private Map<String, HeartBeatListener> nameToListener;
     private Timer timerToNotifyPresence;
     private int delay;
     private static int defaultDelay = 10000;
+    private String sender;
 
-    public HeartBeat(PingReceiver pingReceiver) {
-        this.timers = new HashMap<>();
-        this.pingReceiver = pingReceiver;
+    public HeartBeat(HeartBeatHandler heartBeatHandler) {
+        this.timersForReply = new HashMap<>();
+        this.heartBeatHandler = heartBeatHandler;
         this.delay = defaultDelay;
-        this.pingSenders = new HashMap<>();
+        this.nameToListener = new HashMap<>();
         this.timerToNotifyPresence = new Timer();
-        this.timerToNotifyPresence.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                sendPing();
-            }
-        }, delay);
+    }
+
+    public void startPing(String name) {
+        this.sender = name;
+        this.timerToNotifyPresence.schedule(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        sendPing();
+                    }
+                }, delay);
     }
 
     private synchronized void sendPing() {
-        List<String> disconnectedSenders = new ArrayList<>();
-        for (Map.Entry<String, PingSender> entry : pingSenders.entrySet()) {
+        List<String> disconnectedListeners = new ArrayList<>();
+        for (Map.Entry<String, HeartBeatListener> entry : nameToListener.entrySet()) {
             try {
-                entry.getValue().sendPing("server");
+                entry.getValue().receivePing(sender);
+                timersForReply.get(entry.getKey()).schedule(
+                        new UnresponsivenessHandler(heartBeatHandler, entry.getKey()),
+                        delay
+                );
             } catch (RemoteException e) {
-                disconnectedSenders.add(entry.getKey());
+                disconnectedListeners.add(entry.getKey());
             }
         }
 
-        for (String disconnectedSender : disconnectedSenders) {
-            timers.remove(disconnectedSender);
-            pingSenders.remove(disconnectedSender);
-            pingReceiver.handleUnresponsiveness(disconnectedSender);
+        for (String disconnectedListener : disconnectedListeners) {
+            timersForReply.remove(disconnectedListener);
+            nameToListener.remove(disconnectedListener);
+            heartBeatHandler.handleUnresponsiveness(disconnectedListener);
         }
     }
 
@@ -48,31 +57,31 @@ public class HeartBeat {
         delay = newDelay;
     }
 
-    public synchronized void addTimerFor(String user, PingSender pingSender) {
+    public synchronized void addHeartBeatListener(String user, HeartBeatListener pingSender) {
         Timer timer = new Timer();
         timer.schedule(
-                new UnresponsivenessHandler(pingReceiver, user),
+                new UnresponsivenessHandler(heartBeatHandler, user),
                 delay
         );
-        timers.put(user, new Timer());
-        pingSenders.put(user, pingSender);
+        timersForReply.put(user, new Timer());
+        nameToListener.put(user, pingSender);
     }
 
     public synchronized void removeTimerFor(String user) {
-        if (!timers.containsKey(user)) {
+        if (!timersForReply.containsKey(user)) {
             return;
         }
 
-        timers.get(user).cancel();
-        timers.remove(user);
-        pingSenders.remove(user);
+        timersForReply.get(user).cancel();
+        timersForReply.remove(user);
+        nameToListener.remove(user);
     }
 
     public synchronized void registerResponse(String user) {
-        Timer timer = timers.get(user);
+        Timer timer = timersForReply.get(user);
         timer.cancel();
         timer.schedule(
-                new UnresponsivenessHandler(pingReceiver, user),
+                new UnresponsivenessHandler(heartBeatHandler, user),
                 delay
         );
     }
