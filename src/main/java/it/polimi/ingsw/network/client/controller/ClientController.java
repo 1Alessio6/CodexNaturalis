@@ -70,7 +70,7 @@ public class ClientController implements ClientActions {
             throw new Playground.UnavailablePositionException("The position selected isn't available");
         }
 
-        server.placeCard(getMainPlayerUsername(), getMainPlayerCard(cardHandPosition).getBackId(), getMainPlayerCard(cardHandPosition).getFrontId(), selectedSide, position);
+        server.placeCard(getMainPlayerUsername(), getMainPlayerCard(cardHandPosition).getFrontId(), getMainPlayerCard(cardHandPosition).getBackId(), selectedSide, position);
     }
 
     @Override
@@ -338,4 +338,7 @@ public class ClientController implements ClientActions {
 
    public ClientFace getResourceDeckTopBack(){return this.game.getClientBoard().getResourceDeckTopBack();}
 
+    public String getCurrentPlayerUsername() {
+        return game.getPlayer(game.getCurrentPlayerIdx()).getUsername();
+    }
 }
