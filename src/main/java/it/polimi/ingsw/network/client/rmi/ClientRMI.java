@@ -22,38 +22,39 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
-public class ClientRMI extends UnicastRemoteObject implements VirtualView {
+public class ClientRMI extends Client implements VirtualView {
+    private HeartBeat heartBeat;
+    private String name;
 
-    private final ClientController controller;
-
-    private View clientView; //can be tui or gui
-
-    public ClientRMI() throws RemoteException {
-        controller = new ClientController(locateExistingServer());
-        clientView = new ClientTUI(controller);
+    public ClientRMI(String host, Integer port) throws UnReachableServerException {
+        super(host, port);
+        heartBeat = new HeartBeat(this);
+        heartBeat.addHeartBeatListener("server", server);
     }
 
-    public ClientRMI(VirtualServer server, View clientView) throws RemoteException {
-        controller = new ClientController(server);
-        //check which view
-        //clientView = new view(controller)
-    }
-
-    private VirtualServer locateExistingServer() {
-        String serverName = "ServerRmi";
+    @Override
+    protected VirtualServer connect(String ip, Integer port) {
+        String serverName = ServerRMI.getServerName();
         try {
-            Registry registry = LocateRegistry.getRegistry("127.0.0.1", 1234); //todo change port and args and decide how to handle the exception
+            Registry registry = LocateRegistry.getRegistry(ip, port);
             return (VirtualServer) registry.lookup(serverName);
         } catch (RemoteException | NotBoundException e) {
-            throw new RuntimeException(e);
+            return null;
         }
     }
 
-    public void run() throws RemoteException {
-        clientView.run(this);
-        //runView (view has to select connect)
+    @Override
+    public void runView() throws RemoteException {
+        // register stub
+        VirtualView stub =
+                (VirtualView) UnicastRemoteObject.exportObject(this, 0);
+        ClientController controller = clientView.run(stub);
+        name = controller.getMainPlayerUsername();
+        clientView.beginCommandAcquisition();
+        heartBeat.startPing(name);
     }
 
     @Override
