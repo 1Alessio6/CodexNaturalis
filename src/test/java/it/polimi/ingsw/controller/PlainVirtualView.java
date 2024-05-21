@@ -87,4 +87,9 @@ public class PlainVirtualView implements VirtualView {
     public void reportError(String details) throws RemoteException {
 
     }
+
+    @Override
+    public void notifyStillActive(String senderName) throws RemoteException {
+
+    }
 }
