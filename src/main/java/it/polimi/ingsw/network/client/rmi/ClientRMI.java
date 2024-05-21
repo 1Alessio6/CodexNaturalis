@@ -8,11 +8,13 @@ import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
+import it.polimi.ingsw.network.client.Client;
+import it.polimi.ingsw.network.client.UnReachableServerException;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.model.*;
 import it.polimi.ingsw.network.client.model.card.*;
-import it.polimi.ingsw.network.client.view.View;
-import it.polimi.ingsw.network.client.view.tui.ClientTUI;
+import it.polimi.ingsw.network.heartbeat.HeartBeat;
+import it.polimi.ingsw.network.server.rmi.ServerRMI;
 
 
 import java.rmi.NotBoundException;
@@ -57,7 +59,6 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     @Override
     public void updateCreator() throws RemoteException {
         clientView.showUpdateCreator();
-
     }
 
     @Override
@@ -141,5 +142,17 @@ public class ClientRMI extends UnicastRemoteObject implements VirtualView {
     @Override
     public void reportError(String details) throws RemoteException {
         System.err.println(details);
+    }
+
+    @Override
+    public void notifyStillActive(String senderName) throws RemoteException {
+        heartBeat.registerResponse(senderName);
+    }
+
+    @Override
+    public void handleUnresponsiveness(String name) {
+        clientView.showServerCrash();
+        heartBeat.shutDown();
+        System.exit(1);
     }
 }
