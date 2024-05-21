@@ -135,8 +135,7 @@ public class ServerHandler implements VirtualServer {
                         );
                         break;
                     case ClientType.SEND_PING:
-                        ClientPingMessage pingMessage = gson.fromJson(line, ClientPingMessage.class);
-                        clientSocket.notifyStillActive(pingMessage.getUsername());
+                        clientSocket.notifyStillActive();
                         break;
                 }
                 line = in.readLine();
