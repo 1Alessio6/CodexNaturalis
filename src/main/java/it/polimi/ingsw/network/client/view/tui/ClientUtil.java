@@ -25,7 +25,7 @@ enum GameScreenArea {
     CHAT(64, 27, new Position(23, 126)),
     SCOREBOARD(10, 26, new Position(2,2)),
     PRIVATE_OBJECTIVE(ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(7, 27)),
-    COMMON_OBJECTIVE(2 + 2*ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(2, 44)),
+    COMMON_OBJECTIVE(2 + 2 * ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(44, 2)),
     RESOURCES(26, 15, new Position(14, 2));
 
 
@@ -108,7 +108,7 @@ public class ClientUtil {
 
     // Main methods
 
-    public static void printCard(ClientCard card) {
+    public static String[][] designCard(ClientCard card) {
         ANSIColor color = cardColorConversion(card.getFront().getColor());
         String[][] cardMatrix = new String[3][7];
         initializeMatrix(cardMatrix);
@@ -136,10 +136,10 @@ public class ClientUtil {
         } else {
             appendInternalResources(resources, cardMatrix);
         }
-        printCardMatrix(cardMatrix);
+        return cardMatrix;
     }
 
-    public static void printCard(ClientFace card) {
+    public static String[][] designCard(ClientFace card) {
         ANSIColor color = cardColorConversion(card.getColor());
         String[][] cardMatrix = new String[3][7];
         initializeMatrix(cardMatrix);
@@ -155,7 +155,7 @@ public class ClientUtil {
         } else {
             appendInternalResources(resources, cardMatrix);
         }
-        printCardMatrix(cardMatrix);
+        return cardMatrix;
     }
 
     public static void printOptionalCard() {
@@ -176,7 +176,7 @@ public class ClientUtil {
         }
     }
 
-    public static void printObjectiveCard(ClientObjectiveCard objectiveCard) {
+    public static String[][] designObjectiveCard(ClientObjectiveCard objectiveCard) {
         String[][] cardMatrix = new String[3][7];
         initializeMatrix(cardMatrix);
         ANSIColor color = YELLOW;
@@ -195,22 +195,17 @@ public class ClientUtil {
             appendMatrixLines(resourceCondition, null, cardMatrix, color);
             appendInternalResources(resourceCondition, cardMatrix);
         }
-        printCardMatrix(cardMatrix);
+        return cardMatrix;
     }
 
     private static void printInformation(ClientCard card) {
+        Map<Symbol, Integer> requirements;
         if (card.getBack().getBackCenterResources().isEmpty()) {
-            Condition pointsCondition = card.getFront().getPointsCondition();
-            Map<Symbol, Integer> requirements = card.getFront().getRequirements();
-            Map<Symbol, Integer> resources = card.getFront().getBackCenterResources();
-
-            searchForRelevantInformation(pointsCondition, requirements, resources);
+            requirements = card.getFront().getRequirements();
         } else {
-            Condition pointsCondition = card.getFront().getPointsCondition();
-            Map<Symbol, Integer> requirements = card.getBack().getRequirements();
-            Map<Symbol, Integer> resources = card.getFront().getBackCenterResources();
-            searchForRelevantInformation(pointsCondition, requirements, resources);
+            requirements = card.getBack().getRequirements();
         }
+        searchForRelevantInformation(requirements);
     }
 
     // Secondary methods
@@ -237,7 +232,7 @@ public class ClientUtil {
         int indexOfDecimal = String.valueOf(numberOfSpaces).indexOf(".");
         String decimal = String.valueOf(0).concat(String.valueOf(numberOfSpaces).substring(indexOfDecimal));
         StringBuilder a = new StringBuilder();
-        StringBuilder b=new StringBuilder();
+        StringBuilder b = new StringBuilder();
         a.append(" ".repeat((int) Math.max(0, numberOfSpaces)));
         if (decimal.equals(String.valueOf(.5))) {
             a.append(doubleHairSpace);
@@ -270,9 +265,26 @@ public class ClientUtil {
         }
     }
 
+    public static StringBuilder designSquare(int width, int height) {
+        StringBuilder str = new StringBuilder();
 
-    public static String appendLine(int numberOfLines) {
+        str.append("╔").append(appendHorizontalLine(width)).append("╗\n");
+        str.append(appendVerticalLines(height, width));
+        str.append("╚").append(appendHorizontalLine(width)).append("╝\n");
+
+        return str;
+    }
+
+    public static String appendHorizontalLine(int numberOfLines) {
         return "═".repeat(Math.max(0, numberOfLines));
+    }
+
+    private static String appendVerticalLines(int numberOfLines, int width) {
+        StringBuilder str = new StringBuilder();
+        for (int i = 0; i < numberOfLines; i++) {
+            str.append("║").repeat(" ", width).append("║\n");
+        }
+        return str.toString();
     }
 
     private static int resourcesSize(Map<Symbol, Integer> resources) {
@@ -305,18 +317,10 @@ public class ClientUtil {
         };
     }
 
-    private static void searchForRelevantInformation(Condition pointsCondition, Map<Symbol, Integer> requirements, Map<Symbol, Integer> resources) {
-        if (pointsCondition != null) {//this can be improved
-            System.out.println(ITALIC.getColor() + "Cond.: " + pointsCondition.name() + printCondition(pointsCondition) + RESET.getColor());
-        }
+    private static void searchForRelevantInformation(Map<Symbol, Integer> requirements) {
         if (!requirements.isEmpty()) {
             for (Map.Entry<Symbol, Integer> entry : requirements.entrySet()) {
                 System.out.println(ITALIC.getColor() + "Req.: " + entry.getKey().toString() + printResources(entry.getKey()) + " " + entry.getValue());
-            }
-        }
-        if (!resources.isEmpty()) {
-            for (Map.Entry<Symbol, Integer> entry : resources.entrySet()) {
-                System.out.println(ITALIC.getColor() + "Res.: " + entry.getKey().toString() + printResources(entry.getKey()) + " " + entry.getValue());
             }
         }
     }
@@ -559,24 +563,21 @@ public class ClientUtil {
         StringBuilder str = new StringBuilder();
 
 
-        str.append("╔").append(ClientUtil.appendLine(maxUsernameLength)).append("╦").append(ClientUtil.appendLine(maxPointsLength)).append("╗\n");
-        str.append("║").append(centeredString(maxUsernameLength,"Players")).append("║");
-        str.append(centeredString(maxPointsLength,"Points")).append("║\n");
-        str.append("╠").append(ClientUtil.appendLine(maxUsernameLength)).append("╬").append(ClientUtil.appendLine(maxPointsLength)).append("╣\n");
+        str.append("╔").append(ClientUtil.appendHorizontalLine(maxUsernameLength)).append("╦").append(ClientUtil.appendHorizontalLine(maxPointsLength)).append("╗\n");
+        str.append("║").append(centeredString(maxUsernameLength, "Players")).append("║");
+        str.append(centeredString(maxPointsLength, "Points")).append("║\n");
+        str.append("╠").append(ClientUtil.appendHorizontalLine(maxUsernameLength)).append("╬").append(ClientUtil.appendHorizontalLine(maxPointsLength)).append("╣\n");
 
-        for (ClientPlayer i :players) {
+        for (ClientPlayer i : players) {
             String username = i.getUsername();
             ANSIColor color = ClientUtil.playerColorConversion(i.getColor());
             int points = i.getPlayground().getPoints();
 
-            str.append("║").append(color.getColor()).append(centeredString(maxUsernameLength,username)).append(RESET.getColor()).append("║");
-            str.append(centeredString(maxPointsLength,Integer.toString(points))).append("║\n");
+            str.append("║").append(color.getColor()).append(centeredString(maxUsernameLength, username)).append(RESET.getColor()).append("║");
+            str.append(centeredString(maxPointsLength, Integer.toString(points))).append("║\n");
         }
-        str.append("╚").append(ClientUtil.appendLine(maxUsernameLength)).append("╩").append(ClientUtil.appendLine(maxPointsLength)).append("╝\n");
+        str.append("╚").append(ClientUtil.appendHorizontalLine(maxUsernameLength)).append("╩").append(ClientUtil.appendHorizontalLine(maxPointsLength)).append("╝\n");
         return str;
     }
 
-    public static void main(String[] args) {
-        printToLineColumn(25, 95, title);
-    }
 }
