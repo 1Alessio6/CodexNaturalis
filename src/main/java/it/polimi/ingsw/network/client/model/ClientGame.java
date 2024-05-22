@@ -99,6 +99,8 @@ public class ClientGame implements Serializable {
      * @param game on the server
      */
     public ClientGame(Game game) {
+
+        /*
         faceUpCards = new ArrayList<>();
         for (Card faceUpCard : game.getFaceUpCards()) {
             faceUpCards.add(new ClientCard(faceUpCard));
@@ -107,6 +109,8 @@ public class ClientGame implements Serializable {
         for (ObjectiveCard commonObjective : game.getCommonObjectives()) {
             commonObjects.add(new ClientObjectiveCard(commonObjective));
         }
+
+         */
         currentPlayerIdx = game.getCurrentPlayerIdx();
         players = new ArrayList<>();
         for (Player player : game.getPlayers()) {
