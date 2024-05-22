@@ -150,4 +150,9 @@ public class ServerRMI implements VirtualServer {
             }
         }
     }
+
+    @Override
+    public void hear() throws RemoteException {
+
+    }
 }

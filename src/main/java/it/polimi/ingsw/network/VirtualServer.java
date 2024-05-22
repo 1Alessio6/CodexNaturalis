@@ -35,4 +35,6 @@ public interface VirtualServer extends Remote, HeartBeatHandler, HeartBeatListen
     void setPlayersNumber(String username, int playersNumber) throws RemoteException;
 
     void disconnect(String username) throws RemoteException;
+
+    void hear() throws RemoteException;
 }
