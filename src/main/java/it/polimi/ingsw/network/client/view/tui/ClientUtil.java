@@ -35,6 +35,13 @@ public class ClientUtil {
     static String five = "\uD835\uDFD3";
     static String six = "\uD835\uDFD4";
 
+    static String title = """
+             ▄▄·       ·▄▄▄▄  ▄▄▄ .▐▄• ▄      ▐ ▄  ▄▄▄· ▄▄▄▄▄▄• ▄▌▄▄▄   ▄▄▄· ▄▄▌  ▪  .▄▄ ·    \s
+            ▐█ ▌▪▪     ██▪ ██ ▀▄.▀· █▌█▌▪    •█▌▐█▐█ ▀█ •██  █▪██▌▀▄ █·▐█ ▀█ ██•  ██ ▐█ ▀.    \s
+            ██ ▄▄ ▄█▀▄ ▐█· ▐█▌▐▀▀▪▄ ·██·     ▐█▐▐▌▄█▀▀█  ▐█.▪█▌▐█▌▐▀▀▄ ▄█▀▀█ ██▪  ▐█·▄▀▀▀█▄   \s
+            ▐███▌▐█▌.▐▌██. ██ ▐█▄▄▌▪▐█·█▌    ██▐█▌▐█ ▪▐▌ ▐█▌·▐█▄█▌▐█•█▌▐█ ▪▐▌▐█▌▐▌▐█▌▐█▄▪▐█   \s
+            ·▀▀▀  ▀█▄▀▪▀▀▀▀▀•  ▀▀▀ •▀▀ ▀▀    ▀▀ █▪ ▀  ▀  ▀▀▀  ▀▀▀ .▀  ▀ ▀  ▀ .▀▀▀ ▀▀▀ ▀▀▀▀ \s""";
+
     public static void printHelpCommands(Set<TUIActions> consentedCommands) {
         for (TUIActions command : consentedCommands) {
             System.out.println(command.toString() + ": " + command.getDescription());
@@ -116,6 +123,15 @@ public class ClientUtil {
         printCardMatrix(cardMatrix);
     }
 
+    public static void printToLineColumn(int numberOfLine, int numberOfColumn, String str) {
+        String[] lines = str.split("\n");
+        int ongoingLine = numberOfLine;
+        for (String line : lines) {
+            System.out.println("\033[" + ongoingLine + ";" + numberOfColumn + "H" + line);
+            ongoingLine++;
+        }
+    }
+
     public static void printObjectiveCard(ClientObjectiveCard objectiveCard) {
         String[][] cardMatrix = new String[3][7];
         initializeMatrix(cardMatrix);
@@ -155,20 +171,61 @@ public class ClientUtil {
 
     // Secondary methods
 
-    public static String calculateSpaces(int availableSpaces, String string) {
+    /**
+     * Pads along x-axis a string, starting printing with same size pad at beginning and end
+     */
+    public static void calculateSpaces(int width, int height, String string) {
+        // calculate height too
+        //int string_height = 1; //by default it is one line
+        //for (int i = 0; i < string.length() - 1; ++i) {
+        //    if (string.substring(i, i + 1).equals("\s")) {
+        //        string_height++;
+        //    }
+        //}
+
+        int x_available = width - string.length();
+
+        // printToLineColumn(x_available / 2, y_available / 2, string);
+    }
+
+    public static String centeredString(int availableSpaces, String string) {
         double numberOfSpaces = ((availableSpaces - string.length()) / 2.0);
         int indexOfDecimal = String.valueOf(numberOfSpaces).indexOf(".");
         String decimal = String.valueOf(0).concat(String.valueOf(numberOfSpaces).substring(indexOfDecimal));
         StringBuilder a = new StringBuilder();
-
-
+        StringBuilder b=new StringBuilder();
         a.append(" ".repeat((int) Math.max(0, numberOfSpaces)));
         if (decimal.equals(String.valueOf(.5))) {
             a.append(doubleHairSpace);
         }
+        b.append(a).append(string).append(a);
 
-        return a.toString();
+        return b.toString();
     }
+
+    /**
+     * Method to print in the middle of a line
+     */
+    public static String calculateSpaces(int width, String string) {
+        calculateSpaces(width, 1, string);
+        return null;
+    }
+
+    public static void printInLineColumn(int numberOfLine, int numberOfColumn, String[][] matrix) {
+        int lines = matrix.length;
+        int columns = matrix[0].length;
+        int ongoingColumn = numberOfColumn;
+        for (int i = 0; i < lines; i++) {
+            for (int j = 0; j < columns; j++) {
+                System.out.print("\033[" + numberOfLine + ";" + numberOfColumn + "H" + matrix[i][j]);
+                numberOfColumn += matrix[i][j].length();
+            }
+            numberOfLine++;
+            numberOfColumn = ongoingColumn;
+            System.out.println();
+        }
+    }
+
 
     public static String appendLine(int numberOfLines) {
         return "═".repeat(Math.max(0, numberOfLines));
@@ -452,5 +509,30 @@ public class ClientUtil {
         } else {
             return 0;
         }
+    }
+
+    public static StringBuilder createScoreBoard(List<ClientPlayer> players) {
+        StringBuilder str = new StringBuilder();
+
+
+        str.append("╔").append(ClientUtil.appendLine(maxUsernameLength)).append("╦").append(ClientUtil.appendLine(maxPointsLength)).append("╗\n");
+        str.append("║").append(centeredString(maxUsernameLength,"Players")).append("║");
+        str.append(centeredString(maxPointsLength,"Points")).append("║\n");
+        str.append("╠").append(ClientUtil.appendLine(maxUsernameLength)).append("╬").append(ClientUtil.appendLine(maxPointsLength)).append("╣\n");
+
+        for (ClientPlayer i :players) {
+            String username = i.getUsername();
+            ANSIColor color = ClientUtil.playerColorConversion(i.getColor());
+            int points = i.getPlayground().getPoints();
+
+            str.append("║").append(color.getColor()).append(centeredString(maxUsernameLength,username)).append(RESET.getColor()).append("║");
+            str.append(centeredString(maxPointsLength,Integer.toString(points))).append("║\n");
+        }
+        str.append("╚").append(ClientUtil.appendLine(maxUsernameLength)).append("╩").append(ClientUtil.appendLine(maxPointsLength)).append("╝\n");
+        return str;
+    }
+
+    public static void main(String[] args) {
+        printToLineColumn(25, 95, title);
     }
 }
