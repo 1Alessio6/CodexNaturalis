@@ -7,13 +7,57 @@ import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
+import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 
 import java.util.*;
 
 import static it.polimi.ingsw.model.card.Symbol.*;
 import static it.polimi.ingsw.network.client.view.tui.ANSIColor.*;
 
+/**
+ * This enum represents the space and position of each area in the screen
+ */
+enum GameScreenArea {
+    PLAYGROUND(96, 40, new Position(2, 30)),
+    FACE_UP_CARDS(24, 14, new Position(2, 146)),
+    HAND_CARDS(2*ClientUtil.areaPadding + 3*ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(44 ,62)),
+    DECKS(24, 5, new Position(18, 146)),
+    CHAT(64, 27, new Position(23, 126)),
+    SCOREBOARD(10, 26, new Position(2,2)),
+    PRIVATE_OBJECTIVE(ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(7, 27)),
+    COMMON_OBJECTIVE(2 + 2*ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(2, 44)),
+    RESOURCES(26, 15, new Position(14, 2));
+
+
+    int width;
+    int height;
+    Position screenPosition;
+
+    GameScreenArea(int width, int height, Position screenPosition) {
+        this.width = width;
+        this.height = height;
+        this.screenPosition = screenPosition;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public Position getScreenPosition() {
+        return screenPosition;
+    }
+}
+
 public class ClientUtil {
+    final static int cardWidth = 9;
+    final static int cardHeight = 3;
+    final static int areaPadding = 2;
+    final static int maxUsernameLength=15;
+    final static int maxPointsLength=8;
 
     static String plant = "\uD83C\uDF43";
     static String butterfly = "\uD83E\uDD8B";
