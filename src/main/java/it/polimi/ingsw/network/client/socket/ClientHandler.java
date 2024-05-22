@@ -115,7 +115,7 @@ public class ClientHandler implements VirtualView, HeartBeatListener {
                 line = input.readLine();
             }
         } catch (IOException e) {
-            System.err.println("channel has been closed");
+            System.err.println("server stops hearing channel has been closed");
         }
     }
 
@@ -137,8 +137,10 @@ public class ClientHandler implements VirtualView, HeartBeatListener {
 
     @Override
     public void updateAfterConnection(ClientGame clientGame) throws RemoteException {
+        System.out.println("UpdateAfterConnection");
         UpdateAfterConnectionMessage message = new UpdateAfterConnectionMessage(clientGame);
         String jsonMessage = gson.toJson(message);
+        System.out.println("received message" + jsonMessage);
         out.println(jsonMessage);
         out.flush();
     }

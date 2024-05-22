@@ -118,7 +118,9 @@ public class ServerHandler implements VirtualServer {
                 }
                 line = in.readLine();
             }
+            System.out.println("Closed connection from server");
         } catch (IOException e) {
+            System.err.println("Stop hearing: server is down");
         }
     }
 

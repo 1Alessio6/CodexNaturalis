@@ -40,14 +40,16 @@ public class ServerRMI implements VirtualServer {
         try {
             stub = (VirtualServer) UnicastRemoteObject.exportObject(myServer, port);
         } catch (RemoteException e) {
-            throw new RuntimeException(e);
+            System.err.println("Export failed");
+            System.exit(1);
         }
 
         Registry registry;
         try {
             registry = LocateRegistry.createRegistry(port);
         } catch (RemoteException e) {
-            throw new RuntimeException(e);
+            System.err.println("Registry cannot be exported");
+            System.exit(1);
         }
 
         try {
@@ -64,12 +66,14 @@ public class ServerRMI implements VirtualServer {
         System.out.println("Received connection from " + username);
         boolean accepted = myController.handleConnection(username, client);
         if (accepted) {
-            System.out.println("User " + username + " has been accepted");
+            System.err.println("User " + username + " has been accepted");
             synchronized (lockOnClientsNetworkStatus) {
                 HeartBeat heartBeat = new HeartBeat(this, "server", client, username);
                 activeClients.put(username, heartBeat);
                 heartBeat.startHeartBeat();
             }
+        } else {
+            System.err.println("User " + username + " has not been accepted");
         }
     }
 
