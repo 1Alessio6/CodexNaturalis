@@ -1,12 +1,15 @@
 package it.polimi.ingsw.network.client.socket;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import it.polimi.ingsw.model.card.Side;
+import it.polimi.ingsw.network.NetworkMessage;
+import it.polimi.ingsw.network.Type;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.socket.message.*;
+import it.polimi.ingsw.network.heartbeat.HeartBeatMessage;
 import it.polimi.ingsw.network.server.socket.message.ConnectMessage;
-import it.polimi.ingsw.network.server.socket.message.PingMessage;
 import it.polimi.ingsw.network.server.socket.message.PlaceStarterMessage;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
@@ -16,8 +19,7 @@ import it.polimi.ingsw.network.server.socket.message.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.rmi.RemoteException;
 
 public class ServerHandler implements VirtualServer {
     private final BufferedReader in;

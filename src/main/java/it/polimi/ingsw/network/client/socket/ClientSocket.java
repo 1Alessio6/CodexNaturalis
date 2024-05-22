@@ -46,7 +46,20 @@ public class ClientSocket extends Client implements VirtualView {
         ClientController controller = clientView.run(this);
         name = controller.getMainPlayerUsername();
         clientView.beginCommandAcquisition();
-        heartBeat.startPing(name);
+
+//        heartBeat = new HeartBeat(this, "unkown", server, "server");
+//        heartBeat.startHeartBeat();
+//        new Thread(serverSocket::hear).start();
+    }
+
+    private void closeResources() {
+        try {
+            this.socket.close();
+            this.out.close();
+            this.in.close();
+        } catch (Exception ignored) {
+
+        }
     }
 
     @Override
@@ -65,8 +78,10 @@ public class ClientSocket extends Client implements VirtualView {
             return serverSocket;
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + ip);
+            closeResources();
         } catch (IOException e) {
             System.err.println("Couldn't get I/O for the connection to " + ip);
+            closeResources();
         }
         return null;
     }

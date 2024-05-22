@@ -7,6 +7,8 @@ import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
+import it.polimi.ingsw.network.heartbeat.HeartBeat;
+import it.polimi.ingsw.network.heartbeat.HeartBeatMessage;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
