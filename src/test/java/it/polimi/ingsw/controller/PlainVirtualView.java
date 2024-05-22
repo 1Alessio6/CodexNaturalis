@@ -12,6 +12,7 @@ import it.polimi.ingsw.network.client.model.ClientGame;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
+import it.polimi.ingsw.network.heartbeat.HeartBeatMessage;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -89,7 +90,12 @@ public class PlainVirtualView implements VirtualView {
     }
 
     @Override
-    public void notifyStillActive() throws RemoteException {
+    public void handleUnresponsiveness(String unresponsiveListener) {
+
+    }
+
+    @Override
+    public void receivePing(HeartBeatMessage ping) throws RemoteException {
 
     }
 }
