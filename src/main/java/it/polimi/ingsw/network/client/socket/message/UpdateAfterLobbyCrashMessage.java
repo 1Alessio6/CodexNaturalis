@@ -1,8 +1,11 @@
 package it.polimi.ingsw.network.client.socket.message;
 
-public class UpdateAfterLobbyCrashMessage extends ClientMessage{
+import it.polimi.ingsw.network.NetworkMessage;
+import it.polimi.ingsw.network.Type;
+
+public class UpdateAfterLobbyCrashMessage extends NetworkMessage {
 
     public UpdateAfterLobbyCrashMessage() {
-        super(ClientType.UPDATE_AFTER_LOBBY_CRASH);
+        super(Type.UPDATE_AFTER_LOBBY_CRASH, "server");
     }
 }

@@ -1,16 +1,18 @@
 package it.polimi.ingsw.network.client.socket.message;
 
+import it.polimi.ingsw.network.NetworkMessage;
+import it.polimi.ingsw.network.Type;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 
-public class UpdateObjectiveCardMessage extends ClientMessage {
+public class UpdateObjectiveCardMessage extends NetworkMessage {
 
     private final ClientObjectiveCard chosenObjective;
 
     private final String username;
 
     public UpdateObjectiveCardMessage(ClientObjectiveCard chosenObjective, String username) {
-        super(ClientType.SHOW_UPDATE_OBJECTIVE_CARD);
+        super(Type.SHOW_UPDATE_OBJECTIVE_CARD, "server");
         this.chosenObjective = chosenObjective;
         this.username = username;
     }

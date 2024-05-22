@@ -1,10 +1,13 @@
 package it.polimi.ingsw.network.server.socket.message;
 
-public class SetPlayerNumberMessage extends ServerMessage {
+import it.polimi.ingsw.network.NetworkMessage;
+import it.polimi.ingsw.network.Type;
+
+public class SetPlayerNumberMessage extends NetworkMessage {
     private int numPlayers;
 
     public SetPlayerNumberMessage(String sender, int numPlayers) {
-        super(sender, ServerType.SET_PLAYER_NUMBER);
+        super(Type.SET_PLAYER_NUMBER, sender);
         this.numPlayers = numPlayers;
     }
 

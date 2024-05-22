@@ -1,10 +1,13 @@
 package it.polimi.ingsw.network.server.socket.message;
 
-public class DrawMessage extends ServerMessage {
+import it.polimi.ingsw.network.NetworkMessage;
+import it.polimi.ingsw.network.Type;
+
+public class DrawMessage extends NetworkMessage {
     private int idToDraw;
 
     public DrawMessage(String sender, int idToDraw) {
-        super(sender, ServerType.DRAW);
+        super(Type.DRAW, sender);
         this.idToDraw = idToDraw;
     }
 

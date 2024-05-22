@@ -4,12 +4,14 @@ import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.CornerPosition;
 import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.card.Symbol;
+import it.polimi.ingsw.network.NetworkMessage;
+import it.polimi.ingsw.network.Type;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 
 import java.util.List;
 import java.util.Map;
 
-public class UpdateAfterPlaceMessage extends ClientMessage {
+public class UpdateAfterPlaceMessage extends NetworkMessage {
 
     private final Map<Position, CornerPosition> positionToCornerCovered;
 
@@ -29,7 +31,7 @@ public class UpdateAfterPlaceMessage extends ClientMessage {
 
 
     public UpdateAfterPlaceMessage(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide, Position position) {
-        super(ClientType.SHOW_UPDATE_AFTER_PLACE);
+        super(Type.SHOW_UPDATE_AFTER_PLACE, "server");
         this.positionToCornerCovered = positionToCornerCovered;
         this.newAvailablePositions = newAvailablePositions;
         this.newResources = newResources;

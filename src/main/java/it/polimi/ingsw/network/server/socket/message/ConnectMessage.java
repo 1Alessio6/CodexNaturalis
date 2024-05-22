@@ -1,7 +1,10 @@
 package it.polimi.ingsw.network.server.socket.message;
 
-public class ConnectMessage extends ServerMessage {
+import it.polimi.ingsw.network.NetworkMessage;
+import it.polimi.ingsw.network.Type;
+
+public class ConnectMessage extends NetworkMessage {
     public ConnectMessage(String sender) {
-        super(sender, ServerType.CONNECT);
+        super(Type.CONNECT, sender);
     }
 }

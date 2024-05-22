@@ -1,11 +1,14 @@
 package it.polimi.ingsw.network.server.socket.message;
 
 import it.polimi.ingsw.model.card.Side;
+import it.polimi.ingsw.network.NetworkMessage;
+import it.polimi.ingsw.network.Type;
 
-public class PlaceStarterMessage extends ServerMessage {
+public class PlaceStarterMessage extends NetworkMessage {
     private Side side;
+
     public PlaceStarterMessage(String sender, Side side) {
-        super(sender, ServerType.PLACE_STARTER);
+        super(Type.PLACE_STARTER, sender);
         this.side = side;
     }
 

@@ -1,15 +1,15 @@
 package it.polimi.ingsw.network.client.socket.message;
 
-import it.polimi.ingsw.network.client.socket.message.ClientType;
+import it.polimi.ingsw.network.NetworkMessage;
 
-public abstract class ClientMessage {
-    ClientType type;
-
-    public ClientMessage(ClientType type) {
-        this.type = type;
-    }
-
-    public ClientType getType() {
-        return type;
-    }
-}
+//public class ClientMessage extends NetworkMessage {
+//    ClientType type;
+//
+//    public ClientMessage(ClientType type) {
+//        this.type = type;
+//    }
+//
+//    public ClientType getNetworkType() {
+//        return type;
+//    }
+//}

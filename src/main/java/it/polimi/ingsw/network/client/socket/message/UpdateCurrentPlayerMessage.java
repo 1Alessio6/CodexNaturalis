@@ -1,13 +1,15 @@
 package it.polimi.ingsw.network.client.socket.message;
 
 import it.polimi.ingsw.model.gamePhase.GamePhase;
+import it.polimi.ingsw.network.NetworkMessage;
+import it.polimi.ingsw.network.Type;
 
-public class UpdateCurrentPlayerMessage extends ClientMessage{
+public class UpdateCurrentPlayerMessage extends NetworkMessage {
 
     private final int currentPlayerIdx;
     private final GamePhase currentPhase;
     public UpdateCurrentPlayerMessage(int currentPlayerIdx, GamePhase currentPhase) {
-        super(ClientType.SHOW_UPDATE_CURRENT_PLAYER);
+        super(Type.SHOW_UPDATE_CURRENT_PLAYER, "server");
         this.currentPlayerIdx = currentPlayerIdx;
         this.currentPhase = currentPhase;
     }

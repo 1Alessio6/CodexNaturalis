@@ -1,10 +1,14 @@
 package it.polimi.ingsw.network.server.socket.message;
 
-public class PlaceObjectiveMessage extends ServerMessage {
+import it.polimi.ingsw.network.NetworkMessage;
+import it.polimi.ingsw.network.Type;
+
+public class PlaceObjectiveMessage extends NetworkMessage {
     private int chosenObjective;
 
     public PlaceObjectiveMessage(String sender, int chosenObjective) {
-        super(sender, ServerType.PLACE_OBJECTIVE);
+        super(Type.PLACE_OBJECTIVE, sender);
+        this.chosenObjective = chosenObjective;
     }
 
     public int getChosenObjective() {
