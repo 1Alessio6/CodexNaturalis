@@ -65,7 +65,7 @@ public class ClientGUI extends Application implements View {
          */
         this.currentSceneController = loader.getController();
 
-        currentSceneController.setGui(this);
+        initializeCurrentSceneController();
         ((LobbyScene)currentSceneController).initializeScene();
 
 
@@ -104,6 +104,7 @@ public class ClientGUI extends Application implements View {
 
         FXMLLoader loader = loadScene("/gui/LobbyScene.fxml");
         currentSceneController = loader.getController();
+        initializeCurrentSceneController();
         ((LobbyScene)currentSceneController).initializeScene();
 
     }
@@ -208,5 +209,9 @@ public class ClientGUI extends Application implements View {
 
         return loader;
 
+    }
+
+    private void initializeCurrentSceneController(){
+        currentSceneController.setGui(this);
     }
 }
