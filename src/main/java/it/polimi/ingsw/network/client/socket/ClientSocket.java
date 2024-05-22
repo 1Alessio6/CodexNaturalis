@@ -17,6 +17,7 @@ import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 import it.polimi.ingsw.network.heartbeat.HeartBeat;
+import it.polimi.ingsw.network.heartbeat.HeartBeatMessage;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,11 +34,11 @@ public class ClientSocket extends Client implements VirtualView {
     private PrintWriter out;
     private BufferedReader in;
     private HeartBeat heartBeat;
+    private ServerHandler serverSocket;
     private String name;
 
     public ClientSocket(String host, Integer port) throws UnReachableServerException {
         super(host, port);
-        heartBeat = new HeartBeat(this, server);
     }
 
     @Override
@@ -51,7 +52,11 @@ public class ClientSocket extends Client implements VirtualView {
     @Override
     protected VirtualServer connect(String ip, Integer port) {
         System.out.println("Connect to ip " + ip + " at port " + port);
-        ServerHandler serverHandler = null;
+        try {
+            this.socket = new Socket(ip, port);
+            this.out = new PrintWriter(this.socket.getOutputStream(), true);
+            this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            serverSocket = new ServerHandler(this, in, out);
 
             heartBeat = new HeartBeat(this, "unkown", serverSocket, "server");
             heartBeat.startHeartBeat();
