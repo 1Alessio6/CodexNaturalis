@@ -3,13 +3,17 @@ package it.polimi.ingsw.network.client.view.gui;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.view.View;
+import it.polimi.ingsw.network.client.view.gui.controllers.LobbyScene;
+import it.polimi.ingsw.network.client.view.gui.controllers.SceneController;
 import it.polimi.ingsw.network.client.view.gui.controllers.SelectUsernameScene;
+import it.polimi.ingsw.network.client.view.tui.TUIActions;
 import it.polimi.ingsw.network.server.rmi.ServerRMI;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -17,12 +21,15 @@ import javafx.stage.Stage;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class ClientGUI extends Application implements View {
 
     private Stage primaryStage;
 
+    private SceneController currentSceneController;
     private VirtualView client;
     private ClientController controller;
 
@@ -49,17 +56,23 @@ public class ClientGUI extends Application implements View {
 
         this.primaryStage = primaryStage;
         //add all controllers constructors
-        FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/gui/SelectUsernameScene.fxml")));
-        Parent root = loader.load();
-        System.out.println(loader.getLocation());
 
+        //FXMLLoader loader = loadScene("/gui/SelectUsernameScene.fxml");
+        FXMLLoader loader = loadScene("/gui/LobbyScene.fxml");
+        /*
         SelectUsernameScene sceneController = loader.getController();
-        sceneController.setGui(this);
-        primaryStage.setTitle("Codex Naturalis");
 
-        Scene scene = new Scene(root);
-        this.primaryStage.setScene(scene);
+         */
+        this.currentSceneController = loader.getController();
+
+        currentSceneController.setGui(this);
+        ((LobbyScene)currentSceneController).initializeScene();
+
+
+        this.primaryStage.setTitle("Codex Naturalis");
         this.primaryStage.show();
+
+
     }
 
     @Override
@@ -81,11 +94,17 @@ public class ClientGUI extends Application implements View {
 
     @Override
     public void showUpdatePlayersInLobby() {
+        assert currentSceneController instanceof LobbyScene;
+        ((LobbyScene)currentSceneController).setPlayerConnected(controller.getConnectedUsernames());
 
     }
 
     @Override
     public void showUpdateCreator() {
+
+        FXMLLoader loader = loadScene("/gui/LobbyScene.fxml");
+        currentSceneController = loader.getController();
+        ((LobbyScene)currentSceneController).initializeScene();
 
     }
 
@@ -167,13 +186,27 @@ public class ClientGUI extends Application implements View {
         return client;
     }
 
-    public void loadScene(String fxmlPath) throws IOException {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxmlPath)));
+    public FXMLLoader loadScene(String fxmlPath) {
+
+        Parent root;
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+
+        try{
+            root = loader.load();
+        }catch (IOException e){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText(e.getMessage());
+            alert.setTitle("IOException");
+            alert.show();
+            return null;
+        }
         primaryStage.setTitle("Codex Naturalis");
 
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        return loader;
 
     }
 }
