@@ -35,7 +35,7 @@ public class ServerRMI implements VirtualServer {
 
     public static void main(String[] args) {
         ServerRMI myServer = new ServerRMI();
-        VirtualServer stub;
+        VirtualServer stub = null;
         int port = Integer.parseInt(args[0]);
 
         try {
@@ -45,7 +45,7 @@ public class ServerRMI implements VirtualServer {
             System.exit(1);
         }
 
-        Registry registry;
+        Registry registry = null;
         try {
             registry = LocateRegistry.createRegistry(port);
         } catch (RemoteException e) {
@@ -56,7 +56,8 @@ public class ServerRMI implements VirtualServer {
         try {
             registry.bind(SERVER_NAME, stub);
         } catch (RemoteException | AlreadyBoundException e) {
-            throw new RuntimeException(e);
+            System.err.println("Failed to bind the server");
+            System.exit(1);
         }
 
         System.out.println("ServerRMI ready");
