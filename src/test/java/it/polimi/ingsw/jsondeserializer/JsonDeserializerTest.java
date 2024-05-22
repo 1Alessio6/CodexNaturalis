@@ -3,15 +3,20 @@ package it.polimi.ingsw.jsondeserializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import it.polimi.ingsw.controller.PlainVirtualView;
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.card.Color.CardColor;
 import it.polimi.ingsw.model.card.strategies.CalculateNoCondition;
 import it.polimi.ingsw.model.card.strategies.CalculatePoints;
 import it.polimi.ingsw.model.card.strategies.CalculateResources;
+import it.polimi.ingsw.network.NetworkMessage;
+import it.polimi.ingsw.network.Type;
+import it.polimi.ingsw.network.client.model.ClientGame;
+import it.polimi.ingsw.network.client.socket.message.UpdateAfterConnectionMessage;
+import it.polimi.ingsw.network.heartbeat.HeartBeatMessage;
 import it.polimi.ingsw.network.server.socket.message.DrawMessage;
-import it.polimi.ingsw.network.server.socket.message.ServerMessage;
-import it.polimi.ingsw.network.server.socket.message.ServerType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -328,13 +333,57 @@ public class JsonDeserializerTest {
     @Test
     void serializeMessage_deserializeCorrectly() {
         int idToDraw = 100;
-        ServerMessage message = new DrawMessage("gino", idToDraw);
+        NetworkMessage message = new DrawMessage("gino", idToDraw);
         gson = new Gson();
         String json = gson.toJson(message);
         System.out.println(json);
 
         DrawMessage received = gson.fromJson(json, DrawMessage.class);
-        Assertions.assertEquals(received.getType(), ServerType.DRAW);
+        Assertions.assertEquals(received.getNetworkType(), Type.DRAW);
         Assertions.assertEquals(received.getIdDraw(), idToDraw);
+    }
+
+    @Test
+    void testDeserializedEmptyClientGame() {
+        ClientGame clientGame = new ClientGame(new Game(createList(3, "user")));
+        String json = gson.toJson(clientGame);
+        System.out.println(json);
+    }
+
+    @Test
+    void testDeserializedNonEmptyGame() {
+        Game game = new Game(createList(2, "User"));
+        Assertions.assertDoesNotThrow(
+                () -> {
+                    game.add("User", new PlainVirtualView());
+                }
+        );
+        ClientGame clientGame = new ClientGame(game);
+        String json = gson.toJson(clientGame);
+        System.out.println("Game in json: " + json);
+        ClientGame clientGameFromJson = gson.fromJson(json, ClientGame.class);
+        UpdateAfterConnectionMessage updateAfterConnectionMessage = new UpdateAfterConnectionMessage(clientGame);
+        String messageJson = gson.toJson(updateAfterConnectionMessage);
+        UpdateAfterConnectionMessage desMessageFromServer = gson.fromJson(messageJson, UpdateAfterConnectionMessage.class);
+    }
+
+    @Test
+    void deserializeHeartBeatMessage_keepId() {
+        int id = 2;
+        HeartBeatMessage heartBeatMessage = new HeartBeatMessage("user", id);
+        String json = gson.toJson(heartBeatMessage);
+        System.out.println(json);
+        HeartBeatMessage heartBeatMessageFromJson = gson.fromJson(json, HeartBeatMessage.class);
+        Assertions.assertEquals(id, heartBeatMessageFromJson.getId());
+    }
+
+    @Test
+    void testDeserialization() {
+        String json = """
+                {"id":1,"networkType":"HEARTBEAT","sender":"handler"}""";
+        NetworkMessage message = gson.fromJson(json, NetworkMessage.class);
+        Assertions.assertEquals(Type.HEARTBEAT, message.getNetworkType());
+        HeartBeatMessage heartBeatMessage = gson.fromJson(json, HeartBeatMessage.class);
+        Assertions.assertEquals(1, heartBeatMessage.getId());
     }
 }
