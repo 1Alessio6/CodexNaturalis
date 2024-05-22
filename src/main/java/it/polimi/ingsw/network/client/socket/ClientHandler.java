@@ -34,8 +34,7 @@ public class ClientHandler implements VirtualView, HeartBeatListener {
     private final BufferedReader input;
     private final Gson gson;
     private String username;
-    private Timer timerForClientResponse;
-    private static final int DELAY_FOR_CLIENTS_RESPONSE = 10000;
+    private final HeartBeat heartBeat;
 
     public ClientHandler(Server server, BufferedReader input, PrintWriter out) {
         this.server = server;
@@ -233,35 +232,30 @@ public class ClientHandler implements VirtualView, HeartBeatListener {
     }
 
     @Override
-    public void notifyStillActive() throws RemoteException {
-
+    public void handleUnresponsiveness(String unresponsiveListener) {
+        System.err.println("User " + unresponsiveListener + " has crashed");
+        terminate();
     }
 
     @Override
-    public void receivePing(String senderName) throws RemoteException {
-        // respond
-        ClientPingMessage pingMessage = new ClientPingMessage(senderName);
-        String jsonMessage = gson.toJson(pingMessage);
+    public void receivePing(HeartBeatMessage ping) throws RemoteException {
+        String jsonMessage = gson.toJson(ping);
         out.println(jsonMessage);
         out.flush();
-        // update timer for new ping from the client
-        timerForClientResponse.cancel();
-        timerForClientResponse = new Timer();
-        timerForClientResponse.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                terminate();
-            }
-        }, DELAY_FOR_CLIENTS_RESPONSE);
     }
 
-    private void terminate() {
+    private void closeResources() {
         try {
             input.close();
         } catch (IOException e) {
+            System.out.println("input has already been closed");
         }
         out.close();
-        executor.close();
+    }
+
+    private void terminate() {
+        closeResources();
+        heartBeat.terminate();
         // leave after being registered in the game
         if (username != null) {
             server.disconnect(username);

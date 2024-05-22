@@ -14,8 +14,8 @@ import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.model.*;
 import it.polimi.ingsw.network.client.model.card.*;
 import it.polimi.ingsw.network.heartbeat.HeartBeat;
+import it.polimi.ingsw.network.heartbeat.HeartBeatMessage;
 import it.polimi.ingsw.network.server.rmi.ServerRMI;
-
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -25,13 +25,12 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.Map;
 
-public class ClientRMI extends Client implements VirtualView {
-    private final HeartBeat heartBeat;
+public class ClientRMI extends Client implements VirtualView{
+    private HeartBeat heartBeat;
     private String name;
 
     public ClientRMI(String host, Integer port) throws UnReachableServerException {
         super(host, port);
-        heartBeat = new HeartBeat(this, server);
     }
 
     @Override
@@ -53,7 +52,8 @@ public class ClientRMI extends Client implements VirtualView {
         ClientController controller = clientView.run(stub);
         name = controller.getMainPlayerUsername();
         clientView.beginCommandAcquisition();
-        heartBeat.startPing(name);
+        heartBeat = new HeartBeat(this, name, server, "server");
+        heartBeat.startHeartBeat();
     }
 
     @Override
@@ -150,14 +150,30 @@ public class ClientRMI extends Client implements VirtualView {
     }
 
     @Override
-    public void notifyStillActive() throws RemoteException {
-        heartBeat.registerResponse();
+    public void handleUnresponsiveness(String unresponsiveListener) {
+        clientView.showServerCrash();
+        System.exit(1);
     }
 
     @Override
-    public void handleUnresponsiveness() {
-        clientView.showServerCrash();
-        heartBeat.shutDown();
-        System.exit(1);
+    public void receivePing(HeartBeatMessage ping) throws RemoteException {
+        heartBeat.registerMessage(ping);
     }
+
+    //   @Override
+ //   public void notifyStillActive() throws RemoteException {
+ //       heartBeat.registerResponse();
+ //   }
+
+  //  @Override
+  //  public void handleUnresponsiveness() {
+  //      clientView.showServerCrash();
+  //      //heartBeat.shutDown();
+  //      System.exit(1);
+  //  }
+
+  //  @Override
+  //  public void receivePing(HeartBeatMessage ping) throws RemoteException {
+  //      heartBeat.registerMessage(ping);
+  //  }
 }

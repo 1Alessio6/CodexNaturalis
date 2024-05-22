@@ -200,9 +200,15 @@ public class ServerHandler implements VirtualServer {
     }
 
     @Override
-    public void receivePing(String username) {
-        PingMessage message = new PingMessage(username);
-        String json = gson.toJson(message);
+    public void handleUnresponsiveness(String unresponsiveListener) {
+        //System.err.println("Server doesn't respond to ping, I'll assume is inactive");
+        //closeResources();
+    }
+
+    @Override
+    public void receivePing(HeartBeatMessage ping) throws RemoteException {
+        System.out.println("Sending ping...");
+        String json = gson.toJson(ping);
         out.println(json);
         out.flush();
     }

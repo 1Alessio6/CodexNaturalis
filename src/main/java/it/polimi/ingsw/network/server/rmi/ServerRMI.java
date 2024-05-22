@@ -19,9 +19,7 @@ public class ServerRMI implements VirtualServer {
     private final Controller myController;
     private final static String SERVER_NAME = "ServerRmi";
     private final Object lockOnClientsNetworkStatus;
-    private final Map<String, Timer> timerForActiveClients;
-    private final Map<String, VirtualView> activeClients;
-    private static final int DELAY_FOR_CLIENTS_RESPONSE = 20000;
+    private final Map<String, HeartBeat> activeClients;
 
     public static String getServerName() {
         return SERVER_NAME;
@@ -68,8 +66,9 @@ public class ServerRMI implements VirtualServer {
         if (accepted) {
             System.out.println("User " + username + " has been accepted");
             synchronized (lockOnClientsNetworkStatus) {
-                timerForActiveClients.put(username, new Timer());
-                activeClients.put(username, client);
+                HeartBeat heartBeat = new HeartBeat(this, "server", client, username);
+                activeClients.put(username, heartBeat);
+                heartBeat.startHeartBeat();
             }
         }
     }
@@ -77,7 +76,8 @@ public class ServerRMI implements VirtualServer {
     private void handleDisconnection(String disconnectedUser) {
         myController.handleDisconnection(disconnectedUser);
         synchronized (lockOnClientsNetworkStatus) {
-            timerForActiveClients.remove(disconnectedUser);
+            HeartBeat heartBeat = activeClients.get(disconnectedUser);
+            heartBeat.terminate();
             activeClients.remove(disconnectedUser);
         }
         System.out.println("User " + disconnectedUser + " left the server :(");
@@ -150,4 +150,25 @@ public class ServerRMI implements VirtualServer {
         myController.setPlayersNumber(username, playersNumber);
     }
 
+    @Override
+    public void handleUnresponsiveness(String unresponsiveListener) throws RemoteException {
+        System.err.println("Client " + unresponsiveListener + " has crashed");
+        synchronized (lockOnClientsNetworkStatus) {
+            handleDisconnection(unresponsiveListener);
+        }
+    }
+
+    @Override
+    public void receivePing(HeartBeatMessage ping) throws RemoteException {
+        synchronized (lockOnClientsNetworkStatus) {
+            HeartBeat heartBeat = activeClients.get(ping.getSender());
+            System.out.println("Received ping from " + ping.getSender());
+            if (heartBeat==null) {
+                System.err.println("which is unknown user: never connected or crashed");
+            } else {
+                System.err.println("which is known");
+                heartBeat.registerMessage(ping);
+            }
+        }
+    }
 }

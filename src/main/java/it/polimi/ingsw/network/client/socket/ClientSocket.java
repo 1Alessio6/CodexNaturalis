@@ -53,17 +53,11 @@ public class ClientSocket extends Client implements VirtualView {
         System.out.println("Connect to ip " + ip + " at port " + port);
         ServerHandler serverHandler = null;
 
-        try (
-                Socket socket = new Socket(ip, port);
-                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        ) {
-            serverHandler = new ServerHandler(this, in, out);
-            this.socket = socket;
-            this.out = out;
-            this.in = in;
-            new Thread(serverHandler::hear);
-            return serverHandler;
+            heartBeat = new HeartBeat(this, "unkown", serverSocket, "server");
+            heartBeat.startHeartBeat();
+            new Thread(serverSocket::hear).start();
+
+            return serverSocket;
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + ip);
         } catch (IOException e) {
@@ -180,20 +174,18 @@ public class ClientSocket extends Client implements VirtualView {
     }
 
     @Override
-    public void notifyStillActive() throws RemoteException {
-        heartBeat.registerResponse();
+    public void handleUnresponsiveness(String unresponsiveListener) {
+        System.err.println("Server doesn't respond to ping, I'll assume is inactive");
+        if (clientView != null) {
+            clientView.showServerCrash();
+        }
+        closeResources();
+        heartBeat.terminate();
+        System.exit(1);
     }
 
     @Override
-    public void handleUnresponsiveness() {
-        clientView.showServerCrash();
-        heartBeat.shutDown();
-        try {
-            in.close();
-            out.close();
-            socket.close();
-        } catch (IOException e) {
-        }
-        System.exit(1);
+    public void receivePing(HeartBeatMessage ping) throws RemoteException {
+        heartBeat.registerMessage(ping);
     }
 }
