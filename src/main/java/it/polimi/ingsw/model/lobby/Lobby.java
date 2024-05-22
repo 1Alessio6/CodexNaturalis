@@ -108,7 +108,7 @@ public class Lobby {
     public void remove(String username) {
         listenerHandler.remove(username);
         // if the creator leaves the lobby before setting the number of players
-        if (creator.equals(username) && numPlayersToStartTheGame == -1) {
+        if (creator != null && creator.equals(username) && numPlayersToStartTheGame == -1) {
             resetLobby();
         } else {
             listenerHandler.notifyBroadcast(receiver -> receiver.showUpdatePlayersInLobby(listenerHandler.getIds()));
