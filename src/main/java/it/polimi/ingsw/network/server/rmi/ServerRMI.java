@@ -29,7 +29,6 @@ public class ServerRMI implements VirtualServer {
 
     public ServerRMI() {
         this.myController = new Controller();
-        timerForActiveClients = new HashMap<>();
         activeClients = new HashMap<>();
         lockOnClientsNetworkStatus = new Object();
     }
