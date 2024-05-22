@@ -34,7 +34,6 @@ public class ClientSocket extends Client implements VirtualView {
     private PrintWriter out;
     private BufferedReader in;
     private HeartBeat heartBeat;
-    private ServerHandler serverSocket;
     private String name;
 
     public ClientSocket(String host, Integer port) throws UnReachableServerException {
@@ -46,10 +45,6 @@ public class ClientSocket extends Client implements VirtualView {
         ClientController controller = clientView.run(this);
         name = controller.getMainPlayerUsername();
         clientView.beginCommandAcquisition();
-
-//        heartBeat = new HeartBeat(this, "unkown", server, "server");
-//        heartBeat.startHeartBeat();
-//        new Thread(serverSocket::hear).start();
     }
 
     private void closeResources() {
@@ -63,19 +58,24 @@ public class ClientSocket extends Client implements VirtualView {
     }
 
     @Override
-    protected VirtualServer connect(String ip, Integer port) {
+    protected void connect(String ip, Integer port) throws UnReachableServerException {
         System.out.println("Connect to ip " + ip + " at port " + port);
         try {
             this.socket = new Socket(ip, port);
             this.out = new PrintWriter(this.socket.getOutputStream(), true);
             this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            serverSocket = new ServerHandler(this, in, out);
+            server = new ServerHandler(this, in, out);
 
-            heartBeat = new HeartBeat(this, "unkown", serverSocket, "server");
+            heartBeat = new HeartBeat(this, "unkown", server, "server");
             heartBeat.startHeartBeat();
-            new Thread(serverSocket::hear).start();
-
-            return serverSocket;
+            new Thread(() -> {
+                try {
+                    server.hear();
+                } catch (RemoteException ignored) {
+                    // impossible from a socket server
+                }
+            }).start();
+            return;
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + ip);
             closeResources();
@@ -83,17 +83,17 @@ public class ClientSocket extends Client implements VirtualView {
             System.err.println("Couldn't get I/O for the connection to " + ip);
             closeResources();
         }
-        return null;
+        throw new UnReachableServerException();
     }
 
- //   public void terminateConnection() {
- //       try {
- //           in.close();
- //           out.close();
- //           socket.close();
- //       } catch (IOException ignored) {
- //       }
- //   }
+    //   public void terminateConnection() {
+    //       try {
+    //           in.close();
+    //           out.close();
+    //           socket.close();
+    //       } catch (IOException ignored) {
+    //       }
+    //   }
 
     @Override
     public void updateCreator() {
@@ -117,21 +117,21 @@ public class ClientSocket extends Client implements VirtualView {
         clientView.showUpdatePlayersInLobby();
     }
 
- //   @Override
- //   public void showUpdateJoinedPlayers(List<String> usernames) throws RemoteException {
+    //   @Override
+    //   public void showUpdateJoinedPlayers(List<String> usernames) throws RemoteException {
 
- //   }
+    //   }
 
     @Override
-    public void showUpdatePlayerStatus(boolean isConnected, String username){
+    public void showUpdatePlayerStatus(boolean isConnected, String username) {
         controller.updatePlayerStatus(isConnected, username);
         clientView.showUpdatePlayerStatus();
     }
 
- //   @Override
- //   public void showStarterPlacement(String username, int faceId) {
+    //   @Override
+    //   public void showStarterPlacement(String username, int faceId) {
 
- //   }
+    //   }
 
     @Override
     public void showUpdateColor(PlayerColor color, String username) {
@@ -143,20 +143,20 @@ public class ClientSocket extends Client implements VirtualView {
     public void showUpdateObjectiveCard(ClientObjectiveCard chosenObjective, String username) {
         controller.updateObjectiveCard(chosenObjective, username);
         //todo: if the objective card isn't of the main player the view should not show the card
-        if(controller.getMainPlayerUsername().equals(username)){
+        if (controller.getMainPlayerUsername().equals(username)) {
             clientView.showUpdateObjectiveCard();
         }
     }
 
     @Override
-    public void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide, Position position){
+    public void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide, Position position) {
         controller.updateAfterPlace(positionToCornerCovered, newAvailablePositions, newResources, points, username, placedCard, placedSide, position);
         clientView.showUpdateAfterPlace();
     }
 
     @Override
     public void showUpdateAfterDraw(ClientCard drawnCard, ClientFace newTopDeck, ClientCard newFaceUpCard, String username, int boardPosition) {
-        controller.updateAfterDraw(drawnCard,newTopDeck,newFaceUpCard,username,boardPosition);
+        controller.updateAfterDraw(drawnCard, newTopDeck, newFaceUpCard, username, boardPosition);
         clientView.showUpdateAfterDraw();
     }
 
@@ -173,7 +173,7 @@ public class ClientSocket extends Client implements VirtualView {
 
     @Override
     public void showUpdateCurrentPlayer(int currentPlayerIdx, GamePhase phase) {
-        controller.updateCurrentPlayer(currentPlayerIdx,phase);
+        controller.updateCurrentPlayer(currentPlayerIdx, phase);
         clientView.showUpdateCurrentPlayer();
     }
 

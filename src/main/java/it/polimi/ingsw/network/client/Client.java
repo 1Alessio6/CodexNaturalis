@@ -11,13 +11,10 @@ public abstract class Client {
     protected View clientView;
     protected VirtualServer server;
 
-    protected abstract VirtualServer connect(String ip, Integer port);
+    protected abstract void connect(String ip, Integer port) throws UnReachableServerException;
 
     public Client(String ip, int port) throws UnReachableServerException {
-        server = connect(ip, port);
-        if (server == null) {
-            throw new UnReachableServerException();
-        }
+        connect(ip, port);
         this.controller = new ClientController(server);
     }
 

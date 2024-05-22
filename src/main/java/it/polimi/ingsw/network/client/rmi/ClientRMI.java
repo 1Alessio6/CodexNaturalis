@@ -34,13 +34,13 @@ public class ClientRMI extends Client implements VirtualView{
     }
 
     @Override
-    protected VirtualServer connect(String ip, Integer port) {
+    protected void connect(String ip, Integer port) throws UnReachableServerException {
         String serverName = ServerRMI.getServerName();
         try {
             Registry registry = LocateRegistry.getRegistry(ip, port);
-            return (VirtualServer) registry.lookup(serverName);
+            server = (VirtualServer) registry.lookup(serverName);
         } catch (RemoteException | NotBoundException e) {
-            return null;
+            throw new UnReachableServerException();
         }
     }
 
