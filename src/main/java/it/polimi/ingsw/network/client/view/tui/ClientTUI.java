@@ -285,37 +285,10 @@ public class ClientTUI implements View {
     public void showInitialPlayerStatus() {
 
     }
-
     @Override
     public void showBoardSetUp() {
-        StringBuilder str = new StringBuilder();
-        int maxString = "Players".length() + 2;
-        for (ClientPlayer i : controller.getPlayers()) {
-            if (i.getUsername().length() >= maxString) {
-                maxString = i.getUsername().length() + 2;
-            }
-        }
-
-        String playerSpaces = ClientUtil.calculateSpaces(maxString, "Player");
-        String pointsSpaces = ClientUtil.calculateSpaces(10, "Points");
-
-        str.append("╔").append(ClientUtil.appendLine(maxString)).append("╦").append(ClientUtil.appendLine(10)).append("╗\n");
-        str.append("║").append(playerSpaces).append("Player").append(playerSpaces).append("║");
-        str.append(pointsSpaces).append("Points").append(pointsSpaces).append("║\n");
-        str.append("╠").append(ClientUtil.appendLine(maxString)).append("╬").append(ClientUtil.appendLine(10)).append("╣\n");
-
-        for (ClientPlayer i : controller.getPlayers()) {
-            String username = i.getUsername();
-            ANSIColor color = ClientUtil.playerColorConversion(i.getColor());
-            int points = i.getPlayground().getPoints();
-
-            str.append("║").append(color.getColor()).append(ClientUtil.calculateSpaces(maxString, username)).append(username).append(ClientUtil.calculateSpaces(maxString, username)).append(ANSIColor.RESET.getColor()).append("║");
-            str.append(ClientUtil.calculateSpaces(10, Integer.toString(points))).append(points).append(ClientUtil.calculateSpaces(10, Integer.toString(points))).append("║\n");
-        }
-        str.append("╚").append(ClientUtil.appendLine(maxString)).append("╩").append(ClientUtil.appendLine(10)).append("╝\n");
-        System.out.println(str);
+        ClientUtil.printToLineColumn(GameScreenArea.SCOREBOARD.screenPosition.getX(),GameScreenArea.SCOREBOARD.screenPosition.getY(),ClientUtil.createScoreBoard(this.controller.getPlayers()).toString());
     }
-
     /**
      * {@inheritDoc}
      */
@@ -351,7 +324,6 @@ public class ClientTUI implements View {
 
     @Override
     public void showUpdateAfterPlace() {
-
         setAvailableActions();
     }
 
