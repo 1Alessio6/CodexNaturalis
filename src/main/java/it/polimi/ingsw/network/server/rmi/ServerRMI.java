@@ -95,33 +95,6 @@ public class ServerRMI implements VirtualServer {
     }
 
     @Override
-    public void receivePing(String username) throws RemoteException {
-        new Thread(
-                () -> {
-                    synchronized (lockOnClientsNetworkStatus) {
-                        try {
-                            activeClients.get(username).notifyStillActive();
-                            Timer clientTimer = timerForActiveClients.get(username);
-                            clientTimer.cancel();
-                            clientTimer = new Timer();
-                            clientTimer.schedule(new TimerTask() {
-                                @Override
-                                public void run() {
-                                    handleDisconnection(username);
-                                }
-                            }, DELAY_FOR_CLIENTS_RESPONSE);
-                            timerForActiveClients.put(username, clientTimer);
-                        } catch (RemoteException e) {
-                            activeClients.remove(username);
-                            timerForActiveClients.get(username).cancel();
-                            timerForActiveClients.remove(username);
-                        }
-                    }
-                }
-        ).start();
-    }
-
-    @Override
     public void placeStarter(String username, Side side) throws RemoteException {
         myController.placeStarter(username, side);
     }
