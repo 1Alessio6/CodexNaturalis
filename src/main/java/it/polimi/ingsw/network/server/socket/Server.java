@@ -5,7 +5,6 @@ import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.chat.message.Message;
-import it.polimi.ingsw.network.client.socket.ClientHandler;
 
 import java.io.*;
 import java.net.ServerSocket;

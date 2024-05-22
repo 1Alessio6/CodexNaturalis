@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.client.socket;
+package it.polimi.ingsw.network.server.socket;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

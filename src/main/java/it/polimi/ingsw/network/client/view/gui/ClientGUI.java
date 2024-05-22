@@ -3,17 +3,27 @@ package it.polimi.ingsw.network.client.view.gui;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.view.View;
+import it.polimi.ingsw.network.client.view.gui.controllers.SelectUsernameScene;
 import it.polimi.ingsw.network.server.rmi.ServerRMI;
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.util.Objects;
 
 public class ClientGUI extends Application implements View {
 
+    private Stage primaryStage;
+
+    private VirtualView client;
     private ClientController controller;
 
     /*
@@ -37,18 +47,32 @@ public class ClientGUI extends Application implements View {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/gui/ClientGUI.fxml")));
+        this.primaryStage = primaryStage;
+        //add all controllers constructors
+        FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/gui/SelectUsernameScene.fxml")));
+        Parent root = loader.load();
+        System.out.println(loader.getLocation());
+
+        SelectUsernameScene sceneController = loader.getController();
+        sceneController.setGui(this);
         primaryStage.setTitle("Codex Naturalis");
 
         Scene scene = new Scene(root);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        this.primaryStage.setScene(scene);
+        this.primaryStage.show();
     }
 
     @Override
     public ClientController run(VirtualView client) {
+        this.client = client;
         return controller;
     }
+
+    @Override
+    public void beginCommandAcquisition() {
+
+    }
+
 
     @Override
     public void showServerCrash() {
@@ -135,8 +159,21 @@ public class ClientGUI extends Application implements View {
 
     }
 
-    @Override
-    public void beginCommandAcquisition() {
+    public ClientController getController() {
+        return controller;
+    }
+
+    public VirtualView getClient() {
+        return client;
+    }
+
+    public void loadScene(String fxmlPath) throws IOException {
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxmlPath)));
+        primaryStage.setTitle("Codex Naturalis");
+
+        Scene scene = new Scene(root);
+        primaryStage.setScene(scene);
+        primaryStage.show();
 
     }
 }

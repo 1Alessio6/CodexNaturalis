@@ -96,6 +96,8 @@ public class ClientPlayer implements Serializable {
 
     public List<ClientObjectiveCard> getObjectiveCards(){return objectiveCards;}
 
+    public List<ClientCard> getPlayerCards(){return playerCards;}
+
     //setter methods
 
     public void setNetworkStatus(boolean networkStatus) {
