@@ -1,19 +1,23 @@
 package it.polimi.ingsw.network.client.socket;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
+import it.polimi.ingsw.network.NetworkMessage;
+import it.polimi.ingsw.network.Type;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.model.ClientGame;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 import it.polimi.ingsw.network.client.socket.message.*;
-import it.polimi.ingsw.network.client.socket.message.ClientPingMessage;
+import it.polimi.ingsw.network.heartbeat.HeartBeat;
 import it.polimi.ingsw.network.heartbeat.HeartBeatListener;
+import it.polimi.ingsw.network.heartbeat.HeartBeatMessage;
 import it.polimi.ingsw.network.server.socket.Server;
 import it.polimi.ingsw.network.server.socket.message.*;
 
@@ -23,17 +27,12 @@ import java.io.PrintWriter;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class ClientHandler implements VirtualView, HeartBeatListener {
     private final Server server;
     private final PrintWriter out;
     private final BufferedReader input;
     private final Gson gson;
-    private final ExecutorService executor;
     private String username;
     private Timer timerForClientResponse;
     private static final int DELAY_FOR_CLIENTS_RESPONSE = 10000;
@@ -49,67 +48,68 @@ public class ClientHandler implements VirtualView, HeartBeatListener {
 
     public void addClientUsername(String username) {
         this.username = username;
+        // heartBeat.setListener(this, username);
     }
 
     public void run() {
+        System.out.println("ClientHandler has started");
         try {
             String line = input.readLine();
             while (line != null) {
                 System.out.println("Received input: " + line);
-                ServerMessage message = gson.fromJson(line, ServerMessage.class);
-                ServerType type = message.getType();
+                NetworkMessage message = gson.fromJson(line, NetworkMessage.class);
+                Type type = message.getNetworkType();
                 String sender = message.getSender();
 
                 switch (type) {
                     case CONNECT:
-                        executor.submit(() -> {
-                            server.connect(this, sender);
-                        });
+                        boolean accepted = server.connect(this, sender);
+                        if (!accepted) {
+                            terminate();
+                        }
                         break;
                     case PLACE_STARTER:
                         PlaceStarterMessage placeStarterMessage = gson.fromJson(line, PlaceStarterMessage.class);
-                        executor.submit(() -> server.placeStarter(sender, placeStarterMessage.getSide()));
+                        server.placeStarter(sender, placeStarterMessage.getSide());
                         break;
                     case CHOOSE_COLOR:
                         ChooseColorMessage chooseColorMessage = gson.fromJson(line, ChooseColorMessage.class);
-                        executor.submit(() -> server.chooseColor(sender, chooseColorMessage.getColor()));
+                        server.chooseColor(sender, chooseColorMessage.getColor());
                         break;
                     case PLACE_OBJECTIVE:
                         PlaceObjectiveMessage placeObjectiveMessage = gson.fromJson(line, PlaceObjectiveMessage.class);
-                        executor.submit(() -> server.placeObjectiveCard(sender, placeObjectiveMessage.getChosenObjective()));
+                        server.placeObjectiveCard(sender, placeObjectiveMessage.getChosenObjective());
                         break;
                     case PLACE_CARD:
                         PlaceCardMessage placeCardMessage = gson.fromJson(line, PlaceCardMessage.class);
-                        executor.submit(() -> server.placeCard(sender, placeCardMessage.getFrontId(), placeCardMessage.getBackId(),
-                                placeCardMessage.getSide(), placeCardMessage.getPosition()));
+                        server.placeCard(sender, placeCardMessage.getFrontId(), placeCardMessage.getBackId(),
+                                placeCardMessage.getSide(), placeCardMessage.getPosition());
                         break;
                     case DRAW:
                         DrawMessage drawMessage = gson.fromJson(line, DrawMessage.class);
-
-                        executor.submit(() -> server.draw(sender, drawMessage.getIdDraw()));
+                        server.draw(sender, drawMessage.getIdDraw());
                         break;
 
                     case SEND_CHAT_MESSAGE:
                         SendChatMessage sendChatMessage = gson.fromJson(line, SendChatMessage.class);
-
-                        executor.submit(() -> server.sendMessage(sendChatMessage.getMessage()));
+                        server.sendMessage(sendChatMessage.getMessage());
                         break;
 
                     case SET_PLAYER_NUMBER:
                         SetPlayerNumberMessage setPlayerNumberMessage = gson.fromJson(line, SetPlayerNumberMessage.class);
-
-                        executor.submit(() -> server.setPlayersNumber(sender, setPlayerNumberMessage.getNumPlayers()));
+                        server.setPlayersNumber(sender, setPlayerNumberMessage.getNumPlayers());
                         break;
 
                     case DISCONNECT:
-                        executor.submit(() -> {
-                            server.disconnect(sender);
-                            terminate();
-                        });
+                        server.disconnect(sender);
+                        closeResources();
+                        heartBeat.terminate();
                         break;
 
-                    case SEND_PING:
-                        receivePing(username);
+                    case HEARTBEAT:
+                        HeartBeatMessage ping = gson.fromJson(line, HeartBeatMessage.class);
+                        heartBeat.registerMessage(ping);
+                        //receivePing(ping);
                         break;
                 }
                 line = input.readLine();
