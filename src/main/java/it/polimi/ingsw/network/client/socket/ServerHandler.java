@@ -20,18 +20,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ServerHandler implements VirtualServer {
-    private BufferedReader in;
-    private PrintWriter out;
-    private ClientSocket clientSocket;
-    private Gson gson;
-    private ExecutorService executorService;
+    private final BufferedReader in;
+    private final PrintWriter out;
+    private final ClientSocket clientSocket;
+    private final Gson gson;
 
     public ServerHandler(ClientSocket clientSocket, BufferedReader in, PrintWriter out) {
         this.in = in;
         this.out = out;
         this.clientSocket = clientSocket;
-        gson = new Gson();
-        executorService = Executors.newSingleThreadExecutor();
+        GsonBuilder builder = new GsonBuilder().enableComplexMapKeySerialization();
+        this.gson = builder.create();
     }
 
     public void hear() {

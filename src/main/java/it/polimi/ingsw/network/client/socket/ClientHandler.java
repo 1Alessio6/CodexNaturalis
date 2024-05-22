@@ -41,9 +41,10 @@ public class ClientHandler implements VirtualView, HeartBeatListener {
         this.server = server;
         this.out = out;
         this.input = input;
-        gson = new Gson();
-        executor = Executors.newSingleThreadExecutor();
-        timerForClientResponse = new Timer();
+        GsonBuilder builder = new GsonBuilder().enableComplexMapKeySerialization();
+        this.gson = builder.create();
+        heartBeat = new HeartBeat(this, "handler", this, "handler");
+        heartBeat.startHeartBeat();
     }
 
     public void addClientUsername(String username) {
