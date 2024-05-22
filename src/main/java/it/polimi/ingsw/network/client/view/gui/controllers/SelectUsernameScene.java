@@ -35,10 +35,7 @@ public class SelectUsernameScene extends SceneController{
     private void connect(KeyEvent event) {
         if(event.getCode() == KeyCode.ENTER){
 
-
             gui.loadScene("/gui/ConnectionScene.fxml");
-
-
 
             try{
                 gui.getController().connect(gui.getClient(), usernameCatcher.getPromptText());

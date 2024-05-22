@@ -58,12 +58,11 @@ public class ClientGUI extends Application implements View {
         //add all controllers constructors
 
         //FXMLLoader loader = loadScene("/gui/SelectUsernameScene.fxml");
-        FXMLLoader loader = loadScene("/gui/LobbyScene.fxml");
+        loadScene("/gui/LobbyScene.fxml");
         /*
         SelectUsernameScene sceneController = loader.getController();
 
          */
-        this.currentSceneController = loader.getController();
 
         initializeCurrentSceneController();
         ((LobbyScene)currentSceneController).initializeScene();
@@ -102,8 +101,7 @@ public class ClientGUI extends Application implements View {
     @Override
     public void showUpdateCreator() {
 
-        FXMLLoader loader = loadScene("/gui/LobbyScene.fxml");
-        currentSceneController = loader.getController();
+        loadScene("/gui/LobbyScene.fxml");
         initializeCurrentSceneController();
         ((LobbyScene)currentSceneController).initializeScene();
 
@@ -187,7 +185,7 @@ public class ClientGUI extends Application implements View {
         return client;
     }
 
-    public FXMLLoader loadScene(String fxmlPath) {
+    public void loadScene(String fxmlPath) {
 
         Parent root;
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
@@ -199,15 +197,13 @@ public class ClientGUI extends Application implements View {
             alert.setContentText(e.getMessage());
             alert.setTitle("IOException");
             alert.show();
-            return null;
+            return;
         }
         primaryStage.setTitle("Codex Naturalis");
-
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.show();
-
-        return loader;
+        currentSceneController = loader.getController();
 
     }
 
