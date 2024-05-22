@@ -23,31 +23,21 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.Objects;
 
-public class SelectUsernameScene {
-
-    ClientGUI gui;
+public class SelectUsernameScene extends SceneController{
 
     @FXML
     TextField usernameCatcher;
 
     public SelectUsernameScene(){}
 
-    public void setGui(ClientGUI gui) {
-        this.gui = gui;
-    }
-
     @FXML
 
     private void connect(KeyEvent event) {
         if(event.getCode() == KeyCode.ENTER){
 
-            try{
-                gui.loadScene("/gui/ConnectionScene.fxml");
-            }catch (IOException e){
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("IOException");
-                alert.show();
-            }
+
+            gui.loadScene("/gui/ConnectionScene.fxml");
+
 
 
             try{
