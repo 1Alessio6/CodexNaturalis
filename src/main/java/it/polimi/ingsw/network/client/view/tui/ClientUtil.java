@@ -108,37 +108,6 @@ public class ClientUtil {
 
     // Main methods
 
-    public static String[][] designCard(ClientCard card) {
-        ANSIColor color = cardColorConversion(card.getFront().getColor());
-        String[][] cardMatrix = new String[3][7];
-        initializeMatrix(cardMatrix);
-        Map<CornerPosition, Corner> cornerPositionCornerMap;
-        Map<Symbol, Integer> resources;
-        Condition condition;
-        int points;
-        if (!card.getBack().getBackCenterResources().isEmpty()) {//is back
-            cornerPositionCornerMap = card.getBack().getCorners();
-            points = card.getBack().getScore();
-            resources = card.getBack().getBackCenterResources();
-            condition = card.getBack().getPointsCondition(); //it will return an empty map
-
-        } else {
-            cornerPositionCornerMap = card.getFront().getCorners();
-            points = card.getFront().getScore();
-            resources = card.getFront().getBackCenterResources();
-            condition = card.getFront().getPointsCondition();
-
-        }
-        appendNewResources(cornerPositionCornerMap, cardMatrix, color);
-        appendMatrixLines(resources, condition, cardMatrix, color);
-        if (resources.isEmpty()) {
-            appendPoints(cardMatrix, condition, points);
-        } else {
-            appendInternalResources(resources, cardMatrix);
-        }
-        return cardMatrix;
-    }
-
     public static String[][] designCard(ClientFace card) {
         ANSIColor color = cardColorConversion(card.getColor());
         String[][] cardMatrix = new String[3][7];
