@@ -294,8 +294,8 @@ public class ClientTUI implements View {
      */
     @Override
     public void showStarterPlacement(String username) {
-        ClientUtil.printCard(controller.getMainPlayer().getStarterCard());
-
+        ClientUtil.printInLineColumn(23,64,ClientUtil.designCard(controller.getMainPlayer().getStarterCard().getFront()));
+        ClientUtil.printInLineColumn(23,64+ClientUtil.cardWidth+2,ClientUtil.designCard(controller.getMainPlayer().getStarterCard().getBack()));
         // update only user that placed the card
         if (controller.getMainPlayerUsername().equals(username)) {
             availableActions.add(TUIActions.COLOR);
@@ -316,7 +316,7 @@ public class ClientTUI implements View {
 
     @Override
     public void showUpdateObjectiveCard() {
-        ClientUtil.printObjectiveCard(controller.getMainPlayer().getObjectiveCards().getFirst());
+        ClientUtil.designObjectiveCard(controller.getMainPlayer().getObjectiveCards().getFirst());
 
         // remove action: now actions will be available after current player update
         availableActions.remove(TUIActions.OBJECTIVE);
@@ -332,20 +332,20 @@ public class ClientTUI implements View {
         for(ClientCard i: controller.getMainPlayer().getPlayerCards()){
             //move cursor
             //print
-            ClientUtil.printCard(i);
+            ClientUtil.designCard(i.getFront());
         }
         //move cursor
         for(ClientCard i: controller.getFaceUpCards()){
-            ClientUtil.printCard(i);
+            ClientUtil.designCard(i.getFront());
             //move cursor
         }
         //move cursor
         //print
-        ClientUtil.printCard(controller.getGoldenDeckTopBack());
+        ClientUtil.designCard(controller.getGoldenDeckTopBack());
 
         //move cursor
         //print
-        ClientUtil.printCard(controller.getResourceDeckTopBack());
+        ClientUtil.designCard(controller.getResourceDeckTopBack());
 
         setAvailableActions();
     }
