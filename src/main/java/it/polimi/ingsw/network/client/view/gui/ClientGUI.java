@@ -67,7 +67,7 @@ public class ClientGUI extends Application implements View {
          */
 
         initializeCurrentSceneController();
-        ((LobbyScene)currentSceneController).initializeScene();
+        ((LobbyScene)currentSceneController).initializeCreatorScene();
 
 
         this.primaryStage.setTitle("Codex Naturalis");
@@ -95,7 +95,10 @@ public class ClientGUI extends Application implements View {
 
     @Override
     public void showUpdatePlayersInLobby() {
-        //todo add the loading of the scene for everyone that isn't the creator dividing in two different scenes
+        if(currentScene != SceneType.LOBBY){
+            loadScene("/gui/LobbyScene.fxml");
+            currentScene = SceneType.LOBBY;
+        }
         assert currentSceneController instanceof LobbyScene;
         ((LobbyScene)currentSceneController).setPlayerConnected(controller.getConnectedUsernames());
 
@@ -106,7 +109,8 @@ public class ClientGUI extends Application implements View {
 
         loadScene("/gui/LobbyScene.fxml");
         initializeCurrentSceneController();
-        ((LobbyScene)currentSceneController).initializeScene();
+        ((LobbyScene)currentSceneController).initializeCreatorScene();
+        currentScene = SceneType.LOBBY;
     }
 
     @Override
@@ -206,6 +210,7 @@ public class ClientGUI extends Application implements View {
         primaryStage.setScene(scene);
         primaryStage.show();
         currentSceneController = loader.getController();
+        currentSceneController.initialize();
 
     }
 

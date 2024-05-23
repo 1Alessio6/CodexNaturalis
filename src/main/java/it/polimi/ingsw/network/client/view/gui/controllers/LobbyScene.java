@@ -28,11 +28,25 @@ public class LobbyScene extends SceneController {
 
 
     public LobbyScene() {
+
     }
 
-    public void initializeScene() {
+    @Override
+    public void initialize() {
         numberPlayerCatcher.getItems().addAll(2, 3, 4);
-        connectedPlayers.setText("1 - " + gui.getController().getMainPlayerUsername());
+        //connectedPlayers.setText("1 - " + gui.getController().getMainPlayerUsername());
+        numberPlayerCatcher.setVisible(false);
+        setNumberRequest.setVisible(false);
+    }
+
+    public void showRequiredPlayers(){
+        //todo requiredPlayer.setText("Player required to play: " + gui.getController().getRequiredPlayer);
+        requiredPlayer.setVisible(true);
+    }
+
+    public void initializeCreatorScene() {
+        numberPlayerCatcher.setVisible(true);
+        setNumberRequest.setVisible(true);
     }
 
     public void setPlayerConnected(List<String> usernames){
