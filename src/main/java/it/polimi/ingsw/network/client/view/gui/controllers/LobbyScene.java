@@ -27,9 +27,7 @@ public class LobbyScene extends SceneController {
     private Text requiredPlayer;
 
 
-    public LobbyScene() {
-
-    }
+    public LobbyScene() {}
 
     @Override
     public void initialize() {
