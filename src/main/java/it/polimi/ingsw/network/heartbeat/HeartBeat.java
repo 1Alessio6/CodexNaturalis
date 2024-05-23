@@ -13,7 +13,7 @@ public class HeartBeat extends TimerTask {
     private static final int DEF_HEART_BEAT_PERIOD = 1000; // ms
     private int heartBeatPeriod;
     private int delay;
-    private Timer timer;
+    private final Timer timer;
     private AtomicInteger mostRecentReceivedId;
     private Integer lastSentId;
 
@@ -27,6 +27,7 @@ public class HeartBeat extends TimerTask {
         this.heartBeatPeriod = DEF_HEART_BEAT_PERIOD;
         this.delay = 0;
         this.lastSentId = 0;
+        timer = new Timer();
     }
 
     public synchronized void setHeartBeatPeriod(int heartBeatPeriod) {
@@ -41,7 +42,6 @@ public class HeartBeat extends TimerTask {
     }
 
     public synchronized void startHeartBeat() {
-        timer = new Timer();
         timer.scheduleAtFixedRate(this, delay, heartBeatPeriod);
     }
 
