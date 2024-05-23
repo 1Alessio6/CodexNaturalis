@@ -29,7 +29,6 @@ public interface View {
 
     void showInitialPlayerStatus();
 
-    void showBoardSetUp();
 
     /**
      * Method used to show starter placement, and update availableActions for the player notified.

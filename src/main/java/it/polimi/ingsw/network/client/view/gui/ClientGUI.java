@@ -113,9 +113,11 @@ public class ClientGUI extends Application implements View {
         currentScene = SceneType.LOBBY;
     }
 
+
+    //todo maybe could be merged with showServerCrashed()
     @Override
     public void showUpdateAfterLobbyCrash() {
-
+        //
     }
 
     @Override
@@ -130,11 +132,6 @@ public class ClientGUI extends Application implements View {
 
     @Override
     public void showInitialPlayerStatus() {
-
-    }
-
-    @Override
-    public void showBoardSetUp() {
 
     }
 
@@ -210,7 +207,6 @@ public class ClientGUI extends Application implements View {
         primaryStage.setScene(scene);
         primaryStage.show();
         currentSceneController = loader.getController();
-        currentSceneController.initialize();
 
     }
 

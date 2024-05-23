@@ -285,7 +285,7 @@ public class ClientTUI implements View {
     public void showInitialPlayerStatus() {
 
     }
-    @Override
+
     public void showBoardSetUp() {
         ClientUtil.printToLineColumn(GameScreenArea.SCOREBOARD.screenPosition.getX(),GameScreenArea.SCOREBOARD.screenPosition.getY(),ClientUtil.createScoreBoard(this.controller.getPlayers()).toString());
     }
