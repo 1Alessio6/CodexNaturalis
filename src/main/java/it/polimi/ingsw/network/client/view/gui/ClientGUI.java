@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.client.view.gui;
 
+import it.polimi.ingsw.model.board.Availability;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.view.View;
@@ -32,6 +33,7 @@ public class ClientGUI extends Application implements View {
     private SceneController currentSceneController;
     private VirtualView client;
     private ClientController controller;
+    private SceneType currentScene;
 
     /*
     public ClientGUI(ClientController controller){
@@ -93,6 +95,7 @@ public class ClientGUI extends Application implements View {
 
     @Override
     public void showUpdatePlayersInLobby() {
+        //todo add the loading of the scene for everyone that isn't the creator dividing in two different scenes
         assert currentSceneController instanceof LobbyScene;
         ((LobbyScene)currentSceneController).setPlayerConnected(controller.getConnectedUsernames());
 
@@ -104,7 +107,6 @@ public class ClientGUI extends Application implements View {
         loadScene("/gui/LobbyScene.fxml");
         initializeCurrentSceneController();
         ((LobbyScene)currentSceneController).initializeScene();
-
     }
 
     @Override
@@ -209,5 +211,9 @@ public class ClientGUI extends Application implements View {
 
     private void initializeCurrentSceneController(){
         currentSceneController.setGui(this);
+    }
+
+    private void setCurrentScene(SceneType scene){
+        currentScene = scene;
     }
 }
