@@ -9,4 +9,8 @@ public abstract class SceneController {
         this.gui = gui;
     }
 
+    public void initialize(){
+
+    }
+
 }
