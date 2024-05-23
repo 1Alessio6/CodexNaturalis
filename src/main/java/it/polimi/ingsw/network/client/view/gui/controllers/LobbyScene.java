@@ -3,9 +3,11 @@ package it.polimi.ingsw.network.client.view.gui.controllers;
 import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
 import it.polimi.ingsw.network.client.view.gui.ClientGUI;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 
 
@@ -13,6 +15,9 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 public class LobbyScene extends SceneController {
+
+    @FXML
+    private AnchorPane anchorPane;
 
     @FXML
     private TextArea connectedPlayers;
@@ -35,6 +40,8 @@ public class LobbyScene extends SceneController {
         //connectedPlayers.setText("1 - " + gui.getController().getMainPlayerUsername());
         numberPlayerCatcher.setVisible(false);
         setNumberRequest.setVisible(false);
+
+        //todo fix when fullScreen
     }
 
     public void showRequiredPlayers(){
