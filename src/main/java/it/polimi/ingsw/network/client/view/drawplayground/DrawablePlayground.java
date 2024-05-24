@@ -1,7 +1,6 @@
 package it.polimi.ingsw.network.client.view.drawplayground;
 
 import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.board.Tile;
 import it.polimi.ingsw.model.card.CornerPosition;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.board.ClientTile;
@@ -30,39 +29,15 @@ public class DrawablePlayground {
     }
 
     private int[] getRange(ClientPlayground playground) {
-        Position startingPoint = new Position(0, 0);
         int xMax = 0;
         int yMax = 0;
-
-        Queue<Position> positionOfTileToVisit = new LinkedList<>();
-        Set<Position> alreadyCheckedPosition = new HashSet<>();
-        positionOfTileToVisit.add(startingPoint);
-        while (!positionOfTileToVisit.isEmpty()) {
-            Position pos = positionOfTileToVisit.remove();
-            int xPosAbs = Math.abs(pos.getX());
-            int yPosAbs = Math.abs(pos.getY());
-
-            if (xMax < xPosAbs) {
-                xMax = xPosAbs;
-            }
-            if (yMax < yPosAbs) {
-                yMax = yPosAbs;
-            }
-
-            List<Position> offsets = Position.getOffsets();
-            for (Position offset : offsets) {
-                Position possiblePos = Position.sum(pos, offset);
-                ClientTile tile = playground.getTile(possiblePos);
-                if (tile != null && !alreadyCheckedPosition.contains(possiblePos)) {
-                    positionOfTileToVisit.add(possiblePos);
-                }
-            }
-            alreadyCheckedPosition.add(pos);
-        }
-
-        // find xMan and yMax respect to available positions
+        List<Position> positionsToNavigate = new ArrayList<>();
+        List<Position> occupiedPositions = new ArrayList<>(playground.getOccupiedPositions());
         List<Position> availablePositions = playground.getAvailablePositions();
-        for (Position pos : availablePositions) {
+        positionsToNavigate.addAll(occupiedPositions);
+        positionsToNavigate.addAll(availablePositions);
+
+        for (Position pos : positionsToNavigate) {
             int xPosAbs = Math.abs(pos.getX());
             int yPosAbs = Math.abs(pos.getY());
 
