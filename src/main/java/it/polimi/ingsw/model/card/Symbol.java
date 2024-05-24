@@ -45,4 +45,8 @@ public enum Symbol {
     Symbol(String icon) {
         this.icon = icon;
     }
+
+    public String getIcon() {
+        return this.icon;
+    }
 }
