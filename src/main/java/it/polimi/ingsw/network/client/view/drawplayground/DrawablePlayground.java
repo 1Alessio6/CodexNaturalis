@@ -59,6 +59,22 @@ public class DrawablePlayground {
             }
             alreadyCheckedPosition.add(pos);
         }
+
+        // find xMan and yMax respect to available positions
+        List<Position> availablePositions = playground.getAvailablePositions();
+        for (Position pos : availablePositions) {
+            int xPosAbs = Math.abs(pos.getX());
+            int yPosAbs = Math.abs(pos.getY());
+
+            if (xMax < xPosAbs) {
+                xMax = xPosAbs;
+            }
+
+            if (yMax < yPosAbs) {
+                yMax = yPosAbs;
+            }
+        }
+
         return new int[]{xMax, yMax};
     }
 
