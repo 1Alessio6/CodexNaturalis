@@ -277,12 +277,15 @@ public class ClientTUI implements View {
     @Override
     public void showUpdateAfterConnection() {
         ClientUtil.clearScreen();
+        setAvailableActions();
 
         ClientUtil.printPlayerHand(this.controller.getMainPlayer().getPlayerCards());
         ClientUtil.printScoreboard(this.controller.getPlayers());
         ClientUtil.printResourcesArea(this.controller.getMainPlayer().getPlayground().getResources());
-
-        setAvailableActions();
+        // todo: do not print if game has just started
+        if (this.controller.getGamePhase() != GamePhase.Setup) {
+            ClientUtil.printPlayground(this.controller.getMainPlayerPlayground());
+        }
 
         ClientUtil.putCursorToInputArea();
     }
@@ -313,6 +316,7 @@ public class ClientTUI implements View {
             availableActions.remove(TUIActions.STARTER);
 
         }
+        ClientUtil.printPlayground(this.controller.getMainPlayerPlayground());
     }
 
     @Override
@@ -347,6 +351,7 @@ public class ClientTUI implements View {
     public void showUpdateAfterPlace() {
         ClientUtil.printPlayerHand(this.controller.getMainPlayer().getPlayerCards());
         // print playground
+        ClientUtil.printPlayground(this.controller.getMainPlayerPlayground());
 
         setAvailableActions();
 
