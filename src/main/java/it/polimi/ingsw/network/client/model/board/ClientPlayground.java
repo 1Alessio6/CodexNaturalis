@@ -5,13 +5,13 @@ import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.board.Tile;
 import it.polimi.ingsw.model.card.CornerPosition;
-import it.polimi.ingsw.model.card.Face;
 import it.polimi.ingsw.model.card.Symbol;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ClientPlayground implements Serializable {
@@ -122,6 +122,16 @@ public class ClientPlayground implements Serializable {
         for (Symbol symbol : newResources.keySet()) {
             updateResources(symbol, newResources.get(symbol));
         }
+    }
+
+    /**
+     * Returns all the position in the playground.
+     *
+     * @return a set which contains all the position available and occupied.
+     */
+    // todo: filter non available
+    public Set<Position> getAllPositions() {
+        return area.keySet();
     }
 
 }
