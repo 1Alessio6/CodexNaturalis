@@ -24,7 +24,7 @@ enum GameScreenArea {
     DECKS(24, 5, new Position(18, 146)),
     CHAT(64, 27, new Position(23, 126)),
     SCOREBOARD(10, 26, new Position(2,2)),
-    PRIVATE_OBJECTIVE(ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(7, 27)),
+    PRIVATE_OBJECTIVE(ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(37, 7)),
     COMMON_OBJECTIVE(2 + 2 * ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(44, 2)),
     RESOURCES(26, 15, new Position(14, 2));
 

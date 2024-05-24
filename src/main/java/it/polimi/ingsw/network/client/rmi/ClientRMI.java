@@ -16,7 +16,6 @@ import it.polimi.ingsw.network.client.model.card.*;
 import it.polimi.ingsw.network.heartbeat.HeartBeat;
 import it.polimi.ingsw.network.heartbeat.HeartBeatMessage;
 import it.polimi.ingsw.network.server.rmi.ServerRMI;
-
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -160,20 +159,4 @@ public class ClientRMI extends Client implements VirtualView{
         heartBeat.registerMessage(ping);
     }
 
-    //   @Override
- //   public void notifyStillActive() throws RemoteException {
- //       heartBeat.registerResponse();
- //   }
-
-  //  @Override
-  //  public void handleUnresponsiveness() {
-  //      clientView.showServerCrash();
-  //      //heartBeat.shutDown();
-  //      System.exit(1);
-  //  }
-
-  //  @Override
-  //  public void receivePing(HeartBeatMessage ping) throws RemoteException {
-  //      heartBeat.registerMessage(ping);
-  //  }
 }

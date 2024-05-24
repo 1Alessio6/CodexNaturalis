@@ -33,16 +33,16 @@ public class ClientController implements ClientActions {
     private final VirtualServer server;
     private ClientGame game;
 
-    private String mainPlayerUsername=""; // todo. set by the view after user's input
+    private String mainPlayerUsername = ""; // todo. set by the view after user's input
 
-    public ClientController(VirtualServer server){
+    public ClientController(VirtualServer server) {
         this.server = server;
     }
 
     @Override
     public void connect(VirtualView client, String username) throws InvalidUsernameException, RemoteException, FullLobbyException {
-        server.connect(client,username);
-        this.mainPlayerUsername=username;
+        server.connect(client, username);
+        this.mainPlayerUsername = username;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class ClientController implements ClientActions {
             throw new SuspendedGameException("The game is suspended, you can only text messages");
         }
 
-        if(!isMainPlayerTurn()){
+        if (!isMainPlayerTurn()) {
             throw new InvalidGamePhaseException("You can't place now, it's not your turn");
         }
 
@@ -76,7 +76,7 @@ public class ClientController implements ClientActions {
     @Override
     public void draw(int IdToDraw) throws InvalidGamePhaseException, EmptyDeckException, NotExistingFaceUp, SuspendedGameException, RemoteException, InvalidIdForDrawingException {
 
-        if(IdToDraw > 5 || IdToDraw < 0){
+        if (IdToDraw > 5 || IdToDraw < 0) {
             throw new InvalidIdForDrawingException();
         }
 
@@ -84,7 +84,7 @@ public class ClientController implements ClientActions {
             throw new SuspendedGameException("The game is suspended, you can only text messages");
         }
 
-        if(!isMainPlayerTurn()){
+        if (!isMainPlayerTurn()) {
             throw new InvalidGamePhaseException("You can't place now, it's not your turn");
         }
 
@@ -185,7 +185,7 @@ public class ClientController implements ClientActions {
 
     @Override
     public void setPlayersNumber(int playersNumber) throws RemoteException, InvalidPlayersNumberException {
-        if(playersNumber > 4 || playersNumber < 2){
+        if (playersNumber > 4 || playersNumber < 2) {
             throw new InvalidPlayersNumberException();
         }
         server.setPlayersNumber(mainPlayerUsername, playersNumber);
@@ -207,7 +207,7 @@ public class ClientController implements ClientActions {
         game.getPlayer(username).setNetworkStatus(isConnected);
     }
 
-    public void updatePlayersInLobby(List<String> usernames){
+    public void updatePlayersInLobby(List<String> usernames) {
         game = new ClientGame(usernames);
     }
 
@@ -240,17 +240,14 @@ public class ClientController implements ClientActions {
 
         if (boardPosition < 4) {
             game.getClientBoard().addFaceUpCards(newFaceUpCard, boardPosition);
-            if(boardPosition < 1){
+            if (boardPosition < 1) {
                 game.getClientBoard().setResourceDeckTopBack(newTopBackDeck);
-            }
-            else{
+            } else {
                 game.getClientBoard().setGoldenDeckTopBack(newTopBackDeck);
             }
-        }
-        else if(boardPosition == 4){
+        } else if (boardPosition == 4) {
             game.getClientBoard().setGoldenDeckTopBack(newTopBackDeck);
-        }
-        else{
+        } else {
             game.getClientBoard().setResourceDeckTopBack(newTopBackDeck);
         }
 
@@ -283,23 +280,23 @@ public class ClientController implements ClientActions {
         return true;
     }
 
-    public ClientPlayer getMainPlayer(){
+    public ClientPlayer getMainPlayer() {
         return game.getPlayer(mainPlayerUsername);
     }
 
-    public ClientCard getMainPlayerCard(int cardHandPosition){
+    public ClientCard getMainPlayerCard(int cardHandPosition) {
         return getMainPlayer().getPlayerCard(cardHandPosition);
     }
 
-    public String getMainPlayerUsername(){
+    public String getMainPlayerUsername() {
         return mainPlayerUsername;
     }
 
-    public ClientPlayground getMainPlayerPlayground(){
+    public ClientPlayground getMainPlayerPlayground() {
         return getMainPlayer().getPlayground();
     }
 
-    public boolean isMainPlayerTurn(){
+    public boolean isMainPlayerTurn() {
         return getMainPlayer().getUsername().equals(game.getCurrentPlayer().getUsername());
     }
 
@@ -307,38 +304,46 @@ public class ClientController implements ClientActions {
         return this.game.getCurrentPhase();
     }
 
-   public String getLastMessage(){
+    public String getLastMessage() {
         Message lastMessage = game.getMessages().getLast();
         return lastMessage.getSender() + " -> " + lastMessage.getRecipient() + ": " + lastMessage.getContent();
-   }
+    }
 
-   public PlayerColor getColor(){
+    public PlayerColor getColor() {
         return game.getPlayer(mainPlayerUsername).getColor();
-   }
+    }
 
-   public boolean getPlayerStatus(){
+    public boolean getPlayerStatus() {
         return game.getPlayer(mainPlayerUsername).isConnected();
-   }
+    }
 
-   public List<String> getConnectedUsernames() {
+    public List<String> getConnectedUsernames() {
         return this.game.getPlayers().stream().filter(ClientPlayer::isConnected).map(ClientPlayer::getUsername).toList();
-   }
+    }
 
-   public List<String> getUsernames() {
+    public List<String> getUsernames() {
         return this.game.getPlayers().stream().map(ClientPlayer::getUsername).toList();
-   }
+    }
 
     public List<ClientPlayer> getPlayers() {
         return this.game.getPlayers();
     }
 
-   public List<ClientCard> getFaceUpCards(){return this.game.getClientBoard().getFaceUpCards();} //review
+    public List<ClientCard> getFaceUpCards() {
+        return this.game.getClientBoard().getFaceUpCards();
+    } //review
 
-   public ClientFace getGoldenDeckTopBack(){return this.game.getClientBoard().getGoldenDeckTopBack();} //review
+    public ClientFace getGoldenDeckTopBack() {
+        return this.game.getClientBoard().getGoldenDeckTopBack();
+    } //review
 
-   public ClientFace getResourceDeckTopBack(){return this.game.getClientBoard().getResourceDeckTopBack();}
+    public ClientFace getResourceDeckTopBack() {
+        return this.game.getClientBoard().getResourceDeckTopBack();
+    }
 
     public String getCurrentPlayerUsername() {
         return game.getPlayer(game.getCurrentPlayerIdx()).getUsername();
     }
+
+   public List<ClientObjectiveCard> getObjectiveCards(){return this.game.getClientBoard().getCommonObjectives();}
 }

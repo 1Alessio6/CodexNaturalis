@@ -1,29 +1,20 @@
 package it.polimi.ingsw.network.client.view.gui;
 
+import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.view.View;
 import it.polimi.ingsw.network.client.view.gui.controllers.LobbyScene;
 import it.polimi.ingsw.network.client.view.gui.controllers.SceneController;
-import it.polimi.ingsw.network.client.view.gui.controllers.SelectUsernameScene;
-import it.polimi.ingsw.network.client.view.tui.TUIActions;
 import it.polimi.ingsw.network.server.rmi.ServerRMI;
 import javafx.application.Application;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 public class ClientGUI extends Application implements View {
 
@@ -32,6 +23,7 @@ public class ClientGUI extends Application implements View {
     private SceneController currentSceneController;
     private VirtualView client;
     private ClientController controller;
+    private SceneType currentScene;
 
     /*
     public ClientGUI(ClientController controller){
@@ -65,7 +57,7 @@ public class ClientGUI extends Application implements View {
          */
 
         initializeCurrentSceneController();
-        ((LobbyScene)currentSceneController).initializeScene();
+        ((LobbyScene)currentSceneController).initializeCreatorScene();
 
 
         this.primaryStage.setTitle("Codex Naturalis");
@@ -88,11 +80,17 @@ public class ClientGUI extends Application implements View {
 
     @Override
     public void showServerCrash() {
-
+        loadScene("/gui/CrashScene.fxml");
+        //todo set crash message
+        currentScene = SceneType.CRASH;
     }
 
     @Override
     public void showUpdatePlayersInLobby() {
+        if(currentScene != SceneType.LOBBY){
+            loadScene("/gui/LobbyScene.fxml");
+            currentScene = SceneType.LOBBY;
+        }
         assert currentSceneController instanceof LobbyScene;
         ((LobbyScene)currentSceneController).setPlayerConnected(controller.getConnectedUsernames());
 
@@ -102,79 +100,87 @@ public class ClientGUI extends Application implements View {
     public void showUpdateCreator() {
 
         loadScene("/gui/LobbyScene.fxml");
-        initializeCurrentSceneController();
-        ((LobbyScene)currentSceneController).initializeScene();
-
+        ((LobbyScene)currentSceneController).initializeCreatorScene();
+        currentScene = SceneType.LOBBY;
     }
+
 
     @Override
     public void showUpdateAfterLobbyCrash() {
-
+        loadScene("/gui/CrashScene.fxml");
+        //todo set crash message
+        currentScene = SceneType.CRASH;
     }
 
     @Override
     public void showUpdateAfterConnection() {
-
+        loadScene("/gui/GameScene.fxml");
+        currentScene = SceneType.GAME;
     }
 
     @Override
     public void showUpdatePlayerStatus() {
 
+        //todo add update without loading a new scene
+
     }
 
+    //todo check if it can be removed
     @Override
     public void showInitialPlayerStatus() {
 
     }
 
-    @Override
-    public void showBoardSetUp() {
-
-    }
 
     @Override
     public void showStarterPlacement(String username) {
-
+        //todo add update without loading a new scene
     }
 
     @Override
     public void showUpdateColor(String username) {
-
+        //todo add update without loading a new scene
     }
 
     @Override
     public void showUpdateObjectiveCard() {
-
+        //todo add update without loading a new scene
     }
 
     @Override
     public void showUpdateAfterPlace() {
-
+        //todo add update without loading a new scene
     }
 
     @Override
     public void showUpdateAfterDraw() {
-
+        //todo add update without loading a new scene
     }
 
     @Override
     public void showUpdateChat() {
-
+        //todo add a dropdown menu for chat
     }
 
     @Override
     public void showUpdateCurrentPlayer() {
-
+        if(controller.getGamePhase() == GamePhase.End){
+            loadScene("/gui/EndScene.fxml");
+            currentScene = SceneType.END;
+        }
+        else{
+            //todo update current player in normal game scene
+        }
     }
 
     @Override
     public void showUpdateSuspendedGame() {
-
+        //todo show a message of suspended game and disable all other command
     }
 
     @Override
     public void showWinners() {
-
+        //todo add update without loading a new scene
     }
 
     public ClientController getController() {
@@ -204,10 +210,15 @@ public class ClientGUI extends Application implements View {
         primaryStage.setScene(scene);
         primaryStage.show();
         currentSceneController = loader.getController();
+        initializeCurrentSceneController();
 
     }
 
     private void initializeCurrentSceneController(){
         currentSceneController.setGui(this);
+    }
+
+    private void setCurrentScene(SceneType scene){
+        currentScene = scene;
     }
 }

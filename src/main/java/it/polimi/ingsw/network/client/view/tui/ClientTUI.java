@@ -285,7 +285,7 @@ public class ClientTUI implements View {
     public void showInitialPlayerStatus() {
 
     }
-    @Override
+
     public void showBoardSetUp() {
         ClientUtil.printToLineColumn(GameScreenArea.SCOREBOARD.screenPosition.getX(),GameScreenArea.SCOREBOARD.screenPosition.getY(),ClientUtil.createScoreBoard(this.controller.getPlayers()).toString());
     }
@@ -316,7 +316,13 @@ public class ClientTUI implements View {
 
     @Override
     public void showUpdateObjectiveCard() {
-        ClientUtil.designObjectiveCard(controller.getMainPlayer().getObjectiveCards().getFirst());
+        // print private objective card
+        ClientUtil.printInLineColumn(GameScreenArea.PRIVATE_OBJECTIVE.getScreenPosition().getX(), GameScreenArea.PRIVATE_OBJECTIVE.getScreenPosition().getY(), ClientUtil.designObjectiveCard(controller.getMainPlayer().getObjectiveCards().getFirst()));
+
+        //print common objective cards
+        for (int i = 0; i < 2; i++) {
+            ClientUtil.printInLineColumn(GameScreenArea.COMMON_OBJECTIVE.getScreenPosition().getX(), GameScreenArea.COMMON_OBJECTIVE.getScreenPosition().getY() + (ClientUtil.cardWidth + 2) * i, ClientUtil.designObjectiveCard(controller.getObjectiveCards().get(i)));
+        }
 
         // remove action: now actions will be available after current player update
         availableActions.remove(TUIActions.OBJECTIVE);
@@ -339,13 +345,12 @@ public class ClientTUI implements View {
             ClientUtil.designCard(i.getFront());
             //move cursor
         }
-        //move cursor
-        //print
-        ClientUtil.designCard(controller.getGoldenDeckTopBack());
 
-        //move cursor
-        //print
-        ClientUtil.designCard(controller.getResourceDeckTopBack());
+        //print GoldenDeckTopBack
+        ClientUtil.printInLineColumn(GameScreenArea.DECKS.getScreenPosition().getX(), GameScreenArea.DECKS.getScreenPosition().getY(), ClientUtil.designCard(controller.getGoldenDeckTopBack()));
+
+        //print ResourceDeckTopBack
+        ClientUtil.printInLineColumn(GameScreenArea.DECKS.getScreenPosition().getX(), GameScreenArea.DECKS.getScreenPosition().getY() + ClientUtil.cardWidth + 2, ClientUtil.designCard(controller.getResourceDeckTopBack()));
 
         setAvailableActions();
     }
