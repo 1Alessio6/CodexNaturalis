@@ -22,7 +22,7 @@ public class ClientGUI extends Application implements View {
 
     private SceneController currentSceneController;
     private VirtualView client;
-    private ClientController controller;
+    private final ClientController controller;
     private SceneType currentScene;
 
     /*
