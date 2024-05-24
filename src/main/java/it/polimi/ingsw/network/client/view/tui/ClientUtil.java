@@ -4,10 +4,15 @@ import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.card.Color.CardColor;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
+import it.polimi.ingsw.network.client.view.drawplayground.DrawablePlayground;
+import it.polimi.ingsw.network.client.view.drawplayground.InvalidCardDimensionException;
+import it.polimi.ingsw.network.client.view.drawplayground.InvalidCardRepresentationException;
+import it.polimi.ingsw.network.client.view.drawplayground.UnInitializedPlaygroundException;
 
 import java.util.*;
 
@@ -79,6 +84,16 @@ public class ClientUtil {
     static String four = "\uD835\uDFD2";
     static String five = "\uD835\uDFD3";
     static String six = "\uD835\uDFD4";
+
+    DrawablePlayground currentPlayground;
+
+    {
+        try {
+            currentPlayground = new DrawablePlayground(cardWidth, cardHeight);
+        } catch (InvalidCardDimensionException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     static String title = """
              ▄▄·       ·▄▄▄▄  ▄▄▄ .▐▄• ▄      ▐ ▄  ▄▄▄· ▄▄▄▄▄▄• ▄▌▄▄▄   ▄▄▄· ▄▄▌  ▪  .▄▄ ·    \s
@@ -646,5 +661,27 @@ public class ClientUtil {
     public static void putCursorToInputArea() {
         // todo: put correct values
         moveCursor(40, 0);
+    }
+
+    private static String[][] buildPlayground(ClientPlayground clientPlayground) throws InvalidCardRepresentationException, UnInitializedPlaygroundException, InvalidCardDimensionException {
+        DrawablePlayground dp = new DrawablePlayground(7, cardHeight);
+        dp.allocateMatrix(clientPlayground);
+        // todo: print available in different way
+        for (Position pos : clientPlayground.getAllPositions()) {
+            ClientFace placedCard = clientPlayground.getTile(pos).getFace();
+            dp.drawCard(clientPlayground, pos, designCard(placedCard));
+        }
+
+        return dp.getPlaygroundRepresentation();
+    }
+
+    public static void printPlayground(ClientPlayground clientPlayground) {
+        try {
+            printToLineColumn(GameScreenArea.PLAYGROUND.screenPosition.getX(),
+                    GameScreenArea.PLAYGROUND.screenPosition.getX(),
+                    buildPlayground(clientPlayground));
+        } catch (InvalidCardRepresentationException | UnInitializedPlaygroundException | InvalidCardDimensionException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
