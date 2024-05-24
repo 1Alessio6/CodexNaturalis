@@ -344,4 +344,6 @@ public class ClientController implements ClientActions {
     public String getCurrentPlayerUsername() {
         return game.getPlayer(game.getCurrentPlayerIdx()).getUsername();
     }
+
+   public List<ClientObjectiveCard> getObjectiveCards(){return this.game.getClientBoard().getCommonObjectives();}
 }
