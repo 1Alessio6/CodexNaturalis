@@ -345,13 +345,12 @@ public class ClientTUI implements View {
             ClientUtil.designCard(i.getFront());
             //move cursor
         }
-        //move cursor
-        //print
-        ClientUtil.designCard(controller.getGoldenDeckTopBack());
 
-        //move cursor
-        //print
-        ClientUtil.designCard(controller.getResourceDeckTopBack());
+        //print GoldenDeckTopBack
+        ClientUtil.printInLineColumn(GameScreenArea.DECKS.getScreenPosition().getX(), GameScreenArea.DECKS.getScreenPosition().getY(), ClientUtil.designCard(controller.getGoldenDeckTopBack()));
+
+        //print ResourceDeckTopBack
+        ClientUtil.printInLineColumn(GameScreenArea.DECKS.getScreenPosition().getX(), GameScreenArea.DECKS.getScreenPosition().getY() + ClientUtil.cardWidth + 2, ClientUtil.designCard(controller.getResourceDeckTopBack()));
 
         setAvailableActions();
     }
