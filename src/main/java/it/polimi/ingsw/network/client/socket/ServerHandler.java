@@ -40,7 +40,7 @@ public class ServerHandler implements VirtualServer {
         try {
             String line = in.readLine();
             while (line != null) {
-                System.out.println("received from server: " + line);
+                //System.out.println("received from server: " + line);
                 NetworkMessage message = gson.fromJson(line, NetworkMessage.class);
                 Type type = message.getNetworkType();
 
@@ -113,7 +113,7 @@ public class ServerHandler implements VirtualServer {
                         clientSocket.reportError(errorMessage.getDetails());
                         break;
                     case HEARTBEAT:
-                        System.out.println("casting the message...");
+                        //System.out.println("casting the message...");
                         HeartBeatMessage ping = gson.fromJson(line, HeartBeatMessage.class);
                         clientSocket.receivePing(ping);
                         break;
@@ -211,7 +211,7 @@ public class ServerHandler implements VirtualServer {
 
     @Override
     public void receivePing(HeartBeatMessage ping) throws RemoteException {
-        System.out.println("Sending ping...");
+        //System.out.println("Sending ping...");
         String json = gson.toJson(ping);
         out.println(json);
         out.flush();
