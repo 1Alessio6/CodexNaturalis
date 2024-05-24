@@ -68,6 +68,8 @@ public class ClientTUI implements View {
                 System.out.println("Invalid game command");
                 // print help for consented commands
                 ClientUtil.printHelpCommands(availableActions);
+            } finally {
+                ClientUtil.putCursorToInputArea();
             }
         }
     }
@@ -113,11 +115,11 @@ public class ClientTUI implements View {
     }
 
     private void sendMessage(String[] command) {
-        String commandContent = command[1];
-        Message myMessage = command[0].equals("pm") ? createPrivateMessage(commandContent) : createBroadcastMessage(commandContent);
         try {
+            String commandContent = command[1];
+            Message myMessage = command[0].equals("pm") ? createPrivateMessage(commandContent) : createBroadcastMessage(commandContent);
             controller.sendMessage(myMessage);
-        } catch (InvalidMessageException | RemoteException e) {
+        } catch (InvalidMessageException | RemoteException | IndexOutOfBoundsException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -152,14 +154,15 @@ public class ClientTUI implements View {
             Position newCardPos = receivePosition();
             controller.placeCard(handPos, cardSide, newCardPos);
         } catch (Playground.UnavailablePositionException | Playground.NotEnoughResourcesException | RemoteException |
-                 InvalidGamePhaseException | SuspendedGameException e) {
+                 InvalidGamePhaseException | SuspendedGameException | InputMismatchException e) {
             System.out.println(e.getMessage());
         }
     }
 
     private void placeStarter() {
         try {
-            controller.placeStarter(receiveSide());
+            Side starterSide = receiveSide();
+            controller.placeStarter(starterSide);
         } catch (RemoteException | InvalidGamePhaseException | SuspendedGameException e) {
             System.out.println(e.getMessage());
         }
@@ -174,7 +177,7 @@ public class ClientTUI implements View {
         System.out.print("Enter card position in your hand: ");
         int cardPosition = Integer.parseInt(console.nextLine());
 
-        if(cardPosition >= 1 && cardPosition <= 3) return cardPosition;
+        if(cardPosition >= 1 && cardPosition <= 3) return cardPosition - 1;
         // todo: change exception
         else throw new RuntimeException("not a valid card position");
     }
@@ -203,7 +206,8 @@ public class ClientTUI implements View {
         // connection logic
         while(true) {
             try {
-                String username = receiveUsername();
+                System.out.print("Insert username: ");
+                String username = console.nextLine();
                 controller.connect(client, username);
                 break;
             } catch(InvalidUsernameException | FullLobbyException | RemoteException e){
@@ -232,19 +236,21 @@ public class ClientTUI implements View {
         }
 
         switch (currentPhase) {
-            case DrawNormal -> availableCommands.add(TUIActions.DRAW);
             case Setup -> availableCommands.add(TUIActions.STARTER);
-            case PlaceNormal, PlaceAdditional -> availableCommands.add(TUIActions.PLACE);
+            // don't let user use unneeded commands when it's not their turn
+            case DrawNormal -> {
+                if (this.controller.getCurrentPlayerUsername().equals(this.controller.getMainPlayerUsername()))
+                    availableCommands.add(TUIActions.DRAW);
+            }
+            case PlaceNormal, PlaceAdditional -> {
+                if (this.controller.getCurrentPlayerUsername().equals(this.controller.getMainPlayerUsername()))
+                    availableCommands.add(TUIActions.PLACE);
+            }
             case null -> {}
             case End -> {}
         }
 
         this.availableActions = availableCommands;
-    }
-
-    private String receiveUsername(){
-        System.out.print("Insert username: ");
-        return console.nextLine();
     }
 
     @Override
@@ -270,15 +276,23 @@ public class ClientTUI implements View {
 
     @Override
     public void showUpdateAfterConnection() {
-        System.out.println("Game is starting: you just joined");
+        ClientUtil.clearScreen();
+
+        ClientUtil.printPlayerHand(this.controller.getMainPlayer().getPlayerCards());
+        ClientUtil.printScoreboard(this.controller.getPlayers());
+        ClientUtil.printResourcesArea(this.controller.getMainPlayer().getPlayground().getResources());
 
         setAvailableActions();
+
+        ClientUtil.putCursorToInputArea();
     }
 
     @Override
     public void showUpdatePlayerStatus() {
         List<String> usernames = controller.getConnectedUsernames();
         System.out.println("Connected players: <" + String.join(",", usernames) + ">");
+
+        ClientUtil.putCursorToInputArea();
     }
 
     @Override
@@ -286,9 +300,6 @@ public class ClientTUI implements View {
 
     }
 
-    public void showBoardSetUp() {
-        ClientUtil.printToLineColumn(GameScreenArea.SCOREBOARD.screenPosition.getX(),GameScreenArea.SCOREBOARD.screenPosition.getY(),ClientUtil.createScoreBoard(this.controller.getPlayers()).toString());
-    }
     /**
      * {@inheritDoc}
      */
@@ -306,12 +317,14 @@ public class ClientTUI implements View {
 
     @Override
     public void showUpdateColor(String username) { //showUpdateColor shows the new scoreBoard with the updated colors
-        showBoardSetUp();
+        ClientUtil.printScoreboard(this.controller.getPlayers());
 
         if (controller.getMainPlayerUsername().equals(username)) {
             availableActions.remove(TUIActions.COLOR);
             availableActions.add(TUIActions.OBJECTIVE);
         }
+
+        ClientUtil.putCursorToInputArea();
     }
 
     @Override
@@ -324,13 +337,20 @@ public class ClientTUI implements View {
             ClientUtil.printInLineColumn(GameScreenArea.COMMON_OBJECTIVE.getScreenPosition().getX(), GameScreenArea.COMMON_OBJECTIVE.getScreenPosition().getY() + (ClientUtil.cardWidth + 2) * i, ClientUtil.designObjectiveCard(controller.getObjectiveCards().get(i)));
         }
 
-        // remove action: now actions will be available after current player update
+        // remove action: new actions will be available after current player update
         availableActions.remove(TUIActions.OBJECTIVE);
+
+        ClientUtil.putCursorToInputArea();
     }
 
     @Override
     public void showUpdateAfterPlace() {
+        ClientUtil.printPlayerHand(this.controller.getMainPlayer().getPlayerCards());
+        // print playground
+
         setAvailableActions();
+
+        ClientUtil.putCursorToInputArea();
     }
 
     @Override
@@ -351,20 +371,26 @@ public class ClientTUI implements View {
 
         //print ResourceDeckTopBack
         ClientUtil.printInLineColumn(GameScreenArea.DECKS.getScreenPosition().getX(), GameScreenArea.DECKS.getScreenPosition().getY() + ClientUtil.cardWidth + 2, ClientUtil.designCard(controller.getResourceDeckTopBack()));
+        ClientUtil.printPlayerHand(this.controller.getMainPlayer().getPlayerCards());
 
         setAvailableActions();
+
+        ClientUtil.putCursorToInputArea();
     }
 
     @Override
     public void showUpdateChat() {
         System.out.println(controller.getLastMessage());
+
+        ClientUtil.putCursorToInputArea();
     }
 
     @Override
     public void showUpdateCurrentPlayer() {
-        System.out.println("It's " + this.controller.getMainPlayerUsername() + "'s turn");
+        System.out.println("It's " + this.controller.getCurrentPlayerUsername() + "'s turn");
 
         setAvailableActions();
+        ClientUtil.putCursorToInputArea();
     }
 
     @Override
