@@ -316,7 +316,13 @@ public class ClientTUI implements View {
 
     @Override
     public void showUpdateObjectiveCard() {
-        ClientUtil.designObjectiveCard(controller.getMainPlayer().getObjectiveCards().getFirst());
+        // print private objective card
+        ClientUtil.printInLineColumn(GameScreenArea.PRIVATE_OBJECTIVE.getScreenPosition().getX(), GameScreenArea.PRIVATE_OBJECTIVE.getScreenPosition().getY(), ClientUtil.designObjectiveCard(controller.getMainPlayer().getObjectiveCards().getFirst()));
+
+        //print common objective cards
+        for (int i = 0; i < 2; i++) {
+            ClientUtil.printInLineColumn(GameScreenArea.COMMON_OBJECTIVE.getScreenPosition().getX(), GameScreenArea.COMMON_OBJECTIVE.getScreenPosition().getY() + (ClientUtil.cardWidth + 2) * i, ClientUtil.designObjectiveCard(controller.getObjectiveCards().get(i)));
+        }
 
         // remove action: now actions will be available after current player update
         availableActions.remove(TUIActions.OBJECTIVE);
