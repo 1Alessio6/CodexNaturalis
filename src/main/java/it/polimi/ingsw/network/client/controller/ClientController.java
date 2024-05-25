@@ -231,6 +231,9 @@ public class ClientController implements ClientActions {
 
         game.getPlayer(username).removePlayerCard(placedCard);
 
+        if(!getGamePhase().equals(GamePhase.Setup) && this.getMainPlayerUsername().equals(username)) {
+            this.game.setCurrentPhase(GamePhase.DrawNormal);
+        }
     }
 
     public void updateAfterDraw(ClientCard drawnCard, ClientFace newTopBackDeck, ClientCard newFaceUpCard, String username, int boardPosition) {
