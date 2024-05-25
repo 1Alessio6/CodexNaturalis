@@ -36,7 +36,7 @@ public class ClientMain {
 
     public static void main(String[] args) {
         String typeConnection = OPTION_SOCKET;
-        String typeView = OPTION_TUI;
+        String typeView = OPTION_GUI;
         String host = "localhost";
         int port = 1234;
 

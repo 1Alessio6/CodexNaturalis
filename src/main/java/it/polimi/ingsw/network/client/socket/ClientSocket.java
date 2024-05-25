@@ -7,7 +7,6 @@ import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
-import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.UnReachableServerException;
@@ -151,7 +150,10 @@ public class ClientSocket extends Client implements VirtualView {
     @Override
     public void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide, Position position) {
         controller.updateAfterPlace(positionToCornerCovered, newAvailablePositions, newResources, points, username, placedCard, placedSide, position);
-        clientView.showUpdateAfterPlace();
+        if (this.controller.getGamePhase().equals(GamePhase.Setup)) {
+            clientView.showStarterPlacement(username);
+        } else
+            clientView.showUpdateAfterPlace(username);
     }
 
     @Override

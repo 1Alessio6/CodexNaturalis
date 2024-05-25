@@ -148,7 +148,7 @@ public class ClientGUI extends Application implements View {
     }
 
     @Override
-    public void showUpdateAfterPlace() {
+    public void showUpdateAfterPlace(String username) {
         //todo add update without loading a new scene
     }
 

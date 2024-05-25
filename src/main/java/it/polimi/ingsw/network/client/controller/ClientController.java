@@ -231,6 +231,9 @@ public class ClientController implements ClientActions {
 
         game.getPlayer(username).removePlayerCard(placedCard);
 
+        if(!getGamePhase().equals(GamePhase.Setup) && this.getMainPlayerUsername().equals(username)) {
+            this.game.setCurrentPhase(GamePhase.DrawNormal);
+        }
     }
 
     public void updateAfterDraw(ClientCard drawnCard, ClientFace newTopBackDeck, ClientCard newFaceUpCard, String username, int boardPosition) {
@@ -239,7 +242,7 @@ public class ClientController implements ClientActions {
         game.getPlayer(username).addPlayerCard(drawnCard);
 
         if (boardPosition < 4) {
-            game.getClientBoard().addFaceUpCards(newFaceUpCard, boardPosition);
+            game.getClientBoard().replaceFaceUpCard(newFaceUpCard, boardPosition);
             if (boardPosition < 1) {
                 game.getClientBoard().setResourceDeckTopBack(newTopBackDeck);
             } else {
@@ -308,6 +311,8 @@ public class ClientController implements ClientActions {
         Message lastMessage = game.getMessages().getLast();
         return lastMessage.getSender() + " -> " + lastMessage.getRecipient() + ": " + lastMessage.getContent();
     }
+
+    public List<Message> getMessage(){return game.getMessages();}
 
     public PlayerColor getColor() {
         return game.getPlayer(mainPlayerUsername).getColor();

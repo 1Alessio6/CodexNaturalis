@@ -64,8 +64,8 @@ public class ClientBoard implements Serializable {
         this.resourceDeckTopBack = resourceDeckTopBack;
     }
 
-    public void addFaceUpCards(ClientCard faceUpCard, int positionFaceUp) {
-        this.faceUpCards.add(positionFaceUp, faceUpCard);
+    public void replaceFaceUpCard(ClientCard faceUpCard, int positionFaceUp) {
+        this.faceUpCards.set(positionFaceUp, faceUpCard);
     }
 
     public boolean isGoldenDeckEmpty() {

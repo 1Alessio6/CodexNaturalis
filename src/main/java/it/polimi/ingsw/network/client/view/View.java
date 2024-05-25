@@ -46,7 +46,7 @@ public interface View {
 
     void showUpdateObjectiveCard();
 
-    void showUpdateAfterPlace();
+    void showUpdateAfterPlace(String username);
 
     void showUpdateAfterDraw();
 
