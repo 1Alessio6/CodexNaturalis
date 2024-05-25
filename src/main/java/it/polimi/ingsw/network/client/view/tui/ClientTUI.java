@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.client.view.tui;
 import it.polimi.ingsw.controller.InvalidIdForDrawingException;
 import it.polimi.ingsw.model.InvalidGamePhaseException;
 import it.polimi.ingsw.model.SuspendedGameException;
+import it.polimi.ingsw.model.board.Availability;
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.Color.InvalidColorException;
@@ -282,8 +283,10 @@ public class ClientTUI implements View {
         ClientUtil.printPlayerHand(this.controller.getMainPlayer().getPlayerCards());
         ClientUtil.printScoreboard(this.controller.getPlayers());
         ClientUtil.printResourcesArea(this.controller.getMainPlayer().getPlayground().getResources());
-        // todo: do not print if game has just started
-        if (this.controller.getGamePhase() != GamePhase.Setup) {
+        ClientUtil.printFaceUpCards(this.controller.getFaceUpCards().stream().map(c -> c.getFace(Side.FRONT)).toList());
+        // todo: do not print if starter card hasn't been placed
+        if (this.controller.getMainPlayer().getPlayground().getArea().values().stream()
+                .anyMatch(tile -> tile.sameAvailability(Availability.OCCUPIED))) {
             ClientUtil.printPlayground(this.controller.getMainPlayerPlayground());
         }
 
@@ -308,15 +311,19 @@ public class ClientTUI implements View {
      */
     @Override
     public void showStarterPlacement(String username) {
-        ClientUtil.printInLineColumn(23,64,ClientUtil.designCard(controller.getMainPlayer().getStarterCard().getFront()));
-        ClientUtil.printInLineColumn(23,64+ClientUtil.cardWidth+2,ClientUtil.designCard(controller.getMainPlayer().getStarterCard().getBack()));
+        // todo: print starter side before, not after
+//        ClientUtil.printInLineColumn(23,64,ClientUtil.designCard(controller.getMainPlayer().getStarterCard().getFront()));
+//        ClientUtil.printInLineColumn(23,64+ClientUtil.cardWidth+2,ClientUtil.designCard(controller.getMainPlayer().getStarterCard().getBack()));
         // update only user that placed the card
         if (controller.getMainPlayerUsername().equals(username)) {
             availableActions.add(TUIActions.COLOR);
             availableActions.remove(TUIActions.STARTER);
 
+            // resources may have changed
+            ClientUtil.printResourcesArea(this.controller.getMainPlayer().getPlayground().getResources());
+
+            ClientUtil.printPlayground(this.controller.getMainPlayerPlayground());
         }
-        ClientUtil.printPlayground(this.controller.getMainPlayerPlayground());
     }
 
     @Override
@@ -348,14 +355,17 @@ public class ClientTUI implements View {
     }
 
     @Override
-    public void showUpdateAfterPlace() {
-        ClientUtil.printPlayerHand(this.controller.getMainPlayer().getPlayerCards());
-        // print playground
-        ClientUtil.printPlayground(this.controller.getMainPlayerPlayground());
+    public void showUpdateAfterPlace(String username) {
+        if (this.controller.getMainPlayerUsername().equals(username)) {
+            ClientUtil.printPlayerHand(this.controller.getMainPlayer().getPlayerCards());
+            // print playground
+            ClientUtil.printPlayground(this.controller.getMainPlayerPlayground());
+            // resources may have changed
+            ClientUtil.printResourcesArea(this.controller.getMainPlayer().getPlayground().getResources());
+            ClientUtil.putCursorToInputArea();
 
-        setAvailableActions();
-
-        ClientUtil.putCursorToInputArea();
+            setAvailableActions();
+        }
     }
 
     @Override
@@ -370,6 +380,9 @@ public class ClientTUI implements View {
             ClientUtil.designCard(i.getFront());
             //move cursor
         }
+
+        // faceUpCards
+        ClientUtil.printFaceUpCards(this.controller.getFaceUpCards().stream().map(c -> c.getFace(Side.FRONT)).toList());
 
         //print GoldenDeckTopBack
         ClientUtil.printInLineColumn(GameScreenArea.DECKS.getScreenPosition().getX(), GameScreenArea.DECKS.getScreenPosition().getY(), ClientUtil.designCard(controller.getGoldenDeckTopBack()));
