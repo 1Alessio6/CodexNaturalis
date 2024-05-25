@@ -28,7 +28,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 
-public class ClientHandler implements VirtualView, HeartBeatListener {
+public class ClientHandler implements VirtualView {
     private final Server server;
     private final PrintWriter out;
     private final BufferedReader input;
