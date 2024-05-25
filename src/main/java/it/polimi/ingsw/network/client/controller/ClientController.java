@@ -242,7 +242,7 @@ public class ClientController implements ClientActions {
         game.getPlayer(username).addPlayerCard(drawnCard);
 
         if (boardPosition < 4) {
-            game.getClientBoard().addFaceUpCards(newFaceUpCard, boardPosition);
+            game.getClientBoard().replaceFaceUpCard(newFaceUpCard, boardPosition);
             if (boardPosition < 1) {
                 game.getClientBoard().setResourceDeckTopBack(newTopBackDeck);
             } else {
