@@ -1,10 +1,12 @@
 package it.polimi.ingsw.network.client.view.tui;
 
+import it.polimi.ingsw.model.board.Availability;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.card.Color.CardColor;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
+import it.polimi.ingsw.network.client.model.board.ClientTile;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
@@ -23,8 +25,8 @@ import static it.polimi.ingsw.network.client.view.tui.ANSIColor.*;
  * This enum represents the space and position of each area in the screen
  */
 enum GameScreenArea {
-    PLAYGROUND(96, 40, new Position(2, 30)),
-    FACE_UP_CARDS(24, 14, new Position(2, 146)),
+    PLAYGROUND(96, 40, new Position(30, 2)),
+    FACE_UP_CARDS(24, 14, new Position(146, 2)),
     HAND_CARDS(2*ClientUtil.areaPadding + 3*ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(44 ,62)),
     DECKS(24, 5, new Position(18, 146)),
     CHAT(64, 27, new Position(23, 126)),
@@ -32,7 +34,6 @@ enum GameScreenArea {
     PRIVATE_OBJECTIVE(ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(37, 7)),
     COMMON_OBJECTIVE(2 + 2 * ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(44, 2)),
     RESOURCES(26, 15, new Position(14, 2));
-
 
     final int width;
     final int height;
@@ -118,10 +119,6 @@ public class ClientUtil {
         System.out.println("--gui                 enable gui (default is cli)");
     }
 
-    protected static void gameActionsHelper() {
-        System.out.println("Possible moves:");
-    }
-
     // Main methods
 
     public static String[][] designCard(ClientFace card) {
@@ -184,7 +181,6 @@ public class ClientUtil {
         int switchCase = positionOrResourcesSwitchCase(positionCondition, resourceCondition);
 
         if (switchCase == 1) {//it is a card with a position condition
-
             appendNewResources(new HashMap<>(), cardMatrix, color);
             appendMatrixLines(new HashMap<>(), null, cardMatrix, color);
             appendPoints(cardMatrix, null, positionCase(positionCondition));
@@ -554,8 +550,11 @@ public class ClientUtil {
 
     public static void printPlayerHand(List<ClientCard> hand) {
         Position startPrintPosition = GameScreenArea.HAND_CARDS.getScreenPosition();
-        for (ClientCard card : hand) {
-            printToLineColumn(startPrintPosition.getX(), startPrintPosition.getY(), designCard(card.getFront()));
+        for (int i = 0; i < 3; i++) {
+            // print empty space if there is no card
+            String[][] toPrint = i < hand.size() ? designCard(hand.get(i).getFront()) : createEmptyArea(cardHeight, cardWidth - 2);
+
+            printToLineColumn(startPrintPosition.getX(), startPrintPosition.getY(), toPrint);
 
             // move cursor after padding
             startPrintPosition = Position.sum(startPrintPosition, new Position(0, cardWidth + areaPadding));
@@ -668,8 +667,9 @@ public class ClientUtil {
         dp.allocateMatrix(clientPlayground);
         // todo: print available in different way
         for (Position pos : clientPlayground.getAllPositions()) {
-            ClientFace placedCard = clientPlayground.getTile(pos).getFace();
-            dp.drawCard(clientPlayground, pos, designCard(placedCard));
+            ClientTile tileAtPos = clientPlayground.getTile(pos);
+            // if empty tile draw placeholder with position
+            dp.drawCard(clientPlayground, pos, tileAtPos.sameAvailability(Availability.EMPTY) ? drawAvailablePosition(pos) : designCard(tileAtPos.getFace()));
         }
 
         return dp.getPlaygroundRepresentation();
@@ -677,11 +677,77 @@ public class ClientUtil {
 
     public static void printPlayground(ClientPlayground clientPlayground) {
         try {
-            printToLineColumn(GameScreenArea.PLAYGROUND.screenPosition.getX(),
-                    GameScreenArea.PLAYGROUND.screenPosition.getX(),
+            String[][]playgroundToPrint = buildPlayground(clientPlayground);
+            int playgroundHeight = playgroundToPrint.length;
+            int playgroundWidth = playgroundToPrint[0].length;
+
+            // center playground
+            int printX = GameScreenArea.PLAYGROUND.screenPosition.getX() + ((GameScreenArea.PLAYGROUND.getWidth() - playgroundWidth) / 2);
+            int printY = GameScreenArea.PLAYGROUND.screenPosition.getY() + ((GameScreenArea.PLAYGROUND.getHeight() - playgroundHeight) / 2);
+
+            printToLineColumn(printY,
+                    printX,
                     buildPlayground(clientPlayground));
         } catch (InvalidCardRepresentationException | UnInitializedPlaygroundException | InvalidCardDimensionException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    // todo: please update card representation
+    public static String[][] drawAvailablePosition(Position pos) {
+        String[][] placeHolder = createEmptyArea(cardHeight, cardWidth - 2);
+
+        // corners are empty, so they don't cover possible resources
+
+        //upper part
+        for (int i = 2; i < cardWidth - 2 - 1; i++) {
+            placeHolder[0][i] = "═";
+        }
+
+        // middle part
+        placeHolder[1][0] = "║";
+
+        placeHolder[1][2] = String.valueOf(pos.getX());
+        placeHolder[1][3] = ",";
+        placeHolder[1][4] = String.valueOf(pos.getY());
+
+        placeHolder[1][cardWidth - 2 - 1] = "║";
+
+        // lower part
+        for (int i = cardHeight - 1; i < cardWidth - 2 - 1; i++) {
+            placeHolder[cardHeight - 1][i] = "═";
+        }
+
+        return placeHolder;
+    }
+
+    public static void printFaceUpCards(List<ClientFace> faces) {
+        int relativeY = areaPadding;
+        int relativeX = areaPadding;
+        for (ClientFace face : faces) {
+            // if new card will go over the faceUpCard area
+            if (relativeX + cardWidth > GameScreenArea.FACE_UP_CARDS.width){
+                relativeY += cardHeight + areaPadding;
+                relativeX = areaPadding;
+            }
+
+            printToLineColumn(GameScreenArea.FACE_UP_CARDS.screenPosition.getY() + relativeY, GameScreenArea.FACE_UP_CARDS.screenPosition.getX() + relativeX, designCard(face));
+            relativeX += cardWidth + areaPadding;
+        }
+    }
+
+    /**
+     * Method used to create empty area (to not have null strings to print)
+     * @param height of the area
+     * @param width of the area
+     * @return the empty area
+     */
+    public static String[][] createEmptyArea(int height, int width) {
+        String[][] area = new String[height][width];
+        for (String[] row : area) {
+            Arrays.fill(row, " ");
+        }
+
+        return area;
     }
 }
