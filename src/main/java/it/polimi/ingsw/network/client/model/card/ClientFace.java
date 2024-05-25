@@ -37,10 +37,9 @@ public class ClientFace implements Serializable {
         requirements = face.getRequiredResources();
     }
 
-    //todo improve
     public ClientFace(int faceID) {
         this.faceID = faceID;
-        this.corners = null;
+        this.corners = new HashMap<>();
     }
 
     public int getFaceID() {
