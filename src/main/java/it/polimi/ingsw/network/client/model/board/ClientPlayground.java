@@ -129,9 +129,12 @@ public class ClientPlayground implements Serializable {
      *
      * @return a set which contains all the position available and occupied.
      */
-    // todo: filter non available
     public Set<Position> getAllPositions() {
-        return area.keySet();
+        return area.keySet().stream().
+                filter(p -> !this
+                        .getTile(p)
+                        .sameAvailability(Availability.NOTAVAILABLE))
+                .collect(Collectors.toSet());
     }
 
 }
