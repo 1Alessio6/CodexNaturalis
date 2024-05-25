@@ -140,7 +140,7 @@ public class ClientTUI implements View {
     private void draw() {
         System.out.print("Insert the position of the card you want to draw: ");
         try {
-            int drawFromId = Integer.parseInt(console.nextLine());
+            int drawFromId = Integer.parseInt(console.nextLine()) - 1;
             controller.draw(drawFromId);
         } catch (InvalidIdForDrawingException | EmptyDeckException | NotExistingFaceUp | RemoteException |
                  InvalidGamePhaseException | SuspendedGameException e) {
@@ -323,6 +323,8 @@ public class ClientTUI implements View {
             ClientUtil.printResourcesArea(this.controller.getMainPlayer().getPlayground().getResources());
 
             ClientUtil.printPlayground(this.controller.getMainPlayerPlayground());
+
+            ClientUtil.putCursorToInputArea();
         }
     }
 
@@ -370,17 +372,6 @@ public class ClientTUI implements View {
 
     @Override
     public void showUpdateAfterDraw() {
-        for(ClientCard i: controller.getMainPlayer().getPlayerCards()){
-            //move cursor
-            //print
-            ClientUtil.designCard(i.getFront());
-        }
-        //move cursor
-        for(ClientCard i: controller.getFaceUpCards()){
-            ClientUtil.designCard(i.getFront());
-            //move cursor
-        }
-
         // faceUpCards
         ClientUtil.printFaceUpCards(this.controller.getFaceUpCards().stream().map(c -> c.getFace(Side.FRONT)).toList());
 
