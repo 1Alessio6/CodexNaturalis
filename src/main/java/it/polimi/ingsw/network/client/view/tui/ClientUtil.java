@@ -553,7 +553,7 @@ public class ClientUtil {
         Position startPrintPosition = GameScreenArea.HAND_CARDS.getScreenPosition();
         for (int i = 0; i < 3; i++) {
             // print empty space if there is no card
-            String[][] toPrint = i < hand.size() ? designCard(hand.get(i).getFront()) : createEmptyArea(cardHeight, cardWidth - 2);
+            String[][] toPrint = i < hand.size() ? designCard(hand.get(i).getFront()) : createEmptyArea(cardHeight, cardWidth);
 
             printToLineColumn(startPrintPosition.getX(), startPrintPosition.getY(), toPrint);
 
@@ -725,14 +725,18 @@ public class ClientUtil {
     public static void printFaceUpCards(List<ClientFace> faces) {
         int relativeY = areaPadding;
         int relativeX = areaPadding;
-        for (ClientFace face : faces) {
+        for (int i = 0; i < 4; i++) {
             // if new card will go over the faceUpCard area
             if (relativeX + cardWidth > GameScreenArea.FACE_UP_CARDS.width){
                 relativeY += cardHeight + areaPadding;
                 relativeX = areaPadding;
             }
 
-            printToLineColumn(GameScreenArea.FACE_UP_CARDS.screenPosition.getY() + relativeY, GameScreenArea.FACE_UP_CARDS.screenPosition.getX() + relativeX, designCard(face));
+            String[][] toDraw = (i < faces.size()) ? designCard(faces.get(i)) : createEmptyArea(cardHeight, cardWidth);
+
+            printToLineColumn(GameScreenArea.FACE_UP_CARDS.screenPosition.getY() + relativeY,
+                    GameScreenArea.FACE_UP_CARDS.screenPosition.getX() + relativeX,
+                    toDraw);
             relativeX += cardWidth + areaPadding;
         }
     }
