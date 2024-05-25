@@ -105,7 +105,7 @@ public class ClientRMI extends Client implements VirtualView{
         if (controller.getGamePhase().equals(GamePhase.Setup)){
             clientView.showStarterPlacement(username);
         } else {
-            clientView.showUpdateAfterPlace();
+            clientView.showUpdateAfterPlace(username);
         }
     }
 
