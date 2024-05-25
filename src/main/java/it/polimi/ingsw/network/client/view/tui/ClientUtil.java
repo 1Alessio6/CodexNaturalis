@@ -4,10 +4,15 @@ import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.card.Color.CardColor;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
+import it.polimi.ingsw.network.client.view.drawplayground.DrawablePlayground;
+import it.polimi.ingsw.network.client.view.drawplayground.InvalidCardDimensionException;
+import it.polimi.ingsw.network.client.view.drawplayground.InvalidCardRepresentationException;
+import it.polimi.ingsw.network.client.view.drawplayground.UnInitializedPlaygroundException;
 
 import java.util.*;
 
@@ -29,9 +34,9 @@ enum GameScreenArea {
     RESOURCES(26, 15, new Position(14, 2));
 
 
-    int width;
-    int height;
-    Position screenPosition;
+    final int width;
+    final int height;
+    final Position screenPosition;
 
     GameScreenArea(int width, int height, Position screenPosition) {
         this.width = width;
@@ -58,6 +63,7 @@ public class ClientUtil {
     final static int areaPadding = 2;
     final static int maxUsernameLength=15;
     final static int maxPointsLength=8;
+    final static int resourceBoardColumnSpace = 5;
 
     static String plant = "\uD83C\uDF43";
     static String butterfly = "\uD83E\uDD8B";
@@ -79,6 +85,16 @@ public class ClientUtil {
     static String five = "\uD835\uDFD3";
     static String six = "\uD835\uDFD4";
 
+    DrawablePlayground currentPlayground;
+
+    {
+        try {
+            currentPlayground = new DrawablePlayground(cardWidth, cardHeight);
+        } catch (InvalidCardDimensionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     static String title = """
              ▄▄·       ·▄▄▄▄  ▄▄▄ .▐▄• ▄      ▐ ▄  ▄▄▄· ▄▄▄▄▄▄• ▄▌▄▄▄   ▄▄▄· ▄▄▌  ▪  .▄▄ ·    \s
             ▐█ ▌▪▪     ██▪ ██ ▀▄.▀· █▌█▌▪    •█▌▐█▐█ ▀█ •██  █▪██▌▀▄ █·▐█ ▀█ ██•  ██ ▐█ ▀.    \s
@@ -92,7 +108,7 @@ public class ClientUtil {
         }
     }
 
-    protected static void argsHelper(String error) {
+    public static void argsHelper(String error) {
         System.out.println(error);
 
         System.out.println("Codex Naturalis: codexnaturalis [ARGS]");
@@ -136,13 +152,26 @@ public class ClientUtil {
         printCardMatrix(cardMatrix);
     }
 
+    // this takes a string as input
     public static void printToLineColumn(int numberOfLine, int numberOfColumn, String str) {
         String[] lines = str.split("\n");
+        printToLineColumn(numberOfLine, numberOfColumn, lines);
+    }
+
+    // this takes an array of string as input
+    public static void printToLineColumn(int numberOfLine, int numberOfColumn, String[] str) {
         int ongoingLine = numberOfLine;
-        for (String line : lines) {
+        for (String line : str) {
             System.out.println("\033[" + ongoingLine + ";" + numberOfColumn + "H" + line);
             ongoingLine++;
         }
+    }
+
+    // mostly used to convert cards, generally string matrixes
+    public static void printToLineColumn(int numberOfLine, int numberOfColumn, String[][] matrix) {
+        String[] lines = Arrays.stream(matrix).map(str -> String.join("", str)).toArray(String[]::new);
+
+        printToLineColumn(numberOfLine, numberOfColumn, lines);
     }
 
     public static String[][] designObjectiveCard(ClientObjectiveCard objectiveCard) {
@@ -179,23 +208,6 @@ public class ClientUtil {
 
     // Secondary methods
 
-    /**
-     * Pads along x-axis a string, starting printing with same size pad at beginning and end
-     */
-    public static void calculateSpaces(int width, int height, String string) {
-        // calculate height too
-        //int string_height = 1; //by default it is one line
-        //for (int i = 0; i < string.length() - 1; ++i) {
-        //    if (string.substring(i, i + 1).equals("\s")) {
-        //        string_height++;
-        //    }
-        //}
-
-        int x_available = width - string.length();
-
-        // printToLineColumn(x_available / 2, y_available / 2, string);
-    }
-
     public static String centeredString(int availableSpaces, String string) {
         double numberOfSpaces = ((availableSpaces - string.length()) / 2.0);
         int indexOfDecimal = String.valueOf(numberOfSpaces).indexOf(".");
@@ -210,15 +222,6 @@ public class ClientUtil {
 
         return b.toString();
     }
-
-    /**
-     * Method to print in the middle of a line
-     */
-    public static String calculateSpaces(int width, String string) {
-        calculateSpaces(width, 1, string);
-        return null;
-    }
-
     public static void printInLineColumn(int numberOfLine, int numberOfColumn, String[][] matrix) {
         int lines = matrix.length;
         int columns = matrix[0].length;
@@ -266,23 +269,23 @@ public class ClientUtil {
 
     private static ANSIColor cardColorConversion(CardColor color) {
         return switch (color) {
-            case RED -> ANSIColor.RED;
-            case BLUE -> ANSIColor.BLUE;
-            case GREEN -> ANSIColor.GREEN;
-            case YELLOW -> ANSIColor.YELLOW;
-            case PURPLE -> ANSIColor.PURPLE;
+            case RED -> RED;
+            case BLUE -> BLUE;
+            case GREEN -> GREEN;
+            case YELLOW -> YELLOW;
+            case PURPLE -> PURPLE;
             case null -> RESET;
         };
     }
 
     public static ANSIColor playerColorConversion(PlayerColor color) {
         return switch (color) {
-            case RED -> ANSIColor.RED_BACKGROUND_BRIGHT;
-            case BLUE -> ANSIColor.BLUE_BACKGROUND_BRIGHT;
-            case GREEN -> ANSIColor.GREEN_BACKGROUND_BRIGHT;
-            case YELLOW -> ANSIColor.YELLOW_BACKGROUND_BRIGHT;
-            case BLACK -> ANSIColor.BLACK_BOLD_BRIGHT;
-            case null -> ANSIColor.BLACK_BOLD_BRIGHT;
+            case RED -> RED_BACKGROUND_BRIGHT;
+            case BLUE -> BLUE_BACKGROUND_BRIGHT;
+            case GREEN -> GREEN_BACKGROUND_BRIGHT;
+            case YELLOW -> YELLOW_BACKGROUND_BRIGHT;
+            case BLACK -> BLACK_BOLD_BRIGHT;
+            case null -> BLACK_BOLD_BRIGHT;
         };
     }
 
@@ -549,4 +552,136 @@ public class ClientUtil {
         return str;
     }
 
+    public static void printPlayerHand(List<ClientCard> hand) {
+        Position startPrintPosition = GameScreenArea.HAND_CARDS.getScreenPosition();
+        for (ClientCard card : hand) {
+            printToLineColumn(startPrintPosition.getX(), startPrintPosition.getY(), designCard(card.getFront()));
+
+            // move cursor after padding
+            startPrintPosition = Position.sum(startPrintPosition, new Position(0, cardWidth + areaPadding));
+        }
+    }
+
+    public static void printResourcesArea(Map<Symbol, Integer> filler) {
+        printToLineColumn(GameScreenArea.RESOURCES.screenPosition.getX(), GameScreenArea.RESOURCES.screenPosition.getY(), createResourcesTable(filler));
+    }
+
+    /**
+     * @param resources of the player
+     * @return resourceTable as string array
+     */
+    private static String[] createResourcesTable (Map<Symbol, Integer> resources) {
+        int rows = resources.size();
+        List<String> setupTable = createEmptyTable(rows);
+
+        String separator = "║";
+        Iterator<Map.Entry<Symbol, Integer>> mapIterator = resources.entrySet().iterator();
+
+        Map.Entry<Symbol, Integer> entry = mapIterator.next();
+        // print until reach the end of the table
+        int i;
+        for (i = 1; mapIterator.hasNext(); i += 2, entry = mapIterator.next()) {
+            Symbol key = entry.getKey();
+            Integer value = entry.getValue();
+
+            String tableLine = separator +
+                    centeredString(resourceBoardColumnSpace, printResources(key)) +
+                    separator +
+                    value +
+                    " " +
+                    separator;
+
+            setupTable.add(i, tableLine);
+        }
+
+        // todo: fix for last element
+        Symbol key = entry.getKey();
+        Integer value = entry.getValue();
+
+        String tableLine = separator +
+                centeredString(resourceBoardColumnSpace, printResources(key)) +
+                separator +
+                value +
+                " " +
+                separator;
+
+        setupTable.add(i, tableLine);
+
+        return setupTable.toArray(new String[0]);
+    }
+
+    private static List<String> createEmptyTable(int rows) {
+        String inBetween = "═".repeat(resourceBoardColumnSpace); // space - icon - space
+        String beginning;
+        String end;
+        String separator;
+
+        List<String> mytable = new LinkedList<>();
+
+        int tableIdx = rows + 1; // create table without entries
+
+        for(int i = 1; i <= tableIdx; i++) {
+            StringBuilder tableLine = new StringBuilder();
+
+            if (i == 1){
+                beginning = "╔";
+                separator = "╦";
+                end = "╗";
+            } else if (i == tableIdx){
+                beginning = "╚";
+                separator = "╩";
+                end = "╝";
+            } else {
+                beginning = "╠";
+                end = "╣";
+                separator = "╬";
+            }
+
+            tableLine.append(beginning).append(inBetween).append(separator).append(inBetween).append(end);
+            mytable.add(tableLine.toString());
+        }
+
+        return mytable;
+    }
+
+    public static void printScoreboard(List<ClientPlayer> players) {
+        printToLineColumn(GameScreenArea.SCOREBOARD.screenPosition.getX(),
+                GameScreenArea.SCOREBOARD.screenPosition.getY(),
+                createScoreBoard(players).toString());
+    }
+
+    public static void clearScreen() {
+        System.out.println("\u001b[2J");
+    }
+
+    public static void moveCursor(int x, int y) {
+        System.out.println("\033[" + x + ";" + y + "H");
+    }
+
+    public static void putCursorToInputArea() {
+        // todo: put correct values
+        moveCursor(40, 0);
+    }
+
+    private static String[][] buildPlayground(ClientPlayground clientPlayground) throws InvalidCardRepresentationException, UnInitializedPlaygroundException, InvalidCardDimensionException {
+        DrawablePlayground dp = new DrawablePlayground(7, cardHeight);
+        dp.allocateMatrix(clientPlayground);
+        // todo: print available in different way
+        for (Position pos : clientPlayground.getAllPositions()) {
+            ClientFace placedCard = clientPlayground.getTile(pos).getFace();
+            dp.drawCard(clientPlayground, pos, designCard(placedCard));
+        }
+
+        return dp.getPlaygroundRepresentation();
+    }
+
+    public static void printPlayground(ClientPlayground clientPlayground) {
+        try {
+            printToLineColumn(GameScreenArea.PLAYGROUND.screenPosition.getX(),
+                    GameScreenArea.PLAYGROUND.screenPosition.getX(),
+                    buildPlayground(clientPlayground));
+        } catch (InvalidCardRepresentationException | UnInitializedPlaygroundException | InvalidCardDimensionException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

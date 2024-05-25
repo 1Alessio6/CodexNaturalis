@@ -433,7 +433,7 @@ public class Game {
 
         player.placeObjectiveCard(chosenObjective);
 
-        listenerHandler.notifyBroadcast(receiver -> {
+        listenerHandler.notify(username, receiver -> {
             ObjectiveCard secretObjective = player.getObjective();
             receiver.showUpdateObjectiveCard(new ClientObjectiveCard(secretObjective), username);
         });

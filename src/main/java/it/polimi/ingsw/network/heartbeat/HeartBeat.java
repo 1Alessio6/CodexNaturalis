@@ -52,7 +52,7 @@ public class HeartBeat extends TimerTask {
 
     public void registerMessage(HeartBeatMessage pong) {
         mostRecentReceivedId.set(pong.getId());
-        System.out.println("Most recent ping id is " + mostRecentReceivedId);
+        //System.out.println("Most recent ping id is " + mostRecentReceivedId);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class HeartBeat extends TimerTask {
         lastSentId += 1;
         HeartBeatMessage ping = new HeartBeatMessage(handlerName, lastSentId);
         int delta = ping.getId() - mostRecentReceivedId.get();
-        System.out.println("Delta is " + delta);
+        //System.out.println("Delta is " + delta);
         if (delta <= MAX_DELTA) {
             try {
                 heartBeatListener.receivePing(ping);

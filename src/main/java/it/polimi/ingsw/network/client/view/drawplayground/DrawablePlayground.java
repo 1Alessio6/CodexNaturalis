@@ -74,7 +74,7 @@ public class DrawablePlayground {
         centerPosition = calcCenterPosition(xMax, yMax);
         int matrixWidth = calcMatrixWidth(xMax);
         int matrixHeight = calcMatrixHeight(yMax);
-        matPlayground = new String[matrixWidth][matrixHeight];
+        matPlayground = new String[matrixHeight][matrixWidth];
     }
 
     private boolean validCardRepresentation(String[][] card) {
@@ -134,15 +134,15 @@ public class DrawablePlayground {
         for (int i = yUpperLeftCorner; i < yUpperLeftCorner + cardHeight; ++i) {
             for (int j = xUpperLeftCorner; j < xUpperLeftCorner + cardWidth; ++j) {
                 ClientTile cardTile = clientPlayground.getTile(cardPos);
-                int xRelativeToUpperLeftCorner = i - xUpperLeftCorner;
-                int yRelativeToUpperLeftCorner = j - yUpperLeftCorner;
+                int xRelativeToUpperLeftCorner = j - xUpperLeftCorner;
+                int yRelativeToUpperLeftCorner = i - yUpperLeftCorner;
                 CornerPosition cornerPosition = positionToCornerPosition.get(new Position(xRelativeToUpperLeftCorner, yRelativeToUpperLeftCorner));
                 // skip if the corner of the card is covered, therefore its symbol has to be hidden
                 if (cornerPosition != null
                         && cardTile.getFace().getCorners().get(cornerPosition).isCovered()) {
                     continue;
                 }
-                matPlayground[i][j] = card[xRelativeToUpperLeftCorner][yRelativeToUpperLeftCorner];
+                matPlayground[i][j] = card[yRelativeToUpperLeftCorner][xRelativeToUpperLeftCorner];
             }
         }
     }

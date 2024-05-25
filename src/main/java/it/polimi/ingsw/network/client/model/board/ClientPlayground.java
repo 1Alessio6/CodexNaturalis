@@ -124,7 +124,13 @@ public class ClientPlayground implements Serializable {
         }
     }
 
-    public Set<Position> getOccupiedPositions() {
+    /**
+     * Returns all the position in the playground.
+     *
+     * @return a set which contains all the position available and occupied.
+     */
+    // todo: filter non available
+    public Set<Position> getAllPositions() {
         return area.keySet();
     }
 
