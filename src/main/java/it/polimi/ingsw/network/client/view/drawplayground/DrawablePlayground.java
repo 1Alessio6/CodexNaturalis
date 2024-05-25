@@ -1,10 +1,12 @@
 package it.polimi.ingsw.network.client.view.drawplayground;
 
+import it.polimi.ingsw.model.board.Availability;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.Corner;
 import it.polimi.ingsw.model.card.CornerPosition;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.board.ClientTile;
+import it.polimi.ingsw.network.client.view.tui.ClientUtil;
 
 import java.util.*;
 
@@ -75,7 +77,9 @@ public class DrawablePlayground {
         centerPosition = calcCenterPosition(xMax, yMax);
         int matrixWidth = calcMatrixWidth(xMax);
         int matrixHeight = calcMatrixHeight(yMax);
-        matPlayground = new String[matrixHeight][matrixWidth];
+
+        // initialize empty spaces, so there are no null strings
+        matPlayground = ClientUtil.createEmptyArea(matrixHeight, matrixWidth);
     }
 
     private boolean validCardRepresentation(String[][] card) {
@@ -140,13 +144,17 @@ public class DrawablePlayground {
                 int yRelativeToUpperLeftCorner = j - yUpperLeftCorner;
                 CornerPosition cornerPosition = positionToCornerPosition.get(new Position(xRelativeToUpperLeftCorner, yRelativeToUpperLeftCorner));
                 // skip if the corner of the card is covered, therefore its symbol has to be hidden
-                Map<CornerPosition, Corner> faceCorners = cardTile.getFace().getCorners();
-                if (cornerPosition != null
-                        && faceCorners.containsKey(cornerPosition)
-                        && faceCorners.get(cornerPosition).isCovered()) {
-                    continue;
+                // todo: improve
+                Map<CornerPosition, Corner> fakeCorners = new HashMap<>();
+                for (CornerPosition cp : CornerPosition.values()) {
+                    fakeCorners.put(cp, new Corner());
                 }
-                matPlayground[i][j] = card[xRelativeToUpperLeftCorner][yRelativeToUpperLeftCorner];
+                Map<CornerPosition, Corner> faceCorners = cardTile.sameAvailability(Availability.EMPTY) ? fakeCorners : cardTile.getFace().getCorners();
+                if (!(cornerPosition != null // can be null?
+                        && faceCorners.containsKey(cornerPosition)
+                        && faceCorners.get(cornerPosition).isCovered())) {
+                    matPlayground[i][j] = card[xRelativeToUpperLeftCorner][yRelativeToUpperLeftCorner];
+                }
             }
         }
     }
