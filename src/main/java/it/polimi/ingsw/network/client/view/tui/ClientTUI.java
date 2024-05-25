@@ -398,7 +398,8 @@ public class ClientTUI implements View {
 
     @Override
     public void showUpdateChat() {
-        System.out.println(controller.getLastMessage());
+        ClientUtil.printToLineColumn(GameScreenArea.CHAT.getScreenPosition().getX(),126,ClientUtil.designSquare(61,2).toString());
+        ClientUtil.printChat(controller.getMessage(),controller.getLastMessage());
 
         ClientUtil.putCursorToInputArea();
     }

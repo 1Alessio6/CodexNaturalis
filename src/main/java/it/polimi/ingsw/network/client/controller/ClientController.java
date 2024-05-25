@@ -312,6 +312,8 @@ public class ClientController implements ClientActions {
         return lastMessage.getSender() + " -> " + lastMessage.getRecipient() + ": " + lastMessage.getContent();
     }
 
+    public List<Message> getMessage(){return game.getMessages();}
+
     public PlayerColor getColor() {
         return game.getPlayer(mainPlayerUsername).getColor();
     }

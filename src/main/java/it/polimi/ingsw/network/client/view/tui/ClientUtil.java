@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.card.Color.CardColor;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.board.ClientTile;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
@@ -29,8 +30,8 @@ enum GameScreenArea {
     FACE_UP_CARDS(24, 14, new Position(146, 2)),
     HAND_CARDS(2*ClientUtil.areaPadding + 3*ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(44 ,62)),
     DECKS(24, 5, new Position(18, 146)),
-    CHAT(64, 27, new Position(23, 126)),
-    SCOREBOARD(10, 26, new Position(2,2)),
+    CHAT(62, 11, new Position(23, 126)),
+    SCOREBOARD(10, 26, new Position(2, 2)),
     PRIVATE_OBJECTIVE(ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(37, 7)),
     COMMON_OBJECTIVE(2 + 2 * ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(44, 2)),
     RESOURCES(26, 15, new Position(14, 2));
@@ -749,5 +750,64 @@ public class ClientUtil {
         }
 
         return area;
+    }
+
+    public static void printChat(List<Message> messages, String lastMessage) {
+
+        String lastSender = messages.get(messages.size() - 1).getSender();
+        String lastRecipient = messages.get(messages.size() - 1).getRecipient();
+        int linesOccupiedByLastMessage = (int) Math.ceil((double) (lastMessage.length() + lastSender.length() + lastRecipient.length() + 6) / 60);
+        int totalOccupiedLines = calculateOccupiedLines(messages, GameScreenArea.CHAT.getWidth() - 2);
+
+        if (messages.size() == 1) {
+            writeLine(23 + 1, 126 + 1, 60, lastMessage);
+        } else if (totalOccupiedLines > 9) {
+            eraseLine(23 + 1,
+                    126 + 1,
+                    126 + 62,
+                    11 - 2);
+            writeLine(23 + 1, 126 + 1, 60, lastMessage);
+        } else {
+            writeLine(23 + totalOccupiedLines - linesOccupiedByLastMessage + 1, 126 + 1, 60, lastMessage);
+        }
+    }
+
+    public static void writeLine(int line, int column, int availableSpace, String string) {
+        int cnt = 0;
+        int onGoingLine = line;
+
+        for (int i = 0; i < string.length(); i++) {
+            if (cnt == availableSpace) {
+                onGoingLine++;
+                cnt = 0;
+            }
+            System.out.print("\033[" + onGoingLine + ";" + (column + cnt) + "H" + string.charAt(i));
+            cnt++;
+        }
+    }
+
+    public static int calculateOccupiedLines(List<Message> messages, int availableLines) {// messages size=senders size
+
+        int occupiedLines = 0;
+        for (int i = 0; i < messages.size(); i++) {
+            occupiedLines += ((int) Math.ceil((double) (messages.get(i).getContent().length() + messages.get(i).getSender().length() + messages.get(i).getRecipient().length() + 6) / availableLines)); //review
+        }
+        //System.out.print(occupiedLines);
+        return occupiedLines;
+    }
+
+    public static void eraseLine(int line, int initialColumn, int finalColumn, int numberOfLinesToDelete) {
+        if (finalColumn < initialColumn) {
+            System.err.println("Final column is less than initial column");
+        } else {
+            for (int i = 0; i < numberOfLinesToDelete; i++) {
+                int currentLine = line + i;
+                System.out.print("\033[" + currentLine + ";" + initialColumn + "H");
+                for (int j = initialColumn; j < finalColumn + 1; j++) {
+                    System.out.print(" ");
+                }
+            }
+            System.out.print("\033[" + (line + numberOfLinesToDelete) + ";0H");
+        }
     }
 }
