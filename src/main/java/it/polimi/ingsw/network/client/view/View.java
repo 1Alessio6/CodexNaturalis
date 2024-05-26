@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.client.view;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.controller.ClientController;
 
+import java.util.List;
 
 
 /**
@@ -56,7 +57,7 @@ public interface View {
 
     void showUpdateSuspendedGame();
 
-    void showWinners();
+    void showWinners(List<String> winners);
 
     public void beginCommandAcquisition();
 

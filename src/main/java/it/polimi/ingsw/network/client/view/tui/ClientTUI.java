@@ -19,8 +19,6 @@ import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.controller.ClientController;
-import it.polimi.ingsw.network.client.model.card.ClientCard;
-import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 import it.polimi.ingsw.network.client.view.View;
 
 import java.rmi.RemoteException;
@@ -409,20 +407,7 @@ public class ClientTUI implements View {
     }
 
     @Override
-    public void showWinners() {
-        List<String> winners = new ArrayList<>();
-        int maxPointsReached = 0;
-
-        for (ClientPlayer i : controller.getPlayers()) {
-            if (i.getPlayground().getPoints() > maxPointsReached) {
-                maxPointsReached = i.getPlayground().getPoints();
-                winners.clear();
-                winners.add(i.getUsername());
-            } else if (i.getPlayground().getPoints() == maxPointsReached) {
-                winners.add(i.getUsername());
-            }
-        }
-
+    public void showWinners(List<String> winners) {
         System.out.println("\u001B[1m\u001B[5m" + "Winners\n" + "\u001B[0m\u001B[5m");
         for (String i : winners) {
             System.out.println("\u001B[3m" + i + "\u001B[0m\n");

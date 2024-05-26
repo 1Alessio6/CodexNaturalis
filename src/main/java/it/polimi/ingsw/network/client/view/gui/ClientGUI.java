@@ -23,6 +23,7 @@ import javafx.stage.WindowEvent;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.List;
 
 public class ClientGUI extends Application implements View {
 
@@ -183,7 +184,7 @@ public class ClientGUI extends Application implements View {
     }
 
     @Override
-    public void showWinners() {
+    public void showWinners(List<String> winners) {
         loadScene("/gui/EndScene.fxml");
         currentScene = SceneType.END;
         //todo add show winners

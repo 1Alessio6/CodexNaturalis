@@ -187,7 +187,7 @@ public class ClientSocket extends Client implements VirtualView {
 
     @Override
     public void showWinners(List<String> winners) {
-        clientView.showWinners();
+        clientView.showWinners(winners);
     }
 
     @Override
