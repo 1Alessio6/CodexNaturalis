@@ -1,14 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="it.polimi.ingsw.network.client.view.gui.controllers.GameScene"
-            prefHeight="400.0" prefWidth="600.0">
-
-</AnchorPane>
+<Pane prefHeight="906" prefWidth="1590.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.network.client.view.gui.controllers.GameScene">
+   <children>
+      <Pane layoutX="1112.0" layoutY="38.0" prefHeight="148.0" prefWidth="302.0">
+         <children>
+            <Pane layoutX="14.0" layoutY="86.0" prefHeight="48.0" prefWidth="275.0" />
+         </children>
+      </Pane>
+      <Pane layoutX="732.0" layoutY="38.0" prefHeight="148.0" prefWidth="302.0">
+         <children>
+            <Pane layoutX="14.0" layoutY="86.0" prefHeight="48.0" prefWidth="275.0" />
+         </children>
+      </Pane>
+      <Pane layoutX="107.0" layoutY="14.0" prefHeight="162.0" prefWidth="436.0">
+         <children>
+            <Pane layoutX="14.0" layoutY="100.0" prefHeight="48.0" prefWidth="275.0" />
+         </children></Pane>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="81.0" layoutX="669.0" layoutY="771.0" stroke="BLACK" strokeType="INSIDE" width="126.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="81.0" layoutX="808.0" layoutY="771.0" stroke="BLACK" strokeType="INSIDE" width="126.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="81.0" layoutX="945.0" layoutY="771.0" stroke="BLACK" strokeType="INSIDE" width="126.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="81.0" layoutX="481.0" layoutY="771.0" stroke="BLACK" strokeType="INSIDE" width="126.0" />
+      <Pane layoutX="1126.0" layoutY="713.0" prefHeight="168.0" prefWidth="406.0" />
+      <Pane layoutX="134.0" layoutY="276.0" prefHeight="413.0" prefWidth="310.0">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="81.0" layoutX="20.0" layoutY="293.0" stroke="BLACK" strokeType="INSIDE" width="126.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="81.0" layoutX="157.0" layoutY="293.0" stroke="BLACK" strokeType="INSIDE" width="126.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="81.0" layoutX="20.0" layoutY="197.0" stroke="BLACK" strokeType="INSIDE" width="126.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="81.0" layoutX="157.0" layoutY="197.0" stroke="BLACK" strokeType="INSIDE" width="126.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="81.0" layoutX="20.0" layoutY="82.0" stroke="BLACK" strokeType="INSIDE" width="126.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="81.0" layoutX="157.0" layoutY="82.0" stroke="BLACK" strokeType="INSIDE" width="126.0" />
+         </children>
+      </Pane>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="81.0" layoutX="157.0" layoutY="771.0" stroke="BLACK" strokeType="INSIDE" width="126.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="81.0" layoutX="291.0" layoutY="771.0" stroke="BLACK" strokeType="INSIDE" width="126.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="64.0" layoutX="31.0" layoutY="367.0" stroke="BLACK" strokeType="INSIDE" width="76.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="75.0" layoutX="28.0" layoutY="497.0" stroke="BLACK" strokeType="INSIDE" width="82.0" />
+      <Pane layoutX="481.0" layoutY="697.0" prefHeight="48.0" prefWidth="599.0" />
+      <Pane fx:id="PlaygroundPane" layoutX="468.0" layoutY="214.0" opacity="0.0" prefHeight="490.0" prefWidth="1064.0" />
+      <Text layoutX="481.0" layoutY="191.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Playground" wrappingWidth="194.13671875" />
+   </children>
+</Pane>
