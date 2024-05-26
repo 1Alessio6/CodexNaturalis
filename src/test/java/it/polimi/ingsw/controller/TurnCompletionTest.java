@@ -78,6 +78,22 @@ class TurnCompletionTest {
         });
     }
 
+    void correctEvolutionOfTheCurrentPlayer(String oldCurrentPlayerName) {
+        List<String> users = game.getPlayers().stream().map(Player::getUsername).toList();
+        // correct evolution of the current player
+        boolean oneActivePlayer = false;
+        String currPlayerName = "";
+        for (String user: users) {
+            if(game.getCurrentPlayer().getUsername().equals(user)) {
+                oneActivePlayer = true;
+                currPlayerName = user;
+                break;
+            }
+        }
+        Assertions.assertTrue(oneActivePlayer);
+        Assertions.assertNotEquals(currPlayerName, oldCurrentPlayerName);
+    }
+
     @Test
     void disconnectsCurrentPlayer_completePlace() {
         List<String> users = game.getPlayers().stream().map(Player::getUsername).toList();
@@ -85,12 +101,12 @@ class TurnCompletionTest {
             completeSetup(game, user);
         }
 
-        String currentPlayerUsername = game.getCurrentPlayer().getUsername();
-        Assertions.assertDoesNotThrow(() -> game.remove(currentPlayerUsername));
+        String oldCurrentPlayerName = game.getCurrentPlayer().getUsername();
+        Assertions.assertDoesNotThrow(() -> game.remove(oldCurrentPlayerName));
         turnCompletion.handleLeave(game);
-        // correct evolution of the current player
-        Assertions.assertNotEquals(currentPlayerUsername, game.getCurrentPlayer().getUsername());
-        Assertions.assertEquals(game.getPlayerByUsername(currentPlayerUsername).getPlayerAction().getPlayerState(), PlayerState.Place);
+        correctEvolutionOfTheCurrentPlayer(oldCurrentPlayerName);
+        Assertions.assertNotEquals(oldCurrentPlayerName, game.getCurrentPlayer().getUsername());
+        Assertions.assertEquals(game.getPlayerByUsername(oldCurrentPlayerName).getPlayerAction().getPlayerState(), PlayerState.Place);
     }
 
     @Test
@@ -99,13 +115,14 @@ class TurnCompletionTest {
         for (String user : users) {
             completeSetup(game, user);
         }
-        Player currentPlayer = game.getCurrentPlayer();
-        place(game, currentPlayer);
-        Assertions.assertDoesNotThrow(() -> game.remove(currentPlayer.getUsername()));
-        List<Card> inHandBefore = new ArrayList<>(currentPlayer.getCards());
+        Player oldCurrentPlayer = game.getCurrentPlayer();
+        place(game, oldCurrentPlayer);
+        Assertions.assertDoesNotThrow(() -> game.remove(oldCurrentPlayer.getUsername()));
+        List<Card> inHandBefore = new ArrayList<>(oldCurrentPlayer.getCards());
         turnCompletion.handleLeave(game);
-        List<Card> inHandAfter = new ArrayList<>(currentPlayer.getCards());
-        Assertions.assertEquals(currentPlayer.getPlayerAction().getPlayerState(), PlayerState.Place);
+        correctEvolutionOfTheCurrentPlayer(oldCurrentPlayer.getUsername());
+        List<Card> inHandAfter = new ArrayList<>(oldCurrentPlayer.getCards());
+        Assertions.assertEquals(oldCurrentPlayer.getPlayerAction().getPlayerState(), PlayerState.Place);
         Assertions.assertFalse(inHandBefore.equals(inHandAfter));
     }
 
