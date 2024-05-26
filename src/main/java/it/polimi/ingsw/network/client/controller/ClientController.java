@@ -97,28 +97,35 @@ public class ClientController implements ClientActions {
                 if (game.isFaceUpSlotEmpty(0)) {
                     throw new NotExistingFaceUp("This face up slot is empty");
                 }
+                break;
             case 1:
                 if (game.isFaceUpSlotEmpty(1)) {
                     throw new NotExistingFaceUp("This face up slot is empty");
                 }
+                break;
             case 2:
                 if (game.isFaceUpSlotEmpty(2)) {
                     throw new NotExistingFaceUp("This face up slot is empty");
                 }
+                break;
             case 3:
                 if (game.isFaceUpSlotEmpty(3)) {
                     throw new NotExistingFaceUp("This face up slot is empty");
                 }
+                break;
             case 4:
                 if (game.getClientBoard().isGoldenDeckEmpty()) {
                     throw new EmptyDeckException("You chose to draw from an empty deck");
                 }
+                break;
             case 5:
                 if (game.getClientBoard().isResourceDeckEmpty()) {
                     throw new EmptyDeckException("You chose to draw from an empty deck");
                 }
+                break;
             default:
                 System.err.println("ID not valid");
+                break;
         }
 
         server.draw(getMainPlayerUsername(), IdToDraw);
