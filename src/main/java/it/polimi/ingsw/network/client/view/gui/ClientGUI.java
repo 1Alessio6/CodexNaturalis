@@ -8,12 +8,20 @@ import it.polimi.ingsw.network.client.view.gui.controllers.LobbyScene;
 import it.polimi.ingsw.network.client.view.gui.controllers.SceneController;
 import it.polimi.ingsw.network.server.rmi.ServerRMI;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
+import java.awt.*;
 import java.io.IOException;
 
 public class ClientGUI extends Application implements View {
@@ -24,6 +32,8 @@ public class ClientGUI extends Application implements View {
     private VirtualView client;
     private final ClientController controller;
     private SceneType currentScene;
+
+    private Parent currentRoot;
 
     /*
     public ClientGUI(ClientController controller){
@@ -50,14 +60,14 @@ public class ClientGUI extends Application implements View {
         //add all controllers constructors
 
         //FXMLLoader loader = loadScene("/gui/SelectUsernameScene.fxml");
-        loadScene("/gui/LobbyScene.fxml");
+        loadScene("/gui/GameScene.fxml");
         /*
         SelectUsernameScene sceneController = loader.getController();
 
          */
 
         initializeCurrentSceneController();
-        ((LobbyScene)currentSceneController).initializeCreatorScene();
+        //((LobbyScene)currentSceneController).initializeCreatorScene();
 
 
         this.primaryStage.setTitle("Codex Naturalis");
@@ -164,13 +174,7 @@ public class ClientGUI extends Application implements View {
 
     @Override
     public void showUpdateCurrentPlayer() {
-        if(controller.getGamePhase() == GamePhase.End){
-            loadScene("/gui/EndScene.fxml");
-            currentScene = SceneType.END;
-        }
-        else{
-            //todo update current player in normal game scene
-        }
+
     }
 
     @Override
@@ -180,7 +184,9 @@ public class ClientGUI extends Application implements View {
 
     @Override
     public void showWinners() {
-        //todo add update without loading a new scene
+        loadScene("/gui/EndScene.fxml");
+        currentScene = SceneType.END;
+        //todo add show winners
     }
 
     public ClientController getController() {
@@ -208,11 +214,59 @@ public class ClientGUI extends Application implements View {
         primaryStage.setTitle("Codex Naturalis");
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
+
         primaryStage.show();
         currentSceneController = loader.getController();
         initializeCurrentSceneController();
 
+        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                if(keyEvent.getCode() == KeyCode.ESCAPE){
+                    primaryStage.setFullScreen(true);
+                }
+
+                if(keyEvent.getCode() == KeyCode.ALT){
+                    setFullScreen();
+                }
+
+            }
+        });
+
+
+        /*
+        new Thread(() -> {
+            boolean  isFirstFullScreen = true;
+            boolean  isFirstWindow = false;
+            while(true){
+                System.out.println(primaryStage.isFullScreen() + " " + isFirstFullScreen);
+                if (primaryStage.isFullScreen() && isFirstFullScreen) {
+                    setFullScreen();
+                    System.out.println("ciao");
+                    try {
+                        Thread.sleep(1000); // Adjust interval as needed
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    isFirstFullScreen = false;
+                    isFirstWindow = true;
+                }
+                if(!primaryStage.isFullScreen() && isFirstWindow){
+                    resizeWindowScene();
+                    isFirstWindow = false;
+                    isFirstFullScreen = true;
+                }
+
+            }
+        }).start();
+
+         */
+
+        currentRoot = root;
+
     }
+
+
 
     private void initializeCurrentSceneController(){
         currentSceneController.setGui(this);
@@ -220,5 +274,27 @@ public class ClientGUI extends Application implements View {
 
     private void setCurrentScene(SceneType scene){
         currentScene = scene;
+    }
+
+    public void resizeWindowScene(){
+        Dimension resolution = Toolkit.getDefaultToolkit().getScreenSize();
+        double width = resolution.getWidth();
+        double height = resolution.getHeight();
+        double w = 1325/width;  // your window width
+        double h = 755/height;  // your window height
+        Scale scale = new Scale(w, h, 0, 0);
+        currentRoot.getTransforms().add(scale);
+    }
+
+    public void setFullScreen(){
+        primaryStage.setFullScreen(true);
+
+        Dimension resolution = Toolkit.getDefaultToolkit().getScreenSize();
+        double width = resolution.getWidth();
+        double height = resolution.getHeight();
+        double w = width/1325.0;  // your window width
+        double h = height/755;  // your window height
+        Scale scale = new Scale(w, h, 0, 0);
+        currentRoot.getTransforms().add(scale);
     }
 }
