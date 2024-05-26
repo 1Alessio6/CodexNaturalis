@@ -9,7 +9,7 @@ import javafx.scene.shape.Rectangle;
 public class GUIPlayground {
     private final int cardWidth;
     private final int cardHeight;
-    private static final double xCoefficient = 0.22;
+    private static final double xCoefficient = 0.2;
     private static final double yCoefficient = 0.4;
 
     private double paneWidth;
@@ -45,5 +45,4 @@ public class GUIPlayground {
         rectangle.setFill(new ImagePattern(image));
         return rectangle;
     }
-
 }
