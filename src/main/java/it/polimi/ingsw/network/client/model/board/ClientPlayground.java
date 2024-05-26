@@ -131,11 +131,7 @@ public class ClientPlayground implements Serializable {
      * @return a set which contains all the position available and occupied.
      */
     public Set<Position> getAllPositions() {
-        return area.keySet().stream().
-                filter(p -> !this
-                        .getTile(p)
-                        .sameAvailability(Availability.NOTAVAILABLE))
-                .collect(Collectors.toSet());
+        return area.keySet();
     }
 
 }
