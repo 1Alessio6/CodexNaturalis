@@ -31,31 +31,6 @@ public class DrawablePlayground {
         this.cardHeight = cardHeight;
     }
 
-    private int[] getRange(ClientPlayground playground) {
-        int xMax = 0;
-        int yMax = 0;
-        List<Position> positionsToNavigate = new ArrayList<>();
-        List<Position> occupiedPositions = new ArrayList<>(playground.getAllPositions());
-        List<Position> availablePositions = playground.getAvailablePositions();
-        positionsToNavigate.addAll(occupiedPositions);
-        positionsToNavigate.addAll(availablePositions);
-
-        for (Position pos : positionsToNavigate) {
-            int xPosAbs = Math.abs(pos.getX());
-            int yPosAbs = Math.abs(pos.getY());
-
-            if (xMax < xPosAbs) {
-                xMax = xPosAbs;
-            }
-
-            if (yMax < yPosAbs) {
-                yMax = yPosAbs;
-            }
-        }
-
-        return new int[]{xMax, yMax};
-    }
-
     private Position calcCenterPosition(int xMax, int yMax) {
         int yCenter = xMax * (cardWidth - 1) + (cardWidth - 1) / 2;
         int xCenter = yMax * (cardHeight - 1) + (cardHeight - 1) / 2;
@@ -71,7 +46,7 @@ public class DrawablePlayground {
     }
 
     public void allocateMatrix(ClientPlayground playground) {
-        int[] range = getRange(playground);
+        int[] range = playground.getRange();
         int xMax = range[0];
         int yMax = range[1];
         centerPosition = calcCenterPosition(xMax, yMax);

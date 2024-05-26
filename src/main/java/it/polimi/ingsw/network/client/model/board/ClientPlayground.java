@@ -134,4 +134,29 @@ public class ClientPlayground implements Serializable {
         return area.keySet();
     }
 
+    /**
+     * Returns the maximum x and the maximum y in absolute value of the tiles' position in the playground.
+     * @return an array where the first index is the maximum x and the second one is the maximum y.
+     */
+    public int[] getRange() {
+        int xMax = 0;
+        int yMax = 0;
+        List<Position> allPositionsInPlayground = new ArrayList<>(area.keySet());
+
+        for (Position pos : allPositionsInPlayground) {
+            int xPosAbs = Math.abs(pos.getX());
+            int yPosAbs = Math.abs(pos.getY());
+
+            if (xMax < xPosAbs) {
+                xMax = xPosAbs;
+            }
+
+            if (yMax < yPosAbs) {
+                yMax = yPosAbs;
+            }
+        }
+
+        return new int[]{xMax, yMax};
+    }
 }
+
