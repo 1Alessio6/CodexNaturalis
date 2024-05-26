@@ -2,19 +2,30 @@ package it.polimi.ingsw.network.client.view.gui.controllers;
 
 import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
 import it.polimi.ingsw.network.client.view.gui.ClientGUI;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
 
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.transform.Scale;
+
+import java.awt.*;
 import java.rmi.RemoteException;
 import java.util.List;
 
 public class LobbyScene extends SceneController {
+
+    @FXML
+    private Pane connectedPlayersPane;
 
     @FXML
     private AnchorPane anchorPane;
@@ -41,8 +52,11 @@ public class LobbyScene extends SceneController {
         numberPlayerCatcher.setVisible(false);
         setNumberRequest.setVisible(false);
 
+
+
         //todo fix when fullScreen
     }
+
 
     public void showRequiredPlayers(){
         //todo requiredPlayer.setText("Player required to play: " + gui.getController().getRequiredPlayer);
