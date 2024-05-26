@@ -38,6 +38,14 @@ public class GUIPlayground {
         yUpperStarter = yOffset * yMax;
     }
 
+    public double getPaneWidth() {
+        return paneWidth;
+    }
+
+    public double getPaneHeight() {
+        return paneHeight;
+    }
+
     public Rectangle getRectangle(Position posRelativeToStarter, Image image) {
         double x = xUpperStarter + posRelativeToStarter.getX() * xOffset;
         double y = yUpperStarter - posRelativeToStarter.getY() * yOffset;
