@@ -16,19 +16,21 @@ public class Playground {
     private int points;
     private final Map<Symbol, Integer> resources;
 
+    List<Position> positioningOrder;
+
+
 
     /**
      * Constructs a playground according to its condition at the beginning of the game.
      */
     public Playground() {
 
+        positioningOrder = new ArrayList<>();
         this.area = new HashMap<>();
         Position origin = new Position(0, 0);
         Availability s = Availability.EMPTY;
         area.put(origin, new Tile(s));
-
         this.points = 0;
-
         this.resources = new HashMap<>();
         resources.put(Symbol.ANIMAL, 0);
         resources.put(Symbol.FUNGI, 0);
@@ -37,6 +39,7 @@ public class Playground {
         resources.put(Symbol.PLANT, 0);
         resources.put(Symbol.MANUSCRIPT, 0);
         resources.put(Symbol.QUILL, 0);
+
     }
 
 
@@ -182,6 +185,7 @@ public class Playground {
         //update the current tile
         this.area.get(p).setAvailability(Availability.OCCUPIED);
         this.area.get(p).setFace(c);
+        positioningOrder.add(p);
 
         CornerPosition corner_pos;
 

@@ -8,10 +8,7 @@ import it.polimi.ingsw.model.card.CornerPosition;
 import it.polimi.ingsw.model.card.Symbol;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ClientPlayground implements Serializable {
@@ -19,14 +16,16 @@ public class ClientPlayground implements Serializable {
     private int points;
     private final Map<Symbol, Integer> resources;
 
+    List<Position> positioningOrder;
+
+
     public ClientPlayground(Map<Position, ClientTile> area, Map<Symbol, Integer> resources) {
         this.area = new HashMap<>();
         Position origin = new Position(0, 0);
         Availability s = Availability.EMPTY;
         area.put(origin, new ClientTile(s));
-
+        positioningOrder = new ArrayList<>();
         this.points = 0;
-
         this.resources = new HashMap<>();
         resources.put(Symbol.ANIMAL, 0);
         resources.put(Symbol.FUNGI, 0);
@@ -71,7 +70,9 @@ public class ClientPlayground implements Serializable {
     }
 
     public void placeTile(Position position, ClientTile tile) {
+
         this.area.put(position, tile);
+        this.positioningOrder.add(position);
     }
 
     public List<Position> getAvailablePositions() {
