@@ -295,19 +295,19 @@ public class ClientUtil {
         for (int i = 0; i < 3; i++) {
             if (i != 1) {
                 for (int j = 1; j < 6; j++) {
-                    cardMatrix[i][j] = color.getColor() + "═";
+                    cardMatrix[i][j] = color.getColor() + "═" + RESET.getColor();
                 }
             }
         }
-        cardMatrix[1][0] = color.getColor() + "║";
+        cardMatrix[1][0] = color.getColor() + "║" + RESET.getColor();
         if (resourcesSize(resources) == 2) {
-            cardMatrix[1][5] = color.getColor() + doubleHairSpace + "║";
+            cardMatrix[1][4] = color.getColor() + doubleHairSpace + "║" + RESET.getColor();
         } else if (resourcesSize(resources) == 3) {
-            cardMatrix[1][4] = color.getColor() + hairSpace + "║";
+            cardMatrix[1][4] = color.getColor() + hairSpace + "║" + RESET.getColor();
         } else if (resourcesSize(resources) == 1 || condition != null) {
-            cardMatrix[1][6] = color.getColor() + doubleThinSpace + "║";
+            cardMatrix[1][6] = color.getColor() + " ║" + RESET.getColor();
         } else {
-            cardMatrix[1][6] = color.getColor() + "  ║";
+            cardMatrix[1][6] = color.getColor() + "  ║" + RESET.getColor();
         }
     }
 
@@ -335,7 +335,7 @@ public class ClientUtil {
                     }
                 } else if (i == 1) {
                     if (resourcesSize(resources) == 2) {
-                        cardMatrix[1][4] = printResources(entry.getKey());
+                        cardMatrix[1][3] = printResources(entry.getKey());
                     } else {
                         cardMatrix[1][2] = printResources(entry.getKey());
                     }
@@ -356,45 +356,45 @@ public class ClientUtil {
             switch (entry.getKey()) {
                 case TOP_LEFT -> {
                     if (entry.getValue().isCovered()) {
-                        card[0][0] = YELLOW.getColor() + " ╝";
+                        card[0][0] = YELLOW.getColor() + " ╝" + RESET.getColor();
                     } else if (entry.getValue() != null) {
                         card[0][0] = printResources(entry.getValue().getSymbol());
                     }
                 }
                 case TOP_RIGHT -> {
                     if (entry.getValue().isCovered()) {
-                        card[0][6] = YELLOW.getColor() + "╚ ";
+                        card[0][6] = YELLOW.getColor() + "╚ " + RESET.getColor();
                     } else if (entry.getValue() != null) {
-                        card[0][6] = thinSpace + printResources(entry.getValue().getSymbol());
+                        card[0][6] = printResources(entry.getValue().getSymbol());
                     }
                 }
                 case LOWER_LEFT -> {
                     if (entry.getValue().isCovered()) {
-                        card[2][0] = YELLOW.getColor() + " ╗";
+                        card[2][0] = YELLOW.getColor() + " ╗" + RESET.getColor();
                     } else if (entry.getValue() != null) {
                         card[2][0] = printResources(entry.getValue().getSymbol());
                     }
                 }
                 case LOWER_RIGHT -> {
                     if (entry.getValue().isCovered()) {
-                        card[2][6] = YELLOW.getColor() + "╔ ";
+                        card[2][6] = YELLOW.getColor() + "╔ " + RESET.getColor();
                     } else if (entry.getValue() != null) {
-                        card[2][6] = thinSpace + printResources(entry.getValue().getSymbol());
+                        card[2][6] = printResources(entry.getValue().getSymbol());
                     }
                 }
             }
         }
         if (!cornerPositions.contains(CornerPosition.TOP_LEFT)) {
-            card[0][0] = color.getColor() + "╔ ";
+            card[0][0] = color.getColor() + "╔ " + RESET.getColor();
         }
         if (!cornerPositions.contains(CornerPosition.TOP_RIGHT)) {
-            card[0][6] = color.getColor() + " ╗";
+            card[0][6] = color.getColor() + " ╗" + RESET.getColor();
         }
         if (!cornerPositions.contains(CornerPosition.LOWER_RIGHT)) {
-            card[2][6] = color.getColor() + " ╝";
+            card[2][6] = color.getColor() + " ╝" + RESET.getColor();
         }
         if (!cornerPositions.contains(CornerPosition.LOWER_LEFT)) {
-            card[2][0] = color.getColor() + "╚ ";
+            card[2][0] = color.getColor() + "╚ " + RESET.getColor();
         }
 
     }
