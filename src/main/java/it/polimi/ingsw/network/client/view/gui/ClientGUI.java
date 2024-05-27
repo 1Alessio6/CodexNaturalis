@@ -1,9 +1,11 @@
 package it.polimi.ingsw.network.client.view.gui;
 
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.view.View;
+import it.polimi.ingsw.network.client.view.gui.controllers.GameScene;
 import it.polimi.ingsw.network.client.view.gui.controllers.LobbyScene;
 import it.polimi.ingsw.network.client.view.gui.controllers.SceneController;
 import it.polimi.ingsw.network.server.rmi.ServerRMI;
@@ -44,7 +46,7 @@ public class ClientGUI extends Application implements View {
     */
 
     //constructor used ONLY for test
-    public ClientGUI(){
+    public ClientGUI() {
         super();
         this.controller = new ClientController(new ServerRMI());
     }
@@ -70,6 +72,8 @@ public class ClientGUI extends Application implements View {
         initializeCurrentSceneController();
         //((LobbyScene)currentSceneController).initializeCreatorScene();
 
+
+        //((GameScene)currentSceneController).drawPlayground(null);
 
         this.primaryStage.setTitle("Codex Naturalis");
         this.primaryStage.show();
@@ -98,12 +102,12 @@ public class ClientGUI extends Application implements View {
 
     @Override
     public void showUpdatePlayersInLobby() {
-        if(currentScene != SceneType.LOBBY){
+        if (currentScene != SceneType.LOBBY) {
             loadScene("/gui/LobbyScene.fxml");
             currentScene = SceneType.LOBBY;
         }
         assert currentSceneController instanceof LobbyScene;
-        ((LobbyScene)currentSceneController).setPlayerConnected(controller.getConnectedUsernames());
+        ((LobbyScene) currentSceneController).setPlayerConnected(controller.getConnectedUsernames());
 
     }
 
@@ -111,7 +115,7 @@ public class ClientGUI extends Application implements View {
     public void showUpdateCreator() {
 
         loadScene("/gui/LobbyScene.fxml");
-        ((LobbyScene)currentSceneController).initializeCreatorScene();
+        ((LobbyScene) currentSceneController).initializeCreatorScene();
         currentScene = SceneType.LOBBY;
     }
 
@@ -175,7 +179,12 @@ public class ClientGUI extends Application implements View {
 
     @Override
     public void showUpdateCurrentPlayer() {
-
+        if (controller.getGamePhase() == GamePhase.End) {
+            loadScene("/gui/EndScene.fxml");
+            currentScene = SceneType.END;
+        } else {
+            //todo update current player in normal game scene
+        }
     }
 
     @Override
@@ -203,9 +212,9 @@ public class ClientGUI extends Application implements View {
         Parent root;
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
 
-        try{
+        try {
             root = loader.load();
-        }catch (IOException e){
+        } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText(e.getMessage());
             alert.setTitle("IOException");
@@ -220,82 +229,19 @@ public class ClientGUI extends Application implements View {
         currentSceneController = loader.getController();
         initializeCurrentSceneController();
 
-        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent keyEvent) {
-                if(keyEvent.getCode() == KeyCode.ESCAPE){
-                    primaryStage.setFullScreen(true);
-                }
-
-                if(keyEvent.getCode() == KeyCode.ALT){
-                    setFullScreen();
-                }
-
-            }
-        });
-
-
-        /*
-        new Thread(() -> {
-            boolean  isFirstFullScreen = true;
-            boolean  isFirstWindow = false;
-            while(true){
-                System.out.println(primaryStage.isFullScreen() + " " + isFirstFullScreen);
-                if (primaryStage.isFullScreen() && isFirstFullScreen) {
-                    setFullScreen();
-                    System.out.println("ciao");
-                    try {
-                        Thread.sleep(1000); // Adjust interval as needed
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    isFirstFullScreen = false;
-                    isFirstWindow = true;
-                }
-                if(!primaryStage.isFullScreen() && isFirstWindow){
-                    resizeWindowScene();
-                    isFirstWindow = false;
-                    isFirstFullScreen = true;
-                }
-
-            }
-        }).start();
-
-         */
-
         currentRoot = root;
-
     }
 
 
 
-    private void initializeCurrentSceneController(){
+
+
+    private void initializeCurrentSceneController() {
         currentSceneController.setGui(this);
     }
 
-    private void setCurrentScene(SceneType scene){
+    private void setCurrentScene(SceneType scene) {
         currentScene = scene;
     }
 
-    public void resizeWindowScene(){
-        Dimension resolution = Toolkit.getDefaultToolkit().getScreenSize();
-        double width = resolution.getWidth();
-        double height = resolution.getHeight();
-        double w = 1325/width;  // your window width
-        double h = 755/height;  // your window height
-        Scale scale = new Scale(w, h, 0, 0);
-        currentRoot.getTransforms().add(scale);
-    }
-
-    public void setFullScreen(){
-        primaryStage.setFullScreen(true);
-
-        Dimension resolution = Toolkit.getDefaultToolkit().getScreenSize();
-        double width = resolution.getWidth();
-        double height = resolution.getHeight();
-        double w = width/1325.0;  // your window width
-        double h = height/755;  // your window height
-        Scale scale = new Scale(w, h, 0, 0);
-        currentRoot.getTransforms().add(scale);
-    }
 }
