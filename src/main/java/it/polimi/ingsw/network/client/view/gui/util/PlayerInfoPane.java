@@ -3,8 +3,8 @@ package it.polimi.ingsw.network.client.view.gui.util;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
-import it.polimi.ingsw.network.client.view.gui.controllers.GameScene;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -68,7 +68,11 @@ public class PlayerInfoPane {
         cards.add(new ClientCard());
         cards.add(new ClientCard());
 
-        GameScene.initializePlayerCards(playerCardsPane,cards , cardWidth, cardHeight, distance);
+
+
+        //List<ClientCard> cards = player.getPlayerCards();
+
+        GUICards.initializePlayerCards(playerCardsPane,cards , cardWidth, cardHeight, distance, MouseButton.PRIMARY);
         playerCardsPane.setLayoutX(15);
         playerCardsPane.setLayoutY(99);
         playerMainPane.getChildren().add(playerCardsPane);
