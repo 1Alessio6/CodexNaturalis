@@ -206,17 +206,14 @@ public class ClientUtil {
     // Secondary methods
 
     public static String centeredString(int availableSpaces, String string) {
-        double numberOfSpaces = ((availableSpaces - string.length()) / 2.0);
-        int indexOfDecimal = String.valueOf(numberOfSpaces).indexOf(".");
-        String decimal = String.valueOf(0).concat(String.valueOf(numberOfSpaces).substring(indexOfDecimal));
+        int numberOfSpaces = ((availableSpaces - string.length()) / 2);
         StringBuilder a = new StringBuilder();
         StringBuilder b = new StringBuilder();
-        a.append(" ".repeat((int) Math.max(0, numberOfSpaces)));
-        if (decimal.equals(String.valueOf(.5))) {
-            a.append(doubleHairSpace);
-        }
+        a.append(" ".repeat(Math.max(0, numberOfSpaces)));
         b.append(a).append(string).append(a);
-
+        if ((availableSpaces - string.length()) % 2 != 0) {
+            b.append(thinSpace);
+        }
         return b.toString();
     }
     public static void printInLineColumn(int numberOfLine, int numberOfColumn, String[][] matrix) {
