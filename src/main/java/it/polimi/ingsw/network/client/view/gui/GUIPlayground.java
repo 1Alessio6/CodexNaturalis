@@ -3,6 +3,11 @@ package it.polimi.ingsw.network.client.view.gui;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
 public class GUIPlayground {
@@ -40,7 +45,19 @@ public class GUIPlayground {
     public Rectangle getRectangle(Position posRelativeToStarter, Image image) {
         double x = xUpperStarter + posRelativeToStarter.getX() * xOffset;
         double y = yUpperStarter - posRelativeToStarter.getY() * yOffset;
-        return new Rectangle(x, y, cardWidth, cardHeight);
+
+        Rectangle rectangle = new Rectangle(x, y, cardWidth, cardHeight);
+        rectangle.setFill(new ImagePattern(image));
+        return rectangle;
+    }
+
+    public Rectangle getRectangleEmptyTile(Position posRelativeToStarter) {
+        double x = xUpperStarter + posRelativeToStarter.getX() * xOffset;
+        double y = yUpperStarter - posRelativeToStarter.getY() * yOffset;
+
+        Rectangle rectangle = new Rectangle(x, y, cardWidth, cardHeight);
+        rectangle.setFill(Color.LIGHTBLUE);
+        return rectangle;
     }
 
 }
