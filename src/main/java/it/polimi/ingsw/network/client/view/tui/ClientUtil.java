@@ -7,7 +7,6 @@ import it.polimi.ingsw.model.card.Color.CardColor;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
-import it.polimi.ingsw.network.client.model.board.ClientTile;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
@@ -584,8 +583,7 @@ public class ClientUtil {
             String tableLine = separator +
                     centeredString(resourceBoardColumnSpace, printResources(key)) +
                     separator +
-                    value +
-                    " " +
+                    centeredString(resourceBoardColumnSpace, String.valueOf(value)) +
                     separator;
 
             setupTable.add(i, tableLine);
@@ -598,8 +596,7 @@ public class ClientUtil {
         String tableLine = separator +
                 centeredString(resourceBoardColumnSpace, printResources(key)) +
                 separator +
-                value +
-                " " +
+                centeredString(resourceBoardColumnSpace, String.valueOf(value)) +
                 separator;
 
         setupTable.add(i, tableLine);
@@ -651,23 +648,33 @@ public class ClientUtil {
         System.out.println("\u001b[2J");
     }
 
-    public static void moveCursor(int x, int y) {
-        System.out.println("\033[" + x + ";" + y + "H");
+    public static void moveCursor(int line, int column) {
+        System.out.println("\033[" + line + ";" + column + "H");
     }
 
     public static void putCursorToInputArea() {
         // todo: put correct values
-        moveCursor(40, 0);
+        moveCursor(36, 126);
     }
 
     private static String[][] buildPlayground(ClientPlayground clientPlayground) throws InvalidCardRepresentationException, UnInitializedPlaygroundException, InvalidCardDimensionException {
         DrawablePlayground dp = new DrawablePlayground(7, cardHeight);
         dp.allocateMatrix(clientPlayground);
         // todo: print available in different way
-        for (Position pos : clientPlayground.getAllPositions()) {
-            ClientTile tileAtPos = clientPlayground.getTile(pos);
-            // if empty tile draw placeholder with position
-            dp.drawCard(clientPlayground, pos, tileAtPos.sameAvailability(Availability.EMPTY) ? drawAvailablePosition(pos) : designCard(tileAtPos.getFace()));
+        Set<Position> availablePositions = new HashSet<>();
+        Set<Position> occupiedPositions = new HashSet<>();
+
+        clientPlayground.getAllPositions().forEach(position ->
+                (clientPlayground.getTile(position).sameAvailability(Availability.EMPTY) ?
+                        availablePositions : occupiedPositions).add(position));
+
+        // print first available positions (so they don't override corners)
+        for (Position pos : availablePositions) {
+            dp.drawCard(clientPlayground, pos, drawAvailablePosition(pos));
+        }
+        // then print occupied positions
+        for (Position pos : occupiedPositions) {
+            dp.drawCard(clientPlayground, pos, designCard(clientPlayground.getTile(pos).getFace()));
         }
 
         return dp.getPlaygroundRepresentation();
@@ -685,7 +692,7 @@ public class ClientUtil {
 
             printToLineColumn(printY,
                     printX,
-                    buildPlayground(clientPlayground));
+                    playgroundToPrint);
         } catch (InvalidCardRepresentationException | UnInitializedPlaygroundException | InvalidCardDimensionException e) {
             throw new RuntimeException(e);
         }
@@ -755,8 +762,8 @@ public class ClientUtil {
 
     public static void printChat(List<Message> messages, String lastMessage) {
 
-        String lastSender = messages.get(messages.size() - 1).getSender();
-        String lastRecipient = messages.get(messages.size() - 1).getRecipient();
+        String lastSender = messages.getLast().getSender();
+        String lastRecipient = messages.getLast().getRecipient();
         int linesOccupiedByLastMessage = (int) Math.ceil((double) (lastMessage.length() + lastSender.length() + lastRecipient.length() + 6) / 60);
         int totalOccupiedLines = calculateOccupiedLines(messages, GameScreenArea.CHAT.getWidth() - 2);
         int cnt = totalOccupiedLines /11;
