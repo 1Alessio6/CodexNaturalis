@@ -335,4 +335,7 @@ public class Playground {
         }
     }
 
+    public List<Position> getPositioningOrder() {
+        return positioningOrder;
+    }
 }
