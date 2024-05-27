@@ -358,4 +358,8 @@ public class ClientController implements ClientActions {
     }
 
    public List<ClientObjectiveCard> getObjectiveCards(){return this.game.getClientBoard().getCommonObjectives();}
+
+    public ClientPlayer getPlayer(String username){
+        return game.getPlayer(username);
+    }
 }
