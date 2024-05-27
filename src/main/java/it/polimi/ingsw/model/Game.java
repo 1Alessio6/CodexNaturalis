@@ -313,6 +313,9 @@ public class Game {
         setNetworkStatus(username, true);
 
         if (getActivePlayers().size() > 1) {
+            if (!isActive) {
+                listenerHandler.notifyBroadcast(VirtualView::showUpdateSuspendedGame);
+            }
             isActive = true;
         }
 

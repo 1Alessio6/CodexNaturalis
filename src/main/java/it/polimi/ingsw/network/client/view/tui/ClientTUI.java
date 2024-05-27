@@ -403,7 +403,12 @@ public class ClientTUI implements View {
 
     @Override
     public void showUpdateSuspendedGame() {
-        System.out.println("\u001B[1m SUSPENDED GAME \u001B[0m\n");
+        boolean isActive = controller.isActive();
+        if (isActive) {
+            System.out.println("\u001B[1m GAME IS NOW ACTIVE \u001B[0m\n");
+        } else {
+            System.out.println("\u001B[1m SUSPENDED GAME \u001B[0m\n");
+        }
     }
 
     @Override

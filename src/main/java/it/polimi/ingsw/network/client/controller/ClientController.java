@@ -358,4 +358,8 @@ public class ClientController implements ClientActions {
     }
 
    public List<ClientObjectiveCard> getObjectiveCards(){return this.game.getClientBoard().getCommonObjectives();}
+
+    public boolean isActive() {
+        return game.isGameActive();
+    }
 }
