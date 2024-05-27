@@ -282,6 +282,10 @@ public class ClientTUI implements View {
         ClientUtil.printScoreboard(this.controller.getPlayers());
         ClientUtil.printResourcesArea(this.controller.getMainPlayer().getPlayground().getResources());
         ClientUtil.printFaceUpCards(this.controller.getFaceUpCards().stream().map(c -> c.getFace(Side.FRONT)).toList());
+        ClientUtil.printToLineColumn(GameScreenArea.CHAT.getScreenPosition().getX(),
+                GameScreenArea.CHAT.getScreenPosition().getY(),
+                ClientUtil.designSquare(GameScreenArea.CHAT.getWidth(),
+                        GameScreenArea.CHAT.getHeight() - 2).toString());
         // todo: do not print if starter card hasn't been placed
         if (this.controller.getMainPlayer().getPlayground().getArea().values().stream()
                 .anyMatch(tile -> tile.sameAvailability(Availability.OCCUPIED))) {
@@ -387,8 +391,7 @@ public class ClientTUI implements View {
 
     @Override
     public void showUpdateChat() {
-        ClientUtil.printToLineColumn(GameScreenArea.CHAT.getScreenPosition().getX(),126,ClientUtil.designSquare(61,2).toString());
-        ClientUtil.printChat(controller.getMessage(),controller.getLastMessage());
+        ClientUtil.printChat(controller.getMessage(), controller.getLastMessage());
 
         ClientUtil.putCursorToInputArea();
     }

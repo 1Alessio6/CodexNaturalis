@@ -759,7 +759,10 @@ public class ClientUtil {
         String lastRecipient = messages.get(messages.size() - 1).getRecipient();
         int linesOccupiedByLastMessage = (int) Math.ceil((double) (lastMessage.length() + lastSender.length() + lastRecipient.length() + 6) / 60);
         int totalOccupiedLines = calculateOccupiedLines(messages, GameScreenArea.CHAT.getWidth() - 2);
-
+        int cnt = totalOccupiedLines /11;
+        if (totalOccupiedLines >= (cnt * 9) + 1 && totalOccupiedLines <= (cnt + 1) * 9) {
+            totalOccupiedLines -= cnt * 9;
+        }
         if (messages.size() == 1) {
             writeLine(23 + 1, 126 + 1, 60, lastMessage);
         } else if (totalOccupiedLines > 9) {
@@ -768,7 +771,9 @@ public class ClientUtil {
                     126 + 62,
                     11 - 2);
             writeLine(23 + 1, 126 + 1, 60, lastMessage);
-        } else {
+        }  else if(totalOccupiedLines%9==0){
+            writeLine(23 + 9, 126 + 1, 60, lastMessage);
+        }else {
             writeLine(23 + totalOccupiedLines - linesOccupiedByLastMessage + 1, 126 + 1, 60, lastMessage);
         }
     }
