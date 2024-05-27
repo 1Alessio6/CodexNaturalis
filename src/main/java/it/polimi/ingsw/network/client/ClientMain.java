@@ -66,7 +66,10 @@ public class ClientMain {
 
             Client c = createClient(host, port, typeConnection, typeView);
             c.runView();
-        } catch (UnReachableServerException | RemoteException | IndexOutOfBoundsException e) {
+        } catch (UnReachableServerException | RemoteException e) {
+            System.out.println(e.getMessage());
+            System.exit(1);
+        } catch (IndexOutOfBoundsException e) {
             ClientUtil.argsHelper(e.getMessage());
             System.exit(1);
         }
