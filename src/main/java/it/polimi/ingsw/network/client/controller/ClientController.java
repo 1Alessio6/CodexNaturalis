@@ -298,6 +298,11 @@ public class ClientController implements ClientActions {
         return getMainPlayer().getPlayerCard(cardHandPosition);
     }
 
+    public List<ClientCard> getMainPlayerCards(){
+        return  getMainPlayer().getPlayerCards();
+    }
+
+
     public String getMainPlayerUsername() {
         return mainPlayerUsername;
     }
