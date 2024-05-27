@@ -19,6 +19,8 @@ import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.controller.ClientController;
+import it.polimi.ingsw.network.client.model.board.ClientPlayground;
+import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 import it.polimi.ingsw.network.client.view.View;
 
 import java.rmi.RemoteException;
@@ -47,8 +49,14 @@ public class ClientTUI implements View {
             try {
                 if (availableActions.contains(TUIActions.valueOf(nextCommand[0].toUpperCase()))) {
                     switch (TUIActions.valueOf(nextCommand[0].toUpperCase())) {
+                        case BACK -> {
+                            // print main player stuff again
+                            ClientUtil.printPlayground(this.controller.getMainPlayerPlayground());
+                            ClientUtil.printPlayerHand(this.controller.getMainPlayer().getPlayerCards());
+                        }
                         case COLOR -> chooseColor();
                         case HELP -> ClientUtil.printHelpCommands(availableActions);
+                        case SPY -> lookAtPlayer(Integer.parseInt(nextCommand[1]) - 1);
                         case M, PM -> sendMessage(nextCommand);
                         case DRAW -> draw();
                         case PLACE -> place();
@@ -62,9 +70,8 @@ public class ClientTUI implements View {
                     // print help for consented commands
                     ClientUtil.printHelpCommands(availableActions);
                 }
-
-            } catch (IllegalArgumentException e) {
-                System.out.println("Invalid game command");
+            } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
+                System.out.println(e.getMessage());
                 // print help for consented commands
                 ClientUtil.printHelpCommands(availableActions);
             } finally {
@@ -217,6 +224,26 @@ public class ClientTUI implements View {
         return controller;
     }
 
+    private void lookAtPlayer(int playerIdx) {
+        ClientPlayer player = this.controller.getPlayers().get(playerIdx);
+        ClientPlayground playground = player.getPlayground();
+
+        if (this.controller.getMainPlayer().equals(player)) {
+            throw new IllegalArgumentException("you can't spy yourself...");
+        } else {
+            // update commands when you are looking at other players
+            availableActions.remove(TUIActions.DRAW);
+            availableActions.remove(TUIActions.PLACE);
+            availableActions.add(TUIActions.BACK);
+            // update only playground, hand and resources
+            ClientUtil.printResourcesArea(playground.getResources());
+            ClientUtil.printPlayground(playground);
+            ClientUtil.printPlayerHand(player.getPlayerCards());
+        }
+    }
+
+    // SHOW UPDATE
+
     @Override
     public void showServerCrash() {
         System.err.println("Server is crashed. To connect again you have to join the game");
@@ -240,10 +267,14 @@ public class ClientTUI implements View {
             case DrawNormal -> {
                 if (this.controller.getCurrentPlayerUsername().equals(this.controller.getMainPlayerUsername()))
                     availableCommands.add(TUIActions.DRAW);
+
+                availableCommands.add(TUIActions.SPY);
             }
             case PlaceNormal, PlaceAdditional -> {
                 if (this.controller.getCurrentPlayerUsername().equals(this.controller.getMainPlayerUsername()))
                     availableCommands.add(TUIActions.PLACE);
+
+                availableCommands.add(TUIActions.SPY);
             }
             case null -> {}
             case End -> {}

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.client.view.tui;
 
 public enum TUIActions {
+    BACK("go back at your playground"),
     COLOR("choose color"),
     DRAW("draw a card"),
     HELP("show this message"),
@@ -8,6 +9,7 @@ public enum TUIActions {
     OBJECTIVE("choose your objective"),
     PLACE("place a card in your playground"),
     STARTER("place your starter"),
+    SPY("spy <n>: look at n-index player"),
     PM("write a private message"),
     M("write a public message"),
     QUIT("quit the game safely");
