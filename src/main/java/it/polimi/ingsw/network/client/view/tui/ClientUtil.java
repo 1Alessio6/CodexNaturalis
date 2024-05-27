@@ -29,7 +29,7 @@ enum GameScreenArea {
     PLAYGROUND(96, 40, new Position(30, 2)),
     FACE_UP_CARDS(24, 14, new Position(146, 2)),
     HAND_CARDS(2*ClientUtil.areaPadding + 3*ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(44 ,62)),
-    DECKS(24, 5, new Position(18, 146)),
+    DECKS(24, 5, new Position(18, 149)),
     CHAT(62, 11, new Position(23, 126)),
     SCOREBOARD(10, 26, new Position(2, 2)),
     PRIVATE_OBJECTIVE(ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(37, 7)),
@@ -327,7 +327,7 @@ public class ClientUtil {
             for (int j = 0; j < entry.getValue(); j++) {
                 if (i == 0) {
                     if (resourcesSize(resources) == 1) {
-                        cardMatrix[1][4] = printResources(entry.getKey());
+                        cardMatrix[1][3] = printResources(entry.getKey());
                     } else if (resourcesSize(resources) == 2) {
                         cardMatrix[1][2] = printResources(entry.getKey());//5//2,3,4
                     } else if (resourcesSize(resources) == 3) {

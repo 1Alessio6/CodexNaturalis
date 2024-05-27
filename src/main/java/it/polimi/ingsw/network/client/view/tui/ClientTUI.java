@@ -374,10 +374,10 @@ public class ClientTUI implements View {
         ClientUtil.printFaceUpCards(this.controller.getFaceUpCards().stream().map(c -> c.getFace(Side.FRONT)).toList());
 
         //print GoldenDeckTopBack
-        ClientUtil.printInLineColumn(GameScreenArea.DECKS.getScreenPosition().getX(), GameScreenArea.DECKS.getScreenPosition().getY(), ClientUtil.designCard(controller.getGoldenDeckTopBack()));
+        ClientUtil.printToLineColumn(GameScreenArea.DECKS.getScreenPosition().getX(), GameScreenArea.DECKS.getScreenPosition().getY(), ClientUtil.designCard(controller.getGoldenDeckTopBack()));
 
         //print ResourceDeckTopBack
-        ClientUtil.printInLineColumn(GameScreenArea.DECKS.getScreenPosition().getX(), GameScreenArea.DECKS.getScreenPosition().getY() + ClientUtil.cardWidth + 2, ClientUtil.designCard(controller.getResourceDeckTopBack()));
+        ClientUtil.printToLineColumn(GameScreenArea.DECKS.getScreenPosition().getX(), GameScreenArea.DECKS.getScreenPosition().getY() + ClientUtil.cardWidth + 2, ClientUtil.designCard(controller.getResourceDeckTopBack()));
         ClientUtil.printPlayerHand(this.controller.getMainPlayer().getPlayerCards());
 
         setAvailableActions();
