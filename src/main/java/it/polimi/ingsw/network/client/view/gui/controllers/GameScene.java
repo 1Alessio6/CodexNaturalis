@@ -1,29 +1,18 @@
 package it.polimi.ingsw.network.client.view.gui.controllers;
 
-import it.polimi.ingsw.model.board.Availability;
-import it.polimi.ingsw.model.board.Playground;
-import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.gamePhase.GamePhase;
-import it.polimi.ingsw.network.client.model.board.ClientPlayground;
+import it.polimi.ingsw.model.card.Side;
+import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
-import it.polimi.ingsw.network.client.view.gui.GUIPlayground;
 import it.polimi.ingsw.network.client.view.gui.util.PlayerInfoPane;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static java.awt.image.ImageObserver.HEIGHT;
-import static java.awt.image.ImageObserver.WIDTH;
 
 public class GameScene extends SceneController {
 
@@ -35,12 +24,10 @@ public class GameScene extends SceneController {
 
     private Pane chat;
 
-    private Pane secondPlayerPane;
-    private Pane thirdPlayerPane;
+    @FXML
+    private void mainPlayerCards(){
 
-    private Pane firstPlayerCards;
-    private Pane secondPlayerCards;
-    private Pane thirdPlayerCards;
+    }
 
 
     public GameScene() {
@@ -48,19 +35,32 @@ public class GameScene extends SceneController {
 
 
     //todo modify with usernames
-    public static Pane initializePlayerCards(Pane playerPane, int cardWidth, int cardHeight, int distanceBetweenCards) {
+    public static void initializePlayerCards(Pane playerPane, List<ClientCard> cards, int cardWidth, int cardHeight, int distanceBetweenCards) {
 
         double layoutX = 0.0;
 
         for (int i = 0; i < 3; i++) {
             Rectangle rectangle = new Rectangle(cardWidth, cardHeight);
-            rectangle.setFill(new ImagePattern(new Image("gui/png/cards/10-front.png")));
+            ImagePattern backImage = new ImagePattern(new Image(cards.get(i).getBackPath()));
+            ImagePattern frontImage = new ImagePattern(new Image(cards.get(i).getFrontPath()));
+            rectangle.setFill(frontImage);
             rectangle.setLayoutX(layoutX);
+
+            rectangle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    if(rectangle.getFill() == frontImage){
+                        rectangle.setFill(backImage);
+                        return;
+                    }
+                    rectangle.setFill(frontImage);
+                }
+            });
+
             playerPane.getChildren().add(rectangle);
             layoutX = layoutX + cardWidth + distanceBetweenCards;
         }
 
-        return playerPane;
     }
 
     public void initialize() {
@@ -87,6 +87,10 @@ public class GameScene extends SceneController {
         }
     }
 
+    private ImagePattern getFacePath(String username, int cardHandPosition, Side side){
+        String path = gui.getController().getPlayer(username).getPlayerCard(cardHandPosition).getSidePath(side);
+        return new ImagePattern(new Image(path));
+    }
 
 
 }
