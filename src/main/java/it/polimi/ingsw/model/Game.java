@@ -61,7 +61,7 @@ public class Game {
 
     private PhaseHandler phaseHandler;
 
-    public static final int MAX_DELAY_FOR_SUSPENDED_GAME = 1000000;
+    public static final int MAX_DELAY_FOR_SUSPENDED_GAME = 120000;
 
     private ListenerHandler<VirtualView> listenerHandler;
 
