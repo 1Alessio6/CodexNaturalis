@@ -82,13 +82,23 @@ public class Lobby {
         }
 
         List<String> usernames = listenerHandler.getIds();
-        Game game = new Game(usernames);
-        for (String user : usernames) {
+        List<String> usersToGoInGame = usernames.subList(0, numPlayersToStartTheGame);
+        List<String> exceededPlayers = usernames.subList(numPlayersToStartTheGame, usernames.size());
+        Game game = new Game(usersToGoInGame);
+
+        for (String user : usersToGoInGame) {
             try {
                 game.add(user, listenerHandler.get(user));
-            } catch (InvalidUsernameException ignored) {
+            } catch (InvalidUsernameException e) {
+                System.err.println("Username is declared invalid even if it shouldn't ");
+                e.printStackTrace();
             }
         }
+
+        for (String user : exceededPlayers) {
+            listenerHandler.notify(user, receiver -> receiver.reportError("The game is started with enough player: you are an exceeding player"));
+        }
+
         return game;
     }
 
