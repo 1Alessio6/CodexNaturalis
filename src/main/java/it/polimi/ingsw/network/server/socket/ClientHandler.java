@@ -16,9 +16,7 @@ import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 import it.polimi.ingsw.network.client.socket.message.*;
 import it.polimi.ingsw.network.heartbeat.HeartBeat;
-import it.polimi.ingsw.network.heartbeat.HeartBeatListener;
 import it.polimi.ingsw.network.heartbeat.HeartBeatMessage;
-import it.polimi.ingsw.network.server.socket.Server;
 import it.polimi.ingsw.network.server.socket.message.*;
 
 import java.io.BufferedReader;
@@ -56,7 +54,6 @@ public class ClientHandler implements VirtualView {
         try {
             String line = input.readLine();
             while (line != null) {
-                System.out.println("Received input: " + line);
                 NetworkMessage message = gson.fromJson(line, NetworkMessage.class);
                 Type type = message.getNetworkType();
                 String sender = message.getSender();
@@ -137,10 +134,10 @@ public class ClientHandler implements VirtualView {
 
     @Override
     public void updateAfterConnection(ClientGame clientGame) throws RemoteException {
-        System.out.println("UpdateAfterConnection");
+        //System.out.println("UpdateAfterConnection");
         UpdateAfterConnectionMessage message = new UpdateAfterConnectionMessage(clientGame);
         String jsonMessage = gson.toJson(message);
-        System.out.println("received message" + jsonMessage);
+        System.out.println("Message to send " + jsonMessage);
         out.println(jsonMessage);
         out.flush();
     }
