@@ -262,7 +262,12 @@ public class ClientTUI implements View {
         }
 
         switch (currentPhase) {
-            case Setup -> availableCommands.add(TUIActions.STARTER);
+            case Setup -> {
+                // starter command available only if user have to do starter stuff
+                if (this.controller.getColor() == null) {
+                    availableCommands.add(TUIActions.STARTER);
+                }
+            }
             // don't let user use unneeded commands when it's not their turn
             case DrawNormal -> {
                 if (this.controller.getCurrentPlayerUsername().equals(this.controller.getMainPlayerUsername()))
