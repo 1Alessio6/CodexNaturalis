@@ -207,7 +207,7 @@ public class ClientHandler implements VirtualView {
     }
 
     @Override
-    public void showUpdateSuspendedGame() throws RemoteException {
+    public void showUpdateGameState() throws RemoteException {
         UpdateSuspendedGameMessage message = new UpdateSuspendedGameMessage();
         String jsonMessage = gson.toJson(message);
         out.println(jsonMessage);

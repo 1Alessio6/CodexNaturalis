@@ -133,7 +133,7 @@ public class ClientRMI extends Client implements VirtualView{
     }
 
     @Override
-    public void showUpdateSuspendedGame() throws RemoteException {
+    public void showUpdateGameState() throws RemoteException {
         controller.updateSuspendedGame();
         clientView.showUpdateSuspendedGame();
     }

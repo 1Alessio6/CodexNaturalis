@@ -180,7 +180,7 @@ public class ClientSocket extends Client implements VirtualView {
     }
 
     @Override
-    public void showUpdateSuspendedGame() {
+    public void showUpdateGameState() {
         controller.updateSuspendedGame();
         clientView.showUpdateSuspendedGame();
     }
