@@ -24,8 +24,10 @@ public class Lobby {
 
     private boolean isGameReady;
 
+    private static final int INVALID_NUM_PLAYERS = -1;
+
     public Lobby() {
-        numPlayersToStartTheGame = -1;
+        numPlayersToStartTheGame = INVALID_NUM_PLAYERS;
         creator = null;
         isGameReady = false;
         listenerHandler = new ListenerHandler<>();
@@ -69,7 +71,7 @@ public class Lobby {
      * @return true if the game is ready, false otherwise.
      */
     public boolean isGameReady() {
-        isGameReady = listenerHandler.getNumListener() == numPlayersToStartTheGame;
+        isGameReady = numPlayersToStartTheGame != INVALID_NUM_PLAYERS && listenerHandler.getNumListener() >= numPlayersToStartTheGame;
         return isGameReady;
     }
 
