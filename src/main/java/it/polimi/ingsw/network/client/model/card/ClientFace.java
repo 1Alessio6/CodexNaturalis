@@ -3,7 +3,6 @@ package it.polimi.ingsw.network.client.model.card;
 import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.card.Color.CardColor;
 
-import java.awt.*;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +10,7 @@ import java.util.Map;
 public class ClientFace implements Serializable {
     private final int faceID;
 
-    private Map<CornerPosition, Corner> corners; //todo could be changed with a client corner which doesn't have a symbol
+    private Map<CornerPosition, Corner> corners;
 
     private CardColor color;
 
@@ -56,7 +55,9 @@ public class ClientFace implements Serializable {
 
     public void setCornerCovered(CornerPosition cornerPosition) {
         assert (corners.containsKey(cornerPosition));
-        corners.get(cornerPosition).setCovered();
+        Corner corner = corners.get(cornerPosition);
+        assert (corner != null);
+        corner.setCovered();
     }
 
     public Map<Symbol, Integer> getBackCenterResources() {
