@@ -70,7 +70,10 @@ public class ClientTUI implements View {
                     // print help for consented commands
                     ClientUtil.printHelpCommands(availableActions);
                 }
-            } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
+            } catch (IllegalArgumentException | IndexOutOfBoundsException | InvalidPlayersNumberException |
+                     RemoteException | InvalidMessageException | InvalidIdForDrawingException | EmptyDeckException |
+                     InvalidColorException | NotExistingFaceUp | Playground.UnavailablePositionException |
+                     Playground.NotEnoughResourcesException | InvalidGamePhaseException | SuspendedGameException e) {
                 System.out.println(e.getMessage());
                 // print help for consented commands
                 ClientUtil.printHelpCommands(availableActions);
@@ -80,54 +83,34 @@ public class ClientTUI implements View {
         }
     }
 
-    private void quit() {
-        try {
-            controller.disconnect(controller.getMainPlayerUsername());
-        } catch (RemoteException e) {
-            System.out.println("Error disconnecting");
-        }
+    private void quit() throws RemoteException {
+        controller.disconnect(controller.getMainPlayerUsername());
 
         System.exit(0);
     }
 
-    private void chooseObjective() {
+    private void chooseObjective() throws RemoteException, InvalidGamePhaseException, SuspendedGameException, NumberFormatException {
         System.out.println("Choose objective idx: ");
-        try {
-            int objectiveIdx = Integer.parseInt(console.nextLine()); // starting from 1
-            controller.placeObjectiveCard(objectiveIdx - 1);
-        } catch (RemoteException | InvalidGamePhaseException | SuspendedGameException | NumberFormatException e) {
-            System.out.println(e.getMessage());
-        }
+        int objectiveIdx = Integer.parseInt(console.nextLine()); // starting from 1
+        controller.placeObjectiveCard(objectiveIdx - 1);
     }
 
-    private void setupLobbyPlayerNumber(int size) {
-        try {
-            controller.setPlayersNumber(size);
-            // remove manually: only creator has this command
-            availableActions.remove(TUIActions.LOBBYSIZE);
-        } catch (InvalidPlayersNumberException | RemoteException | NumberFormatException e) {
-            System.err.println(e.getMessage());
-        }
+    private void setupLobbyPlayerNumber(int size) throws InvalidPlayersNumberException, RemoteException, NumberFormatException {
+        controller.setPlayersNumber(size);
+        // remove manually: only creator has this command
+        availableActions.remove(TUIActions.LOBBYSIZE);
     }
 
-    private void chooseColor() {
+    private void chooseColor() throws InvalidColorException, RemoteException, InvalidGamePhaseException, SuspendedGameException, IllegalArgumentException {
         System.out.println("Choose color: ");
-        try {
-            PlayerColor color = PlayerColor.valueOf(console.nextLine().toUpperCase());
-            controller.chooseColor(color);
-        } catch (InvalidColorException | RemoteException | InvalidGamePhaseException | SuspendedGameException | IllegalArgumentException e) {
-            System.err.println(e.getMessage());
-        }
+        PlayerColor color = PlayerColor.valueOf(console.nextLine().toUpperCase());
+        controller.chooseColor(color);
     }
 
-    private void sendMessage(String[] command) {
-        try {
-            String commandContent = command[1];
-            Message myMessage = command[0].equals("pm") ? createPrivateMessage(commandContent) : createBroadcastMessage(commandContent);
-            controller.sendMessage(myMessage);
-        } catch (InvalidMessageException | RemoteException | IndexOutOfBoundsException e) {
-            System.out.println(e.getMessage());
-        }
+    private void sendMessage(String[] command) throws InvalidMessageException, RemoteException, IndexOutOfBoundsException {
+        String commandContent = command[1];
+        Message myMessage = command[0].equals("pm") ? createPrivateMessage(commandContent) : createBroadcastMessage(commandContent);
+        controller.sendMessage(myMessage);
     }
 
     private Message createPrivateMessage(String messageDetails) {
@@ -142,36 +125,22 @@ public class ClientTUI implements View {
         return new Message(controller.getMainPlayerUsername(), messageContent);
     }
 
-    private void draw() {
+    private void draw() throws InvalidIdForDrawingException, EmptyDeckException, NotExistingFaceUp, RemoteException, InvalidGamePhaseException, SuspendedGameException {
         System.out.print("Insert the position of the card you want to draw: ");
-        try {
-            int drawFromId = Integer.parseInt(console.nextLine()) - 1;
-            controller.draw(drawFromId);
-        } catch (InvalidIdForDrawingException | EmptyDeckException | NotExistingFaceUp | RemoteException |
-                 InvalidGamePhaseException | SuspendedGameException e) {
-            System.out.println(e.getMessage());
-        }
+        int drawFromId = Integer.parseInt(console.nextLine()) - 1;
+        controller.draw(drawFromId);
     }
 
-    private void place() {
-        try {
-            int handPos = receivePlayerCardPosition();
-            Side cardSide = receiveSide();
-            Position newCardPos = receivePosition();
-            controller.placeCard(handPos, cardSide, newCardPos);
-        } catch (Playground.UnavailablePositionException | Playground.NotEnoughResourcesException | RemoteException |
-                 InvalidGamePhaseException | SuspendedGameException | InputMismatchException e) {
-            System.out.println(e.getMessage());
-        }
+    private void place() throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, RemoteException, InvalidGamePhaseException, SuspendedGameException, InputMismatchException {
+        int handPos = receivePlayerCardPosition();
+        Side cardSide = receiveSide();
+        Position newCardPos = receivePosition();
+        controller.placeCard(handPos, cardSide, newCardPos);
     }
 
-    private void placeStarter() {
-        try {
-            Side starterSide = receiveSide();
-            controller.placeStarter(starterSide);
-        } catch (RemoteException | InvalidGamePhaseException | SuspendedGameException e) {
-            System.out.println(e.getMessage());
-        }
+    private void placeStarter() throws RemoteException, InvalidGamePhaseException, SuspendedGameException {
+        Side starterSide = receiveSide();
+        controller.placeStarter(starterSide);
     }
 
     private Side receiveSide() {
