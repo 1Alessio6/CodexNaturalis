@@ -335,11 +335,14 @@ public class Game {
         if (!validUsernames.contains(username)) {
             throw new InvalidUsernameException();
         }
+        System.out.println("User " + username + " has left the game");
         listenerHandler.remove(username);
         setNetworkStatus(username, false);
+       // System.out.println("Set the player " + username + "'s network status to false");
         listenerHandler.notifyBroadcast(receiver -> receiver.showUpdatePlayerStatus(false, username));
-        if (getActivePlayers().size() <= 1) {
-            listenerHandler.notifyBroadcast(VirtualView::showUpdateSuspendedGame);
+        if (getListOfActivePlayers().size() < 2) {
+            System.err.println("Game is suspended");
+            listenerHandler.notifyBroadcast(VirtualView::showUpdateGameState);
             isActive = false;
         }
     }
@@ -399,6 +402,7 @@ public class Game {
                     starterPosition
             ));
         } catch (Playground.UnavailablePositionException | Playground.NotEnoughResourcesException e) {
+            System.err.println("Error: the placement of the starter should not cause any exception related to the Playground, unless it's an illegal call");
             // the starter card shouldn't cause any exception related to the playground
             e.printStackTrace();
         }
