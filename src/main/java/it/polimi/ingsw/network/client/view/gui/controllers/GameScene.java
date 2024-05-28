@@ -47,6 +47,9 @@ public class GameScene extends SceneController {
     private List<Side> playerCardsVisibleSide;
 
     private List<Rectangle> availablePositions;
+
+    private String currentVisiblePlaygroundOwner;
+
     private int selectedCardHandPosition;
 
 
@@ -113,7 +116,9 @@ public class GameScene extends SceneController {
                         playerCardsVisibleSide.set(cardHandPosition, Side.FRONT);
 
                     } else if (isClicked(mouseEvent, MouseButton.PRIMARY)) {
-                        changeVisiblePlayground(gui.getController().getMainPlayerUsername());
+                        if(!currentVisiblePlaygroundOwner.equals(gui.getController().getMainPlayerUsername())) {
+                            changeVisiblePlayground(gui.getController().getMainPlayerUsername());
+                        }
                         for (Rectangle availableTile : availablePositions) {
                             availableTile.setVisible(true);
                         }
@@ -126,6 +131,16 @@ public class GameScene extends SceneController {
             mainPlayerCardsPane.getChildren().add(rectangle);
         }
 
+    }
+
+    public void updatePlayground(String username){
+
+        if(username.equals(gui.getController().getMainPlayerUsername())){
+            drawPlayground(gui.getController().getMainPlayerPlayground());
+        }
+        else if(username.equals(currentVisiblePlaygroundOwner)){
+            drawPlayground(gui.getController().getPlaygroundByUsername(username));
+        }
     }
 
     private void selectCard(int cardHandPosition) {
