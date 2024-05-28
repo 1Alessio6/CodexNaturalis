@@ -1,25 +1,22 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.controller.PlainVirtualView;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
-import it.polimi.ingsw.network.VirtualView;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class GameTest {
-    private Map<String, VirtualView> usernames;
     private Game game;
 
     private List<String> createUsernames(int numUsername) {
         List<String> usernames = new ArrayList<>();
         for (int i = 0; i < numUsername; ++i) {
-            usernames.add("user" + Integer.toString(i));
+            usernames.add("user" + i);
         }
 
         return usernames;
@@ -42,10 +39,14 @@ public class GameTest {
     }
 
     @Test
-    void finishSetup_phaseIsPlaceNormal() throws RemoteException {
+    void finishSetup_phaseIsPlaceNormal() {
         List<String> usernames = createUsernames(2);
         game = new Game(usernames);
         List<PlayerColor> colors = new ArrayList<>(game.getAvailableColor());
+
+        for (String user : usernames) {
+            Assertions.assertDoesNotThrow(() -> game.add(user, new PlainVirtualView()));
+        }
 
         Assertions.assertDoesNotThrow(
                 () -> {
