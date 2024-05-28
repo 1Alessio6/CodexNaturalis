@@ -113,6 +113,7 @@ public class GameScene extends SceneController {
                         playerCardsVisibleSide.set(cardHandPosition, Side.FRONT);
 
                     } else if (isClicked(mouseEvent, MouseButton.PRIMARY)) {
+                        changeVisiblePlayground(gui.getController().getMainPlayerUsername());
                         for (Rectangle availableTile : availablePositions) {
                             availableTile.setVisible(true);
                         }
@@ -193,12 +194,15 @@ public class GameScene extends SceneController {
             availablePositions.add(rectangle);
             playgroundPane.getChildren().add(rectangle);
         }
-
-
     }
+
 
     private boolean isClicked(MouseEvent mouseEvent, MouseButton mouseButton) {
         return mouseEvent.getEventType() == MouseEvent.MOUSE_CLICKED && mouseEvent.getButton() == mouseButton;
+    }
+
+    public void changeVisiblePlayground(String username){
+        drawPlayground(gui.getController().getPlaygroundByUsername(username));
     }
 
 
