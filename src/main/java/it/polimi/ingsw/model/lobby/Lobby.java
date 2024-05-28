@@ -62,7 +62,8 @@ public class Lobby {
             creator = username;
             listenerHandler.notify(creator, VirtualView::updateCreator);
         }
-        listenerHandler.notifyBroadcast(receiver -> receiver.showUpdatePlayersInLobby(listenerHandler.getIds()));
+        List<String> usernames = new ArrayList<>(listenerHandler.getIds());
+        listenerHandler.notifyBroadcast(receiver -> receiver.showUpdatePlayersInLobby(usernames));
     }
 
     /**
@@ -113,7 +114,8 @@ public class Lobby {
         if (creator != null && creator.equals(username) && numPlayersToStartTheGame == -1) {
             resetLobby();
         } else {
-            listenerHandler.notifyBroadcast(receiver -> receiver.showUpdatePlayersInLobby(listenerHandler.getIds()));
+            List<String> usernames = new ArrayList<>(listenerHandler.getIds());
+            listenerHandler.notifyBroadcast(receiver -> receiver.showUpdatePlayersInLobby(usernames));
         }
     }
 
