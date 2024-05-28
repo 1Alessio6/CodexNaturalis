@@ -24,7 +24,6 @@ import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 
 import java.io.FileNotFoundException;
-import java.rmi.RemoteException;
 import java.util.*;
 
 import static java.lang.Math.min;
@@ -328,7 +327,7 @@ public class Game {
             isActive = true;
         }
 
-        listenerHandler.notify(username, receiver -> receiver.updateAfterConnection(new ClientGame(Game.this)));
+        listenerHandler.notifyBroadcast(receiver -> receiver.showUpdatePlayerStatus(true, username));
     }
 
     public void remove(String username) throws InvalidUsernameException {
