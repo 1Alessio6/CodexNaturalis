@@ -21,7 +21,7 @@ public enum Availability {
 
 
     /**
-     * Empty, when the tile already contains a card's face.
+     * Occupied, when the tile already contains a card's face.
      */
     OCCUPIED
 }
