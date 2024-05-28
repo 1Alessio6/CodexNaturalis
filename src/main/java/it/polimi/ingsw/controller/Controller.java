@@ -104,7 +104,7 @@ public class Controller implements EventListener, GameRequest {
     private boolean joinGame(String username, VirtualView gameListener) {
         try {
             game.add(username, gameListener);
-        } catch (InvalidUsernameException e) {
+        } catch (InvalidUsernameException | RuntimeException e) {
             try {
                 gameListener.reportError(e.getMessage());
                 return false;
