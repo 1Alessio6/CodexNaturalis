@@ -138,7 +138,7 @@ public class Playground {
      * @param position the position of the tile from which the adjacent positions are taken.
      * @return a map from each adjacent position to the corner covered.
      */
-    public Map<Position, CornerPosition> getCornerCoveredForAdjacentPosition(Position position) {
+    public Map<Position, CornerPosition> getCornersBeingCoveredByTheTileAt(Position position) {
         Map<Position, CornerPosition> positionToCornerCovered = new HashMap<>();
         List<CornerPosition> cornerToTest = Arrays.asList(CornerPosition.LOWER_LEFT, CornerPosition.TOP_LEFT, CornerPosition.TOP_RIGHT, CornerPosition.LOWER_RIGHT);
         for (CornerPosition cornerPosition : cornerToTest) {
