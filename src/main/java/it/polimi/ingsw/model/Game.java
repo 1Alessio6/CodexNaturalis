@@ -312,10 +312,13 @@ public class Game {
 
         setNetworkStatus(username, true);
 
-        if (getActivePlayers().size() > 1) {
-            if (!isActive) {
-                listenerHandler.notifyBroadcast(VirtualView::showUpdateSuspendedGame);
-            }
+     //   System.out.println("Notify the game representation.\tIsActive = " + isActive);
+        ClientGame clientRepresentationOfTheGame = new ClientGame(this);
+        listenerHandler.notify(username, receiver -> receiver.updateAfterConnection(clientRepresentationOfTheGame));
+
+        if (!isActive && getListOfActivePlayers().size() > 1) {
+        //    System.out.println("Game is active after being suspended");
+            listenerHandler.notifyBroadcast(VirtualView::showUpdateGameState);
             isActive = true;
         }
 

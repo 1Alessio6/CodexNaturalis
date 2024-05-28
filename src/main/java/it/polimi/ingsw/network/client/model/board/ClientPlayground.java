@@ -38,8 +38,8 @@ public class ClientPlayground implements Serializable {
 
     public ClientPlayground(Playground playgroundToCopy) {
         area = createClientArea(playgroundToCopy.getArea());
-        positioningOrder = playgroundToCopy.getPositioningOrder();
-        resources = playgroundToCopy.getResources();
+        positioningOrder = new ArrayList<>(playgroundToCopy.getPositioningOrder());
+        resources = new HashMap<>(playgroundToCopy.getResources());
         points = playgroundToCopy.getPoints();
     }
 
