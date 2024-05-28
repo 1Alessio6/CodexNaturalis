@@ -13,6 +13,10 @@ import java.util.List;
 
 public class GUICards {
 
+    public static final int boardCardsWidth = 151;
+
+    public static final int boardCardsHeight = 98;
+
 
     //todo modify with usernames
     public static void initializePlayerCards(Pane playerPane, List<ClientCard> cards, int cardWidth, int cardHeight, int distanceBetweenCards, MouseButton flipButton) {
