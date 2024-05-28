@@ -375,19 +375,23 @@ public class Game {
 
         try {
             player.placeStarter(side);
-            listenerHandler.notifyBroadcast(receiver -> {
-                Position starterPosition = new Position(0, 0);
-                Playground playground = player.getPlayground();
-                receiver.showUpdateAfterPlace(
-                        playground.getCornerCoveredForAdjacentPosition(starterPosition),
-                        playground.getAvailablePositions(),
-                        playground.getResources(),
-                        0,
-                        username,
-                        new ClientCard(player.getStarter()), side,
-                        starterPosition
-                );
-            });
+
+            Position starterPosition = new Position(0, 0);
+            Playground playground = player.getPlayground();
+            Map<Position, CornerPosition> cornersBeingCovered = new HashMap<>(playground.getCornersBeingCoveredByTheTileAt(starterPosition));
+            List<Position> availablePositions = new ArrayList<>(playground.getAvailablePositions());
+            Map<Symbol, Integer> resources = new HashMap<>(playground.getResources());
+            Card starter = player.getStarter();
+            listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateAfterPlace(
+                    cornersBeingCovered,
+                    availablePositions,
+                    resources,
+                    0,
+                    username,
+                    new ClientCard(starter),
+                    side,
+                    starterPosition
+            ));
         } catch (Playground.UnavailablePositionException | Playground.NotEnoughResourcesException e) {
             // the starter card shouldn't cause any exception related to the playground
             e.printStackTrace();
@@ -439,14 +443,14 @@ public class Game {
 
         player.placeObjectiveCard(chosenObjective);
 
-        listenerHandler.notify(username, receiver -> {
-            ObjectiveCard secretObjective = player.getObjective();
-            receiver.showUpdateObjectiveCard(new ClientObjectiveCard(secretObjective), username);
-        });
+        ObjectiveCard secretObjective = player.getObjective();
+        listenerHandler.notify(username, receiver -> receiver.showUpdateObjectiveCard(new ClientObjectiveCard(secretObjective), username));
 
         phase = phaseHandler.getNextPhase(phase, currentPlayerIdx);
         if (phase == GamePhase.PlaceNormal) {
             listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateCurrentPlayer(currentPlayerIdx, phase));
+            GamePhase currPhase = phase;
+            listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateCurrentPlayer(currentPlayerIdx, currPhase));
         }
     }
 
@@ -486,26 +490,32 @@ public class Game {
 
         phase = phaseHandler.getNextPhase(phase, currentPlayerIdx);
 
-        listenerHandler.notifyBroadcast(receiver -> {
-            Playground playground = currentPlayer.getPlayground();
-            receiver.showUpdateAfterPlace(
-                    playground.getCornerCoveredForAdjacentPosition(position),
-                    playground.getAvailablePositions(),
-                    playground.getResources(),
-                    currentPlayer.getPoints(),
-                    username,
-                    new ClientCard(card),
-                    side,
-                    position
-            );
-        });
+        Playground playground = currentPlayer.getPlayground();
+        Map<Position, CornerPosition> cornersBeingCovered = new HashMap<>(playground.getCornersBeingCoveredByTheTileAt(position));
+        List<Position> availablePositions = new ArrayList<>(playground.getAvailablePositions());
+        Map<Symbol, Integer> resources = new HashMap<>(playground.getResources());
+        int score = currentPlayer.getPoints();
+
+        listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateAfterPlace(
+                cornersBeingCovered,
+                availablePositions,
+                resources,
+                score,
+                username,
+                new ClientCard(card),
+                side,
+                position
+        ));
 
         if (phase == GamePhase.PlaceAdditional) {
             updateCurrentPlayerIdx();
-            listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateCurrentPlayer(currentPlayerIdx, phase));
+            GamePhase currPhase = phase;
+            listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateCurrentPlayer(currentPlayerIdx, currPhase));
         }
+
         if (phase == GamePhase.End) {
-            listenerHandler.notifyBroadcast(receiver -> receiver.showWinners(getWinners()));
+            List<String> winners = getWinners();
+            listenerHandler.notifyBroadcast(receiver -> receiver.showWinners(winners));
         }
     }
 
@@ -551,16 +561,15 @@ public class Game {
             throw invalidPlayerActionException;
         }
 
-        listenerHandler.notifyBroadcast(receiver -> {
-            Card top = deck.getTop();
-            receiver.showUpdateAfterDraw(
-                    new ClientCard(newCard),
-                    top == null ? null : new ClientFace(top.getFace(Side.BACK)),
-                    null,
-                    username,
-                    convertDeckTypeIntoId(deckType));
-        });
-        listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateCurrentPlayer(currentPlayerIdx, phase));
+        Card top = deck.getTop();
+        listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateAfterDraw(
+                new ClientCard(newCard),
+                top == null ? null : new ClientFace(top.getFace(Side.BACK)),
+                null,
+                username,
+                convertDeckTypeIntoId(deckType)));
+        GamePhase currPhase = phase;
+        listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateCurrentPlayer(currentPlayerIdx, currPhase));
     }
 
     /**
@@ -626,16 +635,15 @@ public class Game {
             throw new InvalidPlayerActionException();
         }
 
-        listenerHandler.notifyBroadcast(receiver -> {
-            Card top = deckForReplacement.getTop();
-            Card faceUpCard = faceUpCards.get(faceUpCardIdx);
-            receiver.showUpdateAfterDraw(
-                    new ClientCard(newCard),
-                    top == null ? null : new ClientFace(top.getFace(Side.BACK)),
-                    faceUpCard == null ? null : new ClientCard(faceUpCard),
-                    username, faceUpCardIdx);
-        });
-        listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateCurrentPlayer(currentPlayerIdx, phase));
+        Card top = deckForReplacement.getTop();
+        Card faceUpCard = faceUpCards.get(faceUpCardIdx);
+        listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateAfterDraw(
+                new ClientCard(newCard),
+                top == null ? null : new ClientFace(top.getFace(Side.BACK)),
+                faceUpCard == null ? null : new ClientCard(faceUpCard),
+                username, faceUpCardIdx));
+        GamePhase currPhase = phase;
+        listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateCurrentPlayer(currentPlayerIdx, currPhase));
     }
 
     private void simulateTurn(String currentPlayer) {
@@ -770,11 +778,7 @@ public class Game {
     }
 
     private void reportError(String username, String errorDetails) {
-        try {
-            listenerHandler.get(username).reportError(errorDetails);
-        } catch (RemoteException e) {
-            System.err.println("Connection error");
-        }
+        listenerHandler.notify(username, receiver -> receiver.reportError(errorDetails));
     }
 
 }
