@@ -461,7 +461,10 @@ public class Game {
 
         phase = phaseHandler.getNextPhase(phase, currentPlayerIdx);
         if (phase == GamePhase.PlaceNormal) {
-            listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateCurrentPlayer(currentPlayerIdx, phase));
+            // the current player maybe inactive when the setup finishes
+            if (!players.get(currentPlayerIdx).isConnected()) {
+                updateCurrentPlayerIdx();
+            }
             GamePhase currPhase = phase;
             listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateCurrentPlayer(currentPlayerIdx, currPhase));
         }
