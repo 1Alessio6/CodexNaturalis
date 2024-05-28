@@ -122,14 +122,14 @@ public class ClientUtil {
 
     // Main methods
 
-    public static String[][] designCard(ClientFace card) {
-        ANSIColor color = cardColorConversion(card.getColor());
+    public static String[][] designCard(ClientFace face) {
+        ANSIColor color = cardColorConversion(face.getColor());
         String[][] cardMatrix = new String[3][7];
         initializeMatrix(cardMatrix);
-        Map<CornerPosition, Corner> cornerPositionCornerMap = card.getCorners();
-        Condition pointsCondition = card.getPointsCondition();
-        Map<Symbol, Integer> resources = card.getBackCenterResources();
-        int points = card.getScore();
+        Map<CornerPosition, Corner> cornerPositionCornerMap = face.getCorners();
+        Condition pointsCondition = face.getPointsCondition();
+        Map<Symbol, Integer> resources = face.getBackCenterResources();
+        int points = face.getScore();
 
         appendNewResources(cornerPositionCornerMap, cardMatrix, color);
         appendMatrixLines(resources, pointsCondition, cardMatrix, color);
