@@ -684,7 +684,17 @@ public class Game {
      */
     public void skipTurn(String currentPlayer) {
         simulateTurn(currentPlayer);
-        updateCurrentPlayerIdx();
+
+        if (phase == GamePhase.PlaceAdditional || phase == GamePhase.PlaceNormal) {
+            updateCurrentPlayerIdx();
+            GamePhase currPhase = phase;
+            listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateCurrentPlayer(currentPlayerIdx, currPhase));
+        }
+
+        if (phase == GamePhase.End) {
+            List<String> winners = getWinners();
+            listenerHandler.notifyBroadcast(receiver -> receiver.showWinners(winners));
+        }
     }
 
     /**
