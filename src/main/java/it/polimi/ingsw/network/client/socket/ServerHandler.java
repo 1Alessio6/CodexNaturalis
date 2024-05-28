@@ -117,6 +117,10 @@ public class ServerHandler implements VirtualServer {
                         HeartBeatMessage ping = gson.fromJson(line, HeartBeatMessage.class);
                         clientSocket.receivePing(ping);
                         break;
+                    default:
+                        System.err.println("Unrecognised input from the server");
+                        assert(false);
+                        break;
                 }
                 line = in.readLine();
             }
