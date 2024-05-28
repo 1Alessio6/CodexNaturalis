@@ -49,7 +49,10 @@ public class ClientPlayground implements Serializable {
         Map<Position, ClientTile> area = new HashMap<>();
 
         for(Position position : areaToCopy.keySet()){
-            area.put(position, new ClientTile(areaToCopy.get(position)));
+            if(areaToCopy.get(position).getAvailability() != Availability.NOTAVAILABLE){
+                area.put(position, new ClientTile(areaToCopy.get(position)));
+            }
+
         }
 
         return area;
