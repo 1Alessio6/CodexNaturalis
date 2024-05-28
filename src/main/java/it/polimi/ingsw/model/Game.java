@@ -226,9 +226,10 @@ public class Game {
     private void updateCurrentPlayerIdx() {
         currentPlayerIdx = (currentPlayerIdx + 1) % players.size();
         Player currentPlayer = players.get(currentPlayerIdx);
-        // the next player can only be in place state
-        if (!currentPlayer.isConnected()) {
+        while (!currentPlayer.isConnected()) {
             simulateTurn(currentPlayer.getUsername());
+            currentPlayerIdx = (currentPlayerIdx + 1) % players.size();
+            currentPlayer = players.get(currentPlayerIdx);
         }
     }
 
