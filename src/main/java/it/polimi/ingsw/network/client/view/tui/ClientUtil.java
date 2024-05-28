@@ -30,6 +30,7 @@ enum GameScreenArea {
     HAND_CARDS(2*ClientUtil.areaPadding + 3*ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(44 ,62)),
     DECKS(24, 5, new Position(18, 149)),
     CHAT(62, 11, new Position(23, 126)),
+    INPUT_AREA(62,11,new Position(36,126)),
     SCOREBOARD(10, 26, new Position(2, 2)),
     PRIVATE_OBJECTIVE(ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(37, 7)),
     COMMON_OBJECTIVE(2 + 2 * ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(44, 2)),
@@ -104,8 +105,17 @@ public class ClientUtil {
             ·▀▀▀  ▀█▄▀▪▀▀▀▀▀•  ▀▀▀ •▀▀ ▀▀    ▀▀ █▪ ▀  ▀  ▀▀▀  ▀▀▀ .▀  ▀ ▀  ▀ .▀▀▀ ▀▀▀ ▀▀▀▀ \s""";
 
     public static void printHelpCommands(Set<TUIActions> consentedCommands) {
+        int line=GameScreenArea.INPUT_AREA.getScreenPosition().getX()+1;
+        int column= GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1;
+        printToLineColumn(GameScreenArea.INPUT_AREA.getScreenPosition().getX(),
+                GameScreenArea.INPUT_AREA.getScreenPosition().getY(),
+                designSquare(GameScreenArea.INPUT_AREA.getWidth(),
+                        GameScreenArea.INPUT_AREA.getHeight() - 2).toString());
+
         for (TUIActions command : consentedCommands) {
-            System.out.println(command.toString() + ": " + command.getDescription());
+            printToLineColumn(line,
+                    column,command.toString()+": "+command.getDescription()+"\n");
+            line++;
         }
     }
 

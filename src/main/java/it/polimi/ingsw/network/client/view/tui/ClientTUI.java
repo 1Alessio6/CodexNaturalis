@@ -66,7 +66,9 @@ public class ClientTUI implements View {
                         case STARTER -> placeStarter();
                     }
                 } else {
-                    System.out.println("Invalid game command");
+                    ClientUtil.printToLineColumn(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+8,
+                            GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1,
+                            "Invalid game command");
                     // print help for consented commands
                     ClientUtil.printHelpCommands(availableActions);
                 }
@@ -90,7 +92,9 @@ public class ClientTUI implements View {
     }
 
     private void chooseObjective() throws RemoteException, InvalidGamePhaseException, SuspendedGameException, NumberFormatException {
-        System.out.println("Choose objective idx: ");
+        ClientUtil.printToLineColumn(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+8,
+                GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1,
+                "Choose objective idx: ");
         int objectiveIdx = Integer.parseInt(console.nextLine()); // starting from 1
         controller.placeObjectiveCard(objectiveIdx - 1);
     }
@@ -102,7 +106,9 @@ public class ClientTUI implements View {
     }
 
     private void chooseColor() throws InvalidColorException, RemoteException, InvalidGamePhaseException, SuspendedGameException, IllegalArgumentException {
-        System.out.println("Choose color: ");
+        ClientUtil.printToLineColumn(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+8,
+                GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1,
+                "Choose color: ");
         PlayerColor color = PlayerColor.valueOf(console.nextLine().toUpperCase());
         controller.chooseColor(color);
     }
@@ -126,7 +132,9 @@ public class ClientTUI implements View {
     }
 
     private void draw() throws InvalidIdForDrawingException, EmptyDeckException, NotExistingFaceUp, RemoteException, InvalidGamePhaseException, SuspendedGameException {
-        System.out.print("Insert the position of the card you want to draw: ");
+        ClientUtil.printToLineColumn(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+8,
+                GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1,
+                "Insert the position of the card you want to draw: ");
         int drawFromId = Integer.parseInt(console.nextLine()) - 1;
         controller.draw(drawFromId);
     }
@@ -144,12 +152,16 @@ public class ClientTUI implements View {
     }
 
     private Side receiveSide() {
-        System.out.print("What side of the card you want to place, front or back?");
+        ClientUtil.printToLineColumn(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+8,
+                GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1,
+                "What side of the card you want to place, front or back?");
         return Side.valueOf(console.nextLine().toUpperCase());
     }
 
     private int receivePlayerCardPosition() {
-        System.out.print("Enter card position in your hand: ");
+        ClientUtil.printToLineColumn(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+8,
+                GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1,
+                "Enter card position in your hand: ");
         int cardPosition = Integer.parseInt(console.nextLine());
 
         if(cardPosition >= 1 && cardPosition <= 3) return cardPosition - 1;
@@ -158,7 +170,9 @@ public class ClientTUI implements View {
     }
 
     private Position receivePosition() {
-        System.out.print("Insert position, with x and y space separated (e.g.: 1 2): ");
+        ClientUtil.printToLineColumn(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+8,
+                GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1,
+                "Insert position, with x and y space separated (e.g.: 1 2): ");
         // todo: handle wrong input
         int x = console.nextInt();
         int y = console.nextInt();
@@ -215,7 +229,9 @@ public class ClientTUI implements View {
 
     @Override
     public void showServerCrash() {
-        System.err.println("Server is crashed. To connect again you have to join the game");
+        ClientUtil.printToLineColumn(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+8,
+                GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1,
+                "Server is crashed. To connect again you have to join the game");
     }
 
     private void setAvailableActions() {
@@ -403,7 +419,9 @@ public class ClientTUI implements View {
 
     @Override
     public void showUpdateCurrentPlayer() {
-        System.out.println("It's " + this.controller.getCurrentPlayerUsername() + "'s turn");
+        ClientUtil.printToLineColumn(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+8,
+                GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1,
+                "It's " + this.controller.getCurrentPlayerUsername() + "'s turn");
 
         setAvailableActions();
         ClientUtil.putCursorToInputArea();
