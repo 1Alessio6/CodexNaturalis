@@ -80,6 +80,10 @@ public class GameScene extends SceneController {
         }
     }
 
+    private void initializeBoard(){
+        Pane boardPane = new Pane();
+    }
+
     private ImagePattern getFacePath(String username, int cardHandPosition, Side side) {
         String path = gui.getController().getPlayer(username).getPlayerCard(cardHandPosition).getSidePath(side);
         return new ImagePattern(new Image(path));

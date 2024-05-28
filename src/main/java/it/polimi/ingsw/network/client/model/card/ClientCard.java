@@ -50,7 +50,7 @@ public class ClientCard implements Serializable {
 
     public String getFrontPath(){
         //todo remove path and write conversion id to path algorithm
-        String path = "gui/png/cards/10-front.png";
+        String path = "gui/png/cards/10.png";
         return path;
     }
 
