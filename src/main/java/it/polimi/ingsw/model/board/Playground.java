@@ -140,11 +140,14 @@ public class Playground {
      */
     public Map<Position, CornerPosition> getCornersBeingCoveredByTheTileAt(Position position) {
         Map<Position, CornerPosition> positionToCornerCovered = new HashMap<>();
-        List<CornerPosition> cornerToTest = Arrays.asList(CornerPosition.LOWER_LEFT, CornerPosition.TOP_LEFT, CornerPosition.TOP_RIGHT, CornerPosition.LOWER_RIGHT);
-        for (CornerPosition cornerPosition : cornerToTest) {
+        for (CornerPosition cornerPosition : CornerPosition.values()) {
             Position adjacentPos = getAdjacentPosition(position, cornerPosition);
-            if (area.get(adjacentPos).sameAvailability(Availability.OCCUPIED)) {
-                positionToCornerCovered.put(adjacentPos, cornerPosition);
+            Tile adjacentTile = area.get(adjacentPos);
+            if (adjacentTile.sameAvailability(Availability.OCCUPIED)
+            ) {
+                Position diff = Position.diff(position, adjacentPos);
+                assert (CornerPosition.fromPositionToCornerPosition.get(diff) != null);
+                positionToCornerCovered.put(adjacentPos, CornerPosition.fromPositionToCornerPosition.get(diff));
             }
         }
         return positionToCornerCovered;
