@@ -70,7 +70,7 @@ public interface VirtualView extends HeartBeatListener, HeartBeatHandler, Remote
 
     void showUpdateCurrentPlayer(int currentPlayerIdx, GamePhase phase) throws RemoteException;
 
-    void showUpdateSuspendedGame() throws RemoteException;
+    void showUpdateGameState() throws RemoteException;
 
     void showWinners(List<String> winners) throws RemoteException;
 
