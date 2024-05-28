@@ -88,7 +88,8 @@ public class Player {
 
         this.objectiveCards = objectivesToChoose;
 
-        this.isConnected = true;
+        // it will be set to true by the add
+        this.isConnected = false;
         this.playground = new Playground();
 
         this.playerAction = new ChooseStarter();
