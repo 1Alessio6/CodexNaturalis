@@ -102,7 +102,7 @@ public class ServerHandler implements VirtualServer {
                         clientSocket.showUpdateCurrentPlayer(updateCurrentPlayerMessage.getCurrentPlayerIdx(), updateCurrentPlayerMessage.getCurrentPhase());
                         break;
                     case SHOW_UPDATE_SUSPENDED_GAME:
-                        clientSocket.showUpdateSuspendedGame();
+                        clientSocket.showUpdateGameState();
                         break;
                     case SHOW_WINNERS:
                         ShowWinnersMessage showWinnersMessage = gson.fromJson(line, ShowWinnersMessage.class);
