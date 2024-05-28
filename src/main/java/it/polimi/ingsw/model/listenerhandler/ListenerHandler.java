@@ -10,12 +10,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ListenerHandler<ListenerType> {
-    private final ConcurrentHashMap<String, ListenerType> idToListener;
-    private final ExecutorService executor;
+    private final Map<String, ListenerType> idToListener;
+    private final Map<String, ExecutorService> idToExecutors;
 
     public ListenerHandler() {
-        idToListener = new ConcurrentHashMap<>();
-        executor = Executors.newSingleThreadExecutor();
+        idToListener = new HashMap<>();
+        idToExecutors = new HashMap<>();
     }
 
     public void add(String username, ListenerType listener) {
