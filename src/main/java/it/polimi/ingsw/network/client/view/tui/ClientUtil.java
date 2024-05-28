@@ -534,9 +534,8 @@ public class ClientUtil {
         }
     }
 
-    public static StringBuilder createScoreBoard(List<ClientPlayer> players) {
+    public static String createScoreBoard(List<ClientPlayer> players) {
         StringBuilder str = new StringBuilder();
-
 
         str.append("╔").append(ClientUtil.appendHorizontalLine(maxUsernameLength)).append("╦").append(ClientUtil.appendHorizontalLine(maxPointsLength)).append("╗\n");
         str.append("║").append(centeredString(maxUsernameLength, "Players")).append("║");
@@ -546,13 +545,19 @@ public class ClientUtil {
         for (ClientPlayer i : players) {
             String username = i.getUsername();
             ANSIColor color = ClientUtil.playerColorConversion(i.getColor());
+            String resultName = color.getColor() + centeredString(maxUsernameLength, username) + RESET.getColor();
+            // "delete" name if player isn't connected
+            if (!i.isConnected()) {
+                resultName = STRIKETHROUGH.getColor() + resultName;
+            }
             int points = i.getPlayground().getPoints();
 
-            str.append("║").append(color.getColor()).append(centeredString(maxUsernameLength, username)).append(RESET.getColor()).append("║");
+            str.append("║").append(resultName).append("║");
             str.append(centeredString(maxPointsLength, Integer.toString(points))).append("║\n");
         }
         str.append("╚").append(ClientUtil.appendHorizontalLine(maxUsernameLength)).append("╩").append(ClientUtil.appendHorizontalLine(maxPointsLength)).append("╝\n");
-        return str;
+
+        return str.toString();
     }
 
     public static void printPlayerHand(List<ClientCard> hand) {
@@ -651,7 +656,7 @@ public class ClientUtil {
     public static void printScoreboard(List<ClientPlayer> players) {
         printToLineColumn(GameScreenArea.SCOREBOARD.screenPosition.getX(),
                 GameScreenArea.SCOREBOARD.screenPosition.getY(),
-                createScoreBoard(players).toString());
+                createScoreBoard(players));
     }
 
     public static void clearScreen() {
@@ -674,9 +679,13 @@ public class ClientUtil {
         Set<Position> availablePositions = new HashSet<>();
         Set<Position> occupiedPositions = new HashSet<>();
 
-        clientPlayground.getAllPositions().forEach(position ->
-                (clientPlayground.getTile(position).sameAvailability(Availability.EMPTY) ?
-                        availablePositions : occupiedPositions).add(position));
+        for (Position position : clientPlayground.getAllPositions()) {
+            if (clientPlayground.getTile(position).sameAvailability(Availability.OCCUPIED))
+                occupiedPositions.add(position);
+            else if (clientPlayground.getTile(position).sameAvailability(Availability.EMPTY)) {
+                availablePositions.add(position);
+            }
+        }
 
         // print first available positions (so they don't override corners)
         for (Position pos : availablePositions) {

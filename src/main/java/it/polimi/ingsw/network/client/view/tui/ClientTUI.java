@@ -318,8 +318,7 @@ public class ClientTUI implements View {
 
     @Override
     public void showUpdatePlayerStatus() {
-        List<String> usernames = controller.getConnectedUsernames();
-        System.out.println("Connected players: <" + String.join(",", usernames) + ">");
+        ClientUtil.printScoreboard(this.controller.getPlayers());
 
         ClientUtil.putCursorToInputArea();
     }
@@ -429,7 +428,9 @@ public class ClientTUI implements View {
 
     @Override
     public void showUpdateSuspendedGame() {
+        ClientUtil.printScoreboard(this.controller.getPlayers());
         System.out.println("\u001B[1m SUSPENDED GAME \u001B[0m\n");
+        ClientUtil.putCursorToInputArea();
     }
 
     @Override
