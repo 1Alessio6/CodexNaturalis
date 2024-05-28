@@ -11,10 +11,6 @@ import java.util.Scanner;
 
 import it.polimi.ingsw.model.card.strategies.CalculatePoints;
 
-/*
-todo. Not ready yet: not to use
- */
-
 public class DeserializationHandler<T> {
     GsonBuilder builder;
     Gson gson;
