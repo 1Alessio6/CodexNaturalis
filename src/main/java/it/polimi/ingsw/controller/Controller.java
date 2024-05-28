@@ -119,6 +119,7 @@ public class Controller implements EventListener, GameRequest {
         turnCompletion.handleJoin(game);
         if (game.isActive()) {
             timerForSuspendedGame.cancel();
+            timerForSuspendedGame = new Timer();
         }
         return true;
     }
