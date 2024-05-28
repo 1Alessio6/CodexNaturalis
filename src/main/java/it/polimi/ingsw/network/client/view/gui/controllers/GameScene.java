@@ -10,6 +10,7 @@ import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 import it.polimi.ingsw.network.client.view.gui.GUIPlayground;
+import it.polimi.ingsw.network.client.view.gui.util.BoardPane;
 import it.polimi.ingsw.network.client.view.gui.util.GUICards;
 import it.polimi.ingsw.network.client.view.gui.util.PlayerInfoPane;
 import javafx.event.EventHandler;
@@ -213,6 +214,15 @@ public class GameScene extends SceneController {
             availablePositions.add(rectangle);
             playgroundPane.getChildren().add(rectangle);
         }
+    }
+
+    private void initializeBoardCards(BoardPane boardPane){
+        setIdToDraw(boardPane.getGoldenDeckTopCard(), 4);
+        setIdToDraw(boardPane.getResourceDeckTopCard(), 5);
+        setIdToDraw(boardPane.getGoldenFaceUp().get(0), 2);
+        setIdToDraw(boardPane.getGoldenFaceUp().get(1), 3);
+        setIdToDraw(boardPane.getResourceFaceUp().get(0), 0);
+        setIdToDraw(boardPane.getResourceFaceUp().get(1), 1);
     }
 
     private void setIdToDraw(Rectangle card, int idToDraw){
