@@ -36,11 +36,10 @@ public class ClientMain {
 
     public static void main(String[] args) {
         String typeConnection = OPTION_SOCKET;
-        String typeView = OPTION_GUI;
+        String typeView = OPTION_TUI;
         String host = "localhost";
         int port = 1234;
 
-        // todo(command-line parser)
         try {
             // max 4 args: rmi tui port <int>
             if (args.length > 0 && args.length <= 6) {
