@@ -1,10 +1,11 @@
 package it.polimi.ingsw.model.lobby;
+
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.listenerhandler.ListenerHandler;
-import it.polimi.ingsw.model.notifier.Notifier;
 import it.polimi.ingsw.network.VirtualView;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,7 +16,7 @@ import java.util.List;
  */
 
 public class Lobby {
-    private ListenerHandler<VirtualView> listenerHandler;
+    private final ListenerHandler<VirtualView> listenerHandler;
     private String creator;
 
     int numPlayersToStartTheGame;
@@ -108,7 +109,7 @@ public class Lobby {
 
         listenerHandler.clear();
         creator = null;
-        numPlayersToStartTheGame = -1;
+        numPlayersToStartTheGame = INVALID_NUM_PLAYERS;
         isGameReady = false;
     }
 
@@ -121,7 +122,7 @@ public class Lobby {
     public void remove(String username) {
         listenerHandler.remove(username);
         // if the creator leaves the lobby before setting the number of players
-        if (creator != null && creator.equals(username) && numPlayersToStartTheGame == -1) {
+        if (creator != null && creator.equals(username) && numPlayersToStartTheGame == INVALID_NUM_PLAYERS) {
             resetLobby();
         } else {
             List<String> usernames = new ArrayList<>(listenerHandler.getIds());
