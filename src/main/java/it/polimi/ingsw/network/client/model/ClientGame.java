@@ -99,31 +99,19 @@ public class ClientGame implements Serializable {
      * @param game on the server
      */
     public ClientGame(Game game) {
-
-        /*
-        faceUpCards = new ArrayList<>();
-        for (Card faceUpCard : game.getFaceUpCards()) {
-            faceUpCards.add(new ClientCard(faceUpCard));
-        }
-        commonObjects = new ArrayList<>();
-        for (ObjectiveCard commonObjective : game.getCommonObjectives()) {
-            commonObjects.add(new ClientObjectiveCard(commonObjective));
-        }
-
-         */
-        currentPlayerIdx = game.getCurrentPlayerIdx();
-        players = new ArrayList<>();
+       // System.err.println("Creating a copy of the game");
+        this.currentPlayerIdx = game.getCurrentPlayerIdx();
+        this.players = new ArrayList<>();
         for (Player player : game.getPlayers()) {
             ClientPlayer clientPlayer = new ClientPlayer(player);
-            players.add(clientPlayer);
+            this.players.add(clientPlayer);
         }
-        clientBoard = new ClientBoard(game.getFaceUpCards(), game.getCommonObjectives(), game.getTopDeckBack(DeckType.GOLDEN), game.getTopDeckBack(DeckType.RESOURCE));
+        this.clientBoard = new ClientBoard(game.getFaceUpCards(), game.getCommonObjectives(), game.getTopDeckBack(DeckType.GOLDEN), game.getTopDeckBack(DeckType.RESOURCE));
 
-        messages = game.getMessages();
+        this.messages = game.getMessages();
 
         this.isGameActive = game.isActive();
         this.currentPhase = game.getPhase();
-        isGameActive = game.isActive();
     }
 
     /**
