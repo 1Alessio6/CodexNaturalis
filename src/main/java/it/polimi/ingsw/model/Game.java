@@ -309,6 +309,11 @@ public class Game {
             throw new InvalidUsernameException();
         }
 
+        if (fromUsernameToPlayer(username).isConnected()) {
+            throw new InvalidUsernameException("It seems you're already connected");
+        }
+
+        System.out.println("Username " + username + " has joined the game");
         listenerHandler.add(username, client);
 
         setNetworkStatus(username, true);
