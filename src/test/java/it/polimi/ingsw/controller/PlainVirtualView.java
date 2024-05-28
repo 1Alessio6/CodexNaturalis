@@ -75,7 +75,7 @@ public class PlainVirtualView implements VirtualView {
     }
 
     @Override
-    public void showUpdateSuspendedGame() throws RemoteException {
+    public void showUpdateGameState() throws RemoteException {
 
     }
 
