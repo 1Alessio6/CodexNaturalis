@@ -353,6 +353,13 @@ public class Game {
                 .ifPresent(p -> p.setNetworkStatus(networkStatus));
     }
 
+    private Player fromUsernameToPlayer(String username) {
+        return players.stream()
+                .filter(p -> p.getUsername().equals(username))
+                .findFirst()
+                .get();
+    }
+
     /**
      * Returns a player based on the username.
      *
@@ -360,10 +367,7 @@ public class Game {
      * @return the player.
      */
     public Player getPlayerByUsername(String username) {
-        return players.stream()
-                .filter(p -> p.getUsername().equals(username))
-                .findFirst()
-                .get();
+        return fromUsernameToPlayer(username);
     }
 
     /**
@@ -694,15 +698,19 @@ public class Game {
         listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateChat(message));
     }
 
+    private List<Player> getListOfActivePlayers() {
+        return players.stream()
+                .filter(Player::isConnected)
+                .toList();
+    }
+
     /**
      * Returns a list of active players.
      *
      * @return an active player's list.
      */
     public List<Player> getActivePlayers() {
-        return players.stream()
-                .filter(Player::isConnected)
-                .toList();
+        return getListOfActivePlayers();
     }
 
     /**
@@ -764,7 +772,7 @@ public class Game {
 
     public void terminateForInactivity() {
         try {
-            String lastConnectedPlayer = getActivePlayers().getFirst().getUsername();
+            String lastConnectedPlayer = getListOfActivePlayers().getFirst().getUsername();
             listenerHandler.notifyBroadcast(receiver -> receiver.showWinners(Collections.singletonList(lastConnectedPlayer)));
         } catch (NoSuchElementException noSuchElementException) {
             // empty list: there's no player to notify
