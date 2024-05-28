@@ -664,9 +664,11 @@ public class Game {
 
     private void simulateTurn(String currentPlayer) {
         if (phase != GamePhase.PlaceNormal && phase != GamePhase.PlaceAdditional) {
+            System.err.println("Error: " + "A turn can be skipped only at the beginning");
             throw new RuntimeException("A turn can be skipped only at the beginning");
         }
         if (!currentPlayer.equals(players.get(currentPlayerIdx).getUsername())) {
+            System.err.println("Error: " + "Only the current player can skip their turn");
             throw new RuntimeException("Only the current player can skip their turn");
         }
 
