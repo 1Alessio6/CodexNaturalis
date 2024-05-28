@@ -9,7 +9,7 @@ public class HeartBeat extends TimerTask {
     private String listenerName;
     private final HeartBeatHandler heartBeatHandler;
     private HeartBeatListener heartBeatListener;
-    private static final int MAX_DELTA = 7;
+    private static final int MAX_DELTA = 3;
     private static final int DEF_HEART_BEAT_PERIOD = 1000; // ms
     private int heartBeatPeriod;
     private int delay;
