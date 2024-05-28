@@ -3,9 +3,7 @@ package it.polimi.ingsw.model.listenerhandler;
 import it.polimi.ingsw.model.notifier.Notifier;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -18,29 +16,38 @@ public class ListenerHandler<ListenerType> {
         idToExecutors = new HashMap<>();
     }
 
-    public void add(String username, ListenerType listener) {
+    public synchronized void add(String username, ListenerType listener) {
         idToListener.put(username, listener);
+        idToExecutors.put(username, Executors.newSingleThreadExecutor());
     }
 
-    public void remove(String username) {
+    private void removeUser(String username) {
         idToListener.remove(username);
+        ExecutorService executorService = idToExecutors.remove(username);
+        executorService.shutdown();
     }
 
-    public ListenerType get(String username) {
+    public synchronized void remove(String username) {
+        removeUser(username);
+    }
+
+    public synchronized ListenerType get(String username) {
         return idToListener.get(username);
     }
 
-    public List<String> getIds() {
+    public synchronized List<String> getIds() {
         return new ArrayList<>(idToListener.keySet());
     }
 
-    public int getNumListener() {
+    public synchronized int getNumListener() {
         return idToListener.size();
     }
 
-    public void notify(String username, Notifier<ListenerType> notifier) {
-        if (!idToListener.containsKey(username)) return;
+    public synchronized void notify(String username, Notifier<ListenerType> notifier) {
+        if (!idToListener.containsKey(username))
+            return;
         ListenerType toNotify = idToListener.get(username);
+        ExecutorService executor = idToExecutors.get(username);
         executor.submit(() -> sendNotification(username, toNotify, notifier));
     }
 
@@ -48,17 +55,21 @@ public class ListenerHandler<ListenerType> {
         try {
             notifier.sendUpdate(recipient);
         } catch (RemoteException e) {
-            e.printStackTrace();
-            System.out.println("Disconnected player" + id);
-            idToListener.remove(id);
+            System.err.println("The player " + id + " has been disconnected while sending the notification");
+            removeUser(id);
         }
     }
 
-    public void notifyBroadcast(Notifier<ListenerType> notifier) {
-        idToListener.forEach((id, listener) -> sendNotification(id, listener, notifier));
+    public synchronized void notifyBroadcast(Notifier<ListenerType> notifier) {
+        idToListener.forEach((id, listener) -> idToExecutors.get(id).submit(
+                () -> sendNotification(id, listener, notifier)));
     }
 
-    public void clear() {
-        idToListener.clear();
+    public synchronized void clear() {
+        Set<String> users = idToListener.keySet();
+
+        for (String user : users) {
+            removeUser(user);
+        }
     }
 }
