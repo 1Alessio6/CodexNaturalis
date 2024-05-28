@@ -215,6 +215,26 @@ public class GameScene extends SceneController {
         }
     }
 
+    private void setIdToDraw(Rectangle card, int idToDraw){
+
+        card.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if(isClicked(mouseEvent,MouseButton.PRIMARY)){
+                    try {
+                        gui.getController().draw(idToDraw);
+                    }catch (Exception e){
+                        //todo complete error handling
+                        System.out.println(e.getMessage());
+                    }
+                }
+            }
+        });
+
+
+    }
+
+
 
     private boolean isClicked(MouseEvent mouseEvent, MouseButton mouseButton) {
         return mouseEvent.getEventType() == MouseEvent.MOUSE_CLICKED && mouseEvent.getButton() == mouseButton;
