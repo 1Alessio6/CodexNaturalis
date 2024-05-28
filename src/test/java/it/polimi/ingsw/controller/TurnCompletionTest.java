@@ -20,7 +20,13 @@ class TurnCompletionTest {
 
     @BeforeEach
     void setUp() {
-        game = new Game(Arrays.asList("user1", "user2", "user3", "user4"));
+        List<String> users = Arrays.asList("user1", "user2", "user3", "user4");
+        game = new Game(users);
+        for (String user: users){
+            Assertions.assertDoesNotThrow(() -> {
+                game.add(user, new PlainVirtualView());
+            });
+        }
         turnCompletion = new TurnCompletion();
     }
 
@@ -138,6 +144,7 @@ class TurnCompletionTest {
                 Assertions.assertDoesNotThrow(() -> {
                     game.remove(user);
                 });
+                turnCompletion.handleLeave(game);
             }
         }
 
