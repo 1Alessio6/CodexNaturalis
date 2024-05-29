@@ -1,15 +1,19 @@
 package it.polimi.ingsw.network.client.view.gui.util;
 
 import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
-import it.polimi.ingsw.network.client.view.gui.controllers.GameScene;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlayerInfoPane {
 
@@ -47,16 +51,6 @@ public class PlayerInfoPane {
 
 
 
-    /*
-    <Pane layoutX="107.0" layoutY="14.0" prefHeight="162.0" prefWidth="436.0">
-         <children>
-            <Pane layoutX="15.0" layoutY="99.0" prefHeight="48.0" prefWidth="275.0" />
-            <Text layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PlayerName" wrappingWidth="385.13671875" />
-            <Pane layoutX="15.0" layoutY="51.0" prefHeight="37.0" prefWidth="406.0" />
-            <Button layoutX="317.0" layoutY="99.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="111.0" text="PLAYGROUND" textAlignment="CENTER" />
-         </children></Pane>
-     */
-
 
     public PlayerInfoPane(ClientPlayer player) {
         playerMainPane = new Pane();
@@ -66,7 +60,19 @@ public class PlayerInfoPane {
         //initialize card pane
         playerCardsPane = new Pane();
         playerCardsPane.setPrefSize(cardsPaneWidth, cardsPaneHeight);
-        GameScene.initializePlayerCards(playerCardsPane, cardWidth, cardHeight, distance);
+
+        //todo remove this line and pass player cards
+
+        List<ClientCard> cards = new ArrayList<>();
+        cards.add(new ClientCard());
+        cards.add(new ClientCard());
+        cards.add(new ClientCard());
+
+
+
+        //List<ClientCard> cards = player.getPlayerCards();
+
+        GUICards.initializePlayerCards(playerCardsPane,cards , cardWidth, cardHeight, distance, MouseButton.PRIMARY);
         playerCardsPane.setLayoutX(15);
         playerCardsPane.setLayoutY(99);
         playerMainPane.getChildren().add(playerCardsPane);

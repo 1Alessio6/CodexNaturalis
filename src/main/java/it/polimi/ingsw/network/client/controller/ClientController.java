@@ -238,7 +238,7 @@ public class ClientController implements ClientActions {
 
         game.getPlayer(username).removePlayerCard(placedCard);
 
-        if(!getGamePhase().equals(GamePhase.Setup) && this.getMainPlayerUsername().equals(username)) {
+        if (!getGamePhase().equals(GamePhase.Setup) && this.getMainPlayerUsername().equals(username)) {
             this.game.setCurrentPhase(GamePhase.DrawNormal);
         }
     }
@@ -250,7 +250,7 @@ public class ClientController implements ClientActions {
 
         if (boardPosition < 4) {
             game.getClientBoard().replaceFaceUpCard(newFaceUpCard, boardPosition);
-            if (boardPosition < 1) {
+            if (boardPosition <= 1) {
                 game.getClientBoard().setResourceDeckTopBack(newTopBackDeck);
             } else {
                 game.getClientBoard().setGoldenDeckTopBack(newTopBackDeck);
@@ -298,6 +298,11 @@ public class ClientController implements ClientActions {
         return getMainPlayer().getPlayerCard(cardHandPosition);
     }
 
+    public List<ClientCard> getMainPlayerCards() {
+        return getMainPlayer().getPlayerCards();
+    }
+
+
     public String getMainPlayerUsername() {
         return mainPlayerUsername;
     }
@@ -319,7 +324,9 @@ public class ClientController implements ClientActions {
         return lastMessage.getSender() + " -> " + lastMessage.getRecipient() + ": " + lastMessage.getContent();
     }
 
-    public List<Message> getMessage(){return game.getMessages();}
+    public List<Message> getMessage() {
+        return game.getMessages();
+    }
 
     public PlayerColor getColor() {
         return game.getPlayer(mainPlayerUsername).getColor();
@@ -357,7 +364,18 @@ public class ClientController implements ClientActions {
         return game.getPlayer(game.getCurrentPlayerIdx()).getUsername();
     }
 
-   public List<ClientObjectiveCard> getObjectiveCards(){return this.game.getClientBoard().getCommonObjectives();}
+    public List<ClientObjectiveCard> getObjectiveCards() {
+        return this.game.getClientBoard().getCommonObjectives();
+    }
+
+    public ClientPlayground getPlaygroundByUsername(String username){
+        return game.getPlaygroundByUsername(username);
+    }
+
+
+    public ClientPlayer getPlayer(String username) {
+        return game.getPlayer(username);
+    }
 
     public boolean isActive() {
         return game.isGameActive();

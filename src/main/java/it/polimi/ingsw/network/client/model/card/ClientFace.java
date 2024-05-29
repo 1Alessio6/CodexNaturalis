@@ -60,6 +60,10 @@ public class ClientFace implements Serializable {
         corner.setCovered();
     }
 
+    public String getPath(){
+        return "";
+    }
+
     public Map<Symbol, Integer> getBackCenterResources() {
         return backCenterResources;
     }

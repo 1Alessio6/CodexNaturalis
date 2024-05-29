@@ -2,6 +2,8 @@ package it.polimi.ingsw.network.client.view.tui;
 
 public enum ANSIColor {
     RESET("\033[0m"),
+    STRIKETHROUGH("\033[9m"),
+
     BLACK("\033[0;30m"),
     RED("\033[0;31m"),
     GREEN("\033[0;32m"),

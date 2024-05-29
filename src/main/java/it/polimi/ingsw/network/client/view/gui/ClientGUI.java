@@ -4,6 +4,8 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.controller.ClientController;
+import it.polimi.ingsw.network.client.model.board.ClientPlayground;
+import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 import it.polimi.ingsw.network.client.view.View;
 import it.polimi.ingsw.network.client.view.gui.controllers.GameScene;
 import it.polimi.ingsw.network.client.view.gui.controllers.LobbyScene;
@@ -243,5 +245,7 @@ public class ClientGUI extends Application implements View {
     private void setCurrentScene(SceneType scene) {
         currentScene = scene;
     }
+
+
 
 }

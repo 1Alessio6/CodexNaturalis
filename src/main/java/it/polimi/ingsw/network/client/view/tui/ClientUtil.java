@@ -7,7 +7,6 @@ import it.polimi.ingsw.model.card.Color.CardColor;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
-import it.polimi.ingsw.network.client.model.board.ClientTile;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
@@ -31,6 +30,7 @@ enum GameScreenArea {
     HAND_CARDS(2*ClientUtil.areaPadding + 3*ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(44 ,62)),
     DECKS(24, 5, new Position(18, 149)),
     CHAT(62, 11, new Position(23, 126)),
+    INPUT_AREA(62,11,new Position(36,126)),
     SCOREBOARD(10, 26, new Position(2, 2)),
     PRIVATE_OBJECTIVE(ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(37, 7)),
     COMMON_OBJECTIVE(2 + 2 * ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(44, 2)),
@@ -105,8 +105,17 @@ public class ClientUtil {
             ·▀▀▀  ▀█▄▀▪▀▀▀▀▀•  ▀▀▀ •▀▀ ▀▀    ▀▀ █▪ ▀  ▀  ▀▀▀  ▀▀▀ .▀  ▀ ▀  ▀ .▀▀▀ ▀▀▀ ▀▀▀▀ \s""";
 
     public static void printHelpCommands(Set<TUIActions> consentedCommands) {
+        int line=GameScreenArea.INPUT_AREA.getScreenPosition().getX()+1;
+        int column= GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1;
+        printToLineColumn(GameScreenArea.INPUT_AREA.getScreenPosition().getX(),
+                GameScreenArea.INPUT_AREA.getScreenPosition().getY(),
+                designSquare(GameScreenArea.INPUT_AREA.getWidth(),
+                        GameScreenArea.INPUT_AREA.getHeight() - 2).toString());
+
         for (TUIActions command : consentedCommands) {
-            System.out.println(command.toString() + ": " + command.getDescription());
+            printToLineColumn(line,
+                    column,command.toString()+": "+command.getDescription()+"\n");
+            line++;
         }
     }
 
@@ -525,9 +534,8 @@ public class ClientUtil {
         }
     }
 
-    public static StringBuilder createScoreBoard(List<ClientPlayer> players) {
+    public static String createScoreBoard(List<ClientPlayer> players) {
         StringBuilder str = new StringBuilder();
-
 
         str.append("╔").append(ClientUtil.appendHorizontalLine(maxUsernameLength)).append("╦").append(ClientUtil.appendHorizontalLine(maxPointsLength)).append("╗\n");
         str.append("║").append(centeredString(maxUsernameLength, "Players")).append("║");
@@ -537,13 +545,19 @@ public class ClientUtil {
         for (ClientPlayer i : players) {
             String username = i.getUsername();
             ANSIColor color = ClientUtil.playerColorConversion(i.getColor());
+            String resultName = color.getColor() + centeredString(maxUsernameLength, username) + RESET.getColor();
+            // "delete" name if player isn't connected
+            if (!i.isConnected()) {
+                resultName = STRIKETHROUGH.getColor() + resultName;
+            }
             int points = i.getPlayground().getPoints();
 
-            str.append("║").append(color.getColor()).append(centeredString(maxUsernameLength, username)).append(RESET.getColor()).append("║");
+            str.append("║").append(resultName).append("║");
             str.append(centeredString(maxPointsLength, Integer.toString(points))).append("║\n");
         }
         str.append("╚").append(ClientUtil.appendHorizontalLine(maxUsernameLength)).append("╩").append(ClientUtil.appendHorizontalLine(maxPointsLength)).append("╝\n");
-        return str;
+
+        return str.toString();
     }
 
     public static void printPlayerHand(List<ClientCard> hand) {
@@ -584,8 +598,7 @@ public class ClientUtil {
             String tableLine = separator +
                     centeredString(resourceBoardColumnSpace, printResources(key)) +
                     separator +
-                    value +
-                    " " +
+                    centeredString(resourceBoardColumnSpace, String.valueOf(value)) +
                     separator;
 
             setupTable.add(i, tableLine);
@@ -598,8 +611,7 @@ public class ClientUtil {
         String tableLine = separator +
                 centeredString(resourceBoardColumnSpace, printResources(key)) +
                 separator +
-                value +
-                " " +
+                centeredString(resourceBoardColumnSpace, String.valueOf(value)) +
                 separator;
 
         setupTable.add(i, tableLine);
@@ -644,30 +656,44 @@ public class ClientUtil {
     public static void printScoreboard(List<ClientPlayer> players) {
         printToLineColumn(GameScreenArea.SCOREBOARD.screenPosition.getX(),
                 GameScreenArea.SCOREBOARD.screenPosition.getY(),
-                createScoreBoard(players).toString());
+                createScoreBoard(players));
     }
 
     public static void clearScreen() {
         System.out.println("\u001b[2J");
     }
 
-    public static void moveCursor(int x, int y) {
-        System.out.println("\033[" + x + ";" + y + "H");
+    public static void moveCursor(int line, int column) {
+        System.out.println("\033[" + line + ";" + column + "H");
     }
 
     public static void putCursorToInputArea() {
         // todo: put correct values
-        moveCursor(40, 0);
+        moveCursor(36, 126);
     }
 
     private static String[][] buildPlayground(ClientPlayground clientPlayground) throws InvalidCardRepresentationException, UnInitializedPlaygroundException, InvalidCardDimensionException {
         DrawablePlayground dp = new DrawablePlayground(7, cardHeight);
         dp.allocateMatrix(clientPlayground);
         // todo: print available in different way
-        for (Position pos : clientPlayground.getAllPositions()) {
-            ClientTile tileAtPos = clientPlayground.getTile(pos);
-            // if empty tile draw placeholder with position
-            dp.drawCard(clientPlayground, pos, tileAtPos.sameAvailability(Availability.EMPTY) ? drawAvailablePosition(pos) : designCard(tileAtPos.getFace()));
+        Set<Position> availablePositions = new HashSet<>();
+        Set<Position> occupiedPositions = new HashSet<>();
+
+        for (Position position : clientPlayground.getAllPositions()) {
+            if (clientPlayground.getTile(position).sameAvailability(Availability.OCCUPIED))
+                occupiedPositions.add(position);
+            else if (clientPlayground.getTile(position).sameAvailability(Availability.EMPTY)) {
+                availablePositions.add(position);
+            }
+        }
+
+        // print first available positions (so they don't override corners)
+        for (Position pos : availablePositions) {
+            dp.drawCard(clientPlayground, pos, drawAvailablePosition(pos));
+        }
+        // then print occupied positions
+        for (Position pos : occupiedPositions) {
+            dp.drawCard(clientPlayground, pos, designCard(clientPlayground.getTile(pos).getFace()));
         }
 
         return dp.getPlaygroundRepresentation();
@@ -685,7 +711,7 @@ public class ClientUtil {
 
             printToLineColumn(printY,
                     printX,
-                    buildPlayground(clientPlayground));
+                    playgroundToPrint);
         } catch (InvalidCardRepresentationException | UnInitializedPlaygroundException | InvalidCardDimensionException e) {
             throw new RuntimeException(e);
         }
@@ -755,11 +781,14 @@ public class ClientUtil {
 
     public static void printChat(List<Message> messages, String lastMessage) {
 
-        String lastSender = messages.get(messages.size() - 1).getSender();
-        String lastRecipient = messages.get(messages.size() - 1).getRecipient();
+        String lastSender = messages.getLast().getSender();
+        String lastRecipient = messages.getLast().getRecipient();
         int linesOccupiedByLastMessage = (int) Math.ceil((double) (lastMessage.length() + lastSender.length() + lastRecipient.length() + 6) / 60);
         int totalOccupiedLines = calculateOccupiedLines(messages, GameScreenArea.CHAT.getWidth() - 2);
-
+        int cnt = totalOccupiedLines /11;
+        if (totalOccupiedLines >= (cnt * 9) + 1 && totalOccupiedLines <= (cnt + 1) * 9) {
+            totalOccupiedLines -= cnt * 9;
+        }
         if (messages.size() == 1) {
             writeLine(23 + 1, 126 + 1, 60, lastMessage);
         } else if (totalOccupiedLines > 9) {
@@ -768,7 +797,9 @@ public class ClientUtil {
                     126 + 62,
                     11 - 2);
             writeLine(23 + 1, 126 + 1, 60, lastMessage);
-        } else {
+        }  else if(totalOccupiedLines%9==0){
+            writeLine(23 + 9, 126 + 1, 60, lastMessage);
+        }else {
             writeLine(23 + totalOccupiedLines - linesOccupiedByLastMessage + 1, 126 + 1, 60, lastMessage);
         }
     }

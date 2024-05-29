@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.board.Tile;
 import it.polimi.ingsw.model.card.CornerPosition;
 import it.polimi.ingsw.model.card.Symbol;
+import it.polimi.ingsw.network.client.model.card.ClientFace;
 
 import java.io.Serializable;
 import java.util.*;
@@ -48,7 +49,10 @@ public class ClientPlayground implements Serializable {
         Map<Position, ClientTile> area = new HashMap<>();
 
         for(Position position : areaToCopy.keySet()){
-            area.put(position, new ClientTile(areaToCopy.get(position)));
+            if(areaToCopy.get(position).getAvailability() != Availability.NOTAVAILABLE){
+                area.put(position, new ClientTile(areaToCopy.get(position)));
+            }
+
         }
 
         return area;
@@ -73,7 +77,9 @@ public class ClientPlayground implements Serializable {
     public void placeTile(Position position, ClientTile tile) {
 
         this.area.put(position, tile);
-        this.positioningOrder.add(position);
+        if(tile.sameAvailability(Availability.OCCUPIED)){
+            this.positioningOrder.add(position);
+        }
     }
 
     public List<Position> getAvailablePositions() {
@@ -158,6 +164,10 @@ public class ClientPlayground implements Serializable {
         }
 
         return new int[]{xMax, yMax};
+    }
+
+    public List<Position> getPositioningOrder() {
+        return positioningOrder;
     }
 }
 

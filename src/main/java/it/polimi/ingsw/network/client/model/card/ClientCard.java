@@ -48,4 +48,23 @@ public class ClientCard implements Serializable {
         return front;
     }
 
+    public String getFrontPath(){
+        //todo remove path and write conversion id to path algorithm
+        String path = "gui/png/cards/10.png";
+        return path;
+    }
+
+    public String getBackPath(){
+        //todo remove path and write conversion id to path algorithm
+        String path = "gui/png/cards/11-front.png";
+        return path;
+    }
+
+    public String getSidePath(Side side){
+        if(side == Side.BACK){
+            return getBackPath();
+        }
+        return getFrontPath();
+    }
+
 }
