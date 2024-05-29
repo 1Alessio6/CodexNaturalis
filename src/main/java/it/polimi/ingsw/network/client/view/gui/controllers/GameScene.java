@@ -165,7 +165,7 @@ public class GameScene extends SceneController {
 
         GUIPlayground guiPlayground = new GUIPlayground(WIDTH, HEIGHT);
         guiPlayground.setDimension(clientPlayground);
-        //   playgroundPane.setPrefSize(guiPlayground.getPaneWidth(), guiPlayground.getPaneHeight());
+        playgroundPane.setPrefSize(guiPlayground.getPaneWidth(), guiPlayground.getPaneHeight());
         List<Rectangle> cardsAsRectangles = new ArrayList<>();
         // todo. code just to run the playground. It must be inserted in the loop
         Image img = null;
