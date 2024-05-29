@@ -156,4 +156,36 @@ class TurnCompletionTest {
         List<Card> inHandAfter = currentPlayer.getCards();
         Assertions.assertEquals(inHandBefore, inHandAfter);
     }
+
+    private void completeSetup(Game game) {
+        for (Player player : game.getPlayers()) {
+            Assertions.assertDoesNotThrow(() -> {
+                String username = player.getUsername();
+                game.placeStarter(username, Side.FRONT);
+                game.assignColor(username, new ArrayList<>(game.getAvailableColor()).getFirst());
+                game.placeObjectiveCard(username, 0);
+            });
+        }
+    }
+
+    @Test
+    void disconnectCurrenPlayerAndNextPlayers_currentPlayerIsUpdatedCorrectly() {
+        int numPlayers = 4;
+
+        completeSetup(game);
+
+        List<Player> players = game.getPlayers();
+        for (int i = 0; i < numPlayers; ++i) {
+            for (int lastConnectedPlayerIdx = i + 1; lastConnectedPlayerIdx < numPlayers - 2; ++lastConnectedPlayerIdx) {
+                for (int disconnectedPlayerIdx = i; disconnectedPlayerIdx < lastConnectedPlayerIdx; ++disconnectedPlayerIdx) {
+                    int disconnectedPlayerIdxCopy = disconnectedPlayerIdx;
+                    Assertions.assertDoesNotThrow(() -> {
+                        game.remove(players.get(disconnectedPlayerIdxCopy).getUsername());
+                        turnCompletion.handleLeave(game);
+                    });
+                }
+                Assertions.assertEquals(game.getCurrentPlayer().getUsername(), players.get(lastConnectedPlayerIdx).getUsername());
+            }
+        }
+    }
 }
