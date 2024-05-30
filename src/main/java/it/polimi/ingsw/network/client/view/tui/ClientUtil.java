@@ -105,18 +105,36 @@ public class ClientUtil {
             ·▀▀▀  ▀█▄▀▪▀▀▀▀▀•  ▀▀▀ •▀▀ ▀▀    ▀▀ █▪ ▀  ▀  ▀▀▀  ▀▀▀ .▀  ▀ ▀  ▀ .▀▀▀ ▀▀▀ ▀▀▀▀ \s""";
 
     public static void printHelpCommands(Set<TUIActions> consentedCommands) {
-        int line=GameScreenArea.INPUT_AREA.getScreenPosition().getX()+1;
+        int line=GameScreenArea.INPUT_AREA.getScreenPosition().getX()+2;
         int column= GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1;
-        printToLineColumn(GameScreenArea.INPUT_AREA.getScreenPosition().getX(),
-                GameScreenArea.INPUT_AREA.getScreenPosition().getY(),
-                designSquare(GameScreenArea.INPUT_AREA.getWidth(),
-                        GameScreenArea.INPUT_AREA.getHeight() - 2).toString());
+        printCommandSquare();
 
         for (TUIActions command : consentedCommands) {
             printToLineColumn(line,
                     column,command.toString()+": "+command.getDescription()+"\n");
             line++;
         }
+    }
+
+    public static void printCommand(String string){
+        printCommandSquare();
+        writeLine(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+2,
+                GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1,
+                GameScreenArea.INPUT_AREA.getWidth()-2,string);
+    }
+
+    public static void printCommandSquare(){
+        printToLineColumn(GameScreenArea.INPUT_AREA.getScreenPosition().getX(),
+                GameScreenArea.INPUT_AREA.getScreenPosition().getY(),
+                designSquare(GameScreenArea.INPUT_AREA.getWidth(),
+                        GameScreenArea.INPUT_AREA.getHeight() - 2).toString());
+    }
+
+    public static void printChatSquare(){
+        ClientUtil.printToLineColumn(GameScreenArea.CHAT.getScreenPosition().getX(),
+                GameScreenArea.CHAT.getScreenPosition().getY(),
+                ClientUtil.designSquare(GameScreenArea.CHAT.getWidth(),
+                        GameScreenArea.CHAT.getHeight() - 2).toString());
     }
 
     public static void argsHelper(String error) {
@@ -664,12 +682,12 @@ public class ClientUtil {
     }
 
     public static void moveCursor(int line, int column) {
-        System.out.println("\033[" + line + ";" + column + "H");
+        System.out.print("\033[" + line + ";" + column + "H");
     }
 
     public static void putCursorToInputArea() {
         // todo: put correct values
-        moveCursor(36, 126);
+        moveCursor(37, 127);
     }
 
     private static String[][] buildPlayground(ClientPlayground clientPlayground) throws InvalidCardRepresentationException, UnInitializedPlaygroundException, InvalidCardDimensionException {
