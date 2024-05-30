@@ -20,6 +20,7 @@ import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
+import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 import it.polimi.ingsw.network.client.view.View;
 
@@ -29,6 +30,8 @@ import java.util.*;
 public class ClientTUI implements View {
     private final Scanner console;
     private Set<TUIActions> availableActions = new HashSet<>();
+
+    private Side cardSide = Side.FRONT;
 
     private final ClientController controller;
 
@@ -49,12 +52,9 @@ public class ClientTUI implements View {
             try {
                 if (availableActions.contains(TUIActions.valueOf(nextCommand[0].toUpperCase()))) {
                     switch (TUIActions.valueOf(nextCommand[0].toUpperCase())) {
-                        case BACK -> {
-                            // print main player stuff again
-                            ClientUtil.printPlayground(this.controller.getMainPlayerPlayground());
-                            ClientUtil.printPlayerHand(this.controller.getMainPlayer().getPlayerCards());
-                        }
+                        case BACK -> goBack();
                         case COLOR -> chooseColor();
+                        case FLIP -> flip();
                         case HELP -> ClientUtil.printHelpCommands(availableActions);
                         case SPY -> lookAtPlayer(Integer.parseInt(nextCommand[1]) - 1);
                         case M, PM -> sendMessage(nextCommand);
@@ -83,6 +83,21 @@ public class ClientTUI implements View {
                 ClientUtil.putCursorToInputArea();
             }
         }
+    }
+
+    private void goBack() {
+        // add back commands
+        setAvailableActions();
+        // print main player stuff again
+        ClientUtil.printPlayground(this.controller.getMainPlayerPlayground());
+        ClientUtil.printPlayerHand(this.controller.getMainPlayerCards(), cardSide);
+    }
+
+    private void flip() {
+        // invert side
+        cardSide = cardSide.equals(Side.FRONT) ? Side.BACK : Side.FRONT;
+
+        ClientUtil.printPlayerHand(this.controller.getMainPlayerCards(), cardSide);
     }
 
     private void quit() throws RemoteException {
@@ -217,11 +232,13 @@ public class ClientTUI implements View {
             // update commands when you are looking at other players
             availableActions.remove(TUIActions.DRAW);
             availableActions.remove(TUIActions.PLACE);
+            availableActions.remove(TUIActions.FLIP);
+
             availableActions.add(TUIActions.BACK);
             // update only playground, hand and resources
             ClientUtil.printResourcesArea(playground.getResources());
             ClientUtil.printPlayground(playground);
-            ClientUtil.printPlayerHand(player.getPlayerCards());
+            ClientUtil.printPlayerHand(this.controller.getMainPlayerCards(), cardSide);
         }
     }
 
@@ -244,6 +261,7 @@ public class ClientTUI implements View {
         if (currentPhase != null) {
             availableCommands.add(TUIActions.M);
             availableCommands.add(TUIActions.PM);
+            availableCommands.add(TUIActions.FLIP);
         }
 
         switch (currentPhase) {
@@ -299,7 +317,7 @@ public class ClientTUI implements View {
         ClientUtil.clearScreen();
         setAvailableActions();
 
-        ClientUtil.printPlayerHand(this.controller.getMainPlayer().getPlayerCards());
+        ClientUtil.printPlayerHand(this.controller.getMainPlayerCards(), cardSide);
         ClientUtil.printScoreboard(this.controller.getPlayers());
         ClientUtil.printResourcesArea(this.controller.getMainPlayer().getPlayground().getResources());
         ClientUtil.printFaceUpCards(this.controller.getFaceUpCards().stream().map(c -> c.getFace(Side.FRONT)).toList());
@@ -381,7 +399,9 @@ public class ClientTUI implements View {
     @Override
     public void showUpdateAfterPlace(String username) {
         if (this.controller.getMainPlayerUsername().equals(username)) {
-            ClientUtil.printPlayerHand(this.controller.getMainPlayer().getPlayerCards());
+            List<ClientFace> facesToPrint = this.controller.getMainPlayer().getPlayerCards().stream()
+                    .map(c -> c.getFace(cardSide)).toList();
+            ClientUtil.printPlayerHand(this.controller.getMainPlayerCards(), cardSide);
             // print playground
             ClientUtil.printPlayground(this.controller.getMainPlayerPlayground());
             // resources may have changed
@@ -402,7 +422,8 @@ public class ClientTUI implements View {
 
         //print ResourceDeckTopBack
         ClientUtil.printToLineColumn(GameScreenArea.DECKS.getScreenPosition().getX(), GameScreenArea.DECKS.getScreenPosition().getY() + ClientUtil.cardWidth + 2, ClientUtil.designCard(controller.getResourceDeckTopBack()));
-        ClientUtil.printPlayerHand(this.controller.getMainPlayer().getPlayerCards());
+        // print hand
+        ClientUtil.printPlayerHand(this.controller.getMainPlayerCards(), cardSide);
 
         setAvailableActions();
 

@@ -560,11 +560,11 @@ public class ClientUtil {
         return str.toString();
     }
 
-    public static void printPlayerHand(List<ClientCard> hand) {
+    public static void printPlayerHand(List<ClientCard> hand, Side side) {
         Position startPrintPosition = GameScreenArea.HAND_CARDS.getScreenPosition();
         for (int i = 0; i < 3; i++) {
             // print empty space if there is no card
-            String[][] toPrint = i < hand.size() ? designCard(hand.get(i).getFront()) : createEmptyArea(cardHeight, cardWidth);
+            String[][] toPrint = i < hand.size() ? designCard(hand.get(i).getFace(side)) : createEmptyArea(cardHeight, cardWidth);
 
             printToLineColumn(startPrintPosition.getX(), startPrintPosition.getY(), toPrint);
 

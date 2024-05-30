@@ -4,6 +4,7 @@ public enum TUIActions {
     BACK("go back at your playground"),
     COLOR("choose color"),
     DRAW("draw a card"),
+    FLIP("flip the cards"),
     HELP("show this message"),
     LOBBYSIZE("set size of the lobby"),
     OBJECTIVE("choose your objective"),
