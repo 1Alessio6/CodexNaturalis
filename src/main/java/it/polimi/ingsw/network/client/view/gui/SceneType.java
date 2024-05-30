@@ -1,13 +1,27 @@
 package it.polimi.ingsw.network.client.view.gui;
 
 public enum SceneType {
-    SELECT_USERNAME,
+    SELECT_USERNAME("/gui/SelectUsernameScene.fxml"),
 
-    LOBBY,
+    CONNECTION("/gui/ConnectionScene.fxml"),
 
-    GAME,
+    LOBBY("/gui/LobbyScene.fxml"),
 
-    CRASH,
+    SETUP("/gui/SetupScene.fxml"),
 
-    END
+    GAME("/gui/GameScene.fxml"),
+
+    CRASH("/gui/CrashScene.fxml"),
+
+    END("/gui/SelectUsernameScene.fxml");
+
+    private final String path;
+
+    SceneType(String path) {
+        this.path = path;
+    }
+
+    public String getPath(){
+        return path;
+    }
 }
