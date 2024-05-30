@@ -6,6 +6,7 @@ import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.view.gui.ClientGUI;
+import it.polimi.ingsw.network.client.view.gui.SceneType;
 import javafx.fxml.FXML;
 
 import javafx.event.ActionEvent;
@@ -35,7 +36,7 @@ public class SelectUsernameScene extends SceneController{
     private void connect(KeyEvent event) {
         if(event.getCode() == KeyCode.ENTER){
 
-            gui.loadScene("/gui/ConnectionScene.fxml");
+            gui.loadScene(SceneType.CONNECTION);
 
             try{
                 gui.getController().connect(gui.getClient(), usernameCatcher.getPromptText());

@@ -65,7 +65,7 @@ public class ClientGUI extends Application implements View {
         //add all controllers constructors
 
         //FXMLLoader loader = loadScene("/gui/SelectUsernameScene.fxml");
-        loadScene("/gui/GameScene.fxml");
+        loadScene(SceneType.GAME);
         /*
         SelectUsernameScene sceneController = loader.getController();
 
@@ -97,7 +97,7 @@ public class ClientGUI extends Application implements View {
 
     @Override
     public void showServerCrash() {
-        loadScene("/gui/CrashScene.fxml");
+        loadScene(SceneType.CRASH);
         //todo set crash message
         currentScene = SceneType.CRASH;
     }
@@ -105,7 +105,7 @@ public class ClientGUI extends Application implements View {
     @Override
     public void showUpdatePlayersInLobby() {
         if (currentScene != SceneType.LOBBY) {
-            loadScene("/gui/LobbyScene.fxml");
+            loadScene(SceneType.LOBBY);
             currentScene = SceneType.LOBBY;
         }
         assert currentSceneController instanceof LobbyScene;
@@ -116,7 +116,7 @@ public class ClientGUI extends Application implements View {
     @Override
     public void showUpdateCreator() {
 
-        loadScene("/gui/LobbyScene.fxml");
+        loadScene(SceneType.LOBBY);
         ((LobbyScene) currentSceneController).initializeCreatorScene();
         currentScene = SceneType.LOBBY;
     }
@@ -124,14 +124,14 @@ public class ClientGUI extends Application implements View {
 
     @Override
     public void showUpdateAfterLobbyCrash() {
-        loadScene("/gui/CrashScene.fxml");
+        loadScene(SceneType.CRASH);
         //todo set crash message
         currentScene = SceneType.CRASH;
     }
 
     @Override
     public void showUpdateAfterConnection() {
-        loadScene("/gui/GameScene.fxml");
+        loadScene(SceneType.GAME);
         currentScene = SceneType.GAME;
     }
 
@@ -182,7 +182,7 @@ public class ClientGUI extends Application implements View {
     @Override
     public void showUpdateCurrentPlayer() {
         if (controller.getGamePhase() == GamePhase.End) {
-            loadScene("/gui/EndScene.fxml");
+            loadScene(SceneType.END);
             currentScene = SceneType.END;
         } else {
             //todo update current player in normal game scene
@@ -196,7 +196,7 @@ public class ClientGUI extends Application implements View {
 
     @Override
     public void showWinners(List<String> winners) {
-        loadScene("/gui/EndScene.fxml");
+        loadScene(SceneType.END);
         currentScene = SceneType.END;
         //todo add show winners
     }
@@ -209,7 +209,9 @@ public class ClientGUI extends Application implements View {
         return client;
     }
 
-    public void loadScene(String fxmlPath) {
+    public void loadScene(SceneType sceneType) {
+
+        String fxmlPath = sceneType.getPath();
 
         Parent root;
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
