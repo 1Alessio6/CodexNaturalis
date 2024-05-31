@@ -797,28 +797,47 @@ public class ClientUtil {
         return area;
     }
 
-    public static void printChat(List<Message> messages, String lastMessage) {
+    public static String messageModifier(String sender, String recipient, String content) {
+        return sender + " -> " + recipient + ": " + content;
+    }
 
-        String lastSender = messages.getLast().getSender();
-        String lastRecipient = messages.getLast().getRecipient();
-        int linesOccupiedByLastMessage = (int) Math.ceil((double) (lastMessage.length() + lastSender.length() + lastRecipient.length() + 6) / 60);
-        int totalOccupiedLines = calculateOccupiedLines(messages, GameScreenArea.CHAT.getWidth() - 2);
-        int cnt = totalOccupiedLines /11;
-        if (totalOccupiedLines >= (cnt * 9) + 1 && totalOccupiedLines <= (cnt + 1) * 9) {
-            totalOccupiedLines -= cnt * 9;
+    public static List<String> searchForLastNineLineMessages(List<Message> messages) {
+        int i = messages.size() - 1, j = 0;
+        List<String> messagesToPrint = new ArrayList<>();
+        int linesOccupiedByLastMessage;
+        String lastSender;
+        String lastMessage;
+        String lastRecipient;
+
+        while (i >= 0) {
+            lastMessage = messages.get(i).getContent();
+            lastSender = messages.get(i).getSender();
+            lastRecipient = messages.get(i).getRecipient();
+            linesOccupiedByLastMessage = (int) Math.ceil((double) (lastMessage.length() + lastSender.length() + lastRecipient.length() + 6) / GameScreenArea.CHAT.getWidth() - 2);
+            if (j + linesOccupiedByLastMessage > 9) {
+                break;
+            }
+            messagesToPrint.add(messageModifier(lastSender, lastRecipient, lastMessage));
+            j += linesOccupiedByLastMessage;
+            i--;
         }
-        if (messages.size() == 1) {
-            writeLine(23 + 1, 126 + 1, 60, lastMessage);
-        } else if (totalOccupiedLines > 9) {
-            eraseLine(23 + 1,
-                    126 + 1,
-                    126 + 62,
-                    11 - 2);
-            writeLine(23 + 1, 126 + 1, 60, lastMessage);
-        }  else if(totalOccupiedLines%9==0){
-            writeLine(23 + 9, 126 + 1, 60, lastMessage);
-        }else {
-            writeLine(23 + totalOccupiedLines - linesOccupiedByLastMessage + 1, 126 + 1, 60, lastMessage);
+        return messagesToPrint;
+    }
+
+    public static void printChat(List<Message> messages) {
+        List<String> messagesToPrint = searchForLastNineLineMessages(messages);
+        int occupiedLines = 0;
+
+        ClientUtil.printChatSquare();
+        for (String message : messagesToPrint) {
+            int linesOccupiedByLastMessage = (int) Math.ceil((double) (message.length()) / 60);
+            occupiedLines += linesOccupiedByLastMessage;
+            if (occupiedLines <= 9) {
+                writeLine(GameScreenArea.CHAT.getScreenPosition().getX() + 10 - occupiedLines,
+                        GameScreenArea.CHAT.getScreenPosition().getY() + 1,
+                        GameScreenArea.CHAT.getWidth() - 2,
+                        message);
+            }
         }
     }
 
@@ -835,17 +854,6 @@ public class ClientUtil {
             cnt++;
         }
     }
-
-    public static int calculateOccupiedLines(List<Message> messages, int availableLines) {// messages size=senders size
-
-        int occupiedLines = 0;
-        for (int i = 0; i < messages.size(); i++) {
-            occupiedLines += ((int) Math.ceil((double) (messages.get(i).getContent().length() + messages.get(i).getSender().length() + messages.get(i).getRecipient().length() + 6) / availableLines)); //review
-        }
-        //System.out.print(occupiedLines);
-        return occupiedLines;
-    }
-
     public static void eraseLine(int line, int initialColumn, int finalColumn, int numberOfLinesToDelete) {
         if (finalColumn < initialColumn) {
             System.err.println("Final column is less than initial column");
