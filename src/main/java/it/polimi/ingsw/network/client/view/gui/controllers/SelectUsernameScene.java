@@ -36,10 +36,9 @@ public class SelectUsernameScene extends SceneController{
     private void connect(KeyEvent event) {
         if(event.getCode() == KeyCode.ENTER){
 
-            gui.loadScene(SceneType.CONNECTION);
 
             try{
-                gui.getController().connect(gui.getClient(), usernameCatcher.getPromptText());
+                gui.getController().connect(gui.getClient(), usernameCatcher.getText());
             }catch (RemoteException e){
                 //todo add a screen
             }
