@@ -13,9 +13,9 @@ import java.util.List;
 
 public class GUICards {
 
-    public static final int boardCardsWidth = 151;
+    public static final int boardCardsWidth = 126;
 
-    public static final int boardCardsHeight = 98;
+    public static final int boardCardsHeight = 81;
 
 
     //todo modify with usernames
@@ -55,6 +55,10 @@ public class GUICards {
             }
 
         });
+    }
+
+    public static ImagePattern pathToImage(String path){
+        return new ImagePattern(new Image(path));
     }
 
 }

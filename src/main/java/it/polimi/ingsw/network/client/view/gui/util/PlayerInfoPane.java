@@ -50,8 +50,6 @@ public class PlayerInfoPane {
     private static final int cardHeight = 48;
 
 
-
-
     public PlayerInfoPane(ClientPlayer player) {
         playerMainPane = new Pane();
         playerMainPane.setBackground(new Background(new BackgroundFill(Color.SADDLEBROWN, CornerRadii.EMPTY, null)));
@@ -69,10 +67,9 @@ public class PlayerInfoPane {
         cards.add(new ClientCard());
 
 
-
         //List<ClientCard> cards = player.getPlayerCards();
 
-        GUICards.initializePlayerCards(playerCardsPane,cards , cardWidth, cardHeight, distance, MouseButton.PRIMARY);
+        GUICards.initializePlayerCards(playerCardsPane, cards, cardWidth, cardHeight, distance, MouseButton.PRIMARY);
         playerCardsPane.setLayoutX(15);
         playerCardsPane.setLayoutY(99);
         playerMainPane.getChildren().add(playerCardsPane);
