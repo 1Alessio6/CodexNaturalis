@@ -28,7 +28,9 @@ public class BoardPane {
         BoardMainPane.setLayoutX(24);
         BoardMainPane.setLayoutY(268);
 
-
+        createFaceUpCards(clientBoard.getFaceUpCards());
+        createDeck(DeckType.GOLDEN, clientBoard.getGoldenDeckTopBack());
+        createDeck(DeckType.RESOURCE, clientBoard.getResourceDeckTopBack());
 
         initializeBoardCardsPosition(34,11);
 
@@ -79,16 +81,14 @@ public class BoardPane {
         }
     }
 
-    private Rectangle createDeck(DeckType Type, ClientFace face) {
+    private void createDeck(DeckType Type, ClientFace face) {
         if (Type == DeckType.GOLDEN) {
             goldenDeckTopCard = createBoardRectangle();
             goldenDeckTopCard.setFill(new ImagePattern(new Image(face.getPath())));
-            return goldenDeckTopCard;
 
         } else {
             resourceDeckTopCard = createBoardRectangle();
             resourceDeckTopCard.setFill(new ImagePattern(new Image(face.getPath())));
-            return resourceDeckTopCard;
         }
     }
 
@@ -96,7 +96,18 @@ public class BoardPane {
         return new Rectangle(GUICards.boardCardsWidth, GUICards.boardCardsHeight);
     }
 
-
+    private void createFaceUpCards(List<ClientCard> faceUp){
+        for(int i = 0; i < 4; i++) {
+            Rectangle rectangle = createBoardRectangle();
+            rectangle.setFill(GUICards.pathToImage(faceUp.get(i).getFrontPath()));
+            if(i <= 1 ){
+                resourceFaceUp.add(rectangle);
+            }
+            else{
+                goldenFaceUp.add(rectangle);
+            }
+        }
+    }
 
     public Pane getBoardMainPane() {
         return boardMainPane;
