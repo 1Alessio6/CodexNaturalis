@@ -305,7 +305,7 @@ public class Game {
     public void add(String username, VirtualView client) throws InvalidUsernameException {
         // only previously connected users can join the game
         if (!validUsernames.contains(username)) {
-            throw new RuntimeException("Game has already started, but you were not there from the beginning");
+            throw new InvalidUsernameException("Game has already started, but you were not there from the beginning");
         }
 
         if (fromUsernameToPlayer(username).isConnected()) {
