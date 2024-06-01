@@ -88,6 +88,8 @@ public class ClientTUI implements View {
         setAvailableActions();
         // print main player stuff again
         showUpdateAfterConnection();
+        // clear input area
+        ClientUtil.printCommandSquare();
     }
 
     private void flip() {
@@ -98,6 +100,9 @@ public class ClientTUI implements View {
                 Collections.singletonList(controller.getMainPlayerStarter()) : controller.getMainPlayerCards();
 
         ClientUtil.printPlayerHand(toPrint, cardSide);
+
+        // clear input area
+        ClientUtil.printCommandSquare();
     }
 
     private void quit() throws RemoteException {
@@ -111,6 +116,8 @@ public class ClientTUI implements View {
         int objectiveIdx = Integer.parseInt(console.nextLine()); // starting from 1
         controller.placeObjectiveCard(objectiveIdx - 1);
 
+        // clear input area
+        ClientUtil.printCommandSquare();
         //ClientUtil.putCursorToInputArea();
     }
 
@@ -127,6 +134,8 @@ public class ClientTUI implements View {
         PlayerColor color = PlayerColor.valueOf(console.nextLine().toUpperCase());
         controller.chooseColor(color);
 
+        // clear input area
+        ClientUtil.printCommandSquare();
         //ClientUtil.putCursorToInputArea();
     }
 
@@ -135,6 +144,8 @@ public class ClientTUI implements View {
         Message myMessage = command[0].equals("pm") ? createPrivateMessage(commandContent) : createBroadcastMessage(commandContent);
         controller.sendMessage(myMessage);
 
+        // clear input area
+        ClientUtil.printCommandSquare();
         //ClientUtil.putCursorToInputArea();
     }
 
@@ -169,6 +180,8 @@ public class ClientTUI implements View {
         Side starterSide = receiveSide();
         controller.placeStarter(starterSide);
 
+        // clear input area
+        ClientUtil.printCommandSquare();
         //ClientUtil.putCursorToInputArea();
     }
 
@@ -333,16 +346,17 @@ public class ClientTUI implements View {
         ClientUtil.printFaceUpCards(this.controller.getFaceUpCards());
         ClientUtil.printCommandSquare();
         ClientUtil.printChatSquare();
+        // print decks
+        ClientUtil.printDecks(controller.getResourceDeckTopBack(), controller.getGoldenDeckTopBack());
 
+        // print objective(s)
+
+        ClientUtil.printPlayground(playerPlayground);
         // check if there is any occupied tile: it means starter has been placed
-        List<ClientCard> toPrint;
-        if (controller.isMainPlaygroundEmpty()) {
-            ClientUtil.printPlayground(this.controller.getMainPlayerPlayground());
-            toPrint = Collections.singletonList(this.controller.getMainPlayerStarter());
-        } else {
-            toPrint = controller.getMainPlayerCards();
-        }
-        ClientUtil.printPlayerHand(toPrint, cardSide);
+        ClientUtil.printPlayerHand(controller.isMainPlaygroundEmpty() ?
+                Collections.singletonList(this.controller.getMainPlayerStarter()) :
+                controller.getMainPlayerCards(),
+                cardSide);
 
         ClientUtil.putCursorToInputArea();
     }
@@ -425,12 +439,8 @@ public class ClientTUI implements View {
     public void showUpdateAfterDraw() {
         // faceUpCards
         ClientUtil.printFaceUpCards(this.controller.getFaceUpCards());
-
-        //print GoldenDeckTopBack
-        ClientUtil.printToLineColumn(GameScreenArea.DECKS.getScreenPosition().getX(), GameScreenArea.DECKS.getScreenPosition().getY(), ClientUtil.designCard(controller.getGoldenDeckTopBack()));
-
-        //print ResourceDeckTopBack
-        ClientUtil.printToLineColumn(GameScreenArea.DECKS.getScreenPosition().getX(), GameScreenArea.DECKS.getScreenPosition().getY() + ClientUtil.cardWidth + 2, ClientUtil.designCard(controller.getResourceDeckTopBack()));
+        // print decks
+        ClientUtil.printDecks(controller.getResourceDeckTopBack(), controller.getGoldenDeckTopBack());
         // print hand
         ClientUtil.printPlayerHand(this.controller.getMainPlayerCards(), cardSide);
 
