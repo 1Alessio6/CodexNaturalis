@@ -88,21 +88,25 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     @Override
     public void showUpdatePlayersInLobby() {
-        if (currentScene != SceneType.LOBBY) {
-            loadScene(SceneType.LOBBY);
-            currentScene = SceneType.LOBBY;
-        }
-        assert currentSceneController instanceof LobbyScene;
-        ((LobbyScene) currentSceneController).setPlayerConnected(controller.getConnectedUsernames());
-
+        Platform.runLater(() -> {
+            if (currentScene != SceneType.LOBBY) {
+                loadScene(SceneType.LOBBY);
+                currentScene = SceneType.LOBBY;
+            }
+            assert currentSceneController instanceof LobbyScene;
+            ((LobbyScene) currentSceneController).setPlayerConnected(controller.getConnectedUsernames());
+        });
     }
 
     @Override
     public void showUpdateCreator() {
-
-        loadScene(SceneType.LOBBY);
-        ((LobbyScene) currentSceneController).initializeCreatorScene();
-        currentScene = SceneType.LOBBY;
+        System.out.println("Arrived notification from the server to the creator");
+        System.out.println("Address: " + this);
+        Platform.runLater(() -> {
+            loadScene(SceneType.LOBBY);
+            ((LobbyScene) currentSceneController).initializeCreatorScene();
+            currentScene = SceneType.LOBBY;
+        });
     }
 
 
