@@ -23,9 +23,6 @@ public class SelectUsernameScene extends SceneController{
 
     private void connect(KeyEvent event) {
         if(event.getCode() == KeyCode.ENTER){
-
-           // gui.loadScene(SceneType.CONNECTION);
-
             try{
                 VirtualView client = gui.getClient();
                 String name = usernameCatcher.getText();

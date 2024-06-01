@@ -13,6 +13,7 @@ public enum TUIActions {
     SPY("spy <n>: look at n-index player"),
     PM("write a private message"),
     M("write a public message"),
+    RULEBOOK("take a look at the manual"),
     QUIT("quit the game safely");
 
     private final String description;
