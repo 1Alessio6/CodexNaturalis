@@ -5,7 +5,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class HeartBeat extends TimerTask {
-    private final String handlerName;
+    private String handlerName;
     private String listenerName;
     private final HeartBeatHandler heartBeatHandler;
     private HeartBeatListener heartBeatListener;
@@ -39,6 +39,10 @@ public class HeartBeat extends TimerTask {
 
     public synchronized void setDelay(int delay) {
         this.delay = delay;
+    }
+
+    public synchronized void setHandlerName(String name){
+        this.handlerName = name;
     }
 
     public synchronized void startHeartBeat() {
