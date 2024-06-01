@@ -75,36 +75,46 @@ public class Controller implements EventListener, GameRequest {
         }
     }
 
+    private void removeExceedingPlayers() {
+        List<String> usersInGame = game.getPlayers().stream().map(Player::getUsername).toList();
+        for (String registeredUser : listenerHandler.getIds()) {
+            if (!usersInGame.contains(registeredUser)) {
+                listenerHandler.remove(registeredUser);
+            }
+        }
+    }
+
     /**
      * Joins user to the lobby.
      *
      * @param username the user's name who joins the lobby.
      */
     private boolean joinLobby(String username, VirtualView lobbyListener) {
+        boolean isJoined;
         try {
             lobby.add(username, lobbyListener);
+            listenerHandler.add(username, lobbyListener);
+            if (game == null && lobby.isGameReady()) {
+                game = lobby.createGame();
+                removeExceedingPlayers();
+            }
+            isJoined = true;
         } catch (InvalidUsernameException | FullLobbyException e) {
             try {
                 lobbyListener.reportError(e.getMessage());
-                return false;
+                isJoined = false;
             } catch (RemoteException remoteException) {
                 System.err.println("Connection error");
-                return false;
+                isJoined = false;
             }
         }
-
-        listenerHandler.add(username, lobbyListener);
-
-        if (lobby.isGameReady()) {
-            game = lobby.createGame();
-        }
-        return true;
+        return isJoined;
     }
 
     private boolean joinGame(String username, VirtualView gameListener) {
         try {
             game.add(username, gameListener);
-        } catch (InvalidUsernameException | RuntimeException e) {
+        } catch (InvalidUsernameException e) {
             try {
                 gameListener.reportError(e.getMessage());
                 return false;
@@ -150,20 +160,19 @@ public class Controller implements EventListener, GameRequest {
     private void leaveGame(String username) {
         try {
             game.remove(username);
+            turnCompletion.handleLeave(game);
+            if (!game.isActive()) {
+                timerForSuspendedGame.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        synchronized (Controller.this) {
+                            game.terminateForInactivity();
+                        }
+                    }
+                }, Game.MAX_DELAY_FOR_SUSPENDED_GAME);
+            }
         } catch (InvalidUsernameException e) {
             reportError(username, e.getMessage());
-            return;
-        }
-        turnCompletion.handleLeave(game);
-        if (!game.isActive()) {
-            timerForSuspendedGame.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    synchronized (Controller.this) {
-                        game.terminateForInactivity();
-                    }
-                }
-            }, Game.MAX_DELAY_FOR_SUSPENDED_GAME);
         }
     }
 
@@ -312,9 +321,9 @@ public class Controller implements EventListener, GameRequest {
             reportError(username, e.getMessage());
             return;
         }
-        // the lobby may be already started
-        if (lobby.isGameReady()) {
+        if (game == null && lobby.isGameReady()) {
             game = lobby.createGame();
+            removeExceedingPlayers();
         }
     }
 
