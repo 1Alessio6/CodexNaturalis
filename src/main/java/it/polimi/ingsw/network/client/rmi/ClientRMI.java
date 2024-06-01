@@ -10,7 +10,6 @@ import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.UnReachableServerException;
-import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.model.*;
 import it.polimi.ingsw.network.client.model.card.*;
 import it.polimi.ingsw.network.heartbeat.HeartBeat;
@@ -24,9 +23,8 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.Map;
 
-public class ClientRMI extends Client implements VirtualView{
+public class ClientRMI extends Client {
     private HeartBeat heartBeat;
-    private String name;
 
     public ClientRMI(String host, Integer port) throws UnReachableServerException {
         super(host, port);
@@ -48,10 +46,14 @@ public class ClientRMI extends Client implements VirtualView{
         // register stub
         VirtualView stub =
                 (VirtualView) UnicastRemoteObject.exportObject(this, 0);
-        ClientController controller = clientView.run(stub);
-        name = controller.getMainPlayerUsername();
-        clientView.beginCommandAcquisition();
         heartBeat = new HeartBeat(this, name, server, "server");
+        clientView.runView(stub);
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+        heartBeat.setHandlerName(name);
         heartBeat.startHeartBeat();
     }
 
