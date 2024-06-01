@@ -1,12 +1,13 @@
 package it.polimi.ingsw.network.client;
 
 import it.polimi.ingsw.network.VirtualServer;
+import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.view.View;
 
 import java.rmi.RemoteException;
 
-public abstract class Client {
+public abstract class Client implements VirtualView {
     protected ClientController controller;
     protected View clientView;
     protected VirtualServer server;
