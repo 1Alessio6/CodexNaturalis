@@ -24,7 +24,7 @@ public class SelectUsernameScene extends SceneController{
     private void connect(KeyEvent event) {
         if(event.getCode() == KeyCode.ENTER){
 
-            gui.loadScene(SceneType.CONNECTION);
+           // gui.loadScene(SceneType.CONNECTION);
 
             try{
                 VirtualView client = gui.getClient();
@@ -41,7 +41,8 @@ public class SelectUsernameScene extends SceneController{
                 //could be changed with an error scene
                 Alert alreadyTakenUsername = new Alert(Alert.AlertType.ERROR);
                 alreadyTakenUsername.setTitle("Invalid Username");
-                alreadyTakenUsername.setContentText("Username already taken");
+                //alreadyTakenUsername.setContentText("Username already taken");
+                alreadyTakenUsername.setContentText("Exception: " + e.getMessage());
                 alreadyTakenUsername.show();
                 usernameCatcher.setText("");
             }
