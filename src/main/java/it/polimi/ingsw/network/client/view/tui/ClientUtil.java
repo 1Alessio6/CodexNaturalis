@@ -896,5 +896,22 @@ public class ClientUtil {
         }
     }
 
+    public static void printDecks(ClientFace resourceDeckTop, ClientFace goldenDeckTop) {
+        int x = GameScreenArea.DECKS.getScreenPosition().getX();
+        int y = GameScreenArea.DECKS.getScreenPosition().getY();
 
+        List<Optional<ClientFace>> decks = new ArrayList<>();
+        decks.add(Optional.ofNullable(resourceDeckTop));
+        decks.add(Optional.ofNullable(goldenDeckTop));
+
+        for (Optional<ClientFace> d : decks) {
+            // convert face to its representation or empty space depending on deck's top value
+            String[][] toPrint = d.map(ClientUtil::designCard)
+                    .orElse(ClientUtil.createEmptyArea(ClientUtil.cardHeight, ClientUtil.cardWidth));
+
+            ClientUtil.printToLineColumn(x, y, toPrint);
+            // print to adjacent deck area
+            y += ClientUtil.cardWidth + 2;
+        }
+    }
 }
