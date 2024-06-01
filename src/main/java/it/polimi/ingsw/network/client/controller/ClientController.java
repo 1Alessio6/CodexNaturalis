@@ -302,6 +302,9 @@ public class ClientController implements ClientActions {
         return getMainPlayer().getPlayerCards();
     }
 
+    public ClientCard getMainPlayerStarter() {
+        return getMainPlayer().getStarterCard();
+    }
 
     public String getMainPlayerUsername() {
         return mainPlayerUsername;
@@ -371,7 +374,6 @@ public class ClientController implements ClientActions {
     public ClientPlayground getPlaygroundByUsername(String username){
         return game.getPlaygroundByUsername(username);
     }
-
 
     public ClientPlayer getPlayer(String username) {
         return game.getPlayer(username);
