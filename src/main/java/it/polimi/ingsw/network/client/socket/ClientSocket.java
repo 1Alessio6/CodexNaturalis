@@ -10,7 +10,6 @@ import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.UnReachableServerException;
-import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.model.ClientGame;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
@@ -33,17 +32,14 @@ public class ClientSocket extends Client implements VirtualView {
     private PrintWriter out;
     private BufferedReader in;
     private HeartBeat heartBeat;
-    private String name;
 
-    public ClientSocket(String host, Integer port) throws UnReachableServerException {
+    public ClientSocket(String host, Integer port) throws UnReachableServerException{
         super(host, port);
     }
 
     @Override
     public void runView() {
-        ClientController controller = clientView.run(this);
-        name = controller.getMainPlayerUsername();
-        clientView.beginCommandAcquisition();
+        clientView.runView(this);
     }
 
     private void closeResources() {
@@ -193,6 +189,11 @@ public class ClientSocket extends Client implements VirtualView {
     @Override
     public void reportError(String details) {
         System.err.println(details);
+    }
+
+    @Override
+    public void setName(String name) throws RemoteException {
+        super.name = name;
     }
 
     @Override
