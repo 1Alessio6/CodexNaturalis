@@ -1,11 +1,11 @@
 package it.polimi.ingsw.network.client.view.gui.controllers;
 
-import it.polimi.ingsw.network.client.view.gui.ClientGUI;
+import it.polimi.ingsw.network.client.view.gui.ApplicationGUI;
 
 public abstract class SceneController {
-    protected ClientGUI gui;
+    protected ApplicationGUI gui;
 
-    public void setGui(ClientGUI gui) {
+    public void setGui(ApplicationGUI gui) {
         this.gui = gui;
     }
 
