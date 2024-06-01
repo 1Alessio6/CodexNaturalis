@@ -42,7 +42,7 @@ public class Server {
     public boolean connect(ClientHandler client, String username) {
         boolean status = controller.handleConnection(username, client);
         if (status) {
-            client.addClientUsername(username);
+            client.setName(username);
         }
         return status;
     }
