@@ -31,13 +31,6 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     private Parent currentRoot;
 
-    public ApplicationGUI() {
-        super();
-        this.controller = controller;
-    }
-    */
-
-
     @Override
     public void run(String typeConnection, String host, String port) {
         launch(typeConnection, host, port);
@@ -79,26 +72,12 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 //        this.primaryStage.show();
     }
 
-
-        //((GameScene)currentSceneController).drawPlayground(null);
-
+    @Override
+    public void runView(VirtualView client) {
+        loadScene(SceneType.SELECT_USERNAME);
         this.primaryStage.setTitle("Codex Naturalis");
         this.primaryStage.show();
-
-
     }
-
-    @Override
-    public ClientController run(VirtualView client) {
-        this.client = client;
-        return controller;
-    }
-
-    @Override
-    public void beginCommandAcquisition() {
-
-    }
-
 
     @Override
     public void showServerCrash() {
