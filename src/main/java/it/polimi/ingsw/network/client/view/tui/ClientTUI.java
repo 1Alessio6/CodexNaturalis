@@ -64,6 +64,7 @@ public class ClientTUI implements View {
                         case LOBBYSIZE -> setupLobbyPlayerNumber(Integer.parseInt(nextCommand.length == 2 ? nextCommand[1] : "0")); //todo: could be done in a better way?
                         case OBJECTIVE -> chooseObjective();
                         case STARTER -> placeStarter();
+                        case RULEBOOK -> displayRulebook();
                     }
                 } else {
                     ClientUtil.printCommand("Invalid game command");
@@ -86,9 +87,16 @@ public class ClientTUI implements View {
     private void goBack() {
         // add back commands
         setAvailableActions();
+        // clear screen
+        ClientUtil.clearScreen();
         // print main player stuff again
+        showUpdateAfterConnection();
         ClientUtil.printPlayground(this.controller.getMainPlayerPlayground());
         ClientUtil.printPlayerHand(this.controller.getMainPlayerCards(), cardSide);
+        if(controller.getGamePhase()!=GamePhase.Setup ){
+            showUpdateObjectiveCard();
+        }
+
     }
 
     private void flip() {
@@ -195,6 +203,12 @@ public class ClientTUI implements View {
         return new Position(x, y);
     }
 
+    private void displayRulebook(){
+        ClientUtil.printRulebook();
+        availableActions.add(TUIActions.BACK);
+        ClientUtil.putCursorToInputArea();
+    }
+
     /**
      * This method is invoked in a new thread at the beginning of a game
      * Commands can't be interrupted
@@ -261,6 +275,7 @@ public class ClientTUI implements View {
             availableCommands.add(TUIActions.M);
             availableCommands.add(TUIActions.PM);
             availableCommands.add(TUIActions.FLIP);
+            availableCommands.add(TUIActions.RULEBOOK);
         }
 
         switch (currentPhase) {

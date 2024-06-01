@@ -16,6 +16,7 @@ import it.polimi.ingsw.network.client.view.drawplayground.InvalidCardDimensionEx
 import it.polimi.ingsw.network.client.view.drawplayground.InvalidCardRepresentationException;
 import it.polimi.ingsw.network.client.view.drawplayground.UnInitializedPlaygroundException;
 
+import java.io.*;
 import java.util.*;
 
 import static it.polimi.ingsw.model.card.Symbol.*;
@@ -31,6 +32,7 @@ enum GameScreenArea {
     DECKS(24, 5, new Position(18, 149)),
     CHAT(62, 11, new Position(23, 126)),
     INPUT_AREA(62,11,new Position(36,126)),
+    TITLE(80,5,new Position(2,55)),
     SCOREBOARD(10, 26, new Position(2, 2)),
     PRIVATE_OBJECTIVE(ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(37, 7)),
     COMMON_OBJECTIVE(2 + 2 * ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(44, 2)),
@@ -868,4 +870,29 @@ public class ClientUtil {
             System.out.print("\033[" + (line + numberOfLinesToDelete) + ";0H");
         }
     }
+
+    public static void printRulebook(){
+        clearScreen();
+        printToLineColumn(GameScreenArea.TITLE.getScreenPosition().getX(),
+                GameScreenArea.TITLE.getScreenPosition().getY(),
+                ClientUtil.title);
+        System.out.println("\n");
+        try{
+            InputStream rulebookStream = ClientUtil.class.getClassLoader().getResourceAsStream("tui/CODEX_NATURALIS_RULEBOOK.txt");
+            BufferedReader bufferedReader= null;
+            if (rulebookStream != null) {
+                bufferedReader = new BufferedReader(new InputStreamReader(rulebookStream));
+            }
+            String string;
+            if (bufferedReader != null) {
+                while((string=bufferedReader.readLine())!=null){
+                    System.out.println(string);
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 }
