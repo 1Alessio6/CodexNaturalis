@@ -203,6 +203,7 @@ public class ClientTUI implements View {
                 System.out.print("Insert username: ");
                 String username = console.nextLine();
                 controller.connect(client, username);
+                client.setName(username);
                 break;
             } catch(InvalidUsernameException | FullLobbyException | RemoteException e){
                 System.err.println(e.getMessage());

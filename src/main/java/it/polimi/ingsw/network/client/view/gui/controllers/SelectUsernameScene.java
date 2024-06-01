@@ -2,27 +2,15 @@ package it.polimi.ingsw.network.client.view.gui.controllers;
 
 import it.polimi.ingsw.model.lobby.FullLobbyException;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
-import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
-import it.polimi.ingsw.network.client.controller.ClientController;
-import it.polimi.ingsw.network.client.view.gui.ClientGUI;
-import it.polimi.ingsw.network.client.view.gui.SceneType;
 import javafx.fxml.FXML;
 
-import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.rmi.RemoteException;
-import java.util.Objects;
 
 public class SelectUsernameScene extends SceneController{
 
@@ -39,7 +27,10 @@ public class SelectUsernameScene extends SceneController{
             gui.loadScene(SceneType.CONNECTION);
 
             try{
-                gui.getController().connect(gui.getClient(), usernameCatcher.getPromptText());
+                VirtualView client = gui.getClient();
+                String name = usernameCatcher.getText();
+                gui.getController().connect(gui.getClient(), usernameCatcher.getText());
+                client.setName(name);
             }catch (RemoteException e){
                 //todo add a screen
             }
