@@ -388,4 +388,8 @@ public class ClientController implements ClientActions {
         return getMainPlayerPlayground().getArea().values().stream()
                 .noneMatch(tile -> tile.sameAvailability(Availability.OCCUPIED));
     }
+
+    public List<ClientObjectiveCard> getPlayerObjectives() {
+        return getMainPlayer().getObjectiveCards();
+    }
 }
