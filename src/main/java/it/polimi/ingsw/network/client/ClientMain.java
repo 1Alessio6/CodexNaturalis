@@ -2,14 +2,12 @@ package it.polimi.ingsw.network.client;
 
 import it.polimi.ingsw.network.client.rmi.ClientRMI;
 import it.polimi.ingsw.network.client.socket.ClientSocket;
-import it.polimi.ingsw.network.client.view.View;
-import it.polimi.ingsw.network.client.view.gui.ClientGUI;
-import it.polimi.ingsw.network.client.view.tui.ClientTUI;
+import it.polimi.ingsw.network.client.view.gui.ApplicationGUI;
 import it.polimi.ingsw.network.client.view.tui.ClientUtil;
 
 import java.rmi.RemoteException;
 import java.util.Arrays;
-import java.util.stream.Stream;
+import java.util.List;
 
 public class ClientMain {
     private static final String OPTION_RMI = "rmi";
@@ -17,20 +15,16 @@ public class ClientMain {
     private static final String OPTION_TUI = "tui";
     private static final String OPTION_GUI = "gui";
 
-    private static Client createClient(String host, int port, String typeConnection, String typeView) throws UnReachableServerException {
+    public static Client createClient(List<String> params) throws UnReachableServerException, RemoteException {
         Client client;
+        String typeConnection = params.get(0);
+        String host = params.get(1);
+        Integer port = Integer.parseInt(params.get(2));
         if (typeConnection.equals(OPTION_RMI)) {
             client = new ClientRMI(host, port);
         } else {
             client = new ClientSocket(host, port);
         }
-        View view;
-        if (typeView.equals(OPTION_GUI)) {
-            view = new ClientGUI();
-        } else {
-            view = new ClientTUI(client.getController());
-        }
-        client.addView(view);
         return client;
     }
 
@@ -38,7 +32,7 @@ public class ClientMain {
         String typeConnection = OPTION_SOCKET;
         String typeView = OPTION_TUI;
         String host = "localhost";
-        int port = 1234;
+        String port = "1234";
 
         try {
             // max 4 args: rmi tui port <int>
@@ -52,23 +46,28 @@ public class ClientMain {
                 }
                 for (int i = 0; i < args.length; i++) {
                     if (args[i].equalsIgnoreCase("--port")) {
-                        port = Integer.parseInt(args[i+1]);
+                        port = args[i + 1];
                     }
 
                     if (args[i].equalsIgnoreCase("--host")) {
-                        host = args[i+1];
+                        host = args[i + 1];
                     }
                 }
-            } else if (args.length > 6){
+            } else if (args.length > 6) {
                 ClientUtil.argsHelper("Too many arguments");
             }
-
-            Client c = createClient(host, port, typeConnection, typeView);
-            c.runView();
+            ClientApplication application;
+            if (typeView.equals("tui")) {
+                application = new ApplicationTUI();
+            } else {
+                application = new ApplicationGUI();
+            }
+            application.run(typeConnection, host, port);
         } catch (UnReachableServerException | RemoteException e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
             System.exit(1);
-        } catch (IndexOutOfBoundsException e) {
+        }
+        catch (IndexOutOfBoundsException e) {
             ClientUtil.argsHelper(e.getMessage());
             System.exit(1);
         }
