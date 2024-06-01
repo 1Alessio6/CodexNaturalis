@@ -1,35 +1,26 @@
 package it.polimi.ingsw.network.client.view.gui;
 
-import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.network.VirtualView;
+import it.polimi.ingsw.network.client.Client;
+import it.polimi.ingsw.network.client.ClientApplication;
+import it.polimi.ingsw.network.client.ClientMain;
 import it.polimi.ingsw.network.client.controller.ClientController;
-import it.polimi.ingsw.network.client.model.board.ClientPlayground;
-import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 import it.polimi.ingsw.network.client.view.View;
-import it.polimi.ingsw.network.client.view.gui.controllers.GameScene;
 import it.polimi.ingsw.network.client.view.gui.controllers.LobbyScene;
 import it.polimi.ingsw.network.client.view.gui.controllers.SceneController;
-import it.polimi.ingsw.network.server.rmi.ServerRMI;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 
-public class ClientGUI extends Application implements View {
+public class ApplicationGUI extends Application implements View, ClientApplication {
 
     private Stage primaryStage;
 
@@ -47,10 +38,10 @@ public class ClientGUI extends Application implements View {
     }
     */
 
-    //constructor used ONLY for test
-    public ClientGUI() {
-        super();
-        this.controller = new ClientController(new ServerRMI());
+
+    @Override
+    public void run(String typeConnection, String host, String port) {
+        launch(typeConnection, host, port);
     }
 
 
