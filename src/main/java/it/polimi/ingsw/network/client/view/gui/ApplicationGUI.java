@@ -25,8 +25,8 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
     private Stage primaryStage;
 
     private SceneController currentSceneController;
-    private VirtualView client;
-    private final ClientController controller;
+    private Client client;
+    private ClientController controller;
     private SceneType currentScene;
 
     private Parent currentRoot;
@@ -50,19 +50,34 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
+        System.out.println("Start the gui");
+        System.out.println("Prepare everything for the gui");
+        this.client = ClientMain.createClient(getParameters().getUnnamed());
+        this.controller = client.getController();
         this.primaryStage = primaryStage;
-        //add all controllers constructors
+        client.addView(this);
+        client.runView();
 
-        //FXMLLoader loader = loadScene("/gui/SelectUsernameScene.fxml");
-        loadScene(SceneType.GAME);
-        /*
-        SelectUsernameScene sceneController = loader.getController();
 
-         */
-
-        initializeCurrentSceneController();
-        //((LobbyScene)currentSceneController).initializeCreatorScene();
+//        this.primaryStage = primaryStage;
+//        //add all controllers constructors
+//
+//        //FXMLLoader loader = loadScene("/gui/SelectUsernameScene.fxml");
+//        loadScene(SceneType.SELECT_USERNAME);
+//        /*
+//        SelectUsernameScene sceneController = loader.getController();
+//
+//         */
+//
+//        //  initializeCurrentSceneController();
+//        //((LobbyScene)currentSceneController).initializeCreatorScene();
+//
+//
+//        //((GameScene)currentSceneController).drawPlayground(null);
+//
+//        this.primaryStage.setTitle("Codex Naturalis");
+//        this.primaryStage.show();
+    }
 
 
         //((GameScene)currentSceneController).drawPlayground(null);
