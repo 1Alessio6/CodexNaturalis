@@ -18,6 +18,7 @@ import it.polimi.ingsw.model.lobby.Lobby;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.board.Position;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.VirtualView;
 
 import java.rmi.RemoteException;
@@ -149,7 +150,11 @@ public class Controller implements EventListener, GameRequest {
      * @param username the user's name who leaves the lobby.
      */
     private void leaveLobby(String username) {
-        lobby.remove(username);
+        try {
+            lobby.remove(username);
+        } catch (InvalidUsernameException e) {
+            reportError(username, e.getMessage());
+        }
     }
 
     /**
@@ -329,7 +334,11 @@ public class Controller implements EventListener, GameRequest {
 
     private void reportError(String username, String errorDetails) {
         try {
-            listenerHandler.get(username).reportError(errorDetails);
+            VirtualView toReport = listenerHandler.get(username);
+            // if it's registered in the controller
+            if (toReport != null) {
+                toReport.reportError(errorDetails);
+            }
         } catch (RemoteException e) {
             System.err.println("Connection error");
             handleDisconnection(username);
