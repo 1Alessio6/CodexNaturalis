@@ -51,7 +51,7 @@ public class ListenerHandler<ListenerType> {
         executor.submit(() -> sendNotification(username, toNotify, notifier));
     }
 
-    private void sendNotification(String id, ListenerType recipient, Notifier<ListenerType> notifier) {
+    private synchronized void sendNotification(String id, ListenerType recipient, Notifier<ListenerType> notifier) {
         try {
             notifier.sendUpdate(recipient);
         } catch (RemoteException e) {
