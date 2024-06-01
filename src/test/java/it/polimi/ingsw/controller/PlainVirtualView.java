@@ -90,6 +90,11 @@ public class PlainVirtualView implements VirtualView {
     }
 
     @Override
+    public void setName(String name) throws RemoteException {
+
+    }
+
+    @Override
     public void handleUnresponsiveness(String unresponsiveListener) {
 
     }
