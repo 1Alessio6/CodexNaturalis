@@ -31,8 +31,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     private Parent currentRoot;
 
-    /*
-    public ClientGUI(ClientController controller){
+    public ApplicationGUI() {
         super();
         this.controller = controller;
     }
