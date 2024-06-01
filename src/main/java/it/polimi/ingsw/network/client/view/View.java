@@ -13,7 +13,7 @@ import java.util.List;
 public interface View {
 
     //method used to read client input
-    public ClientController run(VirtualView client);
+    void runView(VirtualView client);
 
     //method used to update after a controller update, invoked by the client class
     public void showServerCrash();
@@ -59,6 +59,6 @@ public interface View {
 
     void showWinners(List<String> winners);
 
-    public void beginCommandAcquisition();
+    //void beginCommandAcquisition();
 
 }

@@ -207,7 +207,8 @@ public class ClientTUI implements View {
 
 
     @Override
-    public ClientController run(VirtualView client) {
+    public void runView(VirtualView client) {
+        String username = null;
         // connection logic
         while(true) {
             try {
@@ -219,8 +220,8 @@ public class ClientTUI implements View {
                 System.err.println(e.getMessage());
             }
         }
-        //beginCommandAcquisition();
-        return controller;
+        // todo: synchronize to have correct command list
+        new Thread(this::parseGameCommands).start();
     }
 
     private void lookAtPlayer(int playerIdx) {
