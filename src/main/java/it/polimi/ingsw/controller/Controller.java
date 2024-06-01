@@ -136,12 +136,17 @@ public class Controller implements EventListener, GameRequest {
     }
 
     public synchronized void handleDisconnection(String username) {
+        if (!listenerHandler.getIds().contains(username)) {
+            return;
+        }
+
+        listenerHandler.remove(username);
+
         if (!lobby.isGameReady()) {
             leaveLobby(username);
         } else {
             leaveGame(username);
         }
-        listenerHandler.remove(username);
     }
 
     /**
