@@ -195,20 +195,8 @@ public class ClientTUI implements View {
         return new Position(x, y);
     }
 
-    /**
-     * This method is invoked in a new thread at the beginning of a game
-     * Commands can't be interrupted
-     */
-    @Override
-    public void beginCommandAcquisition() {
-        // todo: synchronize to have correct command list
-        new Thread(this::parseGameCommands).start();
-    }
-
-
     @Override
     public void runView(VirtualView client) {
-        String username = null;
         // connection logic
         while(true) {
             try {
