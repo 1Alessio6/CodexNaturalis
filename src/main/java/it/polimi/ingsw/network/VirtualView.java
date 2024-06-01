@@ -76,4 +76,6 @@ public interface VirtualView extends HeartBeatListener, HeartBeatHandler, Remote
 
     void reportError(String details) throws RemoteException;
 
+    void setName(String name) throws RemoteException;
+
 }
