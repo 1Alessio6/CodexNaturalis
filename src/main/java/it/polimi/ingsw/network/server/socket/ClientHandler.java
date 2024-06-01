@@ -44,10 +44,6 @@ public class ClientHandler implements VirtualView {
         heartBeat.startHeartBeat();
     }
 
-    public void addClientUsername(String username) {
-        this.username = username;
-        // heartBeat.setListener(this, username);
-    }
 
     public void run() {
         System.out.println("ClientHandler has started");
@@ -228,6 +224,11 @@ public class ClientHandler implements VirtualView {
         String jsonMessage = gson.toJson(message);
         out.println(jsonMessage);
         out.flush();
+    }
+
+    @Override
+    public void setName(String name) throws RemoteException {
+        this.username = name;
     }
 
     @Override
