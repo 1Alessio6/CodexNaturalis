@@ -11,6 +11,7 @@ public abstract class Client implements VirtualView {
     protected ClientController controller;
     protected View clientView;
     protected VirtualServer server;
+    protected String name;
 
     protected abstract void connect(String ip, Integer port) throws UnReachableServerException;
 
