@@ -119,7 +119,10 @@ public class Lobby {
      *
      * @param username of the player to remove.
      */
-    public void remove(String username) {
+    public void remove(String username) throws InvalidUsernameException {
+        if (listenerHandler.get(username) == null) {
+            throw new InvalidUsernameException();
+        }
         listenerHandler.remove(username);
         // if the creator leaves the lobby before setting the number of players
         if (creator != null && creator.equals(username) && numPlayersToStartTheGame == INVALID_NUM_PLAYERS) {
