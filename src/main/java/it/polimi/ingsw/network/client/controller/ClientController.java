@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.client.controller;
 import it.polimi.ingsw.controller.InvalidIdForDrawingException;
 import it.polimi.ingsw.model.InvalidGamePhaseException;
 import it.polimi.ingsw.model.SuspendedGameException;
+import it.polimi.ingsw.model.board.Availability;
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.*;
@@ -381,5 +382,10 @@ public class ClientController implements ClientActions {
 
     public boolean isActive() {
         return game.isGameActive();
+    }
+
+    public boolean isMainPlaygroundEmpty() {
+        return getMainPlayerPlayground().getArea().values().stream()
+                .noneMatch(tile -> tile.sameAvailability(Availability.OCCUPIED));
     }
 }
