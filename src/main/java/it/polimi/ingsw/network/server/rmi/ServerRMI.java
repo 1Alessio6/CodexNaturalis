@@ -143,7 +143,7 @@ public class ServerRMI implements VirtualServer {
             HeartBeat heartBeat = activeClients.get(ping.getSender());
             //System.out.println("Received ping from " + ping.getSender());
             if (heartBeat==null) {
-                System.err.println("which is unknown user: never connected or crashed");
+                System.err.println("received ping from " + ping.getSender() + " which is unknown user: never connected or crashed");
             } else {
                 //System.err.println("which is known");
                 heartBeat.registerMessage(ping);

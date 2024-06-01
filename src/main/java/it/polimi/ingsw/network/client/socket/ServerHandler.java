@@ -40,7 +40,7 @@ public class ServerHandler implements VirtualServer {
         try {
             String line = in.readLine();
             while (line != null) {
-                //System.out.println("received from server: " + line);
+                System.out.println("received from server: " + line);
                 NetworkMessage message = gson.fromJson(line, NetworkMessage.class);
                 Type type = message.getNetworkType();
 
