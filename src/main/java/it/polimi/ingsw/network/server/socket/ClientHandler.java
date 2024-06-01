@@ -227,7 +227,7 @@ public class ClientHandler implements VirtualView {
     }
 
     @Override
-    public void setName(String name) throws RemoteException {
+    public void setName(String name) {
         this.username = name;
     }
 
