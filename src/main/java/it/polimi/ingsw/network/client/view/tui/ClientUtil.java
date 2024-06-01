@@ -765,7 +765,9 @@ public class ClientUtil {
         return placeHolder;
     }
 
-    public static void printFaceUpCards(List<ClientFace> faces) {
+    public static void printFaceUpCards(List<ClientCard> faceUpCards) {
+        List<ClientFace> faces = faceUpCards.stream().map(c -> c.getFace(Side.FRONT)).toList();
+
         int relativeY = areaPadding;
         int relativeX = areaPadding;
         for (int i = 0; i < 4; i++) {
