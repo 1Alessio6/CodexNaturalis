@@ -15,7 +15,7 @@ public class ClientMain {
     private static final String OPTION_TUI = "tui";
     private static final String OPTION_GUI = "gui";
 
-    public static Client createClient(List<String> params) throws UnReachableServerException, RemoteException {
+    public static Client createClient(List<String> params) throws UnReachableServerException {
         Client client;
         String typeConnection = params.get(0);
         String host = params.get(1);
@@ -30,7 +30,7 @@ public class ClientMain {
 
     public static void main(String[] args) {
         String typeConnection = OPTION_SOCKET;
-        String typeView = OPTION_TUI;
+        String typeView = OPTION_GUI;
         String host = "localhost";
         String port = "1234";
 
