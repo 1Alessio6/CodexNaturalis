@@ -194,7 +194,7 @@ public class ClientUtil {
         }
     }
 
-    // mostly used to convert cards, generally string matrixes
+    // mostly used to convert cards, generally string matrices
     public static void printToLineColumn(int numberOfLine, int numberOfColumn, String[][] matrix) {
         String[] lines = Arrays.stream(matrix).map(str -> String.join("", str)).toArray(String[]::new);
 
@@ -244,20 +244,6 @@ public class ClientUtil {
             b.append(thinSpace);
         }
         return b.toString();
-    }
-    public static void printInLineColumn(int numberOfLine, int numberOfColumn, String[][] matrix) {
-        int lines = matrix.length;
-        int columns = matrix[0].length;
-        int ongoingColumn = numberOfColumn;
-        for (int i = 0; i < lines; i++) {
-            for (int j = 0; j < columns; j++) {
-                System.out.print("\033[" + numberOfLine + ";" + numberOfColumn + "H" + matrix[i][j]);
-                numberOfColumn += matrix[i][j].length();
-            }
-            numberOfLine++;
-            numberOfColumn = ongoingColumn;
-            System.out.println();
-        }
     }
 
     public static StringBuilder designSquare(int width, int height) {
@@ -907,11 +893,23 @@ public class ClientUtil {
         for (Optional<ClientFace> d : decks) {
             // convert face to its representation or empty space depending on deck's top value
             String[][] toPrint = d.map(ClientUtil::designCard)
-                    .orElse(ClientUtil.createEmptyArea(ClientUtil.cardHeight, ClientUtil.cardWidth));
+                    .orElse(ClientUtil.createEmptyArea(cardHeight, cardWidth));
 
             ClientUtil.printToLineColumn(x, y, toPrint);
             // print to adjacent deck area
-            y += ClientUtil.cardWidth + 2;
+            y += cardWidth + 2;
+        }
+    }
+
+    public static void printObjectiveCards(List<ClientObjectiveCard> objectives, GameScreenArea area) {
+        int x = area.getScreenPosition().getX();
+        int y = area.getScreenPosition().getY();
+
+        for (ClientObjectiveCard card : objectives) {
+            ClientUtil.printToLineColumn(x, y, designObjectiveCard(card));
+
+            // print next to
+            y += cardWidth + 2;
         }
     }
 }

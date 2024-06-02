@@ -74,7 +74,7 @@ public class ClientTUI implements View {
                      RemoteException | InvalidMessageException | InvalidIdForDrawingException | EmptyDeckException |
                      InvalidColorException | NotExistingFaceUp | Playground.UnavailablePositionException |
                      Playground.NotEnoughResourcesException | InvalidGamePhaseException | SuspendedGameException e) {
-                ClientUtil.printToLineColumn(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+2,GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1,e.getMessage());
+                ClientUtil.printToLineColumn(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+2, GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1,e.getMessage());
                 // print help for consented commands
                 ClientUtil.printHelpCommands(availableActions);
             } finally {
@@ -350,6 +350,7 @@ public class ClientTUI implements View {
         ClientUtil.printDecks(controller.getResourceDeckTopBack(), controller.getGoldenDeckTopBack());
 
         // print objective(s)
+        showUpdateObjectiveCard();
 
         ClientUtil.printPlayground(playerPlayground);
         // check if there is any occupied tile: it means starter has been placed
@@ -408,12 +409,9 @@ public class ClientTUI implements View {
     @Override
     public void showUpdateObjectiveCard() {
         // print private objective card
-        ClientUtil.printToLineColumn(GameScreenArea.PRIVATE_OBJECTIVE.getScreenPosition().getX(), GameScreenArea.PRIVATE_OBJECTIVE.getScreenPosition().getY(), ClientUtil.designObjectiveCard(controller.getMainPlayer().getObjectiveCards().getFirst()));
-
+        ClientUtil.printObjectiveCards(controller.getPlayerObjectives(), GameScreenArea.PRIVATE_OBJECTIVE);
         //print common objective cards
-        for (int i = 0; i < 2; i++) {
-            ClientUtil.printToLineColumn(GameScreenArea.COMMON_OBJECTIVE.getScreenPosition().getX(), GameScreenArea.COMMON_OBJECTIVE.getScreenPosition().getY() + (ClientUtil.cardWidth + 2) * i, ClientUtil.designObjectiveCard(controller.getObjectiveCards().get(i)));
-        }
+        ClientUtil.printObjectiveCards(controller.getObjectiveCards(), GameScreenArea.COMMON_OBJECTIVE);
 
         // remove action: new actions will be available after current player update
         availableActions.remove(TUIActions.OBJECTIVE);
