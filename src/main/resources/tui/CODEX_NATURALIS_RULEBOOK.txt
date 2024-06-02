@@ -1,47 +1,37 @@
-COMPONENTS                                                   Objective Position cards contain the position case inside         4. <.number> = 4
-                                                              required to gain the points. The different cases are:                  
-* 40 Resource cards                                                                                                                  ╔══════════════════╗
-* 40 Gold cards                                               1. <.number> = 1                                                       ║     ┌‐‐‐┐        ║
-* 6 Starter cards                                                                                                                    ║     └‐‐‐┌*‐‐┐    ║
-* 16 Objective cards                                               ╔══════════════════╗                                              ║         └‐‐‐┘    ║
-* 4 colors                                                         ║                  ║                                              ║         ┌‐‐‐┐    ║
-  red, blue, green, yellow                                         ║            ┌‐‐‐┐ ║                                              ║         └‐‐‐┘    ║
-                                                                   ║         ┌‐‐*┐‐‐┘ ║                                              ╚══════════════════╝
-                                                                   ║     ┌‐‐*┐‐‐‐┘    ║
-GAME OVERVIEW                                                      ║     └‐‐‐┘        ║                                         5. <.number> = 5
-                                                                   ╚══════════════════╝
-Play and place your cards carefully to benefit from the                                                                               ╔══════════════════╗
-resources and the objects to:                                  2. <.number> = 2                                                       ║         ┌‐‐‐┐    ║
-* Play cards to win immediate points.                                                                                                 ║      ┌‐‐*┐‐‐┘    ║
-* Fulfill endgame objectives.                                       ╔══════════════════╗                                              ║      └‐‐‐┘       ║
-The first player to reach 20 points triggers the end of             ║     ┌‐‐‐┐        ║                                              ║      ┌‐‐‐┐       ║
-the game.                                                           ║     └‐‐‐┘        ║                                              ║      └‐‐‐┘       ║
-                                                                    ║     ┌‐‐‐┐        ║                                              ╚══════════════════╝
-                                                                    ║     └‐‐‐┌*‐‐┐    ║
-PLANING THE GAME                                                    ║         └‐‐‐┘    ║                                         6. <.number> = 6
-                                                                    ╚══════════════════╝                                        
-A game consists of several rounds that players take one                                                                               ╔══════════════════╗
-after another. In turn, the player must perform the             3. <.number> = 3                                                      ║        ┌‐‐‐┐     ║
-following two actions in order.                                                                                                       ║        └‐‐‐┘     ║
-                                                                     ╔══════════════════╗                                             ║        ┌‐‐‐┐     ║
-1. Play a card from their hand.                                      ║                  ║                                             ║    ┌‐‐*┐‐‐‐┘     ║
-2. Draw a card.                                                      ║  ┌‐‐‐┐           ║                                             ║    └‐‐‐┘         ║
-                                                                     ║  └‐‐‐┌*‐‐┐       ║                                             ╚══════════════════╝
-                                                                     ║      └‐‐‐┌*‐‐┐   ║
-                                                                     ║          └‐‐‐┘   ║                                   2. Objective Resource cards
-OBJECTIVE CARDS CONVENTION                                           ╚══════════════════╝
-                                                                                                                                      ╔ ═════ ╗
-1. Objective Position cards                                                                                                           ║  <R>  ║
-                                                                                                                                      ╚ ═════ ╝
-     ╔ ═════ ╗                                                                                                                  
-     ║.number║                                                                                                                 Objective Resource cards contain the number of <R> resources
-     ╚ ═════ ╝                                                                                                                 that are necessary in order to gain the points.
-         
 
+                 ~ COMPONENTS ~
 
+* 40 Resource cards                                                                                                            2. Objective Resource cards
+* 40 Gold cards                                              1. <.number> = 1                 2. <.number> = 2
+* 6 Starter cards                                                    ╔══════════════════╗             ╔══════════════════╗              ╔ ═════ ╗
+* 16 Objective cards                                                 ║          ┌‐‐‐┐   ║             ║     ┌‐‐‐┐        ║              ║  <R>  ║
+* 4 colors                                                           ║       ┌‐‐*┐‐‐┘   ║             ║     └‐‐‐┘        ║              ╚ ═════ ╝
+  red, blue, green, yellow                                           ║   ┌‐‐*┐‐‐‐┘      ║             ║     ┌‐‐‐┐        ║
+                                                                     ║   └‐‐‐┘          ║             ║     └‐‐‐┌*‐‐┐    ║     Objective Resource cards contain the number of <R> resources
+                ~ GAME OVERVIEW ~                                    ║                  ║             ║         └‐‐‐┘    ║     that are necessary in order to gain the points.
+                                                                     ╚══════════════════╝             ╚══════════════════╝
+Play and place your cards carefully to benefit from the
+resources and the objects to:
+* Play cards to win immediate points.
+* Fulfill endgame objectives.                                3. <.number> = 3                 4. <.number> = 4
+The first player to reach 20 points triggers the end of              ╔══════════════════╗             ╔══════════════════╗
+the game.                                                            ║  ┌‐‐‐┐           ║             ║     ┌‐‐‐┐        ║
+                                                                     ║  └‐‐‐┌*‐‐┐       ║             ║     └‐‐‐┌*‐‐┐    ║
+               ~ PLANING THE GAME ~                                  ║      └‐‐‐┌*‐‐┐   ║             ║         └‐‐‐┘    ║
+                                                                     ║          └‐‐‐┘   ║             ║         ┌‐‐‐┐    ║
+A game consists of several rounds that players take one              ║                  ║             ║         └‐‐‐┘    ║
+after another. In turn, the player must perform the                  ╚══════════════════╝             ╚══════════════════╝
+following two actions in order.
+1. Play a card from their hand.
+2. Draw a card.
+                                                             5. <.number> = 5                 6. <.number> = 6
+           ~ OBJECTIVE CARDS CONVENTION ~                            ╔══════════════════╗             ╔══════════════════╗
+                                                                     ║         ┌‐‐‐┐    ║             ║        ┌‐‐‐┐     ║
+1. Objective Position cards                                          ║      ┌‐‐*┐‐‐┘    ║             ║        └‐‐‐┘     ║
+                                                                     ║      └‐‐‐┘       ║             ║        ┌‐‐‐┐     ║
+          ╔ ═════ ╗                                                  ║      ┌‐‐‐┐       ║             ║    ┌‐‐*┐‐‐‐┘     ║
+          ║.number║                                                  ║      └‐‐‐┘       ║             ║    └‐‐‐┘         ║
+          ╚ ═════ ╝                                                  ╚══════════════════╝             ╚══════════════════╝
 
-      
-      
-      
-
-     
+Objective Position cards contain the position case inside
+required to gain the points. The different cases are:
