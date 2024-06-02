@@ -28,7 +28,7 @@ import static it.polimi.ingsw.network.client.view.tui.ANSIColor.*;
 enum GameScreenArea {
     PLAYGROUND(96, 40, new Position(30, 2)),
     FACE_UP_CARDS(24, 14, new Position(146, 2)),
-    HAND_CARDS(2*ClientUtil.areaPadding + 3*ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(44 ,62)),
+    HAND_CARDS(2*ClientUtil.areaPadding + 3*ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(62 ,44)),
     DECKS(24, 5, new Position(18, 149)),
     CHAT(62, 11, new Position(23, 126)),
     INPUT_AREA(62,11,new Position(36,126)),
@@ -180,25 +180,25 @@ public class ClientUtil {
     }
 
     // this takes a string as input
-    public static void printToLineColumn(int numberOfLine, int numberOfColumn, String str) {
+    public static void printToLineColumn(int lineCoordinate, int columnCoordinate, String str) {
         String[] lines = str.split("\n");
-        printToLineColumn(numberOfLine, numberOfColumn, lines);
+        printToLineColumn(lineCoordinate, columnCoordinate, lines);
     }
 
     // this takes an array of string as input
-    public static void printToLineColumn(int numberOfLine, int numberOfColumn, String[] str) {
-        int ongoingLine = numberOfLine;
+    public static void printToLineColumn(int lineCoordinate, int columnCoordinate, String[] str) {
+        int ongoingLine = lineCoordinate;
         for (String line : str) {
-            System.out.println("\033[" + ongoingLine + ";" + numberOfColumn + "H" + line);
+            System.out.println("\033[" + ongoingLine + ";" + columnCoordinate + "H" + line);
             ongoingLine++;
         }
     }
 
     // mostly used to convert cards, generally string matrices
-    public static void printToLineColumn(int numberOfLine, int numberOfColumn, String[][] matrix) {
+    public static void printToLineColumn(int lineCoordinate, int columnCoordinate, String[][] matrix) {
         String[] lines = Arrays.stream(matrix).map(str -> String.join("", str)).toArray(String[]::new);
 
-        printToLineColumn(numberOfLine, numberOfColumn, lines);
+        printToLineColumn(lineCoordinate, columnCoordinate, lines);
     }
 
     public static String[][] designObjectiveCard(ClientObjectiveCard objectiveCard) {
@@ -567,16 +567,33 @@ public class ClientUtil {
     }
 
     public static void printPlayerHand(List<ClientCard> hand, Side side) {
-        Position startPrintPosition = GameScreenArea.HAND_CARDS.getScreenPosition();
+        int x = GameScreenArea.HAND_CARDS.getScreenPosition().getX();
+        int y = GameScreenArea.HAND_CARDS.getScreenPosition().getY();
+
+        List<ClientFace> faces = hand.stream().map(c -> c.getFace(side)).toList();
+
         for (int i = 0; i < 3; i++) {
-            // print empty space if there is no card
-            String[][] toPrint = i < hand.size() ? designCard(hand.get(i).getFace(side)) : createEmptyArea(cardHeight, cardWidth);
-
-            printToLineColumn(startPrintPosition.getX(), startPrintPosition.getY(), toPrint);
-
+            ClientFace face = i < faces.size() ? faces.get(i) : null;
+            printCardOutsidePlayground(x, y, face);
             // move cursor after padding
-            startPrintPosition = Position.sum(startPrintPosition, new Position(0, cardWidth + areaPadding));
+            x += cardWidth + areaPadding;
         }
+    }
+
+    /**
+     * Need this method because outside playground player needs to know card's requirements
+     * @param x of card print zone
+     * @param y of card print zone
+     * @param face (optional) of the card: will decide if print card
+     */
+    private static void printCardOutsidePlayground(int x, int y, ClientFace face) {
+        String[][] toPrint = Optional.ofNullable(face).map(ClientUtil::designCard)
+                .orElse(createEmptyArea(cardHeight, cardWidth));
+
+        Map<Symbol, Integer> map = Optional.ofNullable(face).map(ClientFace::getRequirements).orElse(new HashMap<>());
+
+        printToLineColumn(y, x, toPrint);
+        printToLineColumn(y + cardHeight, x, createCardConditionString(map));
     }
 
     public static void printResourcesArea(Map<Symbol, Integer> filler) {
@@ -727,8 +744,6 @@ public class ClientUtil {
     public static String[][] drawAvailablePosition(Position pos) {
         String[][] placeHolder = createEmptyArea(cardHeight, cardWidth - 2);
 
-        // corners are empty, so they don't cover possible resources
-
         //upper part
         for (int i = 2; i < cardWidth - 2 - 1; i++) {
             placeHolder[0][i] = "═";
@@ -742,6 +757,13 @@ public class ClientUtil {
         placeHolder[1][4] = String.valueOf(pos.getY());
 
         placeHolder[1][cardWidth - 2 - 1] = "║";
+
+        // fill middle if shorter
+        int cardFixedStuffSize = 3; // border of the card + comma
+        int positionSize = placeHolder[1][2].length() + placeHolder[1][4].length();
+        int availableSpaces = cardWidth - cardFixedStuffSize - positionSize;
+        placeHolder[1][1] = " ".repeat((availableSpaces)/2 + (availableSpaces % 2)); // add one space more if needed
+        placeHolder[1][5] = " ".repeat((availableSpaces)/2);
 
         // lower part
         for (int i = cardHeight - 1; i < cardWidth - 2 - 1; i++) {
@@ -763,11 +785,11 @@ public class ClientUtil {
                 relativeX = areaPadding;
             }
 
-            String[][] toDraw = (i < faces.size()) ? designCard(faces.get(i)) : createEmptyArea(cardHeight, cardWidth);
+            ClientFace face = i < faces.size() ? faces.get(i) : null;
+            printCardOutsidePlayground(GameScreenArea.FACE_UP_CARDS.screenPosition.getX() + relativeX,
+                    GameScreenArea.FACE_UP_CARDS.screenPosition.getY() + relativeY,
+                    face);
 
-            printToLineColumn(GameScreenArea.FACE_UP_CARDS.screenPosition.getY() + relativeY,
-                    GameScreenArea.FACE_UP_CARDS.screenPosition.getX() + relativeX,
-                    toDraw);
             relativeX += cardWidth + areaPadding;
         }
     }
@@ -905,11 +927,21 @@ public class ClientUtil {
         int x = area.getScreenPosition().getX();
         int y = area.getScreenPosition().getY();
 
-        for (ClientObjectiveCard card : objectives) {
-            ClientUtil.printToLineColumn(x, y, designObjectiveCard(card));
+        for(int i = 0; i < 2; ++i, y += cardWidth + areaPadding) {
+            String[][] toPrint = i + 1 <= objectives.size() ?
+                    designObjectiveCard(objectives.get(i)) :
+                    createEmptyArea(cardHeight, cardWidth);
 
-            // print next to
-            y += cardWidth + 2;
+            ClientUtil.printToLineColumn(x, y, toPrint);
         }
+    }
+
+    private static String createCardConditionString(Map<Symbol, Integer> requirement) {
+        // print requirements if present on the face
+        Optional<Map.Entry<Symbol, Integer>> entry = requirement.entrySet().stream().findFirst();
+        // format "nicely"
+        return entry.map(symbolIntegerEntry ->
+                        "Need " + symbolIntegerEntry.getKey().getIcon() + "x" + symbolIntegerEntry.getValue())
+                .orElse(" ".repeat(cardWidth));
     }
 }
