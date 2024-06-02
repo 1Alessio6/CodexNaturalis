@@ -249,6 +249,12 @@ public class ClientUtil {
         return b.toString();
     }
 
+    public static void clearExceptionSpace(){
+        writeLine(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+11,
+                GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1,
+                GameScreenArea.INPUT_AREA.getWidth() -2,
+                " ".repeat(120));
+    }
     public static StringBuilder designSquare(int width, int height) {
         StringBuilder str = new StringBuilder();
 

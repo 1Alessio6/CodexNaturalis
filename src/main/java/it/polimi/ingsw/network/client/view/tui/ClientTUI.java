@@ -74,7 +74,11 @@ public class ClientTUI implements View {
                      RemoteException | InvalidMessageException | InvalidIdForDrawingException | EmptyDeckException |
                      InvalidColorException | NotExistingFaceUp | Playground.UnavailablePositionException |
                      Playground.NotEnoughResourcesException | InvalidGamePhaseException | SuspendedGameException e) {
-                ClientUtil.printToLineColumn(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+2, GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1,e.getMessage());
+                ClientUtil.clearExceptionSpace();
+                ClientUtil.writeLine(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+11,
+                        GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1,
+                        GameScreenArea.INPUT_AREA.getWidth()-2,
+                        e.getMessage());
                 // print help for consented commands
                 ClientUtil.printHelpCommands(availableActions);
             } finally {
