@@ -205,15 +205,18 @@ public class ClientUtil {
         String[][] cardMatrix = new String[3][7];
         initializeMatrix(cardMatrix);
         ANSIColor color = YELLOW;
+        int points;
         Map<Position, CardColor> positionCondition = objectiveCard.getPositionCondition();
         Map<Symbol, Integer> resourceCondition = objectiveCard.getResourceCondition();
 
         int switchCase = positionOrResourcesSwitchCase(positionCondition, resourceCondition);
 
         if (switchCase == 1) {//it is a card with a position condition
+            points=positionCase(positionCondition)==1 ||positionCase(positionCondition)==3 ? 2:3;
             appendNewResources(new HashMap<>(), cardMatrix, color);
             appendMatrixLines(new HashMap<>(), null, cardMatrix, color);
-            appendPoints(cardMatrix, null, positionCase(positionCondition));
+            paintBackground(cardMatrix,positionCondition);
+            appendPoints(cardMatrix, null, points);
         } else if (switchCase == 2) {
             appendNewResources(new HashMap<>(), cardMatrix, color);
             appendMatrixLines(resourceCondition, null, cardMatrix, color);
@@ -295,6 +298,16 @@ public class ClientUtil {
             case YELLOW -> YELLOW_BACKGROUND_BRIGHT;
             case BLACK -> BLACK_BOLD_BRIGHT;
             case null -> BLACK_BOLD_BRIGHT;
+        };
+    }
+
+    public static ANSIColor cardColorToBGConversion(CardColor color) {
+        return switch (color) {
+            case RED -> RED_BACKGROUND_BRIGHT;
+            case BLUE -> BLUE_BACKGROUND_BRIGHT;
+            case GREEN -> GREEN_BACKGROUND_BRIGHT;
+            case PURPLE -> PURPLE_BACKGROUND_HIGH_INTENSITY;
+            case YELLOW -> null;
         };
     }
 
@@ -467,6 +480,46 @@ public class ClientUtil {
             return 6;
         } else {
             return 0;
+        }
+    }
+
+    private static void paintBackground(String[][] card, Map<Position, CardColor> positionCardColorMap) {
+        ArrayList<CardColor> colors = new ArrayList<>();
+        int posCase = positionCase(positionCardColorMap);
+        for (Map.Entry<Position, CardColor> entry : positionCardColorMap.entrySet()) {
+            colors.add(entry.getValue());
+        }
+        switch (posCase) {
+            case 1:
+                card[2][1] = cardColorToBGConversion(colors.get(0)).getColor() + " " + RESET.getColor();
+                card[1][3] = cardColorToBGConversion(colors.get(1)).getColor() + " " + RESET.getColor();
+                card[0][3] = cardColorToBGConversion(colors.get(2)).getColor() + " " + RESET.getColor();
+                break;
+            case 2:
+                card[0][2]=cardColorToBGConversion(colors.get(0)).getColor()+" "+RESET.getColor();
+                card[1][3]=cardColorToBGConversion(colors.get(1)).getColor()+" "+RESET.getColor();
+                card[2][3]=cardColorToBGConversion(colors.get(2)).getColor()+" "+RESET.getColor();
+                break;
+            case 3:
+                card[0][1]=cardColorToBGConversion(colors.get(0)).getColor()+" "+RESET.getColor();
+                card[1][3]=cardColorToBGConversion(colors.get(1)).getColor()+" "+RESET.getColor();
+                card[2][3]=cardColorToBGConversion(colors.get(2)).getColor()+" "+RESET.getColor();
+                break;
+            case 4:
+                card[0][1]=cardColorToBGConversion(colors.get(0)).getColor()+" "+RESET.getColor();
+                card[1][3]=cardColorToBGConversion(colors.get(1)).getColor()+" "+RESET.getColor();
+                card[2][2]=cardColorToBGConversion(colors.get(2)).getColor()+" "+RESET.getColor();
+                break;
+            case 5:
+                card[2][2]=cardColorToBGConversion(colors.get(0)).getColor()+" "+RESET.getColor();
+                card[1][3]=cardColorToBGConversion(colors.get(1)).getColor()+" "+RESET.getColor();
+                card[0][3]=cardColorToBGConversion(colors.get(2)).getColor()+" "+RESET.getColor();
+                break;
+            case 6:
+                card[2][1]=cardColorToBGConversion(colors.get(0)).getColor()+" "+RESET.getColor();
+                card[1][3]=cardColorToBGConversion(colors.get(1)).getColor()+" "+RESET.getColor();
+                card[0][2]=cardColorToBGConversion(colors.get(2)).getColor()+" "+RESET.getColor();
+                break;
         }
     }
 

@@ -2,7 +2,7 @@
                  ~ COMPONENTS ~
 
 * 40 Resource cards                                                                                                            2. Objective Resource cards
-* 40 Gold cards                                              1. <.number> = 1                 2. <.number> = 2
+* 40 Gold cards                                              1. First case                    2. Second case
 * 6 Starter cards                                                    ╔══════════════════╗             ╔══════════════════╗              ╔ ═════ ╗
 * 16 Objective cards                                                 ║          ┌‐‐‐┐   ║             ║     ┌‐‐‐┐        ║              ║  <R>  ║
 * 4 colors                                                           ║       ┌‐‐*┐‐‐┘   ║             ║     └‐‐‐┘        ║              ╚ ═════ ╝
@@ -13,7 +13,7 @@
 Play and place your cards carefully to benefit from the
 resources and the objects to:
 * Play cards to win immediate points.
-* Fulfill endgame objectives.                                3. <.number> = 3                 4. <.number> = 4
+* Fulfill endgame objectives.                                3. Third case                    4. Fourth case
 The first player to reach 20 points triggers the end of              ╔══════════════════╗             ╔══════════════════╗
 the game.                                                            ║  ┌‐‐‐┐           ║             ║     ┌‐‐‐┐        ║
                                                                      ║  └‐‐‐┌*‐‐┐       ║             ║     └‐‐‐┌*‐‐┐    ║
@@ -24,7 +24,7 @@ after another. In turn, the player must perform the                  ╚══�
 following two actions in order.
 1. Play a card from their hand.
 2. Draw a card.
-                                                             5. <.number> = 5                 6. <.number> = 6
+                                                             5. Fifth case                    6. Sixth case
            ~ OBJECTIVE CARDS CONVENTION ~                            ╔══════════════════╗             ╔══════════════════╗
                                                                      ║         ┌‐‐‐┐    ║             ║        ┌‐‐‐┐     ║
 1. Objective Position cards                                          ║      ┌‐‐*┐‐‐┘    ║             ║        └‐‐‐┘     ║
@@ -33,5 +33,6 @@ following two actions in order.
           ║.number║                                                  ║      └‐‐‐┘       ║             ║    └‐‐‐┘         ║
           ╚ ═════ ╝                                                  ╚══════════════════╝             ╚══════════════════╝
 
-Objective Position cards contain the position case inside
-required to gain the points. The different cases are:
+Objective Position cards contain <.number> per identical
+pattern in the play area of the player. The different
+cases are:
