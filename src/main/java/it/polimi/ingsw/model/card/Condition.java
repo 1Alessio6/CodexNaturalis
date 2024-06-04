@@ -1,5 +1,8 @@
 package it.polimi.ingsw.model.card;
 
+/**
+ * Enumeration representing the requisite conditions for obtaining the points indicated on the card
+ */
 public enum Condition {
     /**
      * Num_Quill, number of the quills required in the condition
