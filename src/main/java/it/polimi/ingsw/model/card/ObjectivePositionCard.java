@@ -16,6 +16,13 @@ public class ObjectivePositionCard extends ObjectiveCard {
         condition = new HashMap<>();
     }
 
+    /**
+     * Constructs an objective position card with the <code>condition</code> and <code>multiplier</code> provided
+     *
+     * @param condition  with the positions and colors of the cards
+     * @param multiplier of the objective position card
+     * @throws IllegalArgumentException if the condition that has been passed is null
+     */
     public ObjectivePositionCard(Map<Position, CardColor> condition, int multiplier) throws IllegalArgumentException {
         super(multiplier);
 
@@ -25,20 +32,40 @@ public class ObjectivePositionCard extends ObjectiveCard {
         this.condition = condition;
     }
 
+    /**
+     * Returns the condition of the objective position card
+     *
+     * @return a map with the positions and colors of the cards
+     */
     public Map<Position, CardColor> getCondition(){
         return new HashMap<>(condition);
     }
 
+    /**
+     * Verifies that the <code>requiredPosition</code> and <code>requiredColor</code> provided are on the
+     * <code>playground</code>
+     *
+     * @param playground       in which position and color are to be verified
+     * @param requiredPosition to be verified
+     * @param requiredColor    of the card
+     * @return true if there is a card in the given position with the specified color on the playground, false otherwise
+     */
     private boolean matchRequirement(Playground playground, Position requiredPosition, CardColor requiredColor) {
         return playground.contains(requiredPosition)
                 && playground.getTile(requiredPosition).getFace().getColor().equals(requiredColor);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Map<Position, CardColor> getPositionCondition() {
         return condition;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int calculatePoints(Playground playground) {
         int count = 0;
