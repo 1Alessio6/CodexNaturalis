@@ -211,6 +211,7 @@ public class ClientTUI implements View {
         int x = console.nextInt();
         int y = console.nextInt();
         //ClientUtil.putCursorToInputArea();
+        console.nextLine();
         return new Position(x, y);
     }
 
