@@ -29,6 +29,10 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The Client Controller modifies the model that is present in the client and the Model using the virtual server
+ * in response to an action performed in the view. Furthermore, it notifies any changes to the view.
+ */
 public class ClientController implements ClientActions {
 
     private final VirtualServer server;
@@ -40,12 +44,33 @@ public class ClientController implements ClientActions {
         this.server = server;
     }
 
+    /**
+     * Handles the connection of the <code>client</code>.
+     *
+     * @param client   the representation of the client.
+     * @param username the client's name.
+     * @throws InvalidUsernameException if the username in question has already been taken.
+     * @throws RemoteException          in the event of an error occurring during the execution of a remote method.
+     * @throws FullLobbyException       if the lobby is full.
+     */
     @Override
     public void connect(VirtualView client, String username) throws InvalidUsernameException, RemoteException, FullLobbyException {
         server.connect(client, username);
         this.mainPlayerUsername = username;
     }
 
+    /**
+     * Places the <code>cardHandPosition</code> on the <code>selectedSide</code> and <code>position</code> specified.
+     *
+     * @param cardHandPosition the position of the card in the player's hand.
+     * @param selectedSide     of the card.
+     * @param position         in the playground at which it will be placed.
+     * @throws Playground.UnavailablePositionException if the position isn't empty or isn't contained in the player's playground.
+     * @throws Playground.NotEnoughResourcesException  if the resources needed to place the card aren't enough.
+     * @throws InvalidGamePhaseException               if the game phase doesn't allow placing cards.
+     * @throws SuspendedGameException                  if the game is suspended.
+     * @throws RemoteException                         in the event of an error occurring during the execution of a remote method.
+     */
     @Override
     public void placeCard(int cardHandPosition, Side selectedSide, Position position) throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException, RemoteException {
 
@@ -74,6 +99,17 @@ public class ClientController implements ClientActions {
         server.placeCard(getMainPlayerUsername(), getMainPlayerCard(cardHandPosition).getFrontId(), getMainPlayerCard(cardHandPosition).getBackId(), selectedSide, position);
     }
 
+    /**
+     * Draws a card from the <code>IdToDraw</code>.
+     *
+     * @param IdToDraw the id representing the deck or any of the face up cards positions.
+     * @throws InvalidGamePhaseException    if the game doesn't allow to draw cards.
+     * @throws EmptyDeckException           in the event that the selected deck is empty.
+     * @throws NotExistingFaceUp            if the face up slot is empty.
+     * @throws SuspendedGameException       if the game is suspended.
+     * @throws RemoteException              in the event of an error occurring during the execution of a remote method.
+     * @throws InvalidIdForDrawingException if the id of the card isn't valid.
+     */
     @Override
     public void draw(int IdToDraw) throws InvalidGamePhaseException, EmptyDeckException, NotExistingFaceUp, SuspendedGameException, RemoteException, InvalidIdForDrawingException {
 
@@ -132,6 +168,14 @@ public class ClientController implements ClientActions {
         server.draw(getMainPlayerUsername(), IdToDraw);
     }
 
+    /**
+     * Places the starter card of the player in the chosen <code>side</code>.
+     *
+     * @param side the side of the starter card.
+     * @throws SuspendedGameException    if the game is suspended.
+     * @throws RemoteException           in the event of an error occurring during the execution of a remote method.
+     * @throws InvalidGamePhaseException if the game phase doesn't allow placing cards.
+     */
     @Override
     public void placeStarter(Side side) throws SuspendedGameException, RemoteException, InvalidGamePhaseException {
 
@@ -146,6 +190,15 @@ public class ClientController implements ClientActions {
         server.placeStarter(getMainPlayerUsername(), side);
     }
 
+    /**
+     * Assigns <code>color</code> to the <code>mainPlayerUsername</code>.
+     *
+     * @param color chosen by the <code>mainPlayerUsername</code>.
+     * @throws InvalidColorException     if the color has already been selected.
+     * @throws SuspendedGameException    if the game is suspended.
+     * @throws RemoteException           in the event of an error occurring during the execution of a remote method.
+     * @throws InvalidGamePhaseException if the game phase doesn't allow to choose the <code>color</code>.
+     */
     @Override
     public void chooseColor(PlayerColor color) throws InvalidColorException, SuspendedGameException, RemoteException, InvalidGamePhaseException {
 
@@ -165,6 +218,14 @@ public class ClientController implements ClientActions {
 
     }
 
+    /**
+     * Places the <code>chosenObjective</code> from one of the two available.
+     *
+     * @param chosenObjective the chosen objective.
+     * @throws SuspendedGameException    if the game is suspended.
+     * @throws RemoteException           in the event of an error occurring during the execution of a remote method.
+     * @throws InvalidGamePhaseException if the game phase doesn't allow to place the objective card.
+     */
     @Override
     public void placeObjectiveCard(int chosenObjective) throws SuspendedGameException, RemoteException, InvalidGamePhaseException {
         if (!game.isGameActive()) {
@@ -178,6 +239,13 @@ public class ClientController implements ClientActions {
         server.placeObjectiveCard(getMainPlayerUsername(), chosenObjective);
     }
 
+    /**
+     * Sends message from the <code>mainPlayerUsername</code>.
+     *
+     * @param message sent by the <code>mainPlayerUsername</code>.
+     * @throws InvalidMessageException if the author doesn't match the author or the recipient doesn't exist
+     * @throws RemoteException         in the event of an error occurring during the execution of a remote method.
+     */
     @Override
     public void sendMessage(Message message) throws InvalidMessageException, RemoteException {
 
@@ -199,15 +267,32 @@ public class ClientController implements ClientActions {
         server.setPlayersNumber(mainPlayerUsername, playersNumber);
     }
 
+    /**
+     * Disconnects the <code>username</code> from the game.
+     *
+     * @param username of the player.
+     * @throws RemoteException in the event of an error occurring during the execution of a remote method.
+     */
     @Override
     public void disconnect(String username) throws RemoteException {
         server.disconnect(username);
     }
 
+    /**
+     * Updates the current game to <code>clientGame</code>.
+     *
+     * @param clientGame to which the game is to be updated.
+     */
     public void updateAfterConnection(ClientGame clientGame) {
         game = clientGame;
     }
 
+    /**
+     * Updates the player's status and if the player isn't found, it adds it and updates its status.
+     *
+     * @param isConnected player status.
+     * @param username    of the player.
+     */
     public void updatePlayerStatus(boolean isConnected, String username) {
         if (!game.containsPlayer(username)) {
             game.addPlayer(username);
@@ -215,18 +300,47 @@ public class ClientController implements ClientActions {
         game.getPlayer(username).setNetworkStatus(isConnected);
     }
 
+    /**
+     * Updates the lobby with the <code>usernames</code> of the players.
+     *
+     * @param usernames of the players.
+     */
     public void updatePlayersInLobby(List<String> usernames) {
         game = new ClientGame(usernames);
     }
 
+    /**
+     * Updates the <code>color</code> of the <code>username</code>.
+     *
+     * @param color    chosen by the player.
+     * @param username of the player.
+     */
     public void updateColor(PlayerColor color, String username) {
         game.getPlayer(username).setColor(color);
     }
 
+    /**
+     * Updates the <code>chosenObjective</code> of the <code>username</code>.
+     *
+     * @param chosenObjective the chosen objective.
+     * @param username        of the player.
+     */
     public void updateObjectiveCard(ClientObjectiveCard chosenObjective, String username) {
         game.getPlayer(username).updateObjectiveCard(chosenObjective);
     }
 
+    /**
+     * Updates the playground and the player's hand after a placement.
+     *
+     * @param positionToCornerCovered a map with the covered corners.
+     * @param newAvailablePositions   a list with the available positions.
+     * @param newResources            a map with the new acquired resources.
+     * @param points                  present after the placement.
+     * @param username                of the player.
+     * @param placedCard              the card that has been placed.
+     * @param placedSide              the side of the card that has been placed.
+     * @param position                of the card in the playground.
+     */
     public void updateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide, Position position) {
 
         ClientPlayground playground = game.getPlaygroundByUsername(username);
@@ -244,6 +358,15 @@ public class ClientController implements ClientActions {
         }
     }
 
+    /**
+     * Updates the player's hand and the golden/resource deck or face up card after a draw.
+     *
+     * @param drawnCard      the card that has been drawn.
+     * @param newTopBackDeck the new card that replaces the previous card that was present in the deck.
+     * @param newFaceUpCard  the new face up card that replaces the previous one.
+     * @param username       of the player who performs the drawing
+     * @param boardPosition  from which the card was selected, 4 for golden deck, 5 for resource deck and 0,1,2 or 4 for face up cards.
+     */
     public void updateAfterDraw(ClientCard drawnCard, ClientFace newTopBackDeck, ClientCard newFaceUpCard, String username, int boardPosition) {
         assert (boardPosition <= 5 && boardPosition >= 0);
 
@@ -264,24 +387,50 @@ public class ClientController implements ClientActions {
 
     }
 
+    /**
+     * Updates the chat with a new <code>message</code>.
+     *
+     * @param message the new message to be added to the chat.
+     */
     //todo check if other players discard private message of others or if they save them but the view avoid the to show to the players
     public void updateChat(Message message) {
         game.getMessages().add(message);
     }
 
+    /**
+     * Updates the current player and its <code>phase</code>.
+     *
+     * @param currentPlayerIdx index of the current player
+     * @param phase            in which the current player is.
+     */
     public void updateCurrentPlayer(int currentPlayerIdx, GamePhase phase) {
         game.setCurrentPlayerIdx(currentPlayerIdx);
         game.setCurrentPhase(phase);
     }
 
+    /**
+     * Updates the game from an active state to an inactive state
+     */
     public void updateSuspendedGame() {
         game.setGameActive(!game.isGameActive());
     }
 
+    /**
+     * Checks if the given <code>position</code> is available or not.
+     *
+     * @param position to be verified.
+     * @return true if the <code>position</code> is available, false otherwise.
+     */
     private boolean checkPosition(Position position) {
         return getMainPlayerPlayground().getAvailablePositions().contains(position);
     }
 
+    /**
+     * Checks if the playground satisfies face's requirements.
+     *
+     * @param card the card containing the requirements to be checked.
+     * @return true if the playground contains enough resources to place the card.
+     */
     private boolean checkRequirements(ClientCard card) {
         for (Symbol s : card.getFront().getRequirements().keySet()) {
             if (getMainPlayer().getAmountResource(s) < card.getFront().getRequirements().get(s)) {
