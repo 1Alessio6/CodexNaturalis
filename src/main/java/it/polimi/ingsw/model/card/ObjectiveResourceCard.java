@@ -15,12 +15,20 @@ public final class ObjectiveResourceCard extends ObjectiveCard {
         condition = new Hashtable<>();
     }
 
-
+    /**
+     * Constructs an objective resource card with the <code>condition</code> and <code>multiplier</code> provided
+     *
+     * @param condition  with the resources to be had
+     * @param multiplier of the objective resource card
+     */
     public ObjectiveResourceCard(Map<Symbol,Integer> condition, int multiplier) {
         super(multiplier);
         this.condition = condition;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public int calculatePoints(Playground playground){
         assert !condition.isEmpty();
 
@@ -36,6 +44,9 @@ public final class ObjectiveResourceCard extends ObjectiveCard {
         return multiplier * min;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Map<Symbol, Integer> getResourceCondition() {
         return condition;
