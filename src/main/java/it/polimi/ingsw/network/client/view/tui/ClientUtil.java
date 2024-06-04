@@ -68,6 +68,7 @@ public class ClientUtil {
     final static int maxUsernameLength=15;
     final static int maxPointsLength=8;
     final static int resourceBoardColumnSpace = 5;
+    final static int requirementsHeight = 2;
 
     static String plant = "\uD83C\uDF43";
     static String butterfly = "\uD83E\uDD8B";
@@ -652,7 +653,7 @@ public class ClientUtil {
         Map<Symbol, Integer> map = Optional.ofNullable(face).map(ClientFace::getRequirements).orElse(new HashMap<>());
 
         printToLineColumn(y, x, toPrint);
-        printToLineColumn(y + cardHeight, x, createCardConditionString(map));
+        printToLineColumn(y + cardHeight, x, createCardRequirementsString(map));
     }
 
     public static void printResourcesArea(Map<Symbol, Integer> filler) {
@@ -995,12 +996,18 @@ public class ClientUtil {
         }
     }
 
-    private static String createCardConditionString(Map<Symbol, Integer> requirement) {
-        // print requirements if present on the face
-        Optional<Map.Entry<Symbol, Integer>> entry = requirement.entrySet().stream().findFirst();
-        // format "nicely"
-        return entry.map(symbolIntegerEntry ->
-                        "Need " + symbolIntegerEntry.getKey().getIcon() + "x" + symbolIntegerEntry.getValue())
-                .orElse(" ".repeat(cardWidth));
+    private static String[] createCardRequirementsString(Map<Symbol, Integer> requirements) {
+        String[] requirementsArea = new String[requirementsHeight];
+        Arrays.fill(requirementsArea, " ".repeat(cardWidth));
+
+        int i = 0;
+        for (Map.Entry<Symbol, Integer> entry : requirements.entrySet()) {
+            Symbol key = entry.getKey();
+            Integer value = entry.getValue();
+            requirementsArea[i] = key.getIcon() + "x" + value;
+            ++i;
+        }
+
+        return requirementsArea;
     }
 }
