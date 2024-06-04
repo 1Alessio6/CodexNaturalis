@@ -60,6 +60,12 @@ public abstract class ObjectiveCard{
         return multiplier;
     }
 
+    /**
+     * Calculates the points earned by fulfilling the condition present in the objective card
+     *
+     * @param p refers to the playground in which the calculation is performed
+     * @return the number of calculated points
+     */
     public abstract int calculatePoints(Playground p);
 
 
@@ -71,10 +77,20 @@ public abstract class ObjectiveCard{
         return backId;
     }
 
+    /**
+     * Returns a map indicating the resources required to earn points in the event that the card in question is an objective resource card
+     *
+     * @return resource map
+     */
     public Map<Symbol, Integer> getResourceCondition() {
         return new HashMap<>();
     }
 
+    /**
+     * Returns a map indicating the positions that cards should have in order to earn points in the objective position card case
+     *
+     * @return a map with the position and colors of the cards
+     */
     public Map<Position, CardColor> getPositionCondition() {
         return new HashMap<>();
     }
