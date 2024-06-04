@@ -19,6 +19,9 @@ import it.polimi.ingsw.network.VirtualView;
 
 import java.rmi.RemoteException;
 
+/**
+ * This interface represents all methods/actions that can be invoked from clients
+ */
 public interface ClientActions {
 
     void connect(VirtualView client, String username) throws InvalidUsernameException, RemoteException, FullLobbyException;
