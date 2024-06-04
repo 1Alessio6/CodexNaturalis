@@ -332,7 +332,7 @@ public class ClientController implements ClientActions {
         return game.getMessages();
     }
 
-    public PlayerColor getColor() {
+    public PlayerColor getMainColor() {
         return game.getPlayer(mainPlayerUsername).getColor();
     }
 
@@ -380,7 +380,7 @@ public class ClientController implements ClientActions {
         return game.getPlayer(username);
     }
 
-    public boolean isActive() {
+    public boolean isGameActive() {
         return game.isGameActive();
     }
 

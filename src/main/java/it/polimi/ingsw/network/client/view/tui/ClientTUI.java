@@ -272,42 +272,49 @@ public class ClientTUI implements View {
     private void setAvailableActions() {
         GamePhase currentPhase = controller.getGamePhase();
 
-        Set<TUIActions> availableCommands = new HashSet<>();
-        availableCommands.add(TUIActions.HELP);
-        availableCommands.add(TUIActions.QUIT);
+        Set<TUIActions> availableActions = new HashSet<>();
+        availableActions.add(TUIActions.HELP);
+        availableActions.add(TUIActions.QUIT);
 
-        if (currentPhase != null) {
-            availableCommands.add(TUIActions.M);
-            availableCommands.add(TUIActions.PM);
-            availableCommands.add(TUIActions.FLIP);
-            availableCommands.add(TUIActions.RULEBOOK);
-        }
+        // add actions only if game is active
+        if(controller.isGameActive()){
+            if (currentPhase != null) { // if not in lobby
+                availableActions.add(TUIActions.M);
+                availableActions.add(TUIActions.PM);
+                availableActions.add(TUIActions.FLIP);
+                availableActions.add(TUIActions.RULEBOOK);
+            }
 
-        switch (currentPhase) {
-            case Setup -> {
-                // starter command available only if user have to do starter stuff
-                if (this.controller.getColor() == null) {
-                    availableCommands.add(TUIActions.STARTER);
+            switch (currentPhase) {
+                case Setup -> {
+                    // starter command available only if user have to do starter stuff
+                    if (controller.isMainPlaygroundEmpty()) {
+                        availableActions.add(TUIActions.STARTER);
+                    } else if (controller.getMainColor() == null) {
+                        availableActions.add(TUIActions.COLOR);
+                    } else {
+                        availableActions.add(TUIActions.OBJECTIVE);
+                    }
                 }
-            }
-            // don't let user use unneeded commands when it's not their turn
-            case DrawNormal -> {
-                if (this.controller.getCurrentPlayerUsername().equals(this.controller.getMainPlayerUsername()))
-                    availableCommands.add(TUIActions.DRAW);
+                // don't let user use unneeded commands when it's not their turn
+                case DrawNormal -> {
+                    if (this.controller.getCurrentPlayerUsername().equals(this.controller.getMainPlayerUsername()))
+                        availableActions.add(TUIActions.DRAW);
 
-                availableCommands.add(TUIActions.SPY);
-            }
-            case PlaceNormal, PlaceAdditional -> {
-                if (this.controller.getCurrentPlayerUsername().equals(this.controller.getMainPlayerUsername()))
-                    availableCommands.add(TUIActions.PLACE);
+                    availableActions.add(TUIActions.SPY);
+                }
+                case PlaceNormal, PlaceAdditional -> {
+                    if (this.controller.getCurrentPlayerUsername().equals(this.controller.getMainPlayerUsername()))
+                        availableActions.add(TUIActions.PLACE);
 
-                availableCommands.add(TUIActions.SPY);
+                    availableActions.add(TUIActions.SPY);
+                }
+                case null -> {}
+                case End -> {}
             }
-            case null -> {}
-            case End -> {}
         }
 
-        this.availableActions = availableCommands;
+        this.availableActions = availableActions;
     }
 
     // SHOW UPDATE
@@ -403,8 +410,7 @@ public class ClientTUI implements View {
         ClientUtil.printScoreboard(this.controller.getPlayers());
 
         if (controller.getMainPlayerUsername().equals(username)) {
-            availableActions.remove(TUIActions.COLOR);
-            availableActions.add(TUIActions.OBJECTIVE);
+            setAvailableActions();
         }
 
         ClientUtil.putCursorToInputArea();
@@ -417,8 +423,7 @@ public class ClientTUI implements View {
         //print common objective cards
         ClientUtil.printObjectiveCards(controller.getObjectiveCards(), GameScreenArea.COMMON_OBJECTIVE);
 
-        // remove action: new actions will be available after current player update
-        availableActions.remove(TUIActions.OBJECTIVE);
+        setAvailableActions();
 
         ClientUtil.putCursorToInputArea();
     }
@@ -460,7 +465,9 @@ public class ClientTUI implements View {
 
     @Override
     public void showUpdateCurrentPlayer() {
-        ClientUtil.printCommand("It's " + this.controller.getCurrentPlayerUsername() + "'s turn");
+        String currentPlayerPrint = controller.getCurrentPlayerUsername().equals(controller.getMainPlayerUsername()) ?
+                "your" : controller.getCurrentPlayerUsername() + "'s";
+        ClientUtil.printCommand("It's " + currentPlayerPrint + " turn");
         setAvailableActions();
         ClientUtil.putCursorToInputArea();
     }
@@ -468,13 +475,15 @@ public class ClientTUI implements View {
     @Override
     public void showUpdateSuspendedGame() {
         ClientUtil.printScoreboard(this.controller.getPlayers());
-        boolean isActive = controller.isActive();
+        boolean isActive = controller.isGameActive();
         if (isActive) {
             ClientUtil.printCommand("\u001B[1m GAME IS NOW ACTIVE \u001B[0m\n");
         } else {
             ClientUtil.printCommand("\u001B[1m SUSPENDED GAME \u001B[0m\n");
         }
         ClientUtil.putCursorToInputArea();
+
+        setAvailableActions();
     }
 
     @Override
