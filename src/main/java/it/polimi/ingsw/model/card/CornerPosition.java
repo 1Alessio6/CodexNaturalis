@@ -4,6 +4,9 @@ import it.polimi.ingsw.model.board.Position;
 
 import java.util.Map;
 
+/**
+ * Enumeration representing the possible positions of the corners
+ */
 public enum CornerPosition {
     /**
      * Top Left, refers to the top left corner of the card.
