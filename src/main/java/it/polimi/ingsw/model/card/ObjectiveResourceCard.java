@@ -38,7 +38,7 @@ public final class ObjectiveResourceCard extends ObjectiveCard {
 
     @Override
     public Map<Symbol, Integer> getResourceCondition() {
-        return super.getResourceCondition();
+        return condition;
     }
 
     @Override
