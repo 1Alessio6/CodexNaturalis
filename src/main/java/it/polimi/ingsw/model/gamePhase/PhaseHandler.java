@@ -15,6 +15,11 @@ public class PhaseHandler {
     private int counterSetupPlayers;
     private final int lastPlayerIdx;
 
+    /**
+     * Constructs the <code>PhaseHandler</code> with the <code>numPlayers</code> provided
+     *
+     * @param numPlayers in the game
+     */
     public PhaseHandler(int numPlayers) {
         this.numPlayers = numPlayers;
         counterSetupPlayers = 0;
