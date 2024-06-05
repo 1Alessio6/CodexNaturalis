@@ -69,6 +69,13 @@ public class Game {
     // chat database containing the history of all sent messages
     private ChatDatabase chatDatabase;
 
+    /**
+     * Creates a list of cards with the <code>fronts</code> and <code>backs</code> provided.
+     *
+     * @param fronts of the cards.
+     * @param backs  of the cards.
+     * @return list of cards.
+     */
     private List<Card> createCardList(List<Front> fronts, List<Back> backs) {
         assert fronts.size() == backs.size();
 
@@ -81,6 +88,13 @@ public class Game {
         return cards;
     }
 
+    /**
+     * Creates a list of objective cards, which includes <code>objectivePositions</code> cards and <code>objectiveResources</code> cards.
+     *
+     * @param objectivePositions objective cards with position conditions.
+     * @param objectiveResources objective cards with resource conditions.
+     * @return a list with objective position/resource cards
+     */
     private List<ObjectiveCard> createObjectiveCardList(List<ObjectivePositionCard> objectivePositions, List<ObjectiveResourceCard> objectiveResources) {
         List<ObjectiveCard> objectiveCards = new ArrayList<>();
 
@@ -91,6 +105,12 @@ public class Game {
         return objectiveCards;
     }
 
+    /**
+     * A list with the front side of the golden cards found in the <code>goldenFrontCardsPath</code>.
+     * @param goldenFrontCardsPath the path of golden front cards.
+     * @return a list with golden front cards.
+     * @throws FileNotFoundException if an error occurs during the opening of the file.
+     */
     private List<Front> frontFromGoldenList(String goldenFrontCardsPath) throws FileNotFoundException {
         List<GoldenFront> gFronts =
                 new DeserializationHandler<GoldenFront>().jsonToList(goldenFrontCardsPath, new TypeToken<>() {
@@ -98,6 +118,9 @@ public class Game {
         return new ArrayList<>(gFronts);
     }
 
+    /**
+     * Load the available colors in the game.
+     */
     private void loadAvailableColors() {
         this.availableColors = new HashSet<>(
                 Arrays.asList(
@@ -109,6 +132,9 @@ public class Game {
         );
     }
 
+    /**
+     * Load all kind of cards to the game.
+     */
     private void loadCards() {
         String backCardsPath = "src/main/resources/cards/backCards.json";
         String goldenFrontCardsPath = "src/main/resources/cards/goldenFrontCards.json";
@@ -156,6 +182,13 @@ public class Game {
         }
     }
 
+    /**
+     * Creates a player by assigning him/her a starter card, common objectives cards and three cards to his/her hand.
+     *
+     * @param username of the player.
+     * @return the created player
+     * @throws EmptyDeckException if the deck is empty.
+     */
     private Player createPlayer(String username) throws EmptyDeckException {
         Card startingCard = starterCards.draw();
 
@@ -217,11 +250,19 @@ public class Game {
 
     // methods
 
+    /**
+     * Verifies if the given <code>idx</code> corresponds to a valid player index.
+     *
+     * @param idx index of the player to be verified.
+     * @return true if the <code>idx</code> is valid, false otherwise.
+     */
     private boolean isValidIdx(int idx) {
         return 0 <= idx && idx < players.size();
     }
 
-    // find the next valid current player idx, that is, the first player still connected.
+    /**
+     * Finds the next valid current player index, that is, the first player still connected.
+     */
     private void updateCurrentPlayerIdx() {
         currentPlayerIdx = (currentPlayerIdx + 1) % players.size();
         Player currentPlayer = players.get(currentPlayerIdx);
@@ -302,6 +343,14 @@ public class Game {
         return availableColors;
     }
 
+    /**
+     * Adds a <code>client</code> to the game.
+     *
+     * @param username of the player.
+     * @param client   to add.
+     * @throws InvalidUsernameException if the game has started but the <code>username</code> wasn't registered or if it
+     *                                  is already connected in the game.
+     */
     public void add(String username, VirtualView client) throws InvalidUsernameException {
         // only previously connected users can join the game
         if (!validUsernames.contains(username)) {
@@ -330,6 +379,12 @@ public class Game {
         listenerHandler.notifyBroadcast(receiver -> receiver.showUpdatePlayerStatus(true, username));
     }
 
+    /**
+     * Removes a <code>username</code> from the game and suspends the game if the number of players is less than two.
+     *
+     * @param username of the player to remove from the player.
+     * @throws InvalidUsernameException if the username isn't valid.
+     */
     public void remove(String username) throws InvalidUsernameException {
         if (!validUsernames.contains(username)) {
             throw new InvalidUsernameException();
@@ -353,6 +408,12 @@ public class Game {
                 .ifPresent(p -> p.setNetworkStatus(networkStatus));
     }
 
+    /**
+     * Returns the corresponding player, given the <code>username</code>.
+     *
+     * @param username of the player to be returned.
+     * @return the player that matches the <code>username</code>.
+     */
     private Player fromUsernameToPlayer(String username) {
         return players.stream()
                 .filter(p -> p.getUsername().equals(username))
@@ -662,6 +723,11 @@ public class Game {
         listenerHandler.notifyBroadcast(receiver -> receiver.showUpdateCurrentPlayer(currentPlayerIdx, currPhase));
     }
 
+    /**
+     * Simulates the <code>current player</code>'s placement and card draw in a normal or additional placing phase.
+     *
+     * @param currentPlayer whose turn is to be simulated.
+     */
     private void simulateTurn(String currentPlayer) {
         if (phase != GamePhase.PlaceNormal && phase != GamePhase.PlaceAdditional) {
             System.err.println("Error: " + "A turn can be skipped only at the beginning");
@@ -801,6 +867,12 @@ public class Game {
         return resourceCards.getTop().getFace(Side.BACK);
     }
 
+    /**
+     * Converts the deck <code>type</code> to its respective id number.
+     *
+     * @param type of deck provide.
+     * @return four if the deck <code>type</code> is golden, five if the deck <code>type</code> is resource.
+     */
     private int convertDeckTypeIntoId(DeckType type) {
         if (DeckType.GOLDEN == type) {
             return 4;
@@ -809,6 +881,12 @@ public class Game {
         }
     }
 
+    /**
+     * Reports <code>errorDetails</code> to the <code>username</code>.
+     *
+     * @param username     the name of the user to whom the error is to be reported.
+     * @param errorDetails the details of the error.
+     */
     private void reportError(String username, String errorDetails) {
         listenerHandler.notify(username, receiver -> receiver.reportError(errorDetails));
     }
