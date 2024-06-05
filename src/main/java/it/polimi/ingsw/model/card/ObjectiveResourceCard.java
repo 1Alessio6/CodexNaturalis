@@ -7,6 +7,10 @@ import it.polimi.ingsw.model.board.Playground;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Corresponds to the card that gives points to the player when she/he manges to collect at least one pre-defined set of
+ * resources and this set is visible in her/his playground.
+ */
 public final class ObjectiveResourceCard extends ObjectiveCard {
     private final Map<Symbol,Integer> condition;
 
