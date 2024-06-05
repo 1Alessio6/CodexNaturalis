@@ -36,6 +36,12 @@ public class TurnCompletion {
         return playersInGame;
     }
 
+    /**
+     * Completes the setup for the <code>player</code>.
+     *
+     * @param game   the representation of the game
+     * @param player to complete the setup
+     */
     private void completeSetup(Game game, Player player) {
         if (PlayerState.ChooseStarter == player.getPlayerAction().getPlayerState()) {
             List<Side> sides = Arrays.asList(Side.FRONT, Side.BACK);
@@ -66,6 +72,12 @@ public class TurnCompletion {
         }
     }
 
+    /**
+     * Automatically draws a card instead of the <code>username</code>.
+     *
+     * @param game     the representation of the game.
+     * @param username of the player the card is added to.
+     */
     private void automaticDraw(Game game, String username) {
         List<Integer> faceUpCardIdx = new ArrayList<>();
         List<Card> faceUpCards = game.getFaceUpCards();
@@ -81,6 +93,12 @@ public class TurnCompletion {
         }
     }
 
+    /**
+     * Completes the <code>current player</code>'s turn.
+     *
+     * @param game          the representation of the game.
+     * @param currentPlayer whose turn is to be completed.
+     */
     private void completeCurrentPlayerTurn(Game game, Player currentPlayer) {
         if (currentPlayer.getPlayerAction().getPlayerState() == PlayerState.Place) {
             game.skipTurn(currentPlayer.getUsername());
@@ -89,6 +107,11 @@ public class TurnCompletion {
         }
     }
 
+    /**
+     * Completes the turn of all inactive players in the game.
+     *
+     * @param game the representation of the game.
+     */
     private void completePendingTurn(Game game) {
         List<String> inactivePlayers = getListOfInactivePlayers(game);
         for (String username : inactivePlayers) {
@@ -105,6 +128,11 @@ public class TurnCompletion {
         }
     }
 
+    /**
+     * Handles the transition from suspended to active game.
+     *
+     * @param game the representation of the game.
+     */
     public void handleJoin(Game game) {
         // transition from suspended to active: complete turn of all disconnected players
         if (!isGameActive && game.isActive()) {
@@ -113,6 +141,11 @@ public class TurnCompletion {
         isGameActive = game.isActive();
     }
 
+    /**
+     * Handles the leaving of a player by completing the turn of inactive players.
+     *
+     * @param game the representation of the game.
+     */
     public void handleLeave(Game game) {
         // game is active: complete turn of the disconnected player.
         if (isGameActive) {
