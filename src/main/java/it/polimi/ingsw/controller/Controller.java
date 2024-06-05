@@ -76,6 +76,9 @@ public class Controller implements EventListener, GameRequest {
         }
     }
 
+    /**
+     * Removes excess players from registered users.
+     */
     private void removeExceedingPlayers() {
         List<String> usersInGame = game.getPlayers().stream().map(Player::getUsername).toList();
         for (String registeredUser : listenerHandler.getIds()) {
@@ -112,6 +115,13 @@ public class Controller implements EventListener, GameRequest {
         return isJoined;
     }
 
+    /**
+     * Joins <code>username</code> to the game
+     *
+     * @param username     of the player who joins the game.
+     * @param gameListener the game listener
+     * @return true if the player has been added correctly, false otherwise
+     */
     private boolean joinGame(String username, VirtualView gameListener) {
         try {
             game.add(username, gameListener);
@@ -135,6 +145,13 @@ public class Controller implements EventListener, GameRequest {
         return true;
     }
 
+    /**
+     * Handle disconnection of the <code>username</code>.
+     * If the game hasn't started, the <code>username</code> is removed from the lobby;
+     * otherwise from the game.
+     *
+     * @param username the user's name.
+     */
     public synchronized void handleDisconnection(String username) {
         if (!listenerHandler.getIds().contains(username)) {
             return;
@@ -323,6 +340,14 @@ public class Controller implements EventListener, GameRequest {
         }
     }
 
+    /**
+     * Sets the number of players required to start the game,
+     * and if the game has not yet started and the number of players has been reached, it starts the game and remove
+     * the excess players.
+     *
+     * @param username      of the first player.
+     * @param playersNumber the number of players established by the first player.
+     */
     @Override
     public synchronized void setPlayersNumber(String username, int playersNumber) {
         try {
@@ -337,6 +362,13 @@ public class Controller implements EventListener, GameRequest {
         }
     }
 
+    /**
+     * Reports <code>errorDetails</code> to the <code>username</code> if registered, otherwise
+     * it reports a connection error message.
+     *
+     * @param username     the name of the user to whom the error is to be reported.
+     * @param errorDetails the details of the error.
+     */
     private void reportError(String username, String errorDetails) {
         try {
             VirtualView toReport = listenerHandler.get(username);
