@@ -205,6 +205,9 @@ public class GameScene extends SceneController {
         List<Rectangle> cardsAsRectangles = new ArrayList<>();
 
 
+        // clean the pane
+        playgroundPane.getChildren().clear();
+
         //it's necessary to add available position after the occupied one
 
         for (Position pos : clientPlayground.getPositioningOrder()) {
