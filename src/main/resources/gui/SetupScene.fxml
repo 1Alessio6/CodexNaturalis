@@ -6,7 +6,7 @@
 <?import javafx.scene.shape.Rectangle?>
 
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="906.0" prefWidth="1590.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<Pane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="906.0" prefWidth="1590.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Rectangle fx:id="secondRectangle" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="98.0" layoutX="708.0" layoutY="505.0" stroke="BLACK" strokeType="INSIDE" width="151.0" />
       <Rectangle fx:id="firstRectangle" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="98.0" layoutX="418.0" layoutY="505.0" stroke="BLACK" strokeType="INSIDE" width="151.0" />
