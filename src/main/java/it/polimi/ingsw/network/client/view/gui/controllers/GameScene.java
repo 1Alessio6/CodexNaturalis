@@ -81,6 +81,17 @@ public class GameScene extends SceneController {
         }
     }
 
+    //<Pane layoutX="1126.0" layoutY="713.0" prefHeight="168.0" prefWidth="406.0" />
+
+    private void initializePlayerObjectiveCard(){
+        double layoutX = 0.0;
+        Rectangle rectangle = new Rectangle(GUICards.playerCardsWidth, GUICards.playerCardsHeight);
+        rectangle.setLayoutX(layoutX);
+        rectangle.setFill(GUICards.pathToImage(gui.getController().getMainPlayerObjectiveCard().getPath()));
+    }
+
+
+
     private void initializeBoard(){
         Pane boardPane = new Pane();
     }
@@ -94,19 +105,19 @@ public class GameScene extends SceneController {
     private void initializeMainPlayerCards() {
         GUICards.initializePlayerCards(mainPlayerCardsPane, gui.getController().getMainPlayerCards(), 151, 98, 20, MouseButton.SECONDARY);
 
-        double layoutX = 0.0;
+        double layoutX = 200;
         List<ClientCard> cards = gui.getController().getMainPlayerCards();
 
         for (int i = 0; i < gui.getController().getMainPlayerCards().size(); i++) {
 
             int cardHandPosition = i;
-            Rectangle rectangle = new Rectangle(151, 98);
+            Rectangle rectangle = new Rectangle(GUICards.playerCardsWidth, GUICards.playerCardsHeight);
             ImagePattern backImage = new ImagePattern(new Image(cards.get(i).getBackPath()));
             ImagePattern frontImage = new ImagePattern(new Image(cards.get(i).getFrontPath()));
             rectangle.setFill(frontImage);
             playerCardsVisibleSide.add(i, Side.FRONT);
             rectangle.setLayoutX(layoutX);
-            layoutX = layoutX + 151 + 30;
+            layoutX = layoutX + GUICards.playerCardsWidth + 30;
 
             rectangle.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
