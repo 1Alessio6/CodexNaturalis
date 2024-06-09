@@ -33,8 +33,6 @@ import java.util.List;
 import java.util.Map;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.isClicked;
-import static java.awt.image.ImageObserver.HEIGHT;
-import static java.awt.image.ImageObserver.WIDTH;
 
 public class GameScene extends SceneController {
 
@@ -191,7 +189,7 @@ public class GameScene extends SceneController {
         //do not remove
         availablePositions.clear();
 
-        GUIPlayground guiPlayground = new GUIPlayground(WIDTH, HEIGHT);
+        GUIPlayground guiPlayground = new GUIPlayground(GUICards.playerCardsWidth, GUICards.playerCardsHeight);
         guiPlayground.setDimension(clientPlayground);
         playgroundPane.setPrefSize(guiPlayground.getPaneWidth(), guiPlayground.getPaneHeight());
         List<Rectangle> cardsAsRectangles = new ArrayList<>();
