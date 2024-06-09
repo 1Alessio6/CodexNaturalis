@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Rectangle?>
 
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="906.0" prefWidth="1590.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" />
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="906.0" prefWidth="1590.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="98.0" layoutX="708.0" layoutY="505.0" stroke="BLACK" strokeType="INSIDE" width="151.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="98.0" layoutX="418.0" layoutY="505.0" stroke="BLACK" strokeType="INSIDE" width="151.0" />
+      <TextField layoutX="547.0" layoutY="288.0" text="todo. fill with tthe specific scene's related commands" />
+      <Circle fill="DODGERBLUE" layoutX="418.0" layoutY="554.0" radius="35.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fill="DODGERBLUE" layoutX="559.0" layoutY="554.0" radius="35.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fill="DODGERBLUE" layoutX="708.0" layoutY="554.0" radius="35.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fill="DODGERBLUE" layoutX="859.0" layoutY="554.0" radius="35.0" stroke="BLACK" strokeType="INSIDE" />
+   </children>
+</Pane>
