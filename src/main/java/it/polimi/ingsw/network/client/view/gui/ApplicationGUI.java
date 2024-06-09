@@ -13,11 +13,13 @@ import it.polimi.ingsw.network.client.view.gui.controllers.SceneController;
 import it.polimi.ingsw.network.client.view.gui.controllers.SetupScene;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.util.List;
@@ -260,6 +262,13 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         initializeCurrentSceneController();
         currentSceneController.initializeUsingGameInformation();
         primaryStage.show();
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+                System.exit(0);
+            }
+
+        });
 
 
         //maybe could be removed currentRoot
