@@ -372,6 +372,9 @@ public class ClientController implements ClientActions {
         return game.getPlaygroundByUsername(username);
     }
 
+    public ClientObjectiveCard getMainPlayerObjectiveCard(){
+        return getMainPlayer().getObjectiveCards().getFirst();
+    }
 
     public ClientPlayer getPlayer(String username) {
         return game.getPlayer(username);
