@@ -4,22 +4,35 @@ import it.polimi.ingsw.model.InvalidGamePhaseException;
 import it.polimi.ingsw.model.SuspendedGameException;
 import it.polimi.ingsw.model.card.Color.InvalidColorException;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.InvalidGamePhaseException;
+import it.polimi.ingsw.model.SuspendedGameException;
+import it.polimi.ingsw.model.card.Side;
+import it.polimi.ingsw.model.gamePhase.GamePhase;
+import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
+import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 import it.polimi.ingsw.network.client.view.gui.circle.GUICircle;
 import it.polimi.ingsw.network.client.view.gui.util.GUICards;
 import it.polimi.ingsw.network.client.view.gui.util.GUIUtil;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.control.Alert;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
-import java.awt.*;
+import java.rmi.RemoteException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.isClicked;
 
 public class SetupScene extends SceneController {
     @FXML
@@ -31,6 +44,10 @@ public class SetupScene extends SceneController {
     private TextField text;
 
     private List<GUICircle> colors;
+
+    private boolean isStarterSelected;
+
+    private int numColorsLeft;
 
     static private final double xRefForCircleCenter = 418;
     static private final double yRefForCircleCenter = 554;
@@ -67,17 +84,48 @@ public class SetupScene extends SceneController {
     @Override
     public void initialize() {
         ClientController clientController = gui.getController();
-        ClientPlayer player = clientController.getPlayer(clientController.getMainPlayerUsername());
+        initializeStarterCards();
+        isStarterSelected = false;
+        text.setText("Choose your starter");
+        initializeColors();
+
+    }
+
+    private void setStarterPlaceCommand(Rectangle face, Side starterSide){
+        face.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if(isClicked(mouseEvent, MouseButton.PRIMARY) && !isStarterSelected){
+                    try {
+                        gui.getController().placeStarter(starterSide);
+                    } catch (SuspendedGameException | RemoteException | InvalidGamePhaseException e) {
+                        //todo update
+                        Alert error = new Alert(Alert.AlertType.ERROR);
+                        error.show();
+                    }
+                }
+            }
+        });
+    }
+
+    private void initializeStarterCards(){
+        ClientPlayer player = gui.getController().getPlayer(gui.getController().getMainPlayerUsername());
         ClientCard starter = player.getStarterCard();
         firstRectangle.setFill(GUICards.pathToImage(starter.getFrontPath()));
         secondRectangle.setFill(GUICards.pathToImage(starter.getBackPath()));
         firstRectangle.setVisible(true);
         secondRectangle.setVisible(true);
-        text.setText("Choose your starter");
-        initializeColors();
+        setStarterPlaceCommand(firstRectangle, Side.FRONT);
+        setStarterPlaceCommand(secondRectangle, Side.BACK);
     }
 
     public SetupScene() {
+    }
+    public void updateAfterStarterPlace(){
+        isStarterSelected = true;
+        initializeObjectiveCards();
+        //todo add select color methods
+
     }
 
     private void showColors() {
@@ -86,12 +134,38 @@ public class SetupScene extends SceneController {
         }
     }
 
+    private void initializeObjectiveCards(){
+        List<ClientObjectiveCard> objectiveCards = gui.getController().getObjectiveCards();
+        firstRectangle.setFill(GUICards.pathToImage(objectiveCards.getFirst().getPath()));
+        setSelectObjectiveCardCommand(firstRectangle, 0);
+        secondRectangle.setFill(GUICards.pathToImage(objectiveCards.getLast().getPath()));
+        setSelectObjectiveCardCommand(secondRectangle, 1);
+        secondRectangle.setVisible(false);
+        secondRectangle.setVisible(false);
+    }
+
     private void updateColorDisposition() {
         colors.getLast().setVisibility(false);
         colors.removeLast();
         for (GUICircle c : colors) {
             c.setCoordinates(c.getCircle().getCenterX() + 2*radius, c.getCircle().getCenterY());
         }
+    }
+    private void setSelectObjectiveCardCommand(Rectangle card, int objectiveCardId){
+        card.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if(isClicked(mouseEvent, MouseButton.PRIMARY) && isStarterSelected && card.isVisible()){
+                    try {
+                        gui.getController().placeObjectiveCard(objectiveCardId);
+                    } catch (SuspendedGameException | RemoteException | InvalidGamePhaseException e) {
+                        //todo update
+                        Alert error = new Alert(Alert.AlertType.ERROR);
+                        error.show();
+                    }
+                }
+            }
+        });
     }
 
     private void updateAfterColorChoiceHasBeenAccepted() {
