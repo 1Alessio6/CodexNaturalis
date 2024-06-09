@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.client.view.gui.controllers;
 
 import it.polimi.ingsw.model.InvalidGamePhaseException;
 import it.polimi.ingsw.model.SuspendedGameException;
+import it.polimi.ingsw.model.board.Availability;
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.Side;
@@ -126,8 +127,9 @@ public class GameScene extends SceneController {
 
     private void initializeBoard() {
         BoardPane boardPane = new BoardPane(gui.getController().getBoard());
-        mainPane.getChildren().add(boardPane.getBoardMainPane());
         initializeBoardCards(boardPane);
+        mainPane.getChildren().add(boardPane.getBoardMainPane());
+
     }
 
     private ImagePattern getFacePath(String username, int cardHandPosition, Side side) {
@@ -206,7 +208,12 @@ public class GameScene extends SceneController {
         //it's necessary to add available position after the occupied one
 
         for (Position pos : clientPlayground.getPositioningOrder()) {
-            playgroundPane.getChildren().add(guiPlayground.getRectangle(pos, pathToImage(clientPlayground.getTile(pos).getFace().getPath())));
+            if(!clientPlayground.getTile(pos).sameAvailability(Availability.EMPTY)){
+                playgroundPane.getChildren().add(guiPlayground.getRectangle(pos, pathToImage(clientPlayground.getTile(pos).getFace().getPath())));
+            }
+            else{
+                playgroundPane.getChildren().add(guiPlayground.getRectangleEmptyTile(pos));
+            }
         }
 
         for (Position pos : clientPlayground.getAvailablePositions()) {
