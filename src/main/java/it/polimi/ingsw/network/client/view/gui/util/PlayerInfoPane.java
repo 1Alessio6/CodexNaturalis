@@ -61,10 +61,7 @@ public class PlayerInfoPane {
 
         //todo remove this line and pass player cards
 
-        List<ClientCard> cards = new ArrayList<>();
-        cards.add(new ClientCard());
-        cards.add(new ClientCard());
-        cards.add(new ClientCard());
+        List<ClientCard> cards = player.getPlayerCards();
 
 
         //List<ClientCard> cards = player.getPlayerCards();
@@ -123,6 +120,18 @@ public class PlayerInfoPane {
             }
         }
         return null;
+    }
+
+    public void updatePlayerCards(List<ClientCard> cards) {
+        GUICards.initializePlayerCards(playerCardsPane, cards, cardWidth, cardHeight, distance, MouseButton.PRIMARY);
+    }
+
+    public void setPaneLayoutX(double layoutX) {
+        playerMainPane.setLayoutX(layoutX);
+    }
+
+    public void setPaneLayoutY(double layoutY) {
+        playerMainPane.setLayoutX(layoutY);
     }
 
     public Pane getPlayerMainPane() {
