@@ -58,26 +58,22 @@ public class SetupScene extends SceneController {
 
 
         List<PlayerColor> availableColors = clientController.getAvailableColors();
-        double x = xRefForCircleCenter + 2 * radius * (4 - availableColors.size());
         for (PlayerColor availableColor : availableColors) {
-            GUICircle circle = new GUICircle(x, yRefForCircleCenter, radius, availableColor);
-            circle.getCircle().setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent mouseEvent) {
-                    if (GUIUtil.isClicked(mouseEvent, MouseButton.PRIMARY) && circle.getCircle().isVisible()) {
-                        try {
-                            gui.getController().chooseColor(availableColor);
-                            // todo. change with specific report error
-                        } catch (InvalidColorException | RemoteException | InvalidGamePhaseException |
-                                 SuspendedGameException e) {
-                            throw new RuntimeException(e);
-                        }
+            GUICircle circle = new GUICircle(radius, availableColor);
+            circle.getCircle().setOnMouseClicked(mouseEvent -> {
+                if (GUIUtil.isClicked(mouseEvent, MouseButton.PRIMARY) && circle.getCircle().isVisible()) {
+                    try {
+                        gui.getController().chooseColor(availableColor);
+                        // todo. change with specific report error
+                    } catch (InvalidColorException | RemoteException | InvalidGamePhaseException |
+                             SuspendedGameException e) {
+                        throw new RuntimeException(e);
                     }
                 }
             });
             colors.add(circle);
-            x += 2 * radius;
         }
+        centerColors();
         for (GUICircle circle : colors) {
             mainPane.getChildren().add(circle.getCircle());
         }
@@ -132,7 +128,7 @@ public class SetupScene extends SceneController {
     public void updateAfterStarterPlace(String username) {
         if (gui.getController().getMainPlayer().getUsername().equals(username)) {
             isStarterSelected = true;
-            text.setText("Choose objective card");
+            text.setText("Choose colors");
             showColors();
             initializeObjectiveCards();
         }
@@ -145,7 +141,7 @@ public class SetupScene extends SceneController {
     }
 
     private void initializeObjectiveCards() {
-        List<ClientObjectiveCard> objectiveCards = gui.getController().getObjectiveCards();
+        List<ClientObjectiveCard> objectiveCards = gui.getController().getMainPlayer().getObjectiveCards();
         firstRectangle.setFill(GUICards.pathToImage(objectiveCards.getFirst().getPath()));
         setSelectObjectiveCardCommand(firstRectangle, 0);
         secondRectangle.setFill(GUICards.pathToImage(objectiveCards.getLast().getPath()));
@@ -177,14 +173,23 @@ public class SetupScene extends SceneController {
         }
         firstRectangle.setVisible(true);
         secondRectangle.setVisible(true);
+        text.setText("Choose objective");
     }
 
-    private void updateColorDisposition() {
-        colors.getLast().setVisibility(false);
-        colors.removeLast();
+    private void centerColors() {
+        List<PlayerColor> availableColors = gui.getController().getAvailableColors();
+        double x = xRefForCircleCenter + 2 * radius * (4 - availableColors.size());
         for (GUICircle c : colors) {
-            c.setCoordinates(c.getCircle().getCenterX() + 2 * radius, c.getCircle().getCenterY());
+            c.setCoordinates(x, yRefForCircleCenter);
+            x += 4 * radius;
         }
+    }
+
+    private void updateColorDisposition(PlayerColor color) {
+        GUICircle circle = colors.stream().filter(c -> c.getColor().equals(color)).findFirst().get();
+        circle.setVisibility(false);
+        colors.remove(circle);
+        centerColors();
     }
 
     public void updateAfterColor(String username) {
@@ -193,7 +198,7 @@ public class SetupScene extends SceneController {
         if (player.getUsername().equals(controller.getMainPlayerUsername())) {
             updateAfterColorSelection();
         } else {
-            updateColorDisposition();
+            updateColorDisposition(player.getColor());
         }
     }
 
