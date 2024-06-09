@@ -83,9 +83,12 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     @Override
     public void showServerCrash() {
-        loadScene(SceneType.CRASH);
-        //todo set crash message
-        currentScene = SceneType.CRASH;
+        Platform.runLater(() -> {
+            loadScene(SceneType.CRASH);
+            //todo set crash message
+            currentScene = SceneType.CRASH;
+        });
+
     }
 
     @Override
@@ -114,9 +117,12 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     @Override
     public void showUpdateAfterLobbyCrash() {
-        loadScene(SceneType.CRASH);
-        //todo set crash message
-        currentScene = SceneType.CRASH;
+
+        Platform.runLater(() -> {
+            loadScene(SceneType.CRASH);
+            //todo set crash message
+            currentScene = SceneType.CRASH;
+        });
     }
 
     @Override
@@ -148,8 +154,10 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     @Override
     public void showStarterPlacement(String username) {
-        assert currentSceneController instanceof SetupScene;
-        ((SetupScene) currentSceneController).updateAfterStarterPlace();
+        Platform.runLater(() -> {
+            assert currentSceneController instanceof SetupScene;
+            ((SetupScene) currentSceneController).updateAfterStarterPlace();
+        });
     }
 
     @Override
@@ -170,14 +178,18 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     @Override
     public void showUpdateAfterPlace(String username) {
-        assert currentSceneController instanceof GameScene;
-        ((GameScene) currentSceneController).updateAfterPlace(username);
+        Platform.runLater(() -> {
+            assert currentSceneController instanceof GameScene;
+            ((GameScene) currentSceneController).updateAfterPlace(username);
+        });
     }
 
     @Override
     public void showUpdateAfterDraw(String username) {
-        assert currentSceneController instanceof GameScene;
-        ((GameScene) currentSceneController).updateAfterDraw(username);
+        Platform.runLater(() -> {
+            assert currentSceneController instanceof GameScene;
+            ((GameScene) currentSceneController).updateAfterDraw(username);
+        });
     }
 
     @Override
@@ -187,17 +199,19 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     @Override
     public void showUpdateCurrentPlayer() {
-        if (currentScene == SceneType.SETUP) {
-            currentScene = SceneType.GAME;
-            loadScene(SceneType.GAME);
-        }
+        Platform.runLater(() -> {
+            if (currentScene == SceneType.SETUP) {
+                currentScene = SceneType.GAME;
+                loadScene(SceneType.GAME);
+            }
 
-        if (controller.getGamePhase() == GamePhase.End) {
-            loadScene(SceneType.END);
-            currentScene = SceneType.END;
-        } else {
-            //todo update current player in normal game scene
-        }
+            if (controller.getGamePhase() == GamePhase.End) {
+                loadScene(SceneType.END);
+                currentScene = SceneType.END;
+            } else {
+                //todo update current player in normal game scene
+            }
+        });
     }
 
     @Override
@@ -207,9 +221,12 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     @Override
     public void showWinners(List<String> winners) {
-        loadScene(SceneType.END);
-        currentScene = SceneType.END;
-        //todo add show winners
+        Platform.runLater(() -> {
+            loadScene(SceneType.END);
+            currentScene = SceneType.END;
+            //todo add show winners
+        });
+
     }
 
     public ClientController getController() {
@@ -239,11 +256,13 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         primaryStage.setTitle("Codex Naturalis");
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
-
-        primaryStage.show();
         currentSceneController = loader.getController();
         initializeCurrentSceneController();
+        currentSceneController.initializeUsingGameInformation();
+        primaryStage.show();
 
+
+        //maybe could be removed currentRoot
         currentRoot = root;
     }
 
