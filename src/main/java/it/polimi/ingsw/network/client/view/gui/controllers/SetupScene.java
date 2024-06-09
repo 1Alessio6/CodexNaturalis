@@ -4,11 +4,7 @@ import it.polimi.ingsw.model.InvalidGamePhaseException;
 import it.polimi.ingsw.model.SuspendedGameException;
 import it.polimi.ingsw.model.card.Color.InvalidColorException;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
-import it.polimi.ingsw.model.InvalidGamePhaseException;
-import it.polimi.ingsw.model.SuspendedGameException;
 import it.polimi.ingsw.model.card.Side;
-import it.polimi.ingsw.model.gamePhase.GamePhase;
-import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
@@ -22,12 +18,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.Alert;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
-import java.rmi.RemoteException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -144,13 +136,6 @@ public class SetupScene extends SceneController {
         secondRectangle.setVisible(false);
     }
 
-    private void updateColorDisposition() {
-        colors.getLast().setVisibility(false);
-        colors.removeLast();
-        for (GUICircle c : colors) {
-            c.setCoordinates(c.getCircle().getCenterX() + 2*radius, c.getCircle().getCenterY());
-        }
-    }
     private void setSelectObjectiveCardCommand(Rectangle card, int objectiveCardId){
         card.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -168,7 +153,7 @@ public class SetupScene extends SceneController {
         });
     }
 
-    private void updateAfterColorChoiceHasBeenAccepted() {
+    private void updateAfterColorSelection() {
         for (GUICircle circle : colors) {
             circle.setVisibility(false);
         }
@@ -176,4 +161,27 @@ public class SetupScene extends SceneController {
         secondRectangle.setVisible(true);
     }
 
+    private void updateColorDisposition() {
+        colors.getLast().setVisibility(false);
+        colors.removeLast();
+        for (GUICircle c : colors) {
+            c.setCoordinates(c.getCircle().getCenterX() + 2*radius, c.getCircle().getCenterY());
+        }
+    }
+
+    public void updateAfterColor(String username) {
+        ClientController controller = gui.getController();
+        ClientPlayer player = controller.getPlayer(username);
+        if (player.getUsername().equals(controller.getMainPlayerUsername())) {
+            updateAfterColorSelection();
+        } else {
+            updateColorDisposition();
+        }
+    }
+
+    public void updateObjectiveCard() {
+        firstRectangle.setVisible(false);
+        secondRectangle.setVisible(false);
+        text.setText("Wait for the other players to complete their setup");
+    }
 }

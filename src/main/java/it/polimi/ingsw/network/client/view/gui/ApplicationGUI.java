@@ -9,6 +9,7 @@ import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.view.View;
 import it.polimi.ingsw.network.client.view.gui.controllers.LobbyScene;
 import it.polimi.ingsw.network.client.view.gui.controllers.SceneController;
+import it.polimi.ingsw.network.client.view.gui.controllers.SetupScene;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -144,12 +145,18 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     @Override
     public void showUpdateColor(String username) {
-        //todo add update without loading a new scene
+        System.out.println(username + " has chosen a color");
+        Platform.runLater(() -> {
+            ((SetupScene) currentSceneController).updateAfterColor(username);
+        });
     }
 
     @Override
     public void showUpdateObjectiveCard() {
-        //todo add update without loading a new scene
+        System.out.println("objective has been chosen");
+        Platform.runLater(() -> {
+            ((SetupScene) currentSceneController).updateObjectiveCard();
+        });
     }
 
     @Override
