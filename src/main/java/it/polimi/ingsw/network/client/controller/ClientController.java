@@ -25,6 +25,7 @@ import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -263,6 +264,24 @@ public class ClientController implements ClientActions {
 
     }
 
+    public List<PlayerColor> getAvailableColors() {
+        List<PlayerColor> availableColors = new ArrayList<>();
+        List<ClientPlayer> players = game.getPlayers();
+        for (PlayerColor color : PlayerColor.values()) {
+            boolean isAvailable = true;
+            for (ClientPlayer p : players) {
+                if (p.getColor() == color) {
+                    isAvailable = false;
+                    break;
+                }
+            }
+            if (isAvailable) {
+                availableColors.add(color);
+            }
+        }
+        return availableColors;
+    }
+
     //todo check if other players discard private message of others or if they save them but the view avoid the to show to the players
     public void updateChat(Message message) {
         game.getMessages().add(message);
@@ -368,7 +387,7 @@ public class ClientController implements ClientActions {
         return this.game.getClientBoard().getCommonObjectives();
     }
 
-    public ClientPlayground getPlaygroundByUsername(String username){
+    public ClientPlayground getPlaygroundByUsername(String username) {
         return game.getPlaygroundByUsername(username);
     }
 
