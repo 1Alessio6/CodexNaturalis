@@ -65,6 +65,7 @@ public class GameScene extends SceneController {
         selectedCardHandPosition = -1;
         initializeMainPlayerCardPane();
         currentVisiblePlaygroundOwner = gui.getController().getMainPlayerUsername();
+        initializeBoard();
 
     }
 
@@ -266,15 +267,20 @@ public class GameScene extends SceneController {
                 }
             }
         });
-
-
     }
-
-
 
 
     public void changeVisiblePlayground(String username){
         drawPlayground(gui.getController().getPlaygroundByUsername(username));
+    }
+
+    public void updateAfterPlace(String username){
+        if(username.equals(currentVisiblePlaygroundOwner)){
+            drawPlayground(gui.getController().getPlaygroundByUsername(username));
+        }
+        else if(username.equals(gui.getController().getMainPlayerUsername())){
+            drawPlayground(gui.getController().getMainPlayerPlayground());
+        }
     }
 
 
