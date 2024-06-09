@@ -18,6 +18,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.Alert;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
 import java.rmi.RemoteException;
@@ -27,6 +31,9 @@ import java.util.List;
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.isClicked;
 
 public class SetupScene extends SceneController {
+
+    @FXML
+    private Pane mainPane;
     @FXML
     private Rectangle firstRectangle;
 
@@ -57,7 +64,7 @@ public class SetupScene extends SceneController {
             circle.getCircle().setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-                    if (GUIUtil.isClicked(mouseEvent, MouseButton.PRIMARY)) {
+                    if (GUIUtil.isClicked(mouseEvent, MouseButton.PRIMARY) && circle.getCircle().isVisible()) {
                         try {
                             gui.getController().chooseColor(availableColor);
                             // todo. change with specific report error
@@ -70,6 +77,9 @@ public class SetupScene extends SceneController {
             });
             colors.add(circle);
             x += 2 * radius;
+        }
+        for(GUICircle circle : colors){
+            mainPane.getChildren().add(circle.getCircle());
         }
     }
 
@@ -112,9 +122,14 @@ public class SetupScene extends SceneController {
 
     public SetupScene() {
     }
+
     public void updateAfterStarterPlace(){
         isStarterSelected = true;
         initializeObjectiveCards();
+        for(GUICircle circle : colors){
+            circle.setVisibility(true);
+        }
+
         text.setText("Select color");
         showColors();
     }
