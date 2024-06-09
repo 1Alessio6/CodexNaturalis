@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.isClicked;
 import static java.awt.image.ImageObserver.HEIGHT;
 import static java.awt.image.ImageObserver.WIDTH;
 
@@ -273,9 +274,6 @@ public class GameScene extends SceneController {
 
 
 
-    private boolean isClicked(MouseEvent mouseEvent, MouseButton mouseButton) {
-        return mouseEvent.getEventType() == MouseEvent.MOUSE_CLICKED && mouseEvent.getButton() == mouseButton;
-    }
 
     public void changeVisiblePlayground(String username){
         drawPlayground(gui.getController().getPlaygroundByUsername(username));
