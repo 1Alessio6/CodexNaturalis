@@ -93,6 +93,8 @@ public class SetupScene extends SceneController {
 
     public void updateAfterStarterPlace(){
         isStarterSelected = true;
+        initializeObjectiveCards();
+        //todo add select color methods
 
     }
 
@@ -102,13 +104,15 @@ public class SetupScene extends SceneController {
         setSelectObjectiveCardCommand(firstRectangle, 0);
         secondRectangle.setFill(GUICards.pathToImage(objectiveCards.getLast().getPath()));
         setSelectObjectiveCardCommand(secondRectangle, 1);
+        secondRectangle.setVisible(false);
+        secondRectangle.setVisible(false);
     }
 
     private void setSelectObjectiveCardCommand(Rectangle card, int objectiveCardId){
         card.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                if(isClicked(mouseEvent, MouseButton.PRIMARY) && isStarterSelected){
+                if(isClicked(mouseEvent, MouseButton.PRIMARY) && isStarterSelected && card.isVisible()){
                     try {
                         gui.getController().placeObjectiveCard(objectiveCardId);
                     } catch (SuspendedGameException | RemoteException | InvalidGamePhaseException e) {
