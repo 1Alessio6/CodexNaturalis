@@ -120,8 +120,14 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     @Override
     public void showUpdateAfterConnection() {
-        loadScene(SceneType.GAME);
-        currentScene = SceneType.GAME;
+        if(currentScene  == SceneType.LOBBY){
+            currentScene = SceneType.SETUP;
+            loadScene(SceneType.SETUP);
+        }
+        else{
+            loadScene(SceneType.GAME);
+            currentScene = SceneType.GAME;
+        }
     }
 
     @Override
@@ -140,7 +146,8 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     @Override
     public void showStarterPlacement(String username) {
-        //todo add update without loading a new scene
+        assert currentSceneController instanceof SetupScene;
+        ((SetupScene)currentSceneController).updateAfterStarterPlace();
     }
 
     @Override
@@ -176,6 +183,11 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     @Override
     public void showUpdateCurrentPlayer() {
+        if(currentScene == SceneType.SETUP){
+            currentScene = SceneType.GAME;
+            loadScene(SceneType.GAME);
+        }
+
         if (controller.getGamePhase() == GamePhase.End) {
             loadScene(SceneType.END);
             currentScene = SceneType.END;
