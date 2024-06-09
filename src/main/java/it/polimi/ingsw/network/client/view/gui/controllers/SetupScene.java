@@ -91,7 +91,18 @@ public class SetupScene extends SceneController {
         setStarterPlaceCommand(secondRectangle, Side.BACK);
     }
 
+    public void updateAfterStarterPlace(){
+        isStarterSelected = true;
 
+    }
+
+    private void initializeObjectiveCards(){
+        List<ClientObjectiveCard> objectiveCards = gui.getController().getObjectiveCards();
+        firstRectangle.setFill(GUICards.pathToImage(objectiveCards.getFirst().getPath()));
+        setSelectObjectiveCardCommand(firstRectangle, 0);
+        secondRectangle.setFill(GUICards.pathToImage(objectiveCards.getLast().getPath()));
+        setSelectObjectiveCardCommand(secondRectangle, 1);
+    }
 
     private void setSelectObjectiveCardCommand(Rectangle card, int objectiveCardId){
         card.setOnMouseClicked(new EventHandler<MouseEvent>() {
