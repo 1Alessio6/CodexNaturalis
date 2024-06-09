@@ -125,6 +125,8 @@ public class GameScene extends SceneController {
     }
 
 
+    //todo when a card is placed even if the player hasn't draw it should be not visible
+
     private void initializeBoard() {
         BoardPane boardPane = new BoardPane(gui.getController().getBoard());
         initializeBoardCards(boardPane);
