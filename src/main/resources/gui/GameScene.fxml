@@ -2,30 +2,11 @@
 
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Text?>
 
 <ScrollPane prefHeight="755.0" prefWidth="1325.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.network.client.view.gui.controllers.GameScene">
     <Pane fx:id="mainPane" prefHeight="906" prefWidth="1590.0">
         <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="81.0" layoutX="669.0" layoutY="771.0" stroke="BLACK" strokeType="INSIDE" width="126.0" />
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="81.0" layoutX="808.0" layoutY="771.0" stroke="BLACK" strokeType="INSIDE" width="126.0" />
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="81.0" layoutX="945.0" layoutY="771.0" stroke="BLACK" strokeType="INSIDE" width="126.0" />
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="81.0" layoutX="481.0" layoutY="771.0" stroke="BLACK" strokeType="INSIDE" width="126.0" />
-            <Pane layoutX="1126.0" layoutY="713.0" prefHeight="168.0" prefWidth="406.0" />
-            <Pane layoutX="24.0" layoutY="268.0" prefHeight="413.0" prefWidth="310.0">
-                <children>
-                    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="81.0" layoutX="20.0" layoutY="293.0" stroke="BLACK" strokeType="INSIDE" width="126.0" />
-                    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="81.0" layoutX="157.0" layoutY="293.0" stroke="BLACK" strokeType="INSIDE" width="126.0" />
-                    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="81.0" layoutX="20.0" layoutY="197.0" stroke="BLACK" strokeType="INSIDE" width="126.0" />
-                    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="81.0" layoutX="157.0" layoutY="197.0" stroke="BLACK" strokeType="INSIDE" width="126.0" />
-                    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="81.0" layoutX="20.0" layoutY="82.0" stroke="BLACK" strokeType="INSIDE" width="126.0" />
-                    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="81.0" layoutX="157.0" layoutY="82.0" stroke="BLACK" strokeType="INSIDE" width="126.0" />
-                </children>
-            </Pane>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="81.0" layoutX="157.0" layoutY="771.0" stroke="BLACK" strokeType="INSIDE" width="126.0" />
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="81.0" layoutX="291.0" layoutY="771.0" stroke="BLACK" strokeType="INSIDE" width="126.0" />
-            <Pane layoutX="481.0" layoutY="697.0" prefHeight="48.0" prefWidth="599.0" />
             <ScrollPane layoutX="334.0" layoutY="217.0" prefHeight="472.72" prefWidth="803.0">
                 <Pane fx:id="playgroundPane" layoutX="476.0" layoutY="208.0" prefHeight="1000" prefWidth="1000" />
             </ScrollPane>
