@@ -17,6 +17,7 @@ import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.model.ClientGame;
+import it.polimi.ingsw.network.client.model.board.ClientBoard;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.board.ClientTile;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
@@ -239,7 +240,7 @@ public class ClientController implements ClientActions {
 
         game.getPlayer(username).removePlayerCard(placedCard);
 
-        if (!getGamePhase().equals(GamePhase.Setup) && this.getMainPlayerUsername().equals(username)) {
+        if (!getGamePhase().equals(GamePhase.PlaceAdditional) && !getGamePhase().equals(GamePhase.Setup) && this.getMainPlayerUsername().equals(username)) {
             this.game.setCurrentPhase(GamePhase.DrawNormal);
         }
     }
@@ -391,6 +392,13 @@ public class ClientController implements ClientActions {
         return game.getPlaygroundByUsername(username);
     }
 
+    public ClientObjectiveCard getMainPlayerObjectiveCard(){
+        return getMainPlayer().getObjectiveCards().getFirst();
+    }
+
+    public ClientBoard getBoard(){
+        return game.getClientBoard();
+    }
 
     public ClientPlayer getPlayer(String username) {
         return game.getPlayer(username);

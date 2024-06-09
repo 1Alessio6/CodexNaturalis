@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.SuspendedGameException;
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.Side;
+import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
@@ -20,6 +21,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
@@ -62,6 +64,8 @@ public class GameScene extends SceneController {
         playerCardsVisibleSide = new ArrayList<>();
         availablePositions = new ArrayList<>();
         selectedCardHandPosition = -1;
+        initializeMainPlayerCardPane();
+        currentVisiblePlaygroundOwner = gui.getController().getMainPlayerUsername();
 
     }
 
@@ -81,8 +85,31 @@ public class GameScene extends SceneController {
         }
     }
 
+    private void initializeMainPlayerCardPane(){
+        mainPlayerCardsPane.setPrefSize(1000,168);
+        mainPlayerCardsPane.setLayoutX(300);
+        mainPlayerCardsPane.setLayoutY(713);
+        initializeMainPlayerObjectiveCard();
+        initializeMainPlayerCards();
+        mainPane.getChildren().add(mainPlayerCardsPane);
+    }
+
+    //<Pane layoutX="1126.0" layoutY="713.0" prefHeight="168.0" prefWidth="406.0" />
+
+    private void initializeMainPlayerObjectiveCard(){
+        double layoutX = 0.0;
+        Rectangle rectangle = new Rectangle(GUICards.playerCardsWidth, GUICards.playerCardsHeight);
+        rectangle.setLayoutX(layoutX);
+        rectangle.setFill(GUICards.pathToImage(gui.getController().getMainPlayerObjectiveCard().getPath()));
+        mainPlayerCardsPane.getChildren().add(rectangle);
+    }
+
+
+
     private void initializeBoard(){
-        Pane boardPane = new Pane();
+        BoardPane boardPane = new BoardPane(gui.getController().getBoard());
+        mainPane.getChildren().add(boardPane.getBoardMainPane());
+        initializeBoardCards(boardPane);
     }
 
     private ImagePattern getFacePath(String username, int cardHandPosition, Side side) {
@@ -94,19 +121,19 @@ public class GameScene extends SceneController {
     private void initializeMainPlayerCards() {
         GUICards.initializePlayerCards(mainPlayerCardsPane, gui.getController().getMainPlayerCards(), 151, 98, 20, MouseButton.SECONDARY);
 
-        double layoutX = 0.0;
+        double layoutX = 200;
         List<ClientCard> cards = gui.getController().getMainPlayerCards();
 
         for (int i = 0; i < gui.getController().getMainPlayerCards().size(); i++) {
 
             int cardHandPosition = i;
-            Rectangle rectangle = new Rectangle(151, 98);
+            Rectangle rectangle = new Rectangle(GUICards.playerCardsWidth, GUICards.playerCardsHeight);
             ImagePattern backImage = new ImagePattern(new Image(cards.get(i).getBackPath()));
             ImagePattern frontImage = new ImagePattern(new Image(cards.get(i).getFrontPath()));
             rectangle.setFill(frontImage);
             playerCardsVisibleSide.add(i, Side.FRONT);
             rectangle.setLayoutX(layoutX);
-            layoutX = layoutX + 151 + 30;
+            layoutX = layoutX + GUICards.playerCardsWidth + 30;
 
             rectangle.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
@@ -230,7 +257,7 @@ public class GameScene extends SceneController {
         card.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                if(isClicked(mouseEvent,MouseButton.PRIMARY)){
+                if(isClicked(mouseEvent,MouseButton.PRIMARY) && gui.getController().getGamePhase() == GamePhase.DrawNormal){
                     try {
                         gui.getController().draw(idToDraw);
                     }catch (Exception e){
