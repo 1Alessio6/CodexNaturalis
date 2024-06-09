@@ -101,26 +101,7 @@ public class PlayerInfoPane {
         this.playerCardsPane = playerCardsPane;
     }
 
-    private Color convertPlayerColor(PlayerColor color) {
-        switch (color) {
-            case RED -> {
-                return Color.RED;
-            }
-            case BLACK -> {
-                return Color.BLACK;
-            }
-            case BLUE -> {
-                return Color.BLUE;
-            }
-            case GREEN -> {
-                return Color.GREEN;
-            }
-            case YELLOW -> {
-                return Color.YELLOW;
-            }
-        }
-        return null;
-    }
+
 
     public void updatePlayerCards(List<ClientCard> cards) {
         GUICards.initializePlayerCards(playerCardsPane, cards, cardWidth, cardHeight, distance, MouseButton.PRIMARY);
