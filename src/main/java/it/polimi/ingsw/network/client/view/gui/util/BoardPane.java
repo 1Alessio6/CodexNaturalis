@@ -39,7 +39,7 @@ public class BoardPane {
 
     public void initializeBoardCardsPosition(int verticalDistance, int horizontalDistance) {
 
-        double layoutX = 20.0;
+        double layoutX;
         double layoutY = 82.0;
 
         for(int i = 0; i < 6; i++) {
@@ -153,6 +153,8 @@ public class BoardPane {
                 resourceDeckTopCard.setFill(GUICards.pathToImage(face.getPath()));
         }
     }
+
+
 
     private double updateLayoutX(double layoutX, int distance) {
         return layoutX + GUICards.boardCardsWidth + distance;

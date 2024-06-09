@@ -20,6 +20,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
@@ -62,6 +63,8 @@ public class GameScene extends SceneController {
         playerCardsVisibleSide = new ArrayList<>();
         availablePositions = new ArrayList<>();
         selectedCardHandPosition = -1;
+        initializeMainPlayerCardPane();
+        currentVisiblePlaygroundOwner = gui.getController().getMainPlayerUsername();
 
     }
 
@@ -81,19 +84,31 @@ public class GameScene extends SceneController {
         }
     }
 
+    private void initializeMainPlayerCardPane(){
+        mainPlayerCardsPane.setPrefSize(1000,168);
+        mainPlayerCardsPane.setLayoutX(300);
+        mainPlayerCardsPane.setLayoutY(713);
+        initializeMainPlayerObjectiveCard();
+        initializeMainPlayerCards();
+        mainPane.getChildren().add(mainPlayerCardsPane);
+    }
+
     //<Pane layoutX="1126.0" layoutY="713.0" prefHeight="168.0" prefWidth="406.0" />
 
-    private void initializePlayerObjectiveCard(){
+    private void initializeMainPlayerObjectiveCard(){
         double layoutX = 0.0;
         Rectangle rectangle = new Rectangle(GUICards.playerCardsWidth, GUICards.playerCardsHeight);
         rectangle.setLayoutX(layoutX);
         rectangle.setFill(GUICards.pathToImage(gui.getController().getMainPlayerObjectiveCard().getPath()));
+        mainPlayerCardsPane.getChildren().add(rectangle);
     }
 
 
 
     private void initializeBoard(){
-        Pane boardPane = new Pane();
+        BoardPane boardPane = new BoardPane(gui.getController().getBoard());
+        mainPane.getChildren().add(boardPane.getBoardMainPane());
+        initializeBoardCards(boardPane);
     }
 
     private ImagePattern getFacePath(String username, int cardHandPosition, Side side) {
