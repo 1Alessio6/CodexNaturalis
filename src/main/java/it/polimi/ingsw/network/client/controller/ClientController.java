@@ -269,6 +269,8 @@ public class ClientController implements ClientActions {
         List<PlayerColor> availableColors = new ArrayList<>();
         List<ClientPlayer> players = game.getPlayers();
         for (PlayerColor color : PlayerColor.values()) {
+            if (color == PlayerColor.BLACK) continue;
+
             boolean isAvailable = true;
             for (ClientPlayer p : players) {
                 if (p.getColor() == color) {
