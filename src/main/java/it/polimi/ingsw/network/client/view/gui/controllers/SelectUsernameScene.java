@@ -19,8 +19,6 @@ public class SelectUsernameScene extends SceneController{
 
     public SelectUsernameScene(){}
 
-    @FXML
-
     private void connect(KeyEvent event) {
         if(event.getCode() == KeyCode.ENTER){
             try{
