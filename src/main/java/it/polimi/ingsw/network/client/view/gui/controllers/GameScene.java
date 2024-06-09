@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static it.polimi.ingsw.network.client.view.gui.util.GUICards.pathToImage;
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.isClicked;
 
 public class GameScene extends SceneController {
@@ -74,10 +75,14 @@ public class GameScene extends SceneController {
         initializePlayerInfoBox();
         initializeMainPlayerCardPane();
         currentVisiblePlaygroundOwner = gui.getController().getMainPlayerUsername();
+        drawPlayground(gui.getController().getMainPlayerPlayground());
         initializeBoard();
     }
 
     private void initializePlayerInfoBox() {
+
+        playerInfoPanes = new ArrayList<PlayerInfoPane>();
+
 
         int distance = 50;
         int layoutX = 70;
@@ -95,6 +100,7 @@ public class GameScene extends SceneController {
             }
 
         }
+
     }
 
     private void initializeMainPlayerCardPane() {
@@ -113,7 +119,7 @@ public class GameScene extends SceneController {
         double layoutX = 0.0;
         Rectangle rectangle = new Rectangle(GUICards.playerCardsWidth, GUICards.playerCardsHeight);
         rectangle.setLayoutX(layoutX);
-        rectangle.setFill(GUICards.pathToImage(gui.getController().getMainPlayerObjectiveCard().getPath()));
+        rectangle.setFill(pathToImage(gui.getController().getMainPlayerObjectiveCard().getPath()));
         mainPlayerCardsPane.getChildren().add(rectangle);
     }
 
@@ -131,12 +137,11 @@ public class GameScene extends SceneController {
 
     //todo needs to be called after every place in order to have the correct association between cards and images
     private void initializeMainPlayerCards() {
-        GUICards.initializePlayerCards(mainPlayerCardsPane, gui.getController().getMainPlayerCards(), 151, 98, 20, MouseButton.SECONDARY);
 
         double layoutX = 200;
         List<ClientCard> cards = gui.getController().getMainPlayerCards();
 
-        for (int i = 0; i < gui.getController().getMainPlayerCards().size(); i++) {
+        for (int i = 0; i < cards.size(); i++) {
 
             int cardHandPosition = i;
             Rectangle rectangle = new Rectangle(GUICards.playerCardsWidth, GUICards.playerCardsHeight);
@@ -196,21 +201,12 @@ public class GameScene extends SceneController {
         guiPlayground.setDimension(clientPlayground);
         playgroundPane.setPrefSize(guiPlayground.getPaneWidth(), guiPlayground.getPaneHeight());
         List<Rectangle> cardsAsRectangles = new ArrayList<>();
-        // todo. code just to run the playground. It must be inserted in the loop
-        Image img = null;
-        try {
-            img = new Image(
-                    "gui/png/cards/010.png"
-            );
-        } catch (Exception e) {
-            System.err.println("Image not found");
-            System.exit(1);
-        }
+
 
         //it's necessary to add available position after the occupied one
 
         for (Position pos : clientPlayground.getPositioningOrder()) {
-            playgroundPane.getChildren().add(guiPlayground.getRectangle(pos, img));
+            playgroundPane.getChildren().add(guiPlayground.getRectangle(pos, pathToImage(clientPlayground.getTile(pos).getFace().getPath())));
         }
 
         for (Position pos : clientPlayground.getAvailablePositions()) {
