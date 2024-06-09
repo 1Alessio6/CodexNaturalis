@@ -1,16 +1,29 @@
 package it.polimi.ingsw.network.client.view.gui.controllers;
 
+import it.polimi.ingsw.model.InvalidGamePhaseException;
+import it.polimi.ingsw.model.SuspendedGameException;
+import it.polimi.ingsw.model.card.Side;
+import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 import it.polimi.ingsw.network.client.view.gui.circle.GUICircle;
 import it.polimi.ingsw.network.client.view.gui.util.GUICards;
+import it.polimi.ingsw.network.client.view.gui.util.GUIUtil;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.isClicked;
 
 public class SetupScene extends SceneController {
     @FXML
@@ -21,11 +34,17 @@ public class SetupScene extends SceneController {
 
     private List<GUICircle> colors;
 
+    private boolean isStarterSelected;
+
     private int numColorsLeft;
 
     static private final double xRefForCircleCenter = 418;
     static private final double yRefForCircleCenter = 554;
     static private final double radius = 35;
+
+    public SetupScene() {
+
+    }
 
     @Override
     public void initialize() {
@@ -36,7 +55,7 @@ public class SetupScene extends SceneController {
         secondRectangle.setFill(GUICards.pathToImage(starter.getBackPath()));
         firstRectangle.setVisible(true);
         secondRectangle.setVisible(true);
-
+        isStarterSelected = false;
         numColorsLeft = clientController.getAvailableColors().size();
 
         colors = new ArrayList<>();
@@ -45,12 +64,25 @@ public class SetupScene extends SceneController {
             colors.add(new GUICircle(x, yRefForCircleCenter, radius));
             x += 2 * radius;
         }
-    }
-
-    public SetupScene() {
 
     }
 
+    private void setStarterPlaceCommand(Rectangle face, Side starterSide){
+        face.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if(isClicked(mouseEvent, MouseButton.PRIMARY) && !isStarterSelected){
+                    try {
+                        gui.getController().placeStarter(starterSide);
+                    } catch (SuspendedGameException | RemoteException | InvalidGamePhaseException e) {
+                        //todo update
+                        Alert error = new Alert(Alert.AlertType.ERROR);
+                        error.show();
+                    }
+                }
+            }
+        });
+    }
 
 
 }
