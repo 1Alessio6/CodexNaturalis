@@ -33,14 +33,15 @@ import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.isClicked;
 public class SetupScene extends SceneController {
 
     @FXML
-    private Pane mainPane;
+    Pane mainPane;
     @FXML
-    private Rectangle firstRectangle;
+    Rectangle firstRectangle;
 
     @FXML
-    private Rectangle secondRectangle;
+    Rectangle secondRectangle;
+
     @FXML
-    private TextField text;
+    TextField text;
 
     private List<GUICircle> colors;
 
@@ -85,6 +86,7 @@ public class SetupScene extends SceneController {
 
     @Override
     public void initialize() {
+        System.out.println("Initializing setup scene");
         ClientController clientController = gui.getController();
         initializeStarterCards();
         isStarterSelected = false;
@@ -102,6 +104,7 @@ public class SetupScene extends SceneController {
                     } catch (SuspendedGameException | RemoteException | InvalidGamePhaseException e) {
                         //todo update
                         Alert error = new Alert(Alert.AlertType.ERROR);
+                        error.setTitle("place starter has generated an error");
                         error.show();
                     }
                 }
@@ -110,6 +113,7 @@ public class SetupScene extends SceneController {
     }
 
     private void initializeStarterCards(){
+        System.out.println("initializing starter");
         ClientPlayer player = gui.getController().getPlayer(gui.getController().getMainPlayerUsername());
         ClientCard starter = player.getStarterCard();
         firstRectangle.setFill(GUICards.pathToImage(starter.getFrontPath()));
@@ -121,6 +125,7 @@ public class SetupScene extends SceneController {
     }
 
     public SetupScene() {
+        System.out.println("Constructing the setup scene");
     }
 
     public void updateAfterStarterPlace(){
@@ -158,8 +163,8 @@ public class SetupScene extends SceneController {
                     try {
                         gui.getController().placeObjectiveCard(objectiveCardId);
                     } catch (SuspendedGameException | RemoteException | InvalidGamePhaseException e) {
-                        //todo update
                         Alert error = new Alert(Alert.AlertType.ERROR);
+                        error.setTitle("Error in placing the objective");
                         error.show();
                     }
                 }
