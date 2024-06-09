@@ -61,18 +61,16 @@ public class GameScene extends SceneController {
     }
 
     public void initialize() {
-        initializePlayerInfoBox();
+
         playerCardsVisibleSide = new ArrayList<>();
         availablePositions = new ArrayList<>();
         selectedCardHandPosition = -1;
-        initializeMainPlayerCardPane();
-        currentVisiblePlaygroundOwner = gui.getController().getMainPlayerUsername();
-        initializeBoard();
 
     }
 
     @Override
     public void initializeUsingGameInformation() {
+        currentVisiblePlaygroundOwner = gui.getController().getMainPlayerUsername();
         initializePlayerInfoBox();
         initializeMainPlayerCardPane();
         currentVisiblePlaygroundOwner = gui.getController().getMainPlayerUsername();
@@ -294,9 +292,9 @@ public class GameScene extends SceneController {
         }
     }
 
-    private PlayerInfoPane getPlayerInfoPane(String username){
-        for(PlayerInfoPane playerInfoPane : playerInfoPanes){
-            if(playerInfoPane.getPlayerUsername().equals(username)){
+    private PlayerInfoPane getPlayerInfoPane(String username) {
+        for (PlayerInfoPane playerInfoPane : playerInfoPanes) {
+            if (playerInfoPane.getPlayerUsername().equals(username)) {
                 return playerInfoPane;
             }
         }
