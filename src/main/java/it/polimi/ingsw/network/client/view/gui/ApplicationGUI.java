@@ -121,14 +121,15 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     @Override
     public void showUpdateAfterConnection() {
-        if(currentScene  == SceneType.LOBBY){
-            currentScene = SceneType.SETUP;
-            loadScene(SceneType.SETUP);
-        }
-        else{
-            loadScene(SceneType.GAME);
-            currentScene = SceneType.GAME;
-        }
+        Platform.runLater(() -> {
+            if (currentScene == SceneType.LOBBY) {
+                currentScene = SceneType.SETUP;
+                loadScene(SceneType.SETUP);
+            } else {
+                loadScene(SceneType.GAME);
+                currentScene = SceneType.GAME;
+            }
+        });
     }
 
     @Override
@@ -148,7 +149,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
     @Override
     public void showStarterPlacement(String username) {
         assert currentSceneController instanceof SetupScene;
-        ((SetupScene)currentSceneController).updateAfterStarterPlace();
+        ((SetupScene) currentSceneController).updateAfterStarterPlace();
     }
 
     @Override
@@ -170,13 +171,13 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
     @Override
     public void showUpdateAfterPlace(String username) {
         assert currentSceneController instanceof GameScene;
-        ((GameScene)currentSceneController).updateAfterPlace(username);
+        ((GameScene) currentSceneController).updateAfterPlace(username);
     }
 
     @Override
     public void showUpdateAfterDraw(String username) {
         assert currentSceneController instanceof GameScene;
-        ((GameScene)currentSceneController).updateAfterDraw(username);
+        ((GameScene) currentSceneController).updateAfterDraw(username);
     }
 
     @Override
@@ -186,7 +187,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     @Override
     public void showUpdateCurrentPlayer() {
-        if(currentScene == SceneType.SETUP){
+        if (currentScene == SceneType.SETUP) {
             currentScene = SceneType.GAME;
             loadScene(SceneType.GAME);
         }
@@ -231,7 +232,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText(e.getMessage());
-            alert.setTitle("IOException");
+            alert.setTitle("Load scene error");
             alert.show();
             return;
         }
@@ -247,9 +248,6 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
     }
 
 
-
-
-
     private void initializeCurrentSceneController() {
         currentSceneController.setGui(this);
     }
@@ -257,7 +255,6 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
     private void setCurrentScene(SceneType scene) {
         currentScene = scene;
     }
-
 
 
 }
