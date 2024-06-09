@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
+import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 import it.polimi.ingsw.network.client.view.gui.circle.GUICircle;
 import it.polimi.ingsw.network.client.view.gui.util.GUICards;
@@ -88,6 +89,25 @@ public class SetupScene extends SceneController {
         secondRectangle.setVisible(true);
         setStarterPlaceCommand(firstRectangle, Side.FRONT);
         setStarterPlaceCommand(secondRectangle, Side.BACK);
+    }
+
+
+
+    private void setSelectObjectiveCardCommand(Rectangle card, int objectiveCardId){
+        card.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if(isClicked(mouseEvent, MouseButton.PRIMARY) && isStarterSelected){
+                    try {
+                        gui.getController().placeObjectiveCard(objectiveCardId);
+                    } catch (SuspendedGameException | RemoteException | InvalidGamePhaseException e) {
+                        //todo update
+                        Alert error = new Alert(Alert.AlertType.ERROR);
+                        error.show();
+                    }
+                }
+            }
+        });
     }
 
 
