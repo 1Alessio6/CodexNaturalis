@@ -174,8 +174,9 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
     }
 
     @Override
-    public void showUpdateAfterDraw() {
-        //todo add update without loading a new scene
+    public void showUpdateAfterDraw(String username) {
+        assert currentSceneController instanceof GameScene;
+        ((GameScene)currentSceneController).updateAfterDraw(username);
     }
 
     @Override
