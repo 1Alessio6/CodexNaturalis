@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.SuspendedGameException;
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.Side;
+import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
@@ -256,7 +257,7 @@ public class GameScene extends SceneController {
         card.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                if(isClicked(mouseEvent,MouseButton.PRIMARY)){
+                if(isClicked(mouseEvent,MouseButton.PRIMARY) && gui.getController().getGamePhase() == GamePhase.DrawNormal){
                     try {
                         gui.getController().draw(idToDraw);
                     }catch (Exception e){
