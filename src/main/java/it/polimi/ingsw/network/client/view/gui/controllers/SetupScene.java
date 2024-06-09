@@ -49,12 +49,7 @@ public class SetupScene extends SceneController {
     @Override
     public void initialize() {
         ClientController clientController = gui.getController();
-        ClientPlayer player = clientController.getPlayer(clientController.getMainPlayerUsername());
-        ClientCard starter = player.getStarterCard();
-        firstRectangle.setFill(GUICards.pathToImage(starter.getFrontPath()));
-        secondRectangle.setFill(GUICards.pathToImage(starter.getBackPath()));
-        firstRectangle.setVisible(true);
-        secondRectangle.setVisible(true);
+        initializeStarterCards();
         isStarterSelected = false;
         numColorsLeft = clientController.getAvailableColors().size();
 
@@ -82,6 +77,17 @@ public class SetupScene extends SceneController {
                 }
             }
         });
+    }
+
+    private void initializeStarterCards(){
+        ClientPlayer player = gui.getController().getPlayer(gui.getController().getMainPlayerUsername());
+        ClientCard starter = player.getStarterCard();
+        firstRectangle.setFill(GUICards.pathToImage(starter.getFrontPath()));
+        secondRectangle.setFill(GUICards.pathToImage(starter.getBackPath()));
+        firstRectangle.setVisible(true);
+        secondRectangle.setVisible(true);
+        setStarterPlaceCommand(firstRectangle, Side.FRONT);
+        setStarterPlaceCommand(secondRectangle, Side.BACK);
     }
 
 
