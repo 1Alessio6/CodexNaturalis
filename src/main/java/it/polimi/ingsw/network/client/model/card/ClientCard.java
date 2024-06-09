@@ -49,11 +49,11 @@ public class ClientCard implements Serializable {
     }
 
     public String getFrontPath(){
-        return front.getPath();
+        return front.getPath() + ".png";
     }
 
     public String getBackPath(){
-        return back.getPath();
+        return back.getPath() + ".png";
     }
 
     public String getSidePath(Side side){

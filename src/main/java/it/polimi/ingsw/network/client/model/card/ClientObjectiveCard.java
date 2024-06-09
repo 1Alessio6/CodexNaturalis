@@ -43,7 +43,7 @@ public class ClientObjectiveCard implements Serializable {
     }
 
     public String getPath(){
-        return "gui/png/objective_cards/" + frontID;
+        return "gui/png/objective_cards/" + frontID + ".png";
     }
 
     public int getScore(){return score;}
