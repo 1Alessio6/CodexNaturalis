@@ -156,7 +156,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
     public void showStarterPlacement(String username) {
         Platform.runLater(() -> {
             assert currentSceneController instanceof SetupScene;
-            ((SetupScene) currentSceneController).updateAfterStarterPlace();
+            ((SetupScene) currentSceneController).updateAfterStarterPlace(username);
         });
     }
 

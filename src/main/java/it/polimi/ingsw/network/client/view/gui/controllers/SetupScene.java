@@ -87,7 +87,6 @@ public class SetupScene extends SceneController {
     public void initialize() {
         isStarterSelected = false;
         text.setText("Choose your starter");
-        System.err.println("error");
     }
 
     @Override
@@ -130,15 +129,13 @@ public class SetupScene extends SceneController {
         System.out.println("Constructing the setup scene");
     }
 
-    public void updateAfterStarterPlace() {
-        isStarterSelected = true;
-        initializeObjectiveCards();
-        for (GUICircle circle : colors) {
-            circle.setVisibility(true);
+    public void updateAfterStarterPlace(String username) {
+        if (gui.getController().getMainPlayer().getUsername().equals(username)) {
+            isStarterSelected = true;
+            text.setText("Choose objective card");
+            showColors();
+            initializeObjectiveCards();
         }
-
-        text.setText("Select color");
-        showColors();
     }
 
     private void showColors() {
@@ -153,7 +150,7 @@ public class SetupScene extends SceneController {
         setSelectObjectiveCardCommand(firstRectangle, 0);
         secondRectangle.setFill(GUICards.pathToImage(objectiveCards.getLast().getPath()));
         setSelectObjectiveCardCommand(secondRectangle, 1);
-        secondRectangle.setVisible(false);
+        firstRectangle.setVisible(false);
         secondRectangle.setVisible(false);
     }
 
