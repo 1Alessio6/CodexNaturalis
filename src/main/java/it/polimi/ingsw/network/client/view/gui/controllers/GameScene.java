@@ -71,6 +71,14 @@ public class GameScene extends SceneController {
 
     }
 
+    @Override
+    public void initializeUsingGameInformation() {
+        initializePlayerInfoBox();
+        initializeMainPlayerCardPane();
+        currentVisiblePlaygroundOwner = gui.getController().getMainPlayerUsername();
+        initializeBoard();
+    }
+
     private void initializePlayerInfoBox() {
 
         int distance = 50;
