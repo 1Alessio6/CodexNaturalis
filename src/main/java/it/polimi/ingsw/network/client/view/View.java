@@ -49,7 +49,7 @@ public interface View {
 
     void showUpdateAfterPlace(String username);
 
-    void showUpdateAfterDraw();
+    void showUpdateAfterDraw(String username);
 
     void showUpdateChat();
 

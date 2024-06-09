@@ -155,7 +155,7 @@ public class ClientSocket extends Client implements VirtualView {
     @Override
     public void showUpdateAfterDraw(ClientCard drawnCard, ClientFace newTopDeck, ClientCard newFaceUpCard, String username, int boardPosition) {
         controller.updateAfterDraw(drawnCard, newTopDeck, newFaceUpCard, username, boardPosition);
-        clientView.showUpdateAfterDraw();
+        clientView.showUpdateAfterDraw(username);
     }
 
     @Override

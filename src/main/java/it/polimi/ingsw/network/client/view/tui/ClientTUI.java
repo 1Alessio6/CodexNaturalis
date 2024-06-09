@@ -419,7 +419,7 @@ public class ClientTUI implements View {
     }
 
     @Override
-    public void showUpdateAfterDraw() {
+    public void showUpdateAfterDraw(String username) {
         // faceUpCards
         ClientUtil.printFaceUpCards(this.controller.getFaceUpCards().stream().map(c -> c.getFace(Side.FRONT)).toList());
 

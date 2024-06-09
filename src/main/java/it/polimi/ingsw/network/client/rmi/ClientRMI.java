@@ -114,7 +114,7 @@ public class ClientRMI extends Client {
     @Override
     public void showUpdateAfterDraw(ClientCard drawnCard, ClientFace newTopDeck, ClientCard newFaceUpCard, String username, int boardPosition) throws RemoteException {
         controller.updateAfterDraw(drawnCard,newTopDeck,newFaceUpCard,username,boardPosition);
-        clientView.showUpdateAfterDraw();
+        clientView.showUpdateAfterDraw(username);
     }
 
     @Override
