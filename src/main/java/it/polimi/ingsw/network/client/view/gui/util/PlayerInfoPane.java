@@ -138,5 +138,7 @@ public class PlayerInfoPane {
         return playerMainPane;
     }
 
-
+    public String getPlayerUsername(){
+        return username.getText();
+    }
 }
