@@ -33,7 +33,7 @@ public class Server {
     }
 
     public static void main(String[] args) throws IOException {
-        int port = Integer.parseInt(args[0]);
+        int port = Integer.parseInt("1234");
         System.out.println("Server is ready on port " + port);
         ServerSocket listenSocket = new ServerSocket(port);
         new Server(listenSocket).runServer();

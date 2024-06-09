@@ -39,7 +39,6 @@ public class SetupScene extends SceneController {
 
     @FXML
     Rectangle secondRectangle;
-
     @FXML
     TextField text;
 
@@ -79,26 +78,29 @@ public class SetupScene extends SceneController {
             colors.add(circle);
             x += 2 * radius;
         }
-        for(GUICircle circle : colors){
+        for (GUICircle circle : colors) {
             mainPane.getChildren().add(circle.getCircle());
         }
     }
 
     @Override
     public void initialize() {
-        System.out.println("Initializing setup scene");
-        ClientController clientController = gui.getController();
-        initializeStarterCards();
         isStarterSelected = false;
         text.setText("Choose your starter");
+        System.err.println("error");
+    }
+
+    @Override
+    public void initializeUsingGameInformation() {
+        initializeStarterCards();
         initializeColors();
     }
 
-    private void setStarterPlaceCommand(Rectangle face, Side starterSide){
+    private void setStarterPlaceCommand(Rectangle face, Side starterSide) {
         face.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                if(isClicked(mouseEvent, MouseButton.PRIMARY) && !isStarterSelected){
+                if (isClicked(mouseEvent, MouseButton.PRIMARY) && !isStarterSelected) {
                     try {
                         gui.getController().placeStarter(starterSide);
                     } catch (SuspendedGameException | RemoteException | InvalidGamePhaseException e) {
@@ -112,7 +114,7 @@ public class SetupScene extends SceneController {
         });
     }
 
-    private void initializeStarterCards(){
+    private void initializeStarterCards() {
         System.out.println("initializing starter");
         ClientPlayer player = gui.getController().getPlayer(gui.getController().getMainPlayerUsername());
         ClientCard starter = player.getStarterCard();
@@ -128,10 +130,10 @@ public class SetupScene extends SceneController {
         System.out.println("Constructing the setup scene");
     }
 
-    public void updateAfterStarterPlace(){
+    public void updateAfterStarterPlace() {
         isStarterSelected = true;
         initializeObjectiveCards();
-        for(GUICircle circle : colors){
+        for (GUICircle circle : colors) {
             circle.setVisibility(true);
         }
 
@@ -145,7 +147,7 @@ public class SetupScene extends SceneController {
         }
     }
 
-    private void initializeObjectiveCards(){
+    private void initializeObjectiveCards() {
         List<ClientObjectiveCard> objectiveCards = gui.getController().getObjectiveCards();
         firstRectangle.setFill(GUICards.pathToImage(objectiveCards.getFirst().getPath()));
         setSelectObjectiveCardCommand(firstRectangle, 0);
@@ -155,11 +157,11 @@ public class SetupScene extends SceneController {
         secondRectangle.setVisible(false);
     }
 
-    private void setSelectObjectiveCardCommand(Rectangle card, int objectiveCardId){
+    private void setSelectObjectiveCardCommand(Rectangle card, int objectiveCardId) {
         card.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                if(isClicked(mouseEvent, MouseButton.PRIMARY) && isStarterSelected && card.isVisible()){
+                if (isClicked(mouseEvent, MouseButton.PRIMARY) && isStarterSelected && card.isVisible()) {
                     try {
                         gui.getController().placeObjectiveCard(objectiveCardId);
                     } catch (SuspendedGameException | RemoteException | InvalidGamePhaseException e) {
@@ -184,7 +186,7 @@ public class SetupScene extends SceneController {
         colors.getLast().setVisibility(false);
         colors.removeLast();
         for (GUICircle c : colors) {
-            c.setCoordinates(c.getCircle().getCenterX() + 2*radius, c.getCircle().getCenterY());
+            c.setCoordinates(c.getCircle().getCenterX() + 2 * radius, c.getCircle().getCenterY());
         }
     }
 
