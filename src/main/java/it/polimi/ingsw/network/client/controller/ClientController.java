@@ -239,7 +239,7 @@ public class ClientController implements ClientActions {
 
         game.getPlayer(username).removePlayerCard(placedCard);
 
-        if (!getGamePhase().equals(GamePhase.Setup) && this.getMainPlayerUsername().equals(username)) {
+        if (!getGamePhase().equals(GamePhase.PlaceAdditional) && !getGamePhase().equals(GamePhase.Setup) && this.getMainPlayerUsername().equals(username)) {
             this.game.setCurrentPhase(GamePhase.DrawNormal);
         }
     }
