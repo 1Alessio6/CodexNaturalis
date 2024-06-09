@@ -13,4 +13,7 @@ public abstract class SceneController {
 
     }
 
+    public void initializeUsingGameInformation(){
+    }
+
 }
