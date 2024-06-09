@@ -7,6 +7,7 @@ import it.polimi.ingsw.network.client.ClientApplication;
 import it.polimi.ingsw.network.client.ClientMain;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.view.View;
+import it.polimi.ingsw.network.client.view.gui.controllers.GameScene;
 import it.polimi.ingsw.network.client.view.gui.controllers.LobbyScene;
 import it.polimi.ingsw.network.client.view.gui.controllers.SceneController;
 import it.polimi.ingsw.network.client.view.gui.controllers.SetupScene;
@@ -168,7 +169,8 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     @Override
     public void showUpdateAfterPlace(String username) {
-        //todo add update without loading a new scene
+        assert currentSceneController instanceof GameScene;
+        ((GameScene)currentSceneController).updateAfterPlace(username);
     }
 
     @Override
