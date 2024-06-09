@@ -80,7 +80,6 @@ public class SetupScene extends SceneController {
         isStarterSelected = false;
         text.setText("Choose your starter");
         initializeColors();
-
     }
 
     private void setStarterPlaceCommand(Rectangle face, Side starterSide){
@@ -116,8 +115,8 @@ public class SetupScene extends SceneController {
     public void updateAfterStarterPlace(){
         isStarterSelected = true;
         initializeObjectiveCards();
-        //todo add select color methods
-
+        text.setText("Select color");
+        showColors();
     }
 
     private void showColors() {
