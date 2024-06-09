@@ -84,13 +84,16 @@ public class GameScene extends SceneController {
         int layoutY = 14;
 
         for (ClientPlayer player : gui.getController().getPlayers()) {
-            PlayerInfoPane playerInfoPane = new PlayerInfoPane(player);
-            playerInfoPane.setPaneLayoutX(layoutX);
-            playerInfoPane.setPaneLayoutY(layoutY);
-            Pane pane = playerInfoPane.getPlayerMainPane();
-            mainPane.getChildren().add(pane);
-            playerInfoPanes.add(playerInfoPane);
-            layoutX = layoutX + 436 + distance;
+            if (!player.getUsername().equals(gui.getController().getMainPlayerUsername())) {
+                PlayerInfoPane playerInfoPane = new PlayerInfoPane(player);
+                playerInfoPane.setPaneLayoutX(layoutX);
+                playerInfoPane.setPaneLayoutY(layoutY);
+                Pane pane = playerInfoPane.getPlayerMainPane();
+                mainPane.getChildren().add(pane);
+                playerInfoPanes.add(playerInfoPane);
+                layoutX = layoutX + 436 + distance;
+            }
+
         }
     }
 
