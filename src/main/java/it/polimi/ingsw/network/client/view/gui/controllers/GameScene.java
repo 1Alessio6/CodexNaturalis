@@ -46,6 +46,8 @@ public class GameScene extends SceneController {
 
     private Pane chat;
 
+    private List<PlayerInfoPane> playerInfoPanes;
+
     private List<Side> playerCardsVisibleSide;
 
     private List<Rectangle> availablePositions;
@@ -75,18 +77,20 @@ public class GameScene extends SceneController {
         int layoutX = 70;
         int layoutY = 14;
 
-        for (int i = 0; i < 3; i++) {
-            PlayerInfoPane playerInfoPane = new PlayerInfoPane(new ClientPlayer("roberto"));
+        for (ClientPlayer player : gui.getController().getPlayers()) {
+            PlayerInfoPane playerInfoPane = new PlayerInfoPane(player);
+            playerInfoPane.setPaneLayoutX(layoutX);
+            playerInfoPane.setPaneLayoutY(layoutY);
             Pane pane = playerInfoPane.getPlayerMainPane();
-            pane.setLayoutX(layoutX);
-            pane.setLayoutY(layoutY);
             mainPane.getChildren().add(pane);
+            playerInfoPanes.add(playerInfoPane);
             layoutX = layoutX + 436 + distance;
         }
     }
 
-    private void initializeMainPlayerCardPane(){
-        mainPlayerCardsPane.setPrefSize(1000,168);
+    private void initializeMainPlayerCardPane() {
+        mainPlayerCardsPane = new Pane();
+        mainPlayerCardsPane.setPrefSize(1000, 168);
         mainPlayerCardsPane.setLayoutX(300);
         mainPlayerCardsPane.setLayoutY(713);
         initializeMainPlayerObjectiveCard();
@@ -96,7 +100,7 @@ public class GameScene extends SceneController {
 
     //<Pane layoutX="1126.0" layoutY="713.0" prefHeight="168.0" prefWidth="406.0" />
 
-    private void initializeMainPlayerObjectiveCard(){
+    private void initializeMainPlayerObjectiveCard() {
         double layoutX = 0.0;
         Rectangle rectangle = new Rectangle(GUICards.playerCardsWidth, GUICards.playerCardsHeight);
         rectangle.setLayoutX(layoutX);
@@ -105,8 +109,7 @@ public class GameScene extends SceneController {
     }
 
 
-
-    private void initializeBoard(){
+    private void initializeBoard() {
         BoardPane boardPane = new BoardPane(gui.getController().getBoard());
         mainPane.getChildren().add(boardPane.getBoardMainPane());
         initializeBoardCards(boardPane);
@@ -148,7 +151,7 @@ public class GameScene extends SceneController {
                         playerCardsVisibleSide.set(cardHandPosition, Side.FRONT);
 
                     } else if (isClicked(mouseEvent, MouseButton.PRIMARY)) {
-                        if(!currentVisiblePlaygroundOwner.equals(gui.getController().getMainPlayerUsername())) {
+                        if (!currentVisiblePlaygroundOwner.equals(gui.getController().getMainPlayerUsername())) {
                             changeVisiblePlayground(gui.getController().getMainPlayerUsername());
                         }
                         for (Rectangle availableTile : availablePositions) {
@@ -163,16 +166,6 @@ public class GameScene extends SceneController {
             mainPlayerCardsPane.getChildren().add(rectangle);
         }
 
-    }
-
-    public void updatePlayground(String username){
-
-        if(username.equals(gui.getController().getMainPlayerUsername())){
-            drawPlayground(gui.getController().getMainPlayerPlayground());
-        }
-        else if(username.equals(currentVisiblePlaygroundOwner)){
-            drawPlayground(gui.getController().getPlaygroundByUsername(username));
-        }
     }
 
     private void selectCard(int cardHandPosition) {
@@ -220,9 +213,10 @@ public class GameScene extends SceneController {
 
                     if (isClicked(mouseEvent, MouseButton.PRIMARY) && selectedCardHandPosition != -1) {
 
-                        try{
+                        try {
                             gui.getController().placeCard(selectedCardHandPosition, playerCardsVisibleSide.get(selectedCardHandPosition), pos);
-                        }catch (Playground.UnavailablePositionException | InvalidGamePhaseException | SuspendedGameException | Playground.NotEnoughResourcesException | RemoteException e){
+                        } catch (Playground.UnavailablePositionException | InvalidGamePhaseException |
+                                 SuspendedGameException | Playground.NotEnoughResourcesException | RemoteException e) {
                             Alert alert = new Alert(Alert.AlertType.ERROR);
                             alert.setTitle(e.getMessage());
                             alert.setContentText(e.getMessage());
@@ -243,7 +237,7 @@ public class GameScene extends SceneController {
         }
     }
 
-    private void initializeBoardCards(BoardPane boardPane){
+    private void initializeBoardCards(BoardPane boardPane) {
         setIdToDraw(boardPane.getGoldenDeckTopCard(), 4);
         setIdToDraw(boardPane.getResourceDeckTopCard(), 5);
         setIdToDraw(boardPane.getGoldenFaceUp().get(0), 2);
@@ -252,15 +246,15 @@ public class GameScene extends SceneController {
         setIdToDraw(boardPane.getResourceFaceUp().get(1), 1);
     }
 
-    private void setIdToDraw(Rectangle card, int idToDraw){
+    private void setIdToDraw(Rectangle card, int idToDraw) {
 
         card.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                if(isClicked(mouseEvent,MouseButton.PRIMARY) && gui.getController().getGamePhase() == GamePhase.DrawNormal){
+                if (isClicked(mouseEvent, MouseButton.PRIMARY) && gui.getController().getGamePhase() == GamePhase.DrawNormal) {
                     try {
                         gui.getController().draw(idToDraw);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         //todo complete error handling
                         System.out.println(e.getMessage());
                     }
@@ -269,18 +263,37 @@ public class GameScene extends SceneController {
         });
     }
 
+    public void updateAfterDraw(String username) {
+        if (username.equals(gui.getController().getMainPlayerUsername())) {
+            initializeMainPlayerCards();
+        } else {
+            PlayerInfoPane playerInfoPane = getPlayerInfoPane(username);
+            assert playerInfoPane != null;
+            playerInfoPane.updatePlayerCards(gui.getController().getPlayer(username).getPlayerCards());
+        }
+    }
 
-    public void changeVisiblePlayground(String username){
+
+    public void changeVisiblePlayground(String username) {
         drawPlayground(gui.getController().getPlaygroundByUsername(username));
     }
 
-    public void updateAfterPlace(String username){
-        if(username.equals(currentVisiblePlaygroundOwner)){
+    public void updateAfterPlace(String username) {
+        if (username.equals(currentVisiblePlaygroundOwner)) {
             drawPlayground(gui.getController().getPlaygroundByUsername(username));
-        }
-        else if(username.equals(gui.getController().getMainPlayerUsername())){
+        } else if (username.equals(gui.getController().getMainPlayerUsername())) {
             drawPlayground(gui.getController().getMainPlayerPlayground());
         }
+    }
+
+    private PlayerInfoPane getPlayerInfoPane(String username){
+        for(PlayerInfoPane playerInfoPane : playerInfoPanes){
+            if(playerInfoPane.getPlayerUsername().equals(username)){
+                return playerInfoPane;
+            }
+        }
+
+        return null;
     }
 
 
