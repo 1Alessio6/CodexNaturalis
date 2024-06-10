@@ -160,7 +160,14 @@ public class BoardPane {
         }
     }
 
-
+    public void boardUpdate(ClientBoard board) {
+        setNewFace(4, board.getGoldenDeckTopBack());
+        setNewFace(5, board.getResourceDeckTopBack());
+        setNewFace(0, board.getFaceUpCards().get(0).getFront());
+        setNewFace(1, board.getFaceUpCards().get(1).getFront());
+        setNewFace(2, board.getFaceUpCards().get(2).getFront());
+        setNewFace(3, board.getFaceUpCards().get(3).getFront());
+    }
 
     private double updateLayoutX(double layoutX, int distance) {
         return layoutX + boardCardsWidth + distance;
