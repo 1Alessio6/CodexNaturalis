@@ -12,6 +12,9 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Representation of the player's playground.
+ */
 public class ClientPlayground implements Serializable {
     private final Map<Position, ClientTile> area;
     private int points;
@@ -19,7 +22,12 @@ public class ClientPlayground implements Serializable {
 
     List<Position> positioningOrder;
 
-
+    /**
+     * Constructs a playground in accordance to its initial condition.
+     *
+     * @param area      of the game.
+     * @param resources in the game.
+     */
     public ClientPlayground(Map<Position, ClientTile> area, Map<Symbol, Integer> resources) {
         this.area = new HashMap<>();
         Position origin = new Position(0, 0);
@@ -37,6 +45,11 @@ public class ClientPlayground implements Serializable {
         resources.put(Symbol.QUILL, 0);
     }
 
+    /**
+     * Constructs a playground given a <code>playgroundToCopy</code>.
+     *
+     * @param playgroundToCopy playground to be copied.
+     */
     public ClientPlayground(Playground playgroundToCopy) {
         area = createClientArea(playgroundToCopy.getArea());
         positioningOrder = new ArrayList<>(playgroundToCopy.getPositioningOrder());
@@ -44,6 +57,12 @@ public class ClientPlayground implements Serializable {
         points = playgroundToCopy.getPoints();
     }
 
+    /**
+     * Creates an area given an <code>areaToCopy</code>.
+     *
+     * @param areaToCopy area to be copied.
+     * @return the copied area.
+     */
     private Map<Position, ClientTile> createClientArea(Map<Position, Tile> areaToCopy){
 
         Map<Position, ClientTile> area = new HashMap<>();
@@ -74,6 +93,12 @@ public class ClientPlayground implements Serializable {
         this.points = points;
     }
 
+    /**
+     * Places a <code>tile</code> in the playground.
+     *
+     * @param position the position where the tile is placed.
+     * @param tile     the tile that is placed in the playground.
+     */
     public void placeTile(Position position, ClientTile tile) {
 
         this.area.put(position, tile);
@@ -102,11 +127,22 @@ public class ClientPlayground implements Serializable {
         return String.valueOf(areaString);
     }
 
+    /**
+     * Updates the current amount of a particular <code>symbol</code> in the resources map
+     *
+     * @param symbol the symbol of the resource to be updated.
+     * @param amount the new amount of symbols in the playground.
+     */
     public void updateResources(Symbol symbol, int amount) {
         this.resources.put(symbol, amount);
     }// updateResources doesn't calculate the sum of the different calculated points, it only updates the actual amount of a particular
     // symbol in the resources map
 
+    /**
+     * Adds <code>newAvailablePosition</code> to the playground
+     *
+     * @param newAvailablePosition list of new available positions to be added.
+     */
     public void addNewAvailablePositions(List <Position> newAvailablePosition){
         for(Position position : newAvailablePosition){
             placeTile(position, new ClientTile(Availability.EMPTY));
@@ -126,6 +162,11 @@ public class ClientPlayground implements Serializable {
         }
     }
 
+    /**
+     * Updates the amount of <code>newResources</code>.
+     *
+     * @param newResources to be updated.
+     */
     public void updateResources(Map<Symbol, Integer> newResources) {
         for (Symbol symbol : newResources.keySet()) {
             updateResources(symbol, newResources.get(symbol));
