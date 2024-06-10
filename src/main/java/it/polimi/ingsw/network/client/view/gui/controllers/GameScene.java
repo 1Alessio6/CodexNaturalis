@@ -33,6 +33,7 @@ import java.util.*;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUICards.pathToImage;
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.isClicked;
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.setBackgroundColor;
 
 public class GameScene extends SceneController {
 
@@ -52,6 +53,8 @@ public class GameScene extends SceneController {
 
     private List<Side> playerCardsVisibleSide;
 
+    private List<Rectangle> mainPlayerCard;
+
     private List<Rectangle> availablePositions;
 
     private String currentVisiblePlaygroundOwner;
@@ -66,6 +69,7 @@ public class GameScene extends SceneController {
 
         playerCardsVisibleSide = new ArrayList<>();
         availablePositions = new ArrayList<>();
+        mainPlayerCard = new ArrayList<>();
         selectedCardHandPosition = -1;
 
     }
@@ -122,6 +126,7 @@ public class GameScene extends SceneController {
         rectangle.setLayoutX(layoutX);
         rectangle.setFill(pathToImage(gui.getController().getMainPlayerObjectiveCard().getPath()));
         mainPlayerCardsPane.getChildren().add(rectangle);
+        mainPlayerCardsPane.setBackground(setBackgroundColor("EEE5BC"));
     }
 
 
@@ -182,6 +187,7 @@ public class GameScene extends SceneController {
             });
 
             mainPlayerCardsPane.getChildren().add(rectangle);
+            mainPlayerCard.add(rectangle);
         }
 
     }
@@ -240,7 +246,8 @@ public class GameScene extends SceneController {
                             alert.show();
                         }
 
-                        selectedCardHandPosition = -1;
+                        //todo check if this line moved in showUpdateAfterPlace causes trouble
+                        //selectedCardHandPosition = -1;
 
                         for (Rectangle availableTile : availablePositions) {
                             availableTile.setVisible(false);
@@ -299,6 +306,12 @@ public class GameScene extends SceneController {
     }
 
     public void updateAfterPlace(String username) {
+
+
+
+        mainPlayerCard.get(selectedCardHandPosition).setVisible(false);
+        selectedCardHandPosition = -1;
+
         if (username.equals(currentVisiblePlaygroundOwner)) {
             drawPlayground(gui.getController().getPlaygroundByUsername(username));
         } else if (username.equals(gui.getController().getMainPlayerUsername())) {
