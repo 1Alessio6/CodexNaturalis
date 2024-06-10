@@ -9,12 +9,19 @@ import it.polimi.ingsw.network.client.model.card.ClientFace;
 import java.io.Serializable;
 import java.util.Map;
 
+/**
+ * Representation of a tile contained at a specific position of Client's Playground.
+ */
 public class ClientTile implements Serializable {
     private ClientFace face;
     //private boolean isUsed; a variable used to check if the card has been already used for redeeming the points of an objective card
     private Availability availability;
 
-
+    /**
+     * Constructs a tile given a tile.
+     *
+     * @param tile from which the tile is to be constructed.
+     */
     public ClientTile(Tile tile){
         availability = tile.getAvailability();
         // null if it refers to a tile which has not already a face on it, because it represents an available position
@@ -30,6 +37,11 @@ public class ClientTile implements Serializable {
         availability = a;
     }
 
+    /**
+     * Constructs a tile given a <code>face</code>.
+     *
+     * @param face from which the tile is to be constructed.
+     */
     public ClientTile(ClientFace face){ //this constructor method it's used when we create an empty Tile that could be available or not available
         this.face = face; //empty tile, equivalent to null into Playground
         availability = Availability.OCCUPIED;
