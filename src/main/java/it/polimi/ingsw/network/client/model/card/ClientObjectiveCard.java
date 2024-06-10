@@ -8,6 +8,9 @@ import it.polimi.ingsw.model.card.Symbol;
 import java.io.Serializable;
 import java.util.Map;
 
+/**
+ * Represents the objective card in the client's side.
+ */
 public class ClientObjectiveCard implements Serializable {
 
     private final int frontID;
@@ -18,7 +21,11 @@ public class ClientObjectiveCard implements Serializable {
     private int score;
 
 
-
+    /**
+     * Constructs an objective card with the <code>objectiveCard</code> provided.
+     *
+     * @param objectiveCard from which the client objective card is to be constructed.
+     */
     public ClientObjectiveCard(ObjectiveCard objectiveCard) {
         frontID = objectiveCard.getFrontId();
         backID = objectiveCard.getBackId();
