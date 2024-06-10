@@ -20,6 +20,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Representation of the game in the client's side.
+ */
 public class ClientGame implements Serializable {
 
     private List<ClientCard> faceUpCards;
@@ -31,10 +34,18 @@ public class ClientGame implements Serializable {
     private GamePhase currentPhase;
     private boolean isGameActive;
 
+    /**
+     * Constructs a game with no parameters provided.
+     */
     public ClientGame() {
         this.players = new ArrayList<>();
     }
 
+    /**
+     * Checks if the game is active.
+     *
+     * @return true if the game is active, false otherwise.
+     */
     public boolean isGameActive() {
         return isGameActive;
     }
@@ -137,6 +148,12 @@ public class ClientGame implements Serializable {
         return clientBoard.getFaceUpCards().get(index);
     }
 
+    /**
+     * Verifies if there is a face up card in the <code>index</code>.
+     *
+     * @param index on which the availability of the face up card is to be checked.
+     * @return true if the slot is empty, false otherwise.
+     */
     public boolean isFaceUpSlotEmpty(int index) {
         return getFaceUpCard(index) == null;
     }
@@ -166,10 +183,21 @@ public class ClientGame implements Serializable {
         return remainingColors;
     }
 
+    /**
+     * Checks if a <code>username</code> is among the players in the current game.
+     *
+     * @param username of the player.
+     * @return true if the <code>username</code> is among the players, false otherwise.
+     */
     public boolean containsPlayer(String username) {
         return players.contains(getPlayer(username));
     }
 
+    /**
+     * Adds a player to the game
+     *
+     * @param username of the player to be added.
+     */
     public void addPlayer(String username) {
         players.add(new ClientPlayer(username));
     }
@@ -182,6 +210,11 @@ public class ClientGame implements Serializable {
         return players.get(currentPlayerIdx);
     }
 
+    /**
+     * Adds a <code>newMessage</code> sent by author.
+     *
+     * @param newMessage to be added.
+     */
     public void addMessage(Message newMessage) {
         messages.add(newMessage);
     }
