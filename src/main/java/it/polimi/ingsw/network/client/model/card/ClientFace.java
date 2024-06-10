@@ -7,6 +7,10 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Represents the Face card in the client's side.
+ * The face can be either the front or the back.
+ */
 public class ClientFace implements Serializable {
     private final int faceID;
 
@@ -26,6 +30,11 @@ public class ClientFace implements Serializable {
         faceID = -1;
     }
 
+    /**
+     * Constructs a face card with the <code>face</code> provided.
+     *
+     * @param face from which the face card is to be constructed.
+     */
     public ClientFace(Face face) {
         faceID = face.getId();
         corners = face.getCorners();
@@ -36,6 +45,10 @@ public class ClientFace implements Serializable {
         requirements = face.getRequiredResources();
     }
 
+    /**
+     * Constructs a face given a <code>faceID</code>.
+     * @param faceID from which the face card is to be constructed.
+     */
     public ClientFace(int faceID) {
         this.faceID = faceID;
         this.corners = new HashMap<>();
