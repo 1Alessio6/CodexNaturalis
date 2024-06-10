@@ -1,11 +1,8 @@
 package it.polimi.ingsw.network.client.view.drawplayground;
 
-import it.polimi.ingsw.model.board.Availability;
 import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.card.Corner;
 import it.polimi.ingsw.model.card.CornerPosition;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
-import it.polimi.ingsw.network.client.model.board.ClientTile;
 import it.polimi.ingsw.network.client.view.tui.ClientUtil;
 
 import java.util.*;
@@ -13,9 +10,15 @@ import java.util.*;
 
 public class DrawablePlayground {
     String[][] matPlayground;
-    Position centerPosition;
     int cardWidth;
     int cardHeight;
+
+    // playground has min references: start to print to the min
+    // be careful: yMax in playground has the lowest coordinate in the screen, as it's printed top-bottom
+    int xMax;
+    int xMin;
+    int yMax;
+    int yMin;
 
     private boolean validDimension(int cardWidth, int cardHeight) {
         // odd dimension to have a center
@@ -31,28 +34,22 @@ public class DrawablePlayground {
         this.cardHeight = cardHeight;
     }
 
-    private Position calcCenterPosition(int xMax, int yMax) {
-        int yCenter = xMax * (cardWidth - 1) + (cardWidth - 1) / 2;
-        int xCenter = yMax * (cardHeight - 1) + (cardHeight - 1) / 2;
-        return new Position(xCenter, yCenter);
-    }
-
-    private int calcMatrixWidth(int xMax) {
-        return 2 * (xMax * (cardWidth - 1) + (cardWidth - 1) / 2 + 1) - 1;
-    }
-
-    private int calcMatrixHeight(int yMax) {
-        return 2 * (yMax * (cardHeight - 1) + (cardHeight - 1) / 2 + 1) - 1;
+    private int calculateSizes(int max, int min) {
+        return max - min + 1;
     }
 
     public void allocateMatrix(ClientPlayground playground) {
-        int[] range = playground.getRange();
-        int xMax = range[0];
-        int yMax = range[1];
-        centerPosition = calcCenterPosition(xMax, yMax);
-        int matrixWidth = calcMatrixWidth(xMax);
-        int matrixHeight = calcMatrixHeight(yMax);
+        int[] xs = playground.getXMaxAndMin();
+        int[] ys = playground.getXMaxAndMin();
+        xMax = xs[0];
+        xMin = xs[1];
+        yMax = ys[0];
+        yMin = ys[1];
 
+        int playgroundWidth = calculateSizes(xMax, xMin);
+        int playgroundHeight = calculateSizes(yMax, yMin);
+        int matrixWidth = (playgroundWidth - 1) * (cardWidth - 1) + cardWidth;
+        int matrixHeight = (playgroundHeight - 1) * (cardHeight - 1) + cardHeight;
         // initialize empty spaces, so there are no null strings
         matPlayground = ClientUtil.createEmptyArea(matrixHeight, matrixWidth);
     }
@@ -70,66 +67,23 @@ public class DrawablePlayground {
         return true;
     }
 
+    // calculates the position of the upper left corner
     private Position calcPosInMatrix(Position cardPos) {
-        int y = centerPosition.getY() + (cardWidth - 1) * cardPos.getX();
-        int x = centerPosition.getX() + (1 - cardHeight) * cardPos.getY();
+        int x = (cardPos.getX() - xMin) * (cardWidth - 1);
+        // be careful: yMax in playground has the lowest coordinate in the screen, as it's printed top-bottom
+        int y = (cardPos.getY() - yMax) * (1 - cardHeight); // invert sign, as playground's y grows bottom-top
         return new Position(x, y);
     }
 
-    private Map<Position, CornerPosition> getMapFromPositionToCornerPosition() {
-        Map<Position, CornerPosition> positionToCornerPosition = new HashMap<>();
-
-        positionToCornerPosition.put(
-                new Position(0, 0),
-                CornerPosition.TOP_LEFT
-        );
-
-        positionToCornerPosition.put(
-                new Position(0, cardWidth - 1),
-                CornerPosition.TOP_RIGHT
-        );
-
-        positionToCornerPosition.put(
-                new Position(cardHeight - 1, cardWidth - 1),
-                CornerPosition.LOWER_RIGHT
-        );
-
-        positionToCornerPosition.put(
-                new Position(cardHeight - 1, 0),
-                CornerPosition.LOWER_LEFT
-        );
-
-        return positionToCornerPosition;
-    }
-
-    public void drawCard(ClientPlayground clientPlayground, Position cardPos, String[][] card) throws InvalidCardRepresentationException {
+    public void drawCard(Position cardPos, String[][] card) throws InvalidCardRepresentationException {
         if (!validCardRepresentation(card)) {
             throw new InvalidCardRepresentationException(cardPos.getX(), cardPos.getY());
         }
 
         Position remappedPos = calcPosInMatrix(cardPos);
-        Map<Position, CornerPosition> positionToCornerPosition = getMapFromPositionToCornerPosition();
-        int yUpperLeftCorner = remappedPos.getY() - (cardWidth - 1) / 2;
-        int xUpperLeftCorner = remappedPos.getX() - (cardHeight - 1) / 2;
-
-        for (int i = xUpperLeftCorner; i < xUpperLeftCorner + cardHeight; ++i) {
-            for (int j = yUpperLeftCorner; j < yUpperLeftCorner + cardWidth; ++j) {
-                ClientTile cardTile = clientPlayground.getTile(cardPos);
-                int xRelativeToUpperLeftCorner = i - xUpperLeftCorner;
-                int yRelativeToUpperLeftCorner = j - yUpperLeftCorner;
-                CornerPosition cornerPosition = positionToCornerPosition.get(new Position(xRelativeToUpperLeftCorner, yRelativeToUpperLeftCorner));
-                // skip if the corner of the card is covered, therefore its symbol has to be hidden
-                // todo: improve
-                Map<CornerPosition, Corner> fakeCorners = new HashMap<>();
-                for (CornerPosition cp : CornerPosition.values()) {
-                    fakeCorners.put(cp, new Corner());
-                }
-                Map<CornerPosition, Corner> faceCorners = cardTile.sameAvailability(Availability.EMPTY) ? fakeCorners : cardTile.getFace().getCorners();
-                if (!(cornerPosition != null // can be null?
-                        && faceCorners.containsKey(cornerPosition)
-                        && faceCorners.get(cornerPosition).isCovered())) {
-                    matPlayground[i][j] = card[xRelativeToUpperLeftCorner][yRelativeToUpperLeftCorner];
-                }
+        for (int y = 0; y < cardHeight; ++y) {
+            for (int x = 0; x < cardWidth; ++x) {
+                matPlayground[y + remappedPos.getY()][x + remappedPos.getX()] = card[y][x];
             }
         }
     }

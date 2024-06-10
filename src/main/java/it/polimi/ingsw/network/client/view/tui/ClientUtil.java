@@ -1,6 +1,5 @@
 package it.polimi.ingsw.network.client.view.tui;
 
-import it.polimi.ingsw.model.board.Availability;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.card.Color.CardColor;
@@ -62,8 +61,8 @@ enum GameScreenArea {
 }
 
 public class ClientUtil {
-    final static int cardWidth = 9;
-    final static int cardHeight = 3;
+    public final static int cardWidth = 9;
+    public final static int cardHeight = 3;
     final static int areaPadding = 2;
     final static int maxUsernameLength=15;
     final static int maxPointsLength=8;
@@ -974,27 +973,18 @@ public class ClientUtil {
     }
 
     private static String[][] buildPlayground(ClientPlayground clientPlayground) throws InvalidCardRepresentationException, UnInitializedPlaygroundException, InvalidCardDimensionException {
-        DrawablePlayground dp = new DrawablePlayground(7, cardHeight);
+        DrawablePlayground dp = new DrawablePlayground(7, cardHeight); // 7 array cells for each matrix line of the card
         dp.allocateMatrix(clientPlayground);
         // todo: print available in different way
-        Set<Position> availablePositions = new HashSet<>();
-        Set<Position> occupiedPositions = new HashSet<>();
-
-        for (Position position : clientPlayground.getAllPositions()) {
-            if (clientPlayground.getTile(position).sameAvailability(Availability.OCCUPIED))
-                occupiedPositions.add(position);
-            else if (clientPlayground.getTile(position).sameAvailability(Availability.EMPTY)) {
-                availablePositions.add(position);
-            }
-        }
 
         // print first available positions (so they don't override corners)
-        for (Position pos : availablePositions) {
-            dp.drawCard(clientPlayground, pos, drawAvailablePosition(pos));
+        for (Position pos : clientPlayground.getAvailablePositions()) {
+            dp.drawCard(pos, drawAvailablePosition(pos));
         }
-        // then print occupied positions
-        for (Position pos : occupiedPositions) {
-            dp.drawCard(clientPlayground, pos, designCard(clientPlayground.getTile(pos).getFace()));
+
+        // then print occupied positions. Already ordered
+        for (Position pos : clientPlayground.getPositioningOrder()) {
+            dp.drawCard(pos, designCard(clientPlayground.getTile(pos).getFace()));
         }
 
         return dp.getPlaygroundRepresentation();
@@ -1020,10 +1010,11 @@ public class ClientUtil {
 
     // todo: please update card representation
     public static String[][] drawAvailablePosition(Position pos) {
-        String[][] placeHolder = createEmptyArea(cardHeight, cardWidth - 2);
+        int matrixCardLength = cardWidth - 2;
+        String[][] placeHolder = createEmptyArea(cardHeight, matrixCardLength);
 
         //upper part
-        for (int i = 2; i < cardWidth - 2 - 1; i++) {
+        for (int i = 2; i < matrixCardLength; i++) {
             placeHolder[0][i] = "═";
         }
 
@@ -1034,7 +1025,7 @@ public class ClientUtil {
         placeHolder[1][3] = ",";
         placeHolder[1][4] = String.valueOf(pos.getY());
 
-        placeHolder[1][cardWidth - 2 - 1] = "║";
+        placeHolder[1][matrixCardLength - 1] = "║";
 
         // fill middle if shorter
         int cardFixedStuffSize = 3; // border of the card + comma
@@ -1044,7 +1035,7 @@ public class ClientUtil {
         placeHolder[1][5] = " ".repeat((availableSpaces)/2);
 
         // lower part
-        for (int i = cardHeight - 1; i < cardWidth - 2 - 1; i++) {
+        for (int i = 2; i < matrixCardLength; i++) {
             placeHolder[cardHeight - 1][i] = "═";
         }
 

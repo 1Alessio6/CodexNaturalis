@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.board.Tile;
 import it.polimi.ingsw.model.card.CornerPosition;
 import it.polimi.ingsw.model.card.Symbol;
-import it.polimi.ingsw.network.client.model.card.ClientFace;
 
 import java.io.Serializable;
 import java.util.*;
@@ -205,6 +204,28 @@ public class ClientPlayground implements Serializable {
         }
 
         return new int[]{xMax, yMax};
+    }
+
+    public int[] getXMaxAndMin() {
+        int xMax = 0;
+        int xMin = 0;
+        for (Integer currX : area.keySet().stream().map(Position::getX).collect(Collectors.toSet())) {
+            xMax = Math.max(currX, xMax);
+            xMin = Math.min(currX, xMin);
+        }
+
+        return new int[]{xMax, xMin};
+    }
+
+    public int[] getYMaxAndMin() {
+        int yMax = 0;
+        int yMin = 0;
+        for (Integer currX : area.keySet().stream().map(Position::getX).collect(Collectors.toSet())) {
+            yMax = Math.max(currX, yMax);
+            yMin = Math.min(currX, yMin);
+        }
+
+        return new int[]{yMax, yMin};
     }
 
     public List<Position> getPositioningOrder() {
