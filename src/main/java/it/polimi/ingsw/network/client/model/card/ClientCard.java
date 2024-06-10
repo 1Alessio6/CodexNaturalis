@@ -5,20 +5,37 @@ import it.polimi.ingsw.model.card.Side;
 
 import java.io.Serializable;
 
+/**
+ * Represents a card in the client's side.
+ */
 public class ClientCard implements Serializable {
     ClientFace front;
     ClientFace back;
 
+    /**
+     * Constructs a Client Cards with no parameters provided.
+     */
     public ClientCard() {
         front = new ClientFace();
         back = new ClientFace();
     }
 
+    /**
+     * Constructs a Client Card with the <code>frontID</code> and <code>backID</code> provided.
+     *
+     * @param frontID of the card.
+     * @param backID  of the card.
+     */
     public ClientCard(int frontID, int backID) {
         front = new ClientFace(frontID);
         back = new ClientFace(backID);
     }
 
+    /**
+     * Constructor used to copy the provided <code>card</code>.
+     *
+     * @param card from which the tile is to be constructed.
+     */
     // copy constructor
     public ClientCard(Card card) {
         this.front = new ClientFace(card.getFace(Side.FRONT));
