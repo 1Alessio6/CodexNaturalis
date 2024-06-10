@@ -244,6 +244,7 @@ public class GameScene extends SceneController {
                             alert.setTitle(e.getMessage());
                             alert.setContentText(e.getMessage());
                             alert.show();
+                            selectedCardHandPosition = -1;
                         }
 
                         //todo check if this line moved in showUpdateAfterPlace causes trouble
