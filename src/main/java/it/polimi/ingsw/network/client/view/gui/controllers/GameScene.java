@@ -29,10 +29,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUICards.pathToImage;
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.isClicked;
@@ -306,6 +303,10 @@ public class GameScene extends SceneController {
             drawPlayground(gui.getController().getPlaygroundByUsername(username));
         } else if (username.equals(gui.getController().getMainPlayerUsername())) {
             drawPlayground(gui.getController().getMainPlayerPlayground());
+        }
+
+        if(!username.equals(gui.getController().getMainPlayerUsername())){
+            Objects.requireNonNull(getPlayerInfoPane(username)).updateResources(gui.getController().getPlaygroundByUsername(username).getResources());
         }
     }
 

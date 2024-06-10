@@ -91,9 +91,9 @@ public class PlayerInfoPane {
 
         resourcesPane = new Pane();
         resourcesPane.setPrefSize(resourcesPaneWidth, resourcesPaneHeight);
-        //todo add resources
         resourcesPane.setBackground(setBackgroundColor("#FFFFFF"));
         initializeResources();
+        updateResources(player.getPlayground().getResources());
         resourcesPane.setLayoutX(15);
         resourcesPane.setLayoutY(51);
         playerMainPane.getChildren().add(resourcesPane);
@@ -121,13 +121,19 @@ public class PlayerInfoPane {
             symbolImage.setFitHeight(33.6);
             symbolImage.setFitWidth(30.45);
             symbolImage.setLayoutX(layoutX);
-            Text points = new Text("0");
+            Text points = new Text();
             resources.put(symbol, points);
             points.setLayoutX(layoutX + 30.45 + 5);
             points.setLayoutY(22);
             resourcesPane.getChildren().add(symbolImage);
             resourcesPane.getChildren().add(points);
             layoutX = layoutX + 50.0;
+        }
+    }
+
+    public void updateResources(Map<Symbol, Integer> playgroundResources){
+        for(Symbol symbol : playgroundResources.keySet()){
+            resources.get(symbol).setText(playgroundResources.get(symbol).toString());
         }
     }
 
