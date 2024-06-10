@@ -109,14 +109,6 @@ public class PlayerInfoPane {
         GUICards.initializePlayerCards(playerCardsPane, cards, cardWidth, cardHeight, distance, MouseButton.PRIMARY);
     }
 
-    public void setPaneLayoutX(double layoutX) {
-        playerMainPane.setLayoutX(layoutX);
-    }
-
-    public void setPaneLayoutY(double layoutY) {
-        playerMainPane.setLayoutX(layoutY);
-    }
-
     public Pane getPlayerMainPane() {
         return playerMainPane;
     }
