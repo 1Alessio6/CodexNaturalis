@@ -15,6 +15,8 @@ import javafx.scene.text.Text;
 import java.util.ArrayList;
 import java.util.List;
 
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.setBackgroundColor;
+
 public class PlayerInfoPane {
 
     private Pane playerMainPane;
@@ -52,7 +54,7 @@ public class PlayerInfoPane {
 
     public PlayerInfoPane(ClientPlayer player) {
         playerMainPane = new Pane();
-        playerMainPane.setBackground(new Background(new BackgroundFill(Color.SADDLEBROWN, CornerRadii.EMPTY, null)));
+        playerMainPane.setBackground(setBackgroundColor("#EEE5BC"));
         playerMainPane.setPrefSize(mainPaneWidth, mainPaneHeight);
 
         //initialize card pane

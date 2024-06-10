@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
+import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
@@ -47,6 +48,8 @@ public class GameScene extends SceneController {
     private Pane mainPlayerCardsPane;
 
     private Pane chat;
+
+    private BoardPane boardPane;
 
     private List<PlayerInfoPane> playerInfoPanes;
 
@@ -114,7 +117,6 @@ public class GameScene extends SceneController {
         mainPane.getChildren().add(mainPlayerCardsPane);
     }
 
-    //<Pane layoutX="1126.0" layoutY="713.0" prefHeight="168.0" prefWidth="406.0" />
 
     private void initializeMainPlayerObjectiveCard() {
         double layoutX = 0.0;
@@ -128,7 +130,7 @@ public class GameScene extends SceneController {
     //todo when a card is placed even if the player hasn't draw it should be not visible
 
     private void initializeBoard() {
-        BoardPane boardPane = new BoardPane(gui.getController().getBoard());
+        boardPane = new BoardPane(gui.getController().getBoard());
         initializeBoardCards(boardPane);
         mainPane.getChildren().add(boardPane.getBoardMainPane());
 
@@ -288,6 +290,9 @@ public class GameScene extends SceneController {
             assert playerInfoPane != null;
             playerInfoPane.updatePlayerCards(gui.getController().getPlayer(username).getPlayerCards());
         }
+
+        boardPane.boardUpdate(gui.getController().getBoard());
+
     }
 
 
