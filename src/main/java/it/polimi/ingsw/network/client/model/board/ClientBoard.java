@@ -11,7 +11,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Representation of the player's playing area.
+ * Client Board includes the face up cards, the resource and golden decks and the common objectives.
+ */
 public class ClientBoard implements Serializable {
 
     private List<ClientCard> faceUpCards;
@@ -22,6 +25,15 @@ public class ClientBoard implements Serializable {
 
     private List<ClientObjectiveCard> commonObjectives;
 
+    /**
+     * Constructs a client with the <code>faceUpCards</code>, <code>commonObjectives</code>,
+     * <code>goldenDeckTopBack</code> and <code>resourceDeckTopBack</code> provided.
+     *
+     * @param faceUpCards         the four cards placed face up on the <code>ClientBoard</code>.
+     * @param commonObjectives    the two <code>commonObjectives</code> of the game.
+     * @param goldenDeckTopBack   the back of the first golden card found in the golden deck.
+     * @param resourceDeckTopBack the back of the first resource card found in the resource deck.
+     */
     public ClientBoard(List<Card> faceUpCards, List<ObjectiveCard> commonObjectives, Face goldenDeckTopBack, Face resourceDeckTopBack) {
         this.goldenDeckTopBack = goldenDeckTopBack == null ? null : new ClientFace(goldenDeckTopBack);
         this.resourceDeckTopBack = resourceDeckTopBack == null ? null : new ClientFace(resourceDeckTopBack);
