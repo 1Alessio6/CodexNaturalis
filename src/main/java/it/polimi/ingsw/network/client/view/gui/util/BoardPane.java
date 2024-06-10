@@ -145,7 +145,6 @@ public class BoardPane {
 
     public void setNewFace(int boardPosition, ClientFace face) {
 
-        System.err.println("update position = " + boardPosition + " with path" + face.getPath());
 
         switch (boardPosition) {
             case 0:
@@ -173,12 +172,6 @@ public class BoardPane {
     }
 
     public void boardUpdate(ClientBoard board) {
-
-        for(ClientCard card : board.getFaceUpCards()){
-            System.err.println(card.getFrontPath());
-        }
-        System.err.println(board.getGoldenDeckTopBack().getPath());
-        System.err.println(board.getResourceDeckTopBack().getPath());
 
         setNewFace(4, board.getGoldenDeckTopBack());
         setNewFace(5, board.getResourceDeckTopBack());

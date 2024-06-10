@@ -83,6 +83,7 @@ public class GameScene extends SceneController {
         initializeBoard();
     }
 
+
     private void initializePlayerInfoBox() {
 
         playerInfoPanes = new ArrayList<PlayerInfoPane>();
@@ -95,9 +96,9 @@ public class GameScene extends SceneController {
         for (ClientPlayer player : gui.getController().getPlayers()) {
             if (!player.getUsername().equals(gui.getController().getMainPlayerUsername())) {
                 PlayerInfoPane playerInfoPane = new PlayerInfoPane(player);
-                playerInfoPane.setPaneLayoutX(layoutX);
-                playerInfoPane.setPaneLayoutY(layoutY);
                 Pane pane = playerInfoPane.getPlayerMainPane();
+                pane.setLayoutX(layoutX);
+                pane.setLayoutY(layoutY);
                 mainPane.getChildren().add(pane);
                 playerInfoPanes.add(playerInfoPane);
                 layoutX = layoutX + 436 + distance;
