@@ -13,6 +13,9 @@ import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
+import static it.polimi.ingsw.network.client.view.gui.util.GUICards.*;
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.setBackgroundColor;
+
 public class BoardPane {
 
     private Pane boardMainPane;
@@ -27,20 +30,20 @@ public class BoardPane {
         goldenFaceUp = new ArrayList<>();
         resourceFaceUp = new ArrayList<>();
         boardMainPane = new Pane();
-        boardMainPane.setPrefSize(413, 600);
+        boardMainPane.setPrefSize(295, 450);
         boardMainPane.setLayoutX(24);
-        boardMainPane.setLayoutY(268);
+        boardMainPane.setLayoutY(230);
 
         createFaceUpCards(clientBoard.getFaceUpCards());
         createDeck(DeckType.GOLDEN, clientBoard.getGoldenDeckTopBack());
         createDeck(DeckType.RESOURCE, clientBoard.getResourceDeckTopBack());
 
-        initializeBoardCardsPosition(34,11);
-
         boardMainPane.getChildren().addAll(goldenFaceUp);
         boardMainPane.getChildren().addAll(resourceFaceUp);
         boardMainPane.getChildren().add(goldenDeckTopCard);
         boardMainPane.getChildren().add(resourceDeckTopCard);
+        boardMainPane.setBackground(setBackgroundColor("#EEE5BC"));
+        initializeBoardCardsPosition(34, 11);
 
     }
 
@@ -50,11 +53,11 @@ public class BoardPane {
         double layoutX;
         double layoutY = 82.0;
 
-        for(int i = 0; i < 6; i++) {
+        for (int i = 0; i < 6; i++) {
 
             layoutX = 20.0;
 
-            switch (i){
+            switch (i) {
                 case 0:
                     resourceFaceUp.getFirst().setLayoutX(layoutX);
                     resourceFaceUp.getFirst().setLayoutY(layoutY);
@@ -64,16 +67,15 @@ public class BoardPane {
                     goldenFaceUp.getFirst().setLayoutY(layoutY);
                     break;
                 case 4:
-
                     goldenDeckTopCard.setLayoutX(layoutX);
-                    goldenDeckTopCard.setLayoutX(layoutY);
+                    goldenDeckTopCard.setLayoutY(layoutY);
                     break;
             }
 
             i++;
             layoutX = updateLayoutX(layoutX, horizontalDistance);
 
-            switch (i){
+            switch (i) {
                 case 1:
                     resourceFaceUp.getLast().setLayoutX(layoutX);
                     resourceFaceUp.getLast().setLayoutY(layoutY);
@@ -86,7 +88,7 @@ public class BoardPane {
 
                 case 5:
                     resourceDeckTopCard.setLayoutX(layoutX);
-                    resourceDeckTopCard.setLayoutX(layoutY);
+                    resourceDeckTopCard.setLayoutY(layoutY);
                     break;
             }
 
@@ -106,17 +108,16 @@ public class BoardPane {
     }
 
     private Rectangle createBoardRectangle() {
-        return new Rectangle(GUICards.boardCardsWidth, GUICards.boardCardsHeight);
+        return new Rectangle(boardCardsWidth, boardCardsHeight);
     }
 
-    private void createFaceUpCards(List<ClientCard> faceUp){
-        for(int i = 0; i < 4; i++) {
+    private void createFaceUpCards(List<ClientCard> faceUp) {
+        for (int i = 0; i < 4; i++) {
             Rectangle rectangle = createBoardRectangle();
-            rectangle.setFill(GUICards.pathToImage(faceUp.get(i).getFrontPath()));
-            if(i <= 1 ){
+            rectangle.setFill(pathToImage(faceUp.get(i).getFrontPath()));
+            if (i <= 1) {
                 resourceFaceUp.add(rectangle);
-            }
-            else{
+            } else {
                 goldenFaceUp.add(rectangle);
             }
         }
@@ -142,38 +143,30 @@ public class BoardPane {
         return goldenFaceUp;
     }
 
-    public void setDeckTopCard(DeckType type, ClientFace face) {
-        if (type.equals(DeckType.GOLDEN)) {
-            goldenDeckTopCard.setFill(GUICards.pathToImage(face.getPath()));
-        } else {
-            resourceDeckTopCard.setFill(GUICards.pathToImage(face.getPath()));
-        }
-    }
-
     public void setNewFace(int boardPosition, ClientFace face) {
         switch (boardPosition) {
             case 0:
-                resourceFaceUp.get(0).setFill(GUICards.pathToImage(face.getPath()));
+                resourceFaceUp.getFirst().setFill(pathToImage(face.getPath()));
             case 1:
-                resourceFaceUp.get(1).setFill(GUICards.pathToImage(face.getPath()));
+                resourceFaceUp.getLast().setFill(pathToImage(face.getPath()));
             case 2:
-                goldenFaceUp.get(0).setFill(GUICards.pathToImage(face.getPath()));
+                goldenFaceUp.getFirst().setFill(pathToImage(face.getPath()));
             case 3:
-                goldenFaceUp.get(1).setFill(GUICards.pathToImage(face.getPath()));
+                goldenFaceUp.getLast().setFill(pathToImage(face.getPath()));
             case 4:
-                goldenDeckTopCard.setFill(GUICards.pathToImage(face.getPath()));
+                goldenDeckTopCard.setFill(pathToImage(face.getPath()));
             case 5:
-                resourceDeckTopCard.setFill(GUICards.pathToImage(face.getPath()));
+                resourceDeckTopCard.setFill(pathToImage(face.getPath()));
         }
     }
 
 
 
     private double updateLayoutX(double layoutX, int distance) {
-        return layoutX + GUICards.boardCardsWidth + distance;
+        return layoutX + boardCardsWidth + distance;
     }
 
     private double updateLayoutY(double layoutY, int distance) {
-        return layoutY + GUICards.boardCardsHeight + distance;
+        return layoutY + boardCardsHeight + distance;
     }
 }
