@@ -144,23 +144,42 @@ public class BoardPane {
     }
 
     public void setNewFace(int boardPosition, ClientFace face) {
+
+        System.err.println("update position = " + boardPosition + " with path" + face.getPath());
+
         switch (boardPosition) {
             case 0:
                 resourceFaceUp.getFirst().setFill(pathToImage(face.getPath()));
+                break;
             case 1:
                 resourceFaceUp.getLast().setFill(pathToImage(face.getPath()));
+                break;
             case 2:
                 goldenFaceUp.getFirst().setFill(pathToImage(face.getPath()));
+                break;
             case 3:
                 goldenFaceUp.getLast().setFill(pathToImage(face.getPath()));
+                break;
             case 4:
                 goldenDeckTopCard.setFill(pathToImage(face.getPath()));
+                break;
             case 5:
                 resourceDeckTopCard.setFill(pathToImage(face.getPath()));
+                break;
+            default:
+                System.err.println("not valid id");
+                break;
         }
     }
 
     public void boardUpdate(ClientBoard board) {
+
+        for(ClientCard card : board.getFaceUpCards()){
+            System.err.println(card.getFrontPath());
+        }
+        System.err.println(board.getGoldenDeckTopBack().getPath());
+        System.err.println(board.getResourceDeckTopBack().getPath());
+
         setNewFace(4, board.getGoldenDeckTopBack());
         setNewFace(5, board.getResourceDeckTopBack());
         setNewFace(0, board.getFaceUpCards().get(0).getFront());
