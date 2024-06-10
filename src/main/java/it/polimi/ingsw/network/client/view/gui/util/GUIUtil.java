@@ -3,6 +3,9 @@ package it.polimi.ingsw.network.client.view.gui.util;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 
 public class GUIUtil {
@@ -31,5 +34,11 @@ public class GUIUtil {
         }
         return null;
     }
+
+    public static Background setBackgroundColor(String backgroundColor) {
+        return new Background(new BackgroundFill(Color.web(backgroundColor), CornerRadii.EMPTY, null));
+    }
+
+
 
 }
