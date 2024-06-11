@@ -7,10 +7,8 @@ import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
-import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
-import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 import it.polimi.ingsw.network.client.view.gui.GUIPlayground;
 import it.polimi.ingsw.network.client.view.gui.util.BoardPane;
@@ -18,12 +16,10 @@ import it.polimi.ingsw.network.client.view.gui.util.GUICards;
 import it.polimi.ingsw.network.client.view.gui.util.PlayerInfoPane;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
@@ -53,7 +49,7 @@ public class GameScene extends SceneController {
 
     private List<Side> playerCardsVisibleSide;
 
-    private List<Rectangle> mainPlayerCard;
+    private List<Rectangle> mainPlayerCards;
 
     private List<Rectangle> availablePositions;
 
@@ -69,7 +65,7 @@ public class GameScene extends SceneController {
 
         playerCardsVisibleSide = new ArrayList<>();
         availablePositions = new ArrayList<>();
-        mainPlayerCard = new ArrayList<>();
+        mainPlayerCards = new ArrayList<>();
         selectedCardHandPosition = -1;
 
     }
@@ -90,8 +86,8 @@ public class GameScene extends SceneController {
         playerInfoPanes = new ArrayList<PlayerInfoPane>();
 
 
-        int distance = 50;
-        int layoutX = 70;
+        int distance = 20;
+        int layoutX = 30;
         int layoutY = 14;
 
         for (ClientPlayer player : gui.getController().getPlayers()) {
@@ -102,7 +98,7 @@ public class GameScene extends SceneController {
                 pane.setLayoutY(layoutY);
                 mainPane.getChildren().add(pane);
                 playerInfoPanes.add(playerInfoPane);
-                layoutX = layoutX + 436 + distance;
+                layoutX = layoutX + 361 + distance;
             }
 
         }
@@ -111,9 +107,9 @@ public class GameScene extends SceneController {
 
     private void initializeMainPlayerCardPane() {
         mainPlayerCardsPane = new Pane();
-        mainPlayerCardsPane.setPrefSize(1000, 168);
-        mainPlayerCardsPane.setLayoutX(300);
-        mainPlayerCardsPane.setLayoutY(713);
+        mainPlayerCardsPane.setPrefSize(1000, 90);
+        mainPlayerCardsPane.setLayoutX(334);
+        mainPlayerCardsPane.setLayoutY(630);
         initializeMainPlayerObjectiveCard();
         initializeMainPlayerCards();
         mainPane.getChildren().add(mainPlayerCardsPane);
@@ -146,6 +142,13 @@ public class GameScene extends SceneController {
 
     //todo needs to be called after every place in order to have the correct association between cards and images
     private void initializeMainPlayerCards() {
+
+        for(Rectangle card : mainPlayerCards){
+            mainPlayerCardsPane.getChildren().remove(card);
+        }
+        mainPlayerCards.clear();
+
+        //todo you should remove from main pain too
 
         double layoutX = 200;
         List<ClientCard> cards = gui.getController().getMainPlayerCards();
@@ -187,7 +190,7 @@ public class GameScene extends SceneController {
             });
 
             mainPlayerCardsPane.getChildren().add(rectangle);
-            mainPlayerCard.add(rectangle);
+            mainPlayerCards.add(rectangle);
         }
 
     }
@@ -219,10 +222,9 @@ public class GameScene extends SceneController {
         //it's necessary to add available position after the occupied one
 
         for (Position pos : clientPlayground.getPositioningOrder()) {
-            if(!clientPlayground.getTile(pos).sameAvailability(Availability.EMPTY)){
+            if (!clientPlayground.getTile(pos).sameAvailability(Availability.EMPTY)) {
                 playgroundPane.getChildren().add(guiPlayground.getRectangle(pos, pathToImage(clientPlayground.getTile(pos).getFace().getPath())));
-            }
-            else{
+            } else {
                 playgroundPane.getChildren().add(guiPlayground.getRectangleEmptyTile(pos));
             }
         }
@@ -309,18 +311,19 @@ public class GameScene extends SceneController {
     public void updateAfterPlace(String username) {
 
 
-
-        mainPlayerCard.get(selectedCardHandPosition).setVisible(false);
-        selectedCardHandPosition = -1;
-
         if (username.equals(currentVisiblePlaygroundOwner)) {
             drawPlayground(gui.getController().getPlaygroundByUsername(username));
         } else if (username.equals(gui.getController().getMainPlayerUsername())) {
             drawPlayground(gui.getController().getMainPlayerPlayground());
         }
 
-        if(!username.equals(gui.getController().getMainPlayerUsername())){
+        if (!username.equals(gui.getController().getMainPlayerUsername())) {
             Objects.requireNonNull(getPlayerInfoPane(username)).updateResources(gui.getController().getPlaygroundByUsername(username).getResources());
+
+        } else {
+            System.err.println(selectedCardHandPosition);
+            mainPlayerCards.get(selectedCardHandPosition).setVisible(false);
+            selectedCardHandPosition = -1;
         }
     }
 
