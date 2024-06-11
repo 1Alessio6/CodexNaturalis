@@ -1194,14 +1194,15 @@ public class ClientUtil {
     /**
      * Prints the rulebook on the screen.
      */
-    public static void printRulebook(){
+    public static void printRulebook(int numberOfPage){
         clearScreen();
         printToLineColumn(GameScreenArea.TITLE.getScreenPosition().getX(),
                 GameScreenArea.TITLE.getScreenPosition().getY(),
                 ClientUtil.title);
         System.out.println("\n");
         try{
-            InputStream rulebookStream = ClientUtil.class.getClassLoader().getResourceAsStream("tui/CODEX_NATURALIS_RULEBOOK.txt");
+            InputStream rulebookStream = numberOfPage==1?ClientUtil.class.getClassLoader().getResourceAsStream("tui/CODEX_NATURALIS_RULEBOOK_1.txt"):
+                    ClientUtil.class.getClassLoader().getResourceAsStream("tui/CODEX_NATURALIS_RULEBOOK_2.txt");
             BufferedReader bufferedReader= null;
             if (rulebookStream != null) {
                 bufferedReader = new BufferedReader(new InputStreamReader(rulebookStream));

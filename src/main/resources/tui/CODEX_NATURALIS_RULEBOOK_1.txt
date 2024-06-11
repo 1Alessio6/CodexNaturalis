@@ -10,7 +10,7 @@
                                                                      ║   └‐‐‐┘          ║             ║     └‐‐‐┌*‐‐┐    ║     Objective Resource cards contain the number of <R> resources
                 ~ GAME OVERVIEW ~                                    ║                  ║             ║         └‐‐‐┘    ║     that are necessary in order to gain the points.
                                                                      ╚══════════════════╝             ╚══════════════════╝
-Play and place your cards carefully to benefit from the
+Play and place your cards carefully to benefit from the                                                                        >> Page 1 >>
 resources and the objects to:
 * Play cards to win immediate points.
 * Fulfill endgame objectives.                                3. Third case                    4. Fourth case

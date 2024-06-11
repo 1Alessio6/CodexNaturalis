@@ -326,7 +326,9 @@ public class ClientTUI implements View {
      * Displays the rulebook on the screen.
      */
     private void displayRulebook(){
-        ClientUtil.printRulebook();
+        ClientUtil.printCommand("Insert page (1 or 2): ");
+        int numberOfPage=Integer.parseInt(console.nextLine());
+        ClientUtil.printRulebook(numberOfPage);
         // remove game actions while reading manual
         availableActions.clear();
         availableActions.add(TUIActions.M);
@@ -334,6 +336,7 @@ public class ClientTUI implements View {
         availableActions.add(TUIActions.HELP);
         availableActions.add(TUIActions.QUIT);
         availableActions.add(TUIActions.BACK);
+        availableActions.add(TUIActions.RULEBOOK);
         //ClientUtil.putCursorToInputArea();
     }
 

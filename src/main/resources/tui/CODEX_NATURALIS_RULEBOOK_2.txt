@@ -1,0 +1,37 @@
+
+               ~ SYMBOLS LEGEND ~
+                                                                              ~ Face up cards ~
+* Plant  🍃
+* Fungi  🍄
+* Insect  🦋                                                  To draw a face up card select the card <index>.
+* Quill   🪶                                                                                                                   And Remember:
+* Inkwell  🫙                                                              ╔ ═════ ╗    ╔ ═════ ╗
+* Manuscript  📜                                                           ║  <1>  ║    ║  <2>  ║                                       The first player to reach 20 points triggers the end
+* Corner 🗂️                                                                ╚ ═════ ╝    ╚ ═════ ╝                                        of the game
+
+                                                                           ╔ ═════ ╗    ╔ ═════ ╗
+      ~ CHOOSING THE SECRET OBJECTIVE CARD ~                               ║  <3>  ║    ║  <4>  ║                              >> Page 2 >>
+                                                                           ╚ ═════ ╝    ╚ ═════ ╝
+
+You can choose your secret objective card by selecting
+one of the two cards shown at the start of the game.
+
+Digit <1> to select the first objective card, <2>                         ~ Golden and Resource Decks ~
+otherwise.
+
+               ╔ ═════ ╗    ╔ ═════ ╗                        To draw a card from the golden deck, digit the number <4>,
+               ║  <1>  ║    ║  <2>  ║                        otherwise, digit the number <5>.
+               ╚ ═════ ╝    ╚ ═════ ╝
+                                                                            ╔ ═════ ╗    ╔ ═════ ╗
+                                                                            ║  <5>  ║    ║  <4>  ║
+                                                                            ╚ ═════ ╝    ╚ ═════ ╝
+
+             ~ DRAWING A CARD LEGEND ~
+
+
+If you want to draw a card, you can choose a card from:
+                                                       
+* The four face up cards.                              
+* The first card from one of the two decks.            
+
+
