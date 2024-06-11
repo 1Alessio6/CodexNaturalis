@@ -70,4 +70,9 @@ public class GUIPlayground {
         rectangle.setFill(Color.LIGHTBLUE);
         return rectangle;
     }
+
+    public void setUpperStarterPosition(Position pos) {
+        xUpperStarter = pos.getX();
+        yUpperStarter = pos.getY();
+    }
 }
