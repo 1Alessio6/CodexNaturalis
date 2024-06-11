@@ -18,6 +18,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -98,6 +99,7 @@ public class GameScene extends SceneController {
                 pane.setLayoutY(layoutY);
                 mainPane.getChildren().add(pane);
                 playerInfoPanes.add(playerInfoPane);
+                initializeSwitchPlayground(playerInfoPane);
                 layoutX = layoutX + 361 + distance;
             }
 
@@ -143,7 +145,7 @@ public class GameScene extends SceneController {
     //todo needs to be called after every place in order to have the correct association between cards and images
     private void initializeMainPlayerCards() {
 
-        for(Rectangle card : mainPlayerCards){
+        for (Rectangle card : mainPlayerCards) {
             mainPlayerCardsPane.getChildren().remove(card);
         }
         mainPlayerCards.clear();
@@ -192,6 +194,20 @@ public class GameScene extends SceneController {
             mainPlayerCardsPane.getChildren().add(rectangle);
             mainPlayerCards.add(rectangle);
         }
+
+    }
+
+    private void initializeSwitchPlayground(PlayerInfoPane playerInfoPane) {
+
+        ImageView switchPlayground = playerInfoPane.getSwitchPlayground();
+        switchPlayground.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if (selectedCardHandPosition == -1 && isClicked(mouseEvent, MouseButton.PRIMARY)) {
+                    changeVisiblePlayground(playerInfoPane.getPlayerUsername());
+                }
+            }
+        });
 
     }
 
@@ -290,6 +306,7 @@ public class GameScene extends SceneController {
         });
     }
 
+    //todo add Images/ empty rectangles for deck and faceUp empty
     public void updateAfterDraw(String username) {
         if (username.equals(gui.getController().getMainPlayerUsername())) {
             initializeMainPlayerCards();
@@ -304,8 +321,10 @@ public class GameScene extends SceneController {
     }
 
 
+    //todo check if creates concurrency problems with update after place (java fx should be single thread so there shouldn't be problems)
     public void changeVisiblePlayground(String username) {
         drawPlayground(gui.getController().getPlaygroundByUsername(username));
+        currentVisiblePlaygroundOwner = username;
     }
 
     public void updateAfterPlace(String username) {
