@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.client.view.gui;
 
+import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.Client;
@@ -196,7 +197,11 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     @Override
     public void showUpdateChat() {
-        //todo add a dropdown menu for chat
+        Platform.runLater(() -> {
+            Message lastSentMessage = controller.getMessages().getLast();
+            assert currentSceneController instanceof GameScene;
+            ((GameScene) currentSceneController).receiveMessage(lastSentMessage);
+        });
     }
 
     @Override
