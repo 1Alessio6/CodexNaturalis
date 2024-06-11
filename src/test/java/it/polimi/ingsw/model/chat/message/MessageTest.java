@@ -17,17 +17,21 @@ class MessageTest {
 
     @Test
     public void createMessageForSpecificUsername_notBroadcast() {
-        Assertions.assertFalse(new Message("a", "b", "c").isBroadcast());
+        Assertions.assertDoesNotThrow(() -> {
+            Assertions.assertFalse(new Message("a", "b", "c").isBroadcast());
+        });
     }
 
     @Test
     public void createMessageForAllUsers_isBroadcast() {
-        Assertions.assertTrue(new Message("a", "c").isBroadcast());
+        Assertions.assertDoesNotThrow(() -> {
+            Assertions.assertTrue(new Message("a", "c").isBroadcast());
+        });
     }
 
     @Test
     public void passNullSender_throwsException() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+        Assertions.assertThrows(InvalidMessageException.class, () -> {
             new Message(null, "b", "c");
         });
     }
@@ -35,7 +39,7 @@ class MessageTest {
     @Test
     public void passNullReceiver_throwsException() {
         Assertions.assertThrows(
-                IllegalArgumentException.class,
+                InvalidMessageException.class,
                 () -> {
                     new Message("a", null, "c");
                 });
@@ -44,7 +48,7 @@ class MessageTest {
     @Test
     public void passNullContent_throwsException() {
         Assertions.assertThrows(
-                IllegalArgumentException.class,
+                InvalidMessageException.class,
                 () -> {
                     new Message("a", "b", null);
                 });

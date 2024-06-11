@@ -144,7 +144,7 @@ public class ClientTUI implements View {
         ClientUtil.putCursorToInputArea();
     }
 
-    private Message createPrivateMessage(String messageDetails) {
+    private Message createPrivateMessage(String messageDetails) throws InvalidMessageException {
         // messageDetails contains recipient too
         String[] messageSplit = messageDetails.split(" ", 2);
         String recipient = messageSplit[0];
@@ -152,7 +152,7 @@ public class ClientTUI implements View {
         return new Message(controller.getMainPlayerUsername(), recipient, messageContent);
     }
 
-    private Message createBroadcastMessage(String messageContent) {
+    private Message createBroadcastMessage(String messageContent) throws InvalidMessageException {
         return new Message(controller.getMainPlayerUsername(), messageContent);
     }
 
@@ -438,7 +438,7 @@ public class ClientTUI implements View {
 
     @Override
     public void showUpdateChat() {
-        ClientUtil.printChat(controller.getMessage());
+        ClientUtil.printChat(controller.getMessages());
 
         ClientUtil.putCursorToInputArea();
     }

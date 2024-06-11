@@ -34,10 +34,10 @@ class ChatDatabaseTest {
         String senderUsername = "a";
         String receiverUsername = "b";
         String content = "c";
-        chatDataBase.addMessage(new Message(senderUsername, receiverUsername, content));
-
+        Assertions.assertDoesNotThrow(() -> {
+            chatDataBase.addMessage(new Message(senderUsername, receiverUsername, content));
+        });
         List<Message> messages = chatDataBase.getMessages();
-
         // the two lists must contain only one element and must be equal
         Assertions.assertEquals(1, messages.size());
 

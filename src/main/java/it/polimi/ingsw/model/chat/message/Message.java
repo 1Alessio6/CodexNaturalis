@@ -11,7 +11,7 @@ public class Message implements Serializable {
     private final String receiver;
     private final String content;
 
-    private final boolean isBroadcast;
+    private boolean isBroadcast;
 
     public String getSender() {
         return sender;
@@ -29,17 +29,17 @@ public class Message implements Serializable {
         return isBroadcast;
     }
 
-    private static void checkMessageInfo(String sender, String receiver, String content) throws IllegalArgumentException {
+    private static void checkMessageInfo(String sender, String receiver, String content) throws InvalidMessageException {
         if (sender == null) {
-            throw new IllegalArgumentException("sender" + " must be a valid reference");
+            throw new InvalidMessageException("sender" + " has not been specified");
         }
 
         if (receiver == null) {
-            throw new IllegalArgumentException("receiver"+ " must be a valid reference");
+            throw new InvalidMessageException("receiver"+ " has not been specified");
         }
 
         if (content == null || content.isEmpty()) {
-            throw new IllegalArgumentException("invalid content");
+            throw new InvalidMessageException("message cannot be empty");
         }
     }
 
@@ -52,12 +52,16 @@ public class Message implements Serializable {
      * @throws IllegalArgumentException if any argument is null.
      */
 
-    public Message(String sender, String receiver, String content) throws IllegalArgumentException {
+    public Message(String sender, String receiver, String content) throws InvalidMessageException {
         checkMessageInfo(sender, receiver, content);
         this.sender = sender;
         this.receiver = receiver;
         this.content = content;
         this.isBroadcast = false;
+    }
+
+    public void setBroadcast() {
+        isBroadcast = true;
     }
 
     /**
@@ -67,7 +71,7 @@ public class Message implements Serializable {
      * @param content message content.
      * @throws IllegalArgumentException if any argument is null.
      */
-    public Message(String sender, String content) throws IllegalArgumentException {
+    public Message(String sender, String content) throws InvalidMessageException {
         checkMessageInfo(sender, "", content);
         this.sender = sender;
         this.receiver = NAME_FOR_GROUP;
@@ -75,4 +79,11 @@ public class Message implements Serializable {
         this.isBroadcast = true;
     }
 
+    @Override
+    public String toString() {
+        return
+                sender + " to " +
+                receiver + ": " +
+                content;
+    }
 }

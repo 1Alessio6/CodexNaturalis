@@ -346,7 +346,7 @@ public class ClientController implements ClientActions {
         return lastMessage.getSender() + " -> " + lastMessage.getRecipient() + ": " + lastMessage.getContent();
     }
 
-    public List<Message> getMessage() {
+    public List<Message> getMessages() {
         return game.getMessages();
     }
 
