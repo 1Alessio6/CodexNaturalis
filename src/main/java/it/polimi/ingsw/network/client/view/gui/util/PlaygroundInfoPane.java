@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.client.view.gui.util;
 import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -18,9 +19,17 @@ public class PlaygroundInfoPane {
     Pane mainPane;
     Label playGroundOwner;
 
+    ImageView returnToMainPlayground;
     ResourcePane resourcePane;
 
     public PlaygroundInfoPane(ClientPlayer player){
+
+        returnToMainPlayground = new ImageView(Icon.HOME.getPath());
+        returnToMainPlayground.setFitWidth(30);
+        returnToMainPlayground.setFitHeight(30);
+        returnToMainPlayground.setLayoutX(600);
+        returnToMainPlayground.setLayoutY(5);
+
         playGroundOwner = new Label();
         mainPane = new Pane();
         mainPane.setPrefSize(643.08, 40);
@@ -41,6 +50,7 @@ public class PlaygroundInfoPane {
         resource.setLayoutX(100);
         mainPane.getChildren().add(resource);
         mainPane.getChildren().add(playGroundOwner);
+        mainPane.getChildren().add(returnToMainPlayground);
     }
 
     public void isMainPlayer(){
@@ -53,6 +63,10 @@ public class PlaygroundInfoPane {
 
     public void updateResources(Map<Symbol, Integer> playgroundResources){
         updateResources(playgroundResources);
+    }
+
+    public ImageView getReturnToMainPlayground(){
+        return returnToMainPlayground;
     }
 
 }
