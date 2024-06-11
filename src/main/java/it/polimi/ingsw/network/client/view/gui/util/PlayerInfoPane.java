@@ -131,6 +131,7 @@ public class PlayerInfoPane {
     }
 
     public void updatePlayerCards(List<ClientCard> cards) {
+        playerCardsPane.getChildren().clear();
         GUICards.initializePlayerCards(playerCardsPane, cards, cardWidth, cardHeight, distance, MouseButton.PRIMARY);
     }
 
