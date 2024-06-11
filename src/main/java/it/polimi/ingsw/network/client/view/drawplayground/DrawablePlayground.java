@@ -40,7 +40,7 @@ public class DrawablePlayground {
 
     public void allocateMatrix(ClientPlayground playground) {
         int[] xs = playground.getXMaxAndMin();
-        int[] ys = playground.getXMaxAndMin();
+        int[] ys = playground.getYMaxAndMin();
         xMax = xs[0];
         xMin = xs[1];
         yMax = ys[0];
@@ -52,6 +52,17 @@ public class DrawablePlayground {
         int matrixHeight = (playgroundHeight - 1) * (cardHeight - 1) + cardHeight;
         // initialize empty spaces, so there are no null strings
         matPlayground = ClientUtil.createEmptyArea(matrixHeight, matrixWidth);
+
+        for (int y = 0; y < matrixHeight; y++) {
+            // all cards but least overlap on corner, so they have "one" cell less
+            // doesn't apply to last card
+            int x;
+            for (x = 0; x < matrixWidth - cardWidth; x += cardWidth - 1) {
+                matPlayground[y][x] += " ";
+            }
+            // last card doesn't overlap: count last space
+            matPlayground[y][x + 1] += " ";
+        }
     }
 
     private boolean validCardRepresentation(String[][] card) {
