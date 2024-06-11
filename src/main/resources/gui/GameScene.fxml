@@ -4,13 +4,15 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
 
-<ScrollPane prefHeight="755.0" prefWidth="1325.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.network.client.view.gui.controllers.GameScene">
-    <Pane fx:id="mainPane" prefHeight="906" prefWidth="1590.0">
-        <children>
-            <ScrollPane layoutX="334.0" layoutY="217.0" prefHeight="472.72" prefWidth="803.0">
-                <Pane fx:id="playgroundPane" layoutX="476.0" layoutY="208.0" prefHeight="1000" prefWidth="1000" />
-            </ScrollPane>
-            <Text layoutX="481.0" layoutY="199.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Playground" wrappingWidth="194.13671875" />
-        </children>
-    </Pane>
-</ScrollPane>
+
+<Pane fx:id="mainPane" prefHeight="755.0" prefWidth="1325.0" xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.network.client.view.gui.controllers.GameScene">
+    <children>
+        <ScrollPane layoutX="334.0" layoutY="217.0" prefHeight="391.76" prefWidth="666.49">
+            <Pane fx:id="playgroundPane" layoutX="476.0" layoutY="208.0" prefHeight="1000" prefWidth="1000"/>
+        </ScrollPane>
+        <Text layoutX="481.0" layoutY="199.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Playground"
+              wrappingWidth="194.13671875"/>
+    </children>
+</Pane>
+
