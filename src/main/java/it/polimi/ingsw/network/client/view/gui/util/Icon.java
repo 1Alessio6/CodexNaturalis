@@ -4,6 +4,8 @@ public enum Icon {
 
     OBSERVE_PLAYGROUND("/gui/png/icons/observe_playground.png"),
 
+    HOME("/gui/png/icons/home.png"),
+
     SETTINGS("/gui/icons/.png");
 
 
