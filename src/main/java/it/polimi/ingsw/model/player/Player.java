@@ -65,7 +65,7 @@ public class Player {
 
 
     /**
-     * Constructs a player using the username, token color, starter card, list of objective cards to choose and a list
+     * Constructs a player using the username, starter card, list of objective cards to choose and a list
      * with all other cards to be in player's possession provided.
      *
      * @param username           of the player.
