@@ -10,10 +10,10 @@ import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
-import it.polimi.ingsw.network.client.view.gui.GUIPlayground;
+import it.polimi.ingsw.network.client.view.gui.util.GUIPlayground;
 import it.polimi.ingsw.network.client.view.gui.util.BoardPane;
-import it.polimi.ingsw.network.client.view.gui.util.GUICards;
 import it.polimi.ingsw.network.client.view.gui.util.PlayerInfoPane;
+import it.polimi.ingsw.network.client.view.gui.util.PlaygroundInfoPane;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -29,10 +29,10 @@ import java.rmi.RemoteException;
 import java.util.*;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUICards.*;
-import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.isClicked;
-import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.setBackgroundColor;
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
 
 public class GameScene extends SceneController {
+
 
     @FXML
     private Pane mainPane;
@@ -41,6 +41,8 @@ public class GameScene extends SceneController {
     private Pane playgroundPane;
 
     private Pane mainPlayerCardsPane;
+
+    private PlaygroundInfoPane playgroundInfoPane;
 
     private Pane chat;
 
@@ -76,9 +78,16 @@ public class GameScene extends SceneController {
         currentVisiblePlaygroundOwner = gui.getController().getMainPlayerUsername();
         initializePlayerInfoBox();
         initializeMainPlayerCardPane();
-        currentVisiblePlaygroundOwner = gui.getController().getMainPlayerUsername();
         drawPlayground(gui.getController().getMainPlayerPlayground());
         initializeBoard();
+        initializePlaygroundInfoPane();
+        //setPlaygroundFrameColor();
+    }
+
+    private void initializePlaygroundInfoPane(){
+        playgroundInfoPane = new PlaygroundInfoPane(gui.getController().getMainPlayer());
+        playgroundInfoPane.isMainPlayer();
+        mainPane.getChildren().add(playgroundInfoPane.getMainPane());
     }
 
 
@@ -109,7 +118,7 @@ public class GameScene extends SceneController {
 
     private void initializeMainPlayerCardPane() {
         mainPlayerCardsPane = new Pane();
-        mainPlayerCardsPane.setPrefSize(1000, 90);
+        mainPlayerCardsPane.setPrefSize(700, 90);
         mainPlayerCardsPane.setLayoutX(334);
         mainPlayerCardsPane.setLayoutY(630);
         initializeMainPlayerObjectiveCard();
@@ -352,6 +361,15 @@ public class GameScene extends SceneController {
             selectedCardHandPosition = -1;
         }
     }
+
+    /*
+    private void setPlaygroundFrameColor(){
+        ClientPlayer player = gui.getController().getPlayer(currentVisiblePlaygroundOwner);
+        framePane.setBackground(setBackgroundColor("#FF0000"));
+        framePane.setVisible(true);
+    }
+
+     */
 
     private PlayerInfoPane getPlayerInfoPane(String username) {
         for (PlayerInfoPane playerInfoPane : playerInfoPanes) {
