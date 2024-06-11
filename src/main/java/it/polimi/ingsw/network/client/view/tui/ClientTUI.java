@@ -300,7 +300,7 @@ public class ClientTUI implements View {
         ClientUtil.printCommand("Enter card position in your hand: ");
         int cardPosition = Integer.parseInt(console.nextLine());
 
-        ClientUtil.putCursorToInputArea();
+        // ClientUtil.putCursorToInputArea();
 
         if(cardPosition >= 1 && cardPosition <= 3) return cardPosition - 1;
         // todo: change exception
@@ -579,6 +579,9 @@ public class ClientTUI implements View {
      */
     @Override
     public void showUpdateAfterPlace(String username) {
+        // points may have changed: show to everyone
+        ClientUtil.printScoreboard(this.controller.getPlayers());
+
         if (this.controller.getMainPlayerUsername().equals(username)) {
             ClientUtil.printPlayerHand(this.controller.getMainPlayerCards(), cardSide);
             // print playground
