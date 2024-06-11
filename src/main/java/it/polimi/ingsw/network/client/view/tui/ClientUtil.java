@@ -107,6 +107,11 @@ public class ClientUtil {
             ▐███▌▐█▌.▐▌██. ██ ▐█▄▄▌▪▐█·█▌    ██▐█▌▐█ ▪▐▌ ▐█▌·▐█▄█▌▐█•█▌▐█ ▪▐▌▐█▌▐▌▐█▌▐█▄▪▐█   \s
             ·▀▀▀  ▀█▄▀▪▀▀▀▀▀•  ▀▀▀ •▀▀ ▀▀    ▀▀ █▪ ▀  ▀  ▀▀▀  ▀▀▀ .▀  ▀ ▀  ▀ .▀▀▀ ▀▀▀ ▀▀▀▀ \s""";
 
+    /**
+     * Prints the consented commands after the help command call.
+     *
+     * @param consentedCommands the commands that the player can call in a specific phase.
+     */
     public static void printHelpCommands(Set<TUIActions> consentedCommands) {
         int line=GameScreenArea.INPUT_AREA.getScreenPosition().getX()+2;
         int column= GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1;
@@ -119,6 +124,11 @@ public class ClientUtil {
         }
     }
 
+    /**
+     * Prints the <code>string</code> inside the command square.
+     *
+     * @param string the command to be printed.
+     */
     public static void printCommand(String string){
         printCommandSquare();
         writeLine(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+2,
@@ -126,6 +136,9 @@ public class ClientUtil {
                 GameScreenArea.INPUT_AREA.getWidth()-2,string);
     }
 
+    /**
+     * Prints the 'square' in which commands are displayed.
+     */
     public static void printCommandSquare(){
         printToLineColumn(GameScreenArea.INPUT_AREA.getScreenPosition().getX(),
                 GameScreenArea.INPUT_AREA.getScreenPosition().getY(),
@@ -133,6 +146,9 @@ public class ClientUtil {
                         GameScreenArea.INPUT_AREA.getHeight() - 2).toString());
     }
 
+    /**
+     * Prints the 'square' in which the chat is displayed.
+     */
     public static void printChatSquare(){
         ClientUtil.printToLineColumn(GameScreenArea.CHAT.getScreenPosition().getX(),
                 GameScreenArea.CHAT.getScreenPosition().getY(),
@@ -140,6 +156,11 @@ public class ClientUtil {
                         GameScreenArea.CHAT.getHeight() - 2).toString());
     }
 
+    /**
+     * Displays the available args after an args input error.
+     *
+     * @param error to be displayed.
+     */
     public static void argsHelper(String error) {
         System.out.println(error);
 
@@ -152,6 +173,12 @@ public class ClientUtil {
 
     // Main methods
 
+    /**
+     * Designs a card.
+     *
+     * @param face of the card.
+     * @return the card seen as a matrix of strings.
+     */
     public static String[][] designCard(ClientFace face) {
         ANSIColor color = cardColorConversion(face.getColor());
         String[][] cardMatrix = new String[3][7];
@@ -180,12 +207,27 @@ public class ClientUtil {
         printCardMatrix(cardMatrix);
     }
 
+    /**
+     * Prints a <code>str</code> <B>string</B> in a specific <code>lineCoordinate</code> and <code>columnCoordinate</code>.
+     *
+     * @param lineCoordinate   the line in which the <code>str</code> is to be printed.
+     * @param columnCoordinate the column in which the <code>str</code> is to be printed.
+     * @param str              the string to print.
+     */
     // this takes a string as input
     public static void printToLineColumn(int lineCoordinate, int columnCoordinate, String str) {
         String[] lines = str.split("\n");
         printToLineColumn(lineCoordinate, columnCoordinate, lines);
     }
 
+    /**
+     * Prints a <code>str</code> <B>array of strings</B> in a specific <code>lineCoordinate</code> and
+     * <code>columnCoordinate</code>.
+     *
+     * @param lineCoordinate   the line in which the <code>str</code> is to be printed.
+     * @param columnCoordinate the column in which the <code>str</code> is to be printed.
+     * @param str              the array of strings to print.
+     */
     // this takes an array of string as input
     public static void printToLineColumn(int lineCoordinate, int columnCoordinate, String[] str) {
         int ongoingLine = lineCoordinate;
@@ -195,6 +237,14 @@ public class ClientUtil {
         }
     }
 
+    /**
+     * Prints a <code>matrix</code> in a specific <code>lineCoordinate</code> and <code>columnCoordinate</code>.
+     * It's used to convert cards, generally string matrices.
+     *
+     * @param lineCoordinate   the line in which the <code>matrix</code> is to be printed.
+     * @param columnCoordinate the column in which the <code>matrix</code> is to be printed
+     * @param matrix           of strings.
+     */
     // mostly used to convert cards, generally string matrices
     public static void printToLineColumn(int lineCoordinate, int columnCoordinate, String[][] matrix) {
         String[] lines = Arrays.stream(matrix).map(str -> String.join("", str)).toArray(String[]::new);
@@ -202,6 +252,12 @@ public class ClientUtil {
         printToLineColumn(lineCoordinate, columnCoordinate, lines);
     }
 
+    /**
+     * Designs an objective card.
+     *
+     * @param objectiveCard the objective card to design.
+     * @return the objective card seen as a matrix of strings.
+     */
     public static String[][] designObjectiveCard(ClientObjectiveCard objectiveCard) {
         String[][] cardMatrix = new String[3][7];
         initializeMatrix(cardMatrix);
@@ -238,6 +294,13 @@ public class ClientUtil {
 
     // Secondary methods
 
+    /**
+     * Pads the <code>string</code> in the center of the <code>availableSpaces</code>.
+     *
+     * @param availableSpaces total available space
+     * @param string          the string to be centered.
+     * @return the centered word.
+     */
     public static String centeredString(int availableSpaces, String string) {
         int numberOfSpaces = ((availableSpaces - string.length()) / 2);
         StringBuilder a = new StringBuilder();
@@ -250,12 +313,23 @@ public class ClientUtil {
         return b.toString();
     }
 
+    /**
+     * Clears the area where exceptions are displayed.
+     */
     public static void clearExceptionSpace(){
         writeLine(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+11,
                 GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1,
                 GameScreenArea.INPUT_AREA.getWidth() -2,
                 " ".repeat(120));
     }
+
+    /**
+     * Designs a 'square' with the <code>width</code> and the <code>height</code> provided.
+     *
+     * @param width  the width of the 'square' to be designed.
+     * @param height the height of the 'square' to be designed.
+     * @return the 'square' with the given specifications.
+     */
     public static StringBuilder designSquare(int width, int height) {
         StringBuilder str = new StringBuilder();
 
@@ -266,10 +340,24 @@ public class ClientUtil {
         return str;
     }
 
+    /**
+     * Adds <code>numberOfLines</code> horizontal lines to the returned string.
+     *
+     * @param numberOfLines the number of horizontal lines to be added.
+     * @return a string with <code>numberOfLines</code> horizontal lines.
+     */
     public static String appendHorizontalLine(int numberOfLines) {
         return "═".repeat(Math.max(0, numberOfLines));
     }
 
+    /**
+     * Adds <code>numberOfLines</code> pairs of vertical lines separated by a space that is <code>width</code> wide to
+     * the returned string.
+     *
+     * @param numberOfLines the number of vertical line pairs to be added.
+     * @param width         the space between a single pair of lines.
+     * @return a string with <code>numberOfLines</code> pairs of vertical lines separated by a <code>width</code> space.
+     */
     private static String appendVerticalLines(int numberOfLines, int width) {
         StringBuilder str = new StringBuilder();
         for (int i = 0; i < numberOfLines; i++) {
@@ -278,6 +366,12 @@ public class ClientUtil {
         return str.toString();
     }
 
+    /**
+     * Calculates the total number of resources inside <code>resources</code>.
+     *
+     * @param resources the map from which the number of resources is to be determined.
+     * @return the total number of resources in <code>resources</code>.
+     */
     private static int resourcesSize(Map<Symbol, Integer> resources) {
         int i = 0;
         for (Map.Entry<Symbol, Integer> entry : resources.entrySet()) {
@@ -286,6 +380,12 @@ public class ClientUtil {
         return i;
     }
 
+    /**
+     * Converts a <code>color</code> from CardColor to ANSIColor.
+     *
+     * @param color the color to convert.
+     * @return the ANSIColor color corresponding to the CardColor <code>color</code>.
+     */
     private static ANSIColor cardColorConversion(CardColor color) {
         return switch (color) {
             case RED -> RED;
@@ -297,6 +397,12 @@ public class ClientUtil {
         };
     }
 
+    /**
+     * Converts a <code>color</code> from PlayerColor to ANSIColor.
+     *
+     * @param color the color to convert.
+     * @return the ANSIColor color corresponding to the PlayerColor <code>color</code>.
+     */
     public static ANSIColor playerColorConversion(PlayerColor color) {
         return switch (color) {
             case RED -> RED_BACKGROUND_BRIGHT;
@@ -308,6 +414,12 @@ public class ClientUtil {
         };
     }
 
+    /**
+     * Converts a <code>color</code> from CardColor to ANSIColor, seen as a background color.
+     *
+     * @param color the color to convert.
+     * @return the ANSIColor background color corresponding to the CardColor <code>color</code>.
+     */
     public static ANSIColor cardColorToBGConversion(CardColor color) {
         return switch (color) {
             case RED -> RED_BACKGROUND_BRIGHT;
@@ -326,6 +438,14 @@ public class ClientUtil {
         }
     }
 
+    /**
+     * Appends the outer edges to the <code>cardMatrix</code>. It adds the bottom, top and side edges.
+     *
+     * @param resources  a map containing the resources of the card and their quantities.
+     * @param condition  the condition of the card.
+     * @param cardMatrix the card seen as an array of strings.
+     * @param color      the color of the card.
+     */
     private static void appendMatrixLines(Map<Symbol, Integer> resources, Condition condition, String[][] cardMatrix, ANSIColor color) {
         for (int i = 0; i < 3; i++) {
             if (i != 1) {
@@ -346,6 +466,13 @@ public class ClientUtil {
         }
     }
 
+    /**
+     * Appends possible <code>points</code> to the <code>cardMatrix</code>.
+     *
+     * @param cardMatrix      the card seen as an array of strings.
+     * @param pointsCondition the condition to be fulfilled in order to earn the <code>points</code>.
+     * @param points          card points.
+     */
     private static void appendPoints(String[][] cardMatrix, Condition pointsCondition, int points) {
         if (pointsCondition == null) {
             cardMatrix[1][4] = YELLOW.getColor() + printPoints(points) + RESET.getColor();//
@@ -356,6 +483,12 @@ public class ClientUtil {
         }
     }
 
+    /**
+     * Appends the <code>resources</code> inside the <code>cardMatrix</code>.
+     *
+     * @param resources  a map containing the resources of the card and their quantities.
+     * @param cardMatrix the card seen as an array of strings.
+     */
     private static void appendInternalResources(Map<Symbol, Integer> resources, String[][] cardMatrix) {//works only in starter and back cards
         int i = 0;
         for (Map.Entry<Symbol, Integer> entry : resources.entrySet()) {
@@ -382,6 +515,13 @@ public class ClientUtil {
         }
     }
 
+    /**
+     * Appends the vertices of the card to the <code>card</code>.
+     *
+     * @param cornerPositionCornerMap the map containing the vertices of the card.
+     * @param card                    the card seen as an array of strings.
+     * @param color                   the color of the card.
+     */
     public static void appendNewResources(Map<CornerPosition, Corner> cornerPositionCornerMap, String[][] card, ANSIColor color) {
         ArrayList<CornerPosition> cornerPositions = new ArrayList<>();
 
@@ -434,6 +574,11 @@ public class ClientUtil {
 
     }
 
+    /**
+     * Initialize the inside of the matrix with empty spaces.
+     *
+     * @param cardMatrix the card seen as an array of strings.
+     */
     private static void initializeMatrix(String[][] cardMatrix) {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 7; j++) {
@@ -453,6 +598,12 @@ public class ClientUtil {
         }
     }
 
+    /**
+     * Determines the case in which the objective position card is.
+     *
+     * @param positionCondition a map containing the positions and the colors of the cards.
+     * @return one, two, three, four, five or six, depending on the case the objective position card is in.
+     */
     private static int positionCase(Map<Position, CardColor> positionCondition) {
         ArrayList<Position> caseOne = new ArrayList<>();
         ArrayList<Position> caseTwo = new ArrayList<>();
@@ -490,6 +641,12 @@ public class ClientUtil {
         }
     }
 
+    /**
+     * Paints the pattern of the objective position card in the <code>card</code> depending on the case in which it is.
+     *
+     * @param card                 the card to be painted.
+     * @param positionCardColorMap a map containing the positions and the colors of the cards.
+     */
     private static void paintBackground(String[][] card, Map<Position, CardColor> positionCardColorMap) {
         ArrayList<CardColor> colors = new ArrayList<>();
         int posCase = positionCase(positionCardColorMap);
@@ -530,6 +687,12 @@ public class ClientUtil {
         }
     }
 
+    /**
+     * Returns the corresponding symbol to the specified <code>condition</code>.
+     *
+     * @param condition the condition of the card.
+     * @return the symbol of the <code>condition</code> seen as string.
+     */
     private static String printCondition(Condition condition) {
         if (condition == Condition.NUM_QUILL) {
             return quill;
@@ -544,6 +707,12 @@ public class ClientUtil {
         }
     }
 
+    /**
+     * Returns the corresponding string symbol to the specified <code>symbol</code>.
+     *
+     * @param symbol the symbol to be converted.
+     * @return the string symbol of the <code>symbol</code>.
+     */
     private static String printResources(Symbol symbol) {
         if (symbol == PLANT) {
             return plant;
@@ -570,6 +739,12 @@ public class ClientUtil {
         }
     }
 
+    /**
+     * Returns the corresponding string number to the specified <code>points</code>.
+     *
+     * @param points the points to be converted.
+     * @return the string number of the <code>points</code>.
+     */
     private static String printPoints(int points) {
         if (points == 0) {
             return " ";
@@ -590,6 +765,14 @@ public class ClientUtil {
         }
     }
 
+    /**
+     * Determines the case in which the objective card is.
+     *
+     * @param positionCondition  a map containing the positions and the colors of the cards.
+     * @param resourcesCondition a map containing the resources of the card and their quantities.
+     * @return 1 if the objective card is an objective position card, 2 of the card is an objective resource card, 0
+     * otherwise.
+     */
     private static int positionOrResourcesSwitchCase(Map<Position, CardColor> positionCondition, Map<Symbol, Integer> resourcesCondition) {
         if (!positionCondition.isEmpty() && resourcesCondition.isEmpty()) {
             return 1;
@@ -600,6 +783,12 @@ public class ClientUtil {
         }
     }
 
+    /**
+     * Creates the scoreboard.
+     *
+     * @param players the players.
+     * @return the scoreboard with the usernames of the players,their points and their colors.
+     */
     public static String createScoreBoard(List<ClientPlayer> players) {
         StringBuilder str = new StringBuilder();
 
@@ -642,8 +831,9 @@ public class ClientUtil {
 
     /**
      * Need this method because outside playground player needs to know card's requirements
-     * @param x of card print zone
-     * @param y of card print zone
+     *
+     * @param x    of card print zone
+     * @param y    of card print zone
      * @param face (optional) of the card: will decide if print card
      */
     private static void printCardOutsidePlayground(int x, int y, ClientFace face) {
@@ -656,6 +846,11 @@ public class ClientUtil {
         printToLineColumn(y + cardHeight, x, createCardRequirementsString(map));
     }
 
+    /**
+     * Prints the table of the player's current resources on the screen.
+     *
+     * @param filler the resources of the player.
+     */
     public static void printResourcesArea(Map<Symbol, Integer> filler) {
         printToLineColumn(GameScreenArea.RESOURCES.screenPosition.getX(), GameScreenArea.RESOURCES.screenPosition.getY(), createResourcesTable(filler));
     }
@@ -702,6 +897,12 @@ public class ClientUtil {
         return setupTable.toArray(new String[0]);
     }
 
+    /**
+     * Creates an empty table.
+     *
+     * @param rows the number of rows in the table.
+     * @return an empty table seen as a list of strings.
+     */
     private static List<String> createEmptyTable(int rows) {
         String inBetween = "═".repeat(resourceBoardColumnSpace); // space - icon - space
         String beginning;
@@ -736,20 +937,37 @@ public class ClientUtil {
         return mytable;
     }
 
+    /**
+     * Prints the scoreboard on the screen.
+     *
+     * @param players the players.
+     */
     public static void printScoreboard(List<ClientPlayer> players) {
         printToLineColumn(GameScreenArea.SCOREBOARD.screenPosition.getX(),
                 GameScreenArea.SCOREBOARD.screenPosition.getY(),
                 createScoreBoard(players));
     }
 
+    /**
+     * Clears the screen completely.
+     */
     public static void clearScreen() {
         System.out.println("\u001b[2J");
     }
 
+    /**
+     * Moves the cursor to the specified <code>line</code> and <code>column</code>.
+     *
+     * @param line   the line on which the cursor is to be positioned.
+     * @param column the column on which the cursor is to be positioned.
+     */
     public static void moveCursor(int line, int column) {
         System.out.print("\033[" + line + ";" + column + "H");
     }
 
+    /**
+     * Puts the cursor in the input area.
+     */
     public static void putCursorToInputArea() {
         // todo: put correct values
         moveCursor(37, 127);
@@ -833,6 +1051,11 @@ public class ClientUtil {
         return placeHolder;
     }
 
+    /**
+     * Prints the face up cards on the screen.
+     *
+     * @param faceUpCards the four face up cards.
+     */
     public static void printFaceUpCards(List<ClientCard> faceUpCards) {
         List<ClientFace> faces = faceUpCards.stream().map(c -> c.getFace(Side.FRONT)).toList();
 
@@ -869,10 +1092,24 @@ public class ClientUtil {
         return area;
     }
 
+    /**
+     * Modifies the visualization of the message.
+     *
+     * @param sender    the sender of the message.
+     * @param recipient the recipient of the message.
+     * @param content   the content of the message.
+     * @return the modified message.
+     */
     public static String messageModifier(String sender, String recipient, String content) {
         return sender + " -> " + recipient + ": " + content;
     }
 
+    /**
+     * Searches for the last messages whose dimension in lines is maximum 9.
+     *
+     * @param messages the messages in the game.
+     * @return the last messages with maximum 9 lines.
+     */
     public static List<String> searchForLastNineLineMessages(List<Message> messages) {
         int i = messages.size() - 1, j = 0;
         List<String> messagesToPrint = new ArrayList<>();
@@ -896,6 +1133,10 @@ public class ClientUtil {
         return messagesToPrint;
     }
 
+    /**
+     * Prints the chat on the screen.
+     * @param messages the messages in the game.
+     */
     public static void printChat(List<Message> messages) {
         List<String> messagesToPrint = searchForLastNineLineMessages(messages);
         int occupiedLines = 0;
@@ -913,6 +1154,15 @@ public class ClientUtil {
         }
     }
 
+    /**
+     * Writes a <code>string</code> in an <code>availableSpace</code> in a specific <code>line</code> and
+     * <code>column</code>.
+     *
+     * @param line           the line on which the <code>string</code> is written.
+     * @param column         the column on which the <code>string</code> is written.
+     * @param availableSpace total space available for writing.
+     * @param string         the string to be written.
+     */
     public static void writeLine(int line, int column, int availableSpace, String string) {
         int cnt = 0;
         int onGoingLine = line;
@@ -941,6 +1191,9 @@ public class ClientUtil {
         }
     }
 
+    /**
+     * Prints the rulebook on the screen.
+     */
     public static void printRulebook(){
         clearScreen();
         printToLineColumn(GameScreenArea.TITLE.getScreenPosition().getX(),
@@ -964,6 +1217,12 @@ public class ClientUtil {
         }
     }
 
+    /**
+     * Prints the golden and resource decks on the screen.
+     *
+     * @param resourceDeckTop the back of the first resource card found in the resource deck.
+     * @param goldenDeckTop   the back of the first golden card found in the golden deck.
+     */
     public static void printDecks(ClientFace resourceDeckTop, ClientFace goldenDeckTop) {
         int x = GameScreenArea.DECKS.getScreenPosition().getX();
         int y = GameScreenArea.DECKS.getScreenPosition().getY();
@@ -983,6 +1242,12 @@ public class ClientUtil {
         }
     }
 
+    /**
+     * Prints the objective cards on the screen.
+     *
+     * @param objectives the objective cards to print.
+     * @param area       the screen area.
+     */
     public static void printObjectiveCards(List<ClientObjectiveCard> objectives, GameScreenArea area) {
         int x = area.getScreenPosition().getX();
         int y = area.getScreenPosition().getY();
@@ -996,6 +1261,12 @@ public class ClientUtil {
         }
     }
 
+    /**
+     * Creates an array with the requirements of the card.
+     *
+     * @param requirements the requirements to be fulfilled in order to place the card.
+     * @return the requirements of the card.
+     */
     private static String[] createCardRequirementsString(Map<Symbol, Integer> requirements) {
         String[] requirementsArea = new String[requirementsHeight];
         Arrays.fill(requirementsArea, " ".repeat(cardWidth));
