@@ -17,9 +17,9 @@ public class GUICards {
 
     public static final int boardCardsHeight = 81;
 
-    public static final int playerCardsWidth = 151;
+    public static final int playerCardsWidth = 126;
 
-    public static final int playerCardsHeight = 98;
+    public static final int playerCardsHeight = 81;
 
 
 
