@@ -143,6 +143,14 @@ public class BoardPane {
         return goldenFaceUp;
     }
 
+    public void setDeckTopCard(DeckType type, ClientFace face) {
+        if (type.equals(DeckType.GOLDEN)) {
+            goldenDeckTopCard.setFill(GUICards.pathToImage(face.getPath()));
+        } else {
+            resourceDeckTopCard.setFill(GUICards.pathToImage(face.getPath()));
+        }
+    }
+
     public void setNewFace(int boardPosition, ClientFace face) {
 
 
