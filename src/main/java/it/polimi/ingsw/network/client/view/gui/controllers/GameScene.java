@@ -85,8 +85,8 @@ public class GameScene extends SceneController {
     }
 
     private void initializePlaygroundInfoPane() {
-        playgroundInfoPane = new PlaygroundInfoPane(gui.getController().getMainPlayer());
-        playgroundInfoPane.isMainPlayer();
+        playgroundInfoPane = new PlaygroundInfoPane();
+        playgroundInfoPane.setPlaygroundInfo(gui.getController().getMainPlayer(), true);
         mainPane.getChildren().add(playgroundInfoPane.getMainPane());
         initializeReturnToMainPlayground();
     }
@@ -353,23 +353,29 @@ public class GameScene extends SceneController {
 
 
     //todo check if creates concurrency problems with update after place (java fx should be single thread so there shouldn't be problems)
-    public void changeVisiblePlayground(String username) {
-        drawPlayground(gui.getController().getPlaygroundByUsername(username));
+    private void changeVisiblePlayground(String username) {
         currentVisiblePlaygroundOwner = username;
+        updatePlayground(username);
+
     }
+
+    private void updatePlayground(String username) {
+        drawPlayground(gui.getController().getPlaygroundByUsername(username));
+        playgroundInfoPane.setPlaygroundInfo(gui.getController().getPlayer(username), username.equals(gui.getController().getMainPlayerUsername()));
+    }
+
 
     public void updateAfterPlace(String username) {
 
 
         if (username.equals(currentVisiblePlaygroundOwner)) {
-            drawPlayground(gui.getController().getPlaygroundByUsername(username));
+            updatePlayground(username);
         } else if (username.equals(gui.getController().getMainPlayerUsername())) {
-            drawPlayground(gui.getController().getMainPlayerPlayground());
+            changeVisiblePlayground(gui.getController().getMainPlayerUsername());
         }
 
         if (!username.equals(gui.getController().getMainPlayerUsername())) {
             Objects.requireNonNull(getPlayerInfoPane(username)).updateResources(gui.getController().getPlaygroundByUsername(username).getResources());
-
         } else {
             mainPlayerCards.get(selectedCardHandPosition).setVisible(false);
             selectedCardHandPosition = -1;
