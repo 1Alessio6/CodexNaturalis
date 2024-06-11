@@ -6,9 +6,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
+<Pane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="it.polimi.ingsw.network.client.view.gui.controllers.EndScene"
-            prefHeight="400.0" prefWidth="600.0">
+            prefHeight="755.0" prefWidth="1325.0">
 
-</AnchorPane>
+</Pane>
