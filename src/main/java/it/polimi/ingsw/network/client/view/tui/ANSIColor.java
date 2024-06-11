@@ -66,8 +66,9 @@ public enum ANSIColor {
 
     private final String color;
 
-    public String getColor() {
-        return color;
+    @Override
+    public String toString() {
+        return this.color;
     }
 
     ANSIColor(String color) {

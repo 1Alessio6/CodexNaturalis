@@ -197,15 +197,6 @@ public class ClientUtil {
         return cardMatrix;
     }
 
-    public static void printOptionalCard() {
-        String[][] cardMatrix = new String[3][7];
-        initializeMatrix(cardMatrix);
-
-        appendNewResources(new HashMap<>(), cardMatrix, BLUE);
-        appendMatrixLines(new HashMap<>(), null, cardMatrix, BLUE);
-        printCardMatrix(cardMatrix);
-    }
-
     /**
      * Prints a <code>str</code> <B>string</B> in a specific <code>lineCoordinate</code> and <code>columnCoordinate</code>.
      *
@@ -432,7 +423,7 @@ public class ClientUtil {
     private static void searchForRelevantInformation(Map<Symbol, Integer> requirements) {
         if (!requirements.isEmpty()) {
             for (Map.Entry<Symbol, Integer> entry : requirements.entrySet()) {
-                System.out.println(ITALIC.getColor() + "Req.: " + entry.getKey().toString() + printResources(entry.getKey()) + " " + entry.getValue());
+                System.out.println(ITALIC + "Req.: " + entry.getKey().toString() + printResources(entry.getKey()) + " " + entry.getValue());
             }
         }
     }
@@ -449,19 +440,19 @@ public class ClientUtil {
         for (int i = 0; i < 3; i++) {
             if (i != 1) {
                 for (int j = 1; j < 6; j++) {
-                    cardMatrix[i][j] = color.getColor() + "═" + RESET.getColor();
+                    cardMatrix[i][j] = color + "═" + RESET;
                 }
             }
         }
-        cardMatrix[1][0] = color.getColor() + "║" + RESET.getColor();
+        cardMatrix[1][0] = color + "║" + RESET;
         if (resourcesSize(resources) == 2) {
-            cardMatrix[1][4] = color.getColor() + doubleHairSpace + "║" + RESET.getColor();
+            cardMatrix[1][4] = color + doubleHairSpace + "║" + RESET;
         } else if (resourcesSize(resources) == 3) {
-            cardMatrix[1][4] = color.getColor() + hairSpace + "║" + RESET.getColor();
+            cardMatrix[1][4] = color + hairSpace + "║" + RESET;
         } else if (resourcesSize(resources) == 1 || condition != null) {
-            cardMatrix[1][6] = color.getColor() + " ║" + RESET.getColor();
+            cardMatrix[1][6] = color + " ║" + RESET;
         } else {
-            cardMatrix[1][6] = color.getColor() + "  ║" + RESET.getColor();
+            cardMatrix[1][6] = color + "  ║" + RESET;
         }
     }
 
@@ -474,10 +465,10 @@ public class ClientUtil {
      */
     private static void appendPoints(String[][] cardMatrix, Condition pointsCondition, int points) {
         if (pointsCondition == null) {
-            cardMatrix[1][4] = YELLOW.getColor() + printPoints(points) + RESET.getColor();//
+            cardMatrix[1][4] = YELLOW + printPoints(points) + RESET;//
         } else {
-            cardMatrix[1][3] = YELLOW.getColor() + printPoints(points) + RESET.getColor();
-            cardMatrix[1][4] = YELLOW.getColor() + "|" + RESET.getColor();
+            cardMatrix[1][3] = YELLOW + printPoints(points) + RESET;
+            cardMatrix[1][4] = YELLOW + "|" + RESET;
             cardMatrix[1][5] = printCondition(pointsCondition);
         }
     }
@@ -530,28 +521,28 @@ public class ClientUtil {
             switch (entry.getKey()) {
                 case TOP_LEFT -> {
                     if (entry.getValue().isCovered()) {
-                        card[0][0] = YELLOW.getColor() + " ╝" + RESET.getColor();
+                        card[0][0] = YELLOW + " ╝" + RESET;
                     } else if (entry.getValue() != null) {
                         card[0][0] = printResources(entry.getValue().getSymbol());
                     }
                 }
                 case TOP_RIGHT -> {
                     if (entry.getValue().isCovered()) {
-                        card[0][6] = YELLOW.getColor() + "╚ " + RESET.getColor();
+                        card[0][6] = YELLOW + "╚ " + RESET;
                     } else if (entry.getValue() != null) {
                         card[0][6] = printResources(entry.getValue().getSymbol());
                     }
                 }
                 case LOWER_LEFT -> {
                     if (entry.getValue().isCovered()) {
-                        card[2][0] = YELLOW.getColor() + " ╗" + RESET.getColor();
+                        card[2][0] = YELLOW + " ╗" + RESET;
                     } else if (entry.getValue() != null) {
                         card[2][0] = printResources(entry.getValue().getSymbol());
                     }
                 }
                 case LOWER_RIGHT -> {
                     if (entry.getValue().isCovered()) {
-                        card[2][6] = YELLOW.getColor() + "╔ " + RESET.getColor();
+                        card[2][6] = YELLOW + "╔ " + RESET;
                     } else if (entry.getValue() != null) {
                         card[2][6] = printResources(entry.getValue().getSymbol());
                     }
@@ -559,16 +550,16 @@ public class ClientUtil {
             }
         }
         if (!cornerPositions.contains(CornerPosition.TOP_LEFT)) {
-            card[0][0] = color.getColor() + "╔ " + RESET.getColor();
+            card[0][0] = color + "╔ " + RESET;
         }
         if (!cornerPositions.contains(CornerPosition.TOP_RIGHT)) {
-            card[0][6] = color.getColor() + " ╗" + RESET.getColor();
+            card[0][6] = color + " ╗" + RESET;
         }
         if (!cornerPositions.contains(CornerPosition.LOWER_RIGHT)) {
-            card[2][6] = color.getColor() + " ╝" + RESET.getColor();
+            card[2][6] = color + " ╝" + RESET;
         }
         if (!cornerPositions.contains(CornerPosition.LOWER_LEFT)) {
-            card[2][0] = color.getColor() + "╚ " + RESET.getColor();
+            card[2][0] = color + "╚ " + RESET;
         }
 
     }
@@ -583,17 +574,6 @@ public class ClientUtil {
             for (int j = 0; j < 7; j++) {
                 cardMatrix[i][j] = " ";
             }
-        }
-    }
-
-    private static void printCardMatrix(String[][] cardMatrix) {
-        int lines = cardMatrix[0].length;
-
-        for (String[] strings : cardMatrix) {
-            for (int j = 0; j < lines; j++) {
-                System.out.print(strings[j]);
-            }
-            System.out.println();
         }
     }
 
@@ -654,34 +634,34 @@ public class ClientUtil {
         }
         switch (posCase) {
             case 1:
-                card[2][1] = cardColorToBGConversion(colors.get(0)).getColor() + " " + RESET.getColor();
-                card[1][3] = cardColorToBGConversion(colors.get(1)).getColor() + " " + RESET.getColor();
-                card[0][3] = cardColorToBGConversion(colors.get(2)).getColor() + " " + RESET.getColor();
+                card[2][1] = cardColorToBGConversion(colors.get(0)) + " " + RESET;
+                card[1][3] = cardColorToBGConversion(colors.get(1)) + " " + RESET;
+                card[0][3] = cardColorToBGConversion(colors.get(2)) + " " + RESET;
                 break;
             case 2:
-                card[0][2]=cardColorToBGConversion(colors.get(0)).getColor()+" "+RESET.getColor();
-                card[1][3]=cardColorToBGConversion(colors.get(1)).getColor()+" "+RESET.getColor();
-                card[2][3]=cardColorToBGConversion(colors.get(2)).getColor()+" "+RESET.getColor();
+                card[0][2]=cardColorToBGConversion(colors.get(0))+" "+RESET;
+                card[1][3]=cardColorToBGConversion(colors.get(1))+" "+RESET;
+                card[2][3]=cardColorToBGConversion(colors.get(2))+" "+RESET;
                 break;
             case 3:
-                card[0][1]=cardColorToBGConversion(colors.get(0)).getColor()+" "+RESET.getColor();
-                card[1][3]=cardColorToBGConversion(colors.get(1)).getColor()+" "+RESET.getColor();
-                card[2][3]=cardColorToBGConversion(colors.get(2)).getColor()+" "+RESET.getColor();
+                card[0][1]=cardColorToBGConversion(colors.get(0))+" "+RESET;
+                card[1][3]=cardColorToBGConversion(colors.get(1))+" "+RESET;
+                card[2][3]=cardColorToBGConversion(colors.get(2))+" "+RESET;
                 break;
             case 4:
-                card[0][1]=cardColorToBGConversion(colors.get(0)).getColor()+" "+RESET.getColor();
-                card[1][3]=cardColorToBGConversion(colors.get(1)).getColor()+" "+RESET.getColor();
-                card[2][2]=cardColorToBGConversion(colors.get(2)).getColor()+" "+RESET.getColor();
+                card[0][1]=cardColorToBGConversion(colors.get(0))+" "+RESET;
+                card[1][3]=cardColorToBGConversion(colors.get(1))+" "+RESET;
+                card[2][2]=cardColorToBGConversion(colors.get(2))+" "+RESET;
                 break;
             case 5:
-                card[2][2]=cardColorToBGConversion(colors.get(0)).getColor()+" "+RESET.getColor();
-                card[1][3]=cardColorToBGConversion(colors.get(1)).getColor()+" "+RESET.getColor();
-                card[0][3]=cardColorToBGConversion(colors.get(2)).getColor()+" "+RESET.getColor();
+                card[2][2]=cardColorToBGConversion(colors.get(0))+" "+RESET;
+                card[1][3]=cardColorToBGConversion(colors.get(1))+" "+RESET;
+                card[0][3]=cardColorToBGConversion(colors.get(2))+" "+RESET;
                 break;
             case 6:
-                card[2][1]=cardColorToBGConversion(colors.get(0)).getColor()+" "+RESET.getColor();
-                card[1][3]=cardColorToBGConversion(colors.get(1)).getColor()+" "+RESET.getColor();
-                card[0][2]=cardColorToBGConversion(colors.get(2)).getColor()+" "+RESET.getColor();
+                card[2][1]=cardColorToBGConversion(colors.get(0))+" "+RESET;
+                card[1][3]=cardColorToBGConversion(colors.get(1))+" "+RESET;
+                card[0][2]=cardColorToBGConversion(colors.get(2))+" "+RESET;
                 break;
         }
     }
@@ -799,10 +779,10 @@ public class ClientUtil {
         for (ClientPlayer i : players) {
             String username = i.getUsername();
             ANSIColor color = ClientUtil.playerColorConversion(i.getColor());
-            String resultName = color.getColor() + centeredString(maxUsernameLength, username) + RESET.getColor();
+            String resultName = color + centeredString(maxUsernameLength, username) + RESET;
             // "delete" name if player isn't connected
             if (!i.isConnected()) {
-                resultName = STRIKETHROUGH.getColor() + resultName;
+                resultName = STRIKETHROUGH + resultName;
             }
             int points = i.getPlayground().getPoints();
 
@@ -972,7 +952,7 @@ public class ClientUtil {
         moveCursor(37, 127);
     }
 
-    private static String[][] buildPlayground(ClientPlayground clientPlayground) throws InvalidCardRepresentationException, UnInitializedPlaygroundException, InvalidCardDimensionException {
+    public static String[][] buildPlayground(ClientPlayground clientPlayground) throws InvalidCardRepresentationException, UnInitializedPlaygroundException, InvalidCardDimensionException {
         DrawablePlayground dp = new DrawablePlayground(7, cardHeight); // 7 array cells for each matrix line of the card
         dp.allocateMatrix(clientPlayground);
         // todo: print available in different way
@@ -1013,19 +993,26 @@ public class ClientUtil {
         int matrixCardLength = cardWidth - 2;
         String[][] placeHolder = createEmptyArea(cardHeight, matrixCardLength);
 
-        //upper part
-        for (int i = 2; i < matrixCardLength; i++) {
-            placeHolder[0][i] = "═";
+        // upper and lower part
+        for(int y = 0; y < cardHeight; y += 2) {
+            // add a space in the corner matrix line
+            placeHolder[y][0] += " ";
+            placeHolder[y][1] = YELLOW + placeHolder[y][1]; // after corners, so it doesn't get overlapped
+            placeHolder[y][matrixCardLength - 1] = "  " + RESET;
+
+            for (int x = 1; x < matrixCardLength - 1; x++) {
+                placeHolder[y][x] = "═";
+            }
         }
 
         // middle part
-        placeHolder[1][0] = "║";
+        placeHolder[1][0] = YELLOW + "║";
 
         placeHolder[1][2] = String.valueOf(pos.getX());
         placeHolder[1][3] = ",";
         placeHolder[1][4] = String.valueOf(pos.getY());
 
-        placeHolder[1][matrixCardLength - 1] = "║";
+        placeHolder[1][matrixCardLength - 1] = "║" + RESET;
 
         // fill middle if shorter
         int cardFixedStuffSize = 3; // border of the card + comma
@@ -1033,11 +1020,6 @@ public class ClientUtil {
         int availableSpaces = cardWidth - cardFixedStuffSize - positionSize;
         placeHolder[1][1] = " ".repeat((availableSpaces)/2 + (availableSpaces % 2)); // add one space more if needed
         placeHolder[1][5] = " ".repeat((availableSpaces)/2);
-
-        // lower part
-        for (int i = 2; i < matrixCardLength; i++) {
-            placeHolder[cardHeight - 1][i] = "═";
-        }
 
         return placeHolder;
     }
