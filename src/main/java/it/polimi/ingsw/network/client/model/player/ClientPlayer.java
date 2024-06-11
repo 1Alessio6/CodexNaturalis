@@ -16,6 +16,9 @@ import java.util.Map;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 
+/**
+ * Representation of the player in the client's side.
+ */
 public class ClientPlayer implements Serializable {
 
     private final String username;
@@ -33,12 +36,26 @@ public class ClientPlayer implements Serializable {
 
     private List<ClientObjectiveCard> objectiveCards;
 
+    /**
+     * Constructs a clientPlayer using the <code>username</code> provided.
+     *
+     * @param username the username of the player.
+     */
     public ClientPlayer(String username) {
         this.username = username;
     }
 
     //getter method needed for the view
 
+    /**
+     * Constructs a clientPlayer using the <code>username</code>, <code>starterCard</code>, <code>playerCards</code>
+     * and <code>objectiveCards</code> provided.
+     *
+     * @param username       the username of the player.
+     * @param starterCard    the starter card of the player.
+     * @param playerCards    the player's hand.
+     * @param objectiveCards the objective cards to choose from.
+     */
     public ClientPlayer(String username, ClientCard starterCard, List<ClientCard> playerCards, List<ClientObjectiveCard> objectiveCards) {
         this.username = username;
         this.starterCard = starterCard;
@@ -46,6 +63,11 @@ public class ClientPlayer implements Serializable {
         this.objectiveCards = objectiveCards;
     }
 
+    /**
+     * Constructs a clientPlayer using the <code>player</code>.
+     *
+     * @param player the representation of the player.
+     */
     public ClientPlayer(Player player) {
         username = player.getUsername();
         playground = new ClientPlayground(player.getPlayground());
@@ -66,6 +88,11 @@ public class ClientPlayer implements Serializable {
         return this.getPlayground().getResources().get(s);
     }
 
+    /**
+     * Adds a <code>card</code> to the player's hand.
+     *
+     * @param card the card to be added.
+     */
     public void addPlayerCard(ClientCard card) {
         playerCards.add(card);
     }
@@ -116,6 +143,11 @@ public class ClientPlayer implements Serializable {
         this.playerCards.set(cardHandPosition, card);
     }
 
+    /**
+     * Updates objective cards with the <code>chosenObjectiveCard</code>.
+     *
+     * @param chosenObjectiveCard the objective card chosen by the player.
+     */
     public void updateObjectiveCard(ClientObjectiveCard chosenObjectiveCard){
         objectiveCards = new ArrayList<>();
         objectiveCards.add(chosenObjectiveCard);
@@ -132,6 +164,11 @@ public class ClientPlayer implements Serializable {
         return this.username.equals(((ClientPlayer) obj).getUsername());
     }
 
+    /**
+     * Removes a <code>cardToRemove</code> from the player's hand.
+     *
+     * @param cardToRemove the card to remove.
+     */
     public void removePlayerCard(ClientCard cardToRemove){
         playerCards.removeIf(card -> cardToRemove.getBackId() == card.getBackId() && cardToRemove.getFrontId() == card.getFrontId());
     }
