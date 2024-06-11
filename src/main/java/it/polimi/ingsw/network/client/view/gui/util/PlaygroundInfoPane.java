@@ -22,8 +22,7 @@ public class PlaygroundInfoPane {
     ImageView returnToMainPlayground;
     ResourcePane resourcePane;
 
-    public PlaygroundInfoPane(ClientPlayer player){
-
+    public PlaygroundInfoPane() {
         returnToMainPlayground = new ImageView(Icon.HOME.getPath());
         returnToMainPlayground.setFitWidth(30);
         returnToMainPlayground.setFitHeight(30);
@@ -37,34 +36,42 @@ public class PlaygroundInfoPane {
         mainPane.setLayoutY(183);
         mainPane.setBackground(setBackgroundColor("#EEE5BC"));
 
-        playGroundOwner.setText(player.getUsername() + "'s Playground");
-        playGroundOwner.setFont(new Font("Arial", 11));
         playGroundOwner.setLayoutY(15);
         playGroundOwner.setLayoutX(5);
 
         resourcePane = new ResourcePane(400, 40);
-        resourcePane.initialize(36.25,40,20);
+        resourcePane.initialize(36.25, 40, 20);
         resourcePane.setBackground("#EEE5BC");
-        resourcePane.updateResources(player.getPlayground().getResources());
+
         Pane resource = resourcePane.getResourcesPane();
-        resource.setLayoutX(100);
+        resource.setLayoutX(150);
         mainPane.getChildren().add(resource);
         mainPane.getChildren().add(playGroundOwner);
         mainPane.getChildren().add(returnToMainPlayground);
     }
 
-    public void isMainPlayer(){
-        playGroundOwner.setText("Your Playground");
-        returnToMainPlayground.setVisible(false);
+    public void setPlaygroundInfo(ClientPlayer player, boolean isMainPlayer) {
+
+
+        if (!isMainPlayer) {
+            playGroundOwner.setText(player.getUsername() + "'s Playground");
+            returnToMainPlayground.setVisible(true);
+        } else {
+            playGroundOwner.setText("Your Playground");
+            returnToMainPlayground.setVisible(false);
+        }
+        playGroundOwner.setFont(new Font("Arial", 11));
+
+        resourcePane.updateResources(player.getPlayground().getResources());
     }
+
+
+
 
     public Pane getMainPane() {
         return mainPane;
     }
 
-    public void updateResources(Map<Symbol, Integer> playgroundResources){
-        updateResources(playgroundResources);
-    }
 
     public ImageView getReturnToMainPlayground(){
         return returnToMainPlayground;
