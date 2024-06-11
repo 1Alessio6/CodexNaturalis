@@ -32,7 +32,7 @@ public class BoardPane {
         boardMainPane = new Pane();
         boardMainPane.setPrefSize(295, 450);
         boardMainPane.setLayoutX(24);
-        boardMainPane.setLayoutY(230);
+        boardMainPane.setLayoutY(217);
 
         createFaceUpCards(clientBoard.getFaceUpCards());
         createDeck(DeckType.GOLDEN, clientBoard.getGoldenDeckTopBack());
@@ -51,7 +51,7 @@ public class BoardPane {
     public void initializeBoardCardsPosition(int verticalDistance, int horizontalDistance) {
 
         double layoutX;
-        double layoutY = 82.0;
+        double layoutY = 30.0;
 
         for (int i = 0; i < 6; i++) {
 
