@@ -365,7 +365,7 @@ public class ClientController implements ClientActions {
      * @param newTopBackDeck the new card that replaces the previous card that was present in the deck.
      * @param newFaceUpCard  the new face up card that replaces the previous one.
      * @param username       of the player who performs the drawing
-     * @param boardPosition  from which the card was selected, 4 for golden deck, 5 for resource deck and 0,1,2 or 4 for face up cards.
+     * @param boardPosition  from which the card was selected, 4 for golden deck, 5 for resource deck and 0,1,2 or 3 for face up cards.
      */
     public void updateAfterDraw(ClientCard drawnCard, ClientFace newTopBackDeck, ClientCard newFaceUpCard, String username, int boardPosition) {
         assert (boardPosition <= 5 && boardPosition >= 0);
