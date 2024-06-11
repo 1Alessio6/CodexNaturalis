@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.client.view.gui.circle;
+package it.polimi.ingsw.network.client.view.gui.util;
 
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.network.client.view.gui.util.GUIUtil;

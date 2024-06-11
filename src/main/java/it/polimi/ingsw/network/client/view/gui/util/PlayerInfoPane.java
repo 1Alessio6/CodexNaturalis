@@ -30,7 +30,7 @@ public class PlayerInfoPane {
 
     private static final int cardsPaneHeight = 48;
 
-    private final Pane resourcesPane;
+    private final ResourcePane resourcesPane;
 
     private static final int resourcesPaneWidth = 347;
 
@@ -50,11 +50,8 @@ public class PlayerInfoPane {
 
     private static final int cardHeight = 48;
 
-    private final Map<Symbol, Text> resources;
-
 
     public PlayerInfoPane(ClientPlayer player) {
-        resources = new HashMap<>();
         playerMainPane = new Pane();
         playerMainPane.setBackground(setBackgroundColor("#EEE5BC"));
         playerMainPane.setPrefSize(mainPaneWidth, mainPaneHeight);
@@ -81,14 +78,13 @@ public class PlayerInfoPane {
         playerMainPane.getChildren().add(username);
 
 
-        resourcesPane = new Pane();
-        resourcesPane.setPrefSize(resourcesPaneWidth, resourcesPaneHeight);
-        resourcesPane.setBackground(setBackgroundColor("#FFFFFF"));
-        initializeResources();
+        resourcesPane = new ResourcePane(resourcesPaneWidth, resourcesPaneHeight);
+        resourcesPane.setBackground("#FFFFFF");
+        resourcesPane.initialize(30.45, 33.6, 19.5);
         updateResources(player.getPlayground().getResources());
-        resourcesPane.setLayoutX(7);
-        resourcesPane.setLayoutY(51);
-        playerMainPane.getChildren().add(resourcesPane);
+        resourcesPane.getResourcesPane().setLayoutX(7);
+        resourcesPane.getResourcesPane().setLayoutY(51);
+        playerMainPane.getChildren().add(resourcesPane.getResourcesPane());
 
 
         switchPlayground = new ImageView(Icon.OBSERVE_PLAYGROUND.getPath());
@@ -98,32 +94,10 @@ public class PlayerInfoPane {
         switchPlayground.setFitHeight(switchPlaygroundHeight);
         playerMainPane.getChildren().add(switchPlayground);
 
-
-    }
-
-    private void initializeResources() {
-
-        double layoutX = 2.0;
-
-        for (Symbol symbol : Symbol.values()) {
-            ImageView symbolImage = new ImageView(symbol.getPath());
-            symbolImage.setFitHeight(33.6);
-            symbolImage.setFitWidth(30.45);
-            symbolImage.setLayoutX(layoutX);
-            Text points = new Text();
-            resources.put(symbol, points);
-            points.setLayoutX(layoutX + 30.45 + 5);
-            points.setLayoutY(22);
-            resourcesPane.getChildren().add(symbolImage);
-            resourcesPane.getChildren().add(points);
-            layoutX = layoutX + 50.0;
-        }
     }
 
     public void updateResources(Map<Symbol, Integer> playgroundResources){
-        for(Symbol symbol : playgroundResources.keySet()){
-            resources.get(symbol).setText(playgroundResources.get(symbol).toString());
-        }
+        resourcesPane.updateResources(playgroundResources);
     }
 
     public void updatePlayerCards(List<ClientCard> cards) {

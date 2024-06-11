@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.client.view.gui;
+package it.polimi.ingsw.network.client.view.gui.util;
 
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
