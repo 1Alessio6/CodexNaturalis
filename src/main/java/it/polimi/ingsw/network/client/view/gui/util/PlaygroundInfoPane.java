@@ -55,6 +55,7 @@ public class PlaygroundInfoPane {
 
     public void isMainPlayer(){
         playGroundOwner.setText("Your Playground");
+        returnToMainPlayground.setVisible(false);
     }
 
     public Pane getMainPane() {

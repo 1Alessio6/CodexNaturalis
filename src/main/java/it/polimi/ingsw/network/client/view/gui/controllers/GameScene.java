@@ -84,10 +84,24 @@ public class GameScene extends SceneController {
         //setPlaygroundFrameColor();
     }
 
-    private void initializePlaygroundInfoPane(){
+    private void initializePlaygroundInfoPane() {
         playgroundInfoPane = new PlaygroundInfoPane(gui.getController().getMainPlayer());
         playgroundInfoPane.isMainPlayer();
         mainPane.getChildren().add(playgroundInfoPane.getMainPane());
+        initializeReturnToMainPlayground();
+    }
+
+    private void initializeReturnToMainPlayground() {
+
+        ImageView returnToMainPlayground = playgroundInfoPane.getReturnToMainPlayground();
+        returnToMainPlayground.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if (returnToMainPlayground.isVisible() && isClicked(mouseEvent, MouseButton.PRIMARY)) {
+                    changeVisiblePlayground(gui.getController().getMainPlayerUsername());
+                }
+            }
+        });
     }
 
 
