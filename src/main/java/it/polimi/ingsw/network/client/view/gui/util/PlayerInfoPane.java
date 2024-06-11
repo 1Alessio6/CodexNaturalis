@@ -101,10 +101,6 @@ public class PlayerInfoPane {
 
     }
 
-    public void setPlayerCardsPane(Pane playerCardsPane) {
-        this.playerCardsPane = playerCardsPane;
-    }
-
     private void initializeResources() {
 
         double layoutX = 2.0;
@@ -133,6 +129,10 @@ public class PlayerInfoPane {
     public void updatePlayerCards(List<ClientCard> cards) {
         playerCardsPane.getChildren().clear();
         GUICards.initializePlayerCards(playerCardsPane, cards, cardWidth, cardHeight, distance, MouseButton.PRIMARY);
+    }
+
+    public ImageView getSwitchPlayground() {
+        return switchPlayground;
     }
 
     public Pane getPlayerMainPane() {
