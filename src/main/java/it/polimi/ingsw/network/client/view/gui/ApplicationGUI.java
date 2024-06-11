@@ -270,6 +270,8 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
         });
 
+        primaryStage.setResizable(false);
+
 
         //maybe could be removed currentRoot
         currentRoot = root;
