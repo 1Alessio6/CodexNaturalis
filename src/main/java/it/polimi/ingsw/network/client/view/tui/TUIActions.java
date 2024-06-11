@@ -1,5 +1,8 @@
 package it.polimi.ingsw.network.client.view.tui;
 
+/**
+ * This enumeration represents the actions that the player can perform and their descriptions.
+ */
 public enum TUIActions {
     BACK("go back at your playground"),
     COLOR("choose color"),
