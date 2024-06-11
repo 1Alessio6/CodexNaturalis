@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.board.Tile;
 import it.polimi.ingsw.model.card.CornerPosition;
 import it.polimi.ingsw.model.card.Symbol;
+import it.polimi.ingsw.network.client.model.card.ClientFace;
 
 import java.io.Serializable;
 import java.util.*;
@@ -106,8 +107,8 @@ public class ClientPlayground implements Serializable {
         }
     }
 
-    public List<Position> getAvailablePositions() {
-        return this.area.keySet().stream().filter(x -> this.area.get(x).sameAvailability(Availability.EMPTY)).collect(Collectors.toList());
+    public Set<Position> getAvailablePositions() {
+        return this.area.keySet().stream().filter(x -> this.area.get(x).sameAvailability(Availability.EMPTY)).collect(Collectors.toSet());
     }
 
     public String toString() {
@@ -220,9 +221,9 @@ public class ClientPlayground implements Serializable {
     public int[] getYMaxAndMin() {
         int yMax = 0;
         int yMin = 0;
-        for (Integer currX : area.keySet().stream().map(Position::getX).collect(Collectors.toSet())) {
-            yMax = Math.max(currX, yMax);
-            yMin = Math.min(currX, yMin);
+        for (Integer currY : area.keySet().stream().map(Position::getY).collect(Collectors.toSet())) {
+            yMax = Math.max(currY, yMax);
+            yMin = Math.min(currY, yMin);
         }
 
         return new int[]{yMax, yMin};
