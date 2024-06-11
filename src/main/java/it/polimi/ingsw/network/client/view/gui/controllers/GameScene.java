@@ -28,7 +28,7 @@ import javafx.scene.shape.Rectangle;
 import java.rmi.RemoteException;
 import java.util.*;
 
-import static it.polimi.ingsw.network.client.view.gui.util.GUICards.pathToImage;
+import static it.polimi.ingsw.network.client.view.gui.util.GUICards.*;
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.isClicked;
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.setBackgroundColor;
 
@@ -120,7 +120,7 @@ public class GameScene extends SceneController {
 
     private void initializeMainPlayerObjectiveCard() {
         double layoutX = 0.0;
-        Rectangle rectangle = new Rectangle(GUICards.playerCardsWidth, GUICards.playerCardsHeight);
+        Rectangle rectangle = new Rectangle(playerCardsWidth, playerCardsHeight);
         rectangle.setLayoutX(layoutX);
         rectangle.setFill(pathToImage(gui.getController().getMainPlayerObjectiveCard().getPath()));
         mainPlayerCardsPane.getChildren().add(rectangle);
@@ -158,13 +158,13 @@ public class GameScene extends SceneController {
         for (int i = 0; i < cards.size(); i++) {
 
             int cardHandPosition = i;
-            Rectangle rectangle = new Rectangle(GUICards.playerCardsWidth, GUICards.playerCardsHeight);
+            Rectangle rectangle = new Rectangle(playerCardsWidth, playerCardsHeight);
             ImagePattern backImage = new ImagePattern(new Image(cards.get(i).getBackPath()));
             ImagePattern frontImage = new ImagePattern(new Image(cards.get(i).getFrontPath()));
             rectangle.setFill(frontImage);
             playerCardsVisibleSide.add(i, Side.FRONT);
             rectangle.setLayoutX(layoutX);
-            layoutX = layoutX + GUICards.playerCardsWidth + 30;
+            layoutX = layoutX + playerCardsWidth + 30;
 
             rectangle.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
@@ -181,9 +181,6 @@ public class GameScene extends SceneController {
                     } else if (isClicked(mouseEvent, MouseButton.PRIMARY)) {
                         if (!currentVisiblePlaygroundOwner.equals(gui.getController().getMainPlayerUsername())) {
                             changeVisiblePlayground(gui.getController().getMainPlayerUsername());
-                        }
-                        for (Rectangle availableTile : availablePositions) {
-                            availableTile.setVisible(true);
                         }
                         selectCard(cardHandPosition);
                     }
@@ -212,13 +209,24 @@ public class GameScene extends SceneController {
     }
 
     private void selectCard(int cardHandPosition) {
-        if (selectedCardHandPosition == -1) {
-            selectedCardHandPosition = cardHandPosition;
-        } else if (selectedCardHandPosition == cardHandPosition) {
+
+        boolean availableTilesVisibility;
+
+        //case the card I click is already selected
+        if (selectedCardHandPosition == cardHandPosition) {
             selectedCardHandPosition = -1;
-        } else {
-            selectedCardHandPosition = cardHandPosition;
+            availableTilesVisibility = false;
         }
+        //case there aren't cards selected or the card selected was one clicked in the past
+        else {
+            selectedCardHandPosition = cardHandPosition;
+            availableTilesVisibility = true;
+        }
+
+        for (Rectangle availableTile : availablePositions) {
+            availableTile.setVisible(availableTilesVisibility);
+        }
+
     }
 
     public void drawPlayground(ClientPlayground clientPlayground) {
@@ -226,7 +234,7 @@ public class GameScene extends SceneController {
         //do not remove
         availablePositions.clear();
 
-        GUIPlayground guiPlayground = new GUIPlayground(GUICards.playerCardsWidth, GUICards.playerCardsHeight);
+        GUIPlayground guiPlayground = new GUIPlayground(playerCardsWidth, playerCardsHeight);
         guiPlayground.setDimension(clientPlayground);
         playgroundPane.setPrefSize(guiPlayground.getPaneWidth(), guiPlayground.getPaneHeight());
         List<Rectangle> cardsAsRectangles = new ArrayList<>();
@@ -340,7 +348,6 @@ public class GameScene extends SceneController {
             Objects.requireNonNull(getPlayerInfoPane(username)).updateResources(gui.getController().getPlaygroundByUsername(username).getResources());
 
         } else {
-            System.err.println(selectedCardHandPosition);
             mainPlayerCards.get(selectedCardHandPosition).setVisible(false);
             selectedCardHandPosition = -1;
         }
