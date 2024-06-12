@@ -5,7 +5,10 @@ import it.polimi.ingsw.model.SuspendedGameException;
 import it.polimi.ingsw.model.board.Availability;
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
+import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.Side;
+import it.polimi.ingsw.model.chat.message.InvalidMessageException;
+import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
@@ -14,25 +17,32 @@ import it.polimi.ingsw.network.client.view.gui.util.GUIPlayground;
 import it.polimi.ingsw.network.client.view.gui.util.BoardPane;
 import it.polimi.ingsw.network.client.view.gui.util.PlayerInfoPane;
 import it.polimi.ingsw.network.client.view.gui.util.PlaygroundInfoPane;
+import it.polimi.ingsw.network.client.view.gui.util.chat.Chat;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 import java.rmi.RemoteException;
 import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUICards.*;
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
 
 public class GameScene extends SceneController {
-
 
     @FXML
     private Pane mainPane;
@@ -40,11 +50,21 @@ public class GameScene extends SceneController {
     @FXML
     private Pane playgroundPane;
 
+    @FXML
+    private TextFlow sentMessages;
+
+    @FXML
+    private ComboBox<String> recipients;
+
+    @FXML
+    private TextField text;
+
+    @FXML
+    private ScrollPane chatPane;
+
     private Pane mainPlayerCardsPane;
 
     private PlaygroundInfoPane playgroundInfoPane;
-
-    private Pane chat;
 
     private BoardPane boardPane;
 
@@ -60,6 +80,7 @@ public class GameScene extends SceneController {
 
     private int selectedCardHandPosition;
 
+    private Chat chat;
 
     public GameScene() {
     }
@@ -70,7 +91,48 @@ public class GameScene extends SceneController {
         availablePositions = new ArrayList<>();
         mainPlayerCards = new ArrayList<>();
         selectedCardHandPosition = -1;
+        sentMessages.minWidthProperty().bind(chatPane.widthProperty().subtract(8));
+    }
 
+    private boolean isReferringToMe(Message m) {
+        String myName = gui.getController().getMainPlayerUsername();
+        return
+                m.getRecipient().equals(myName)
+                        ||
+                        m.getSender().equals(myName)
+                        ||
+                        m.isBroadcast();
+    }
+
+    private void appendMessage(Message m) {
+        ClientController controller = gui.getController();
+        String senderName = m.getSender();
+        Text sender = new Text(m.getSender());
+        sender.setStyle("-fx-fill: "
+                +
+                PlayerColor.conversionToCssStyle.get(controller.getPlayer(senderName).getColor())
+        );
+        Text recipient = new Text(m.getRecipient());
+        String recipientName = m.getRecipient();
+        if (!recipientName.equals("Everyone")) {
+            recipient.setStyle("-fx-fill:"
+                    +
+                    PlayerColor.conversionToCssStyle.get(controller.getPlayer(recipientName).getColor())
+            );
+        }
+        Text content = new Text(": " + m.getContent() + "\n\n");
+        sentMessages.getChildren().addAll(sender, new Text(" to "), recipient, content);
+    }
+
+    private void initializeChat() {
+        recipients.getItems().addAll(gui.getController().getUsernames());
+        recipients.getItems().add("Everyone");
+        chat = new Chat(gui.getController().getMainPlayerUsername());
+        for (Message m : gui.getController().getMessages()) {
+            if (isReferringToMe(m)) {
+                appendMessage(m);
+            }
+        }
     }
 
     @Override
@@ -80,6 +142,7 @@ public class GameScene extends SceneController {
         initializeMainPlayerCardPane();
         drawPlayground(gui.getController().getMainPlayerPlayground());
         initializeBoard();
+        initializeChat();
         initializePlaygroundInfoPane();
         //setPlaygroundFrameColor();
     }
@@ -366,8 +429,6 @@ public class GameScene extends SceneController {
 
 
     public void updateAfterPlace(String username) {
-
-
         if (username.equals(currentVisiblePlaygroundOwner)) {
             updatePlayground(username);
         } else if (username.equals(gui.getController().getMainPlayerUsername())) {
@@ -401,5 +462,36 @@ public class GameScene extends SceneController {
         return null;
     }
 
+    @FXML
+    private void selectRecipient() {
+        chat.selectRecipient(recipients.getValue());
+    }
+
+    @FXML
+    private void sendMessage(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            chat.insertText(text.getText());
+            try {
+                chat.sendMessage(gui.getController());
+
+            } catch (InvalidMessageException e) {
+                System.err.println("error: " + e.getMessage());
+                //could be changed with an error scene
+                Alert invalidMessage = new Alert(Alert.AlertType.ERROR);
+                invalidMessage.setTitle("Invalid message");
+                invalidMessage.setContentText("Exception: " + e.getMessage());
+                invalidMessage.show();
+            } catch (RemoteException e) {
+                // todo. add notification for server crashed
+            }
+            text.setText("");
+        }
+    }
+
+    public void receiveMessage(Message message) {
+        if (isReferringToMe(message)) {
+            appendMessage(message);
+        }
+    }
 
 }
