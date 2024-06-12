@@ -8,10 +8,7 @@ import it.polimi.ingsw.network.client.ClientApplication;
 import it.polimi.ingsw.network.client.ClientMain;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.view.View;
-import it.polimi.ingsw.network.client.view.gui.controllers.GameScene;
-import it.polimi.ingsw.network.client.view.gui.controllers.LobbyScene;
-import it.polimi.ingsw.network.client.view.gui.controllers.SceneController;
-import it.polimi.ingsw.network.client.view.gui.controllers.SetupScene;
+import it.polimi.ingsw.network.client.view.gui.controllers.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -23,6 +20,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.List;
 
 public class ApplicationGUI extends Application implements View, ClientApplication {
@@ -231,7 +229,8 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         Platform.runLater(() -> {
             loadScene(SceneType.END);
             currentScene = SceneType.END;
-            //todo add show winners
+            assert currentSceneController instanceof EndScene;
+            ((EndScene) currentSceneController).showWinners(winners);
         });
 
     }
@@ -267,12 +266,13 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         initializeCurrentSceneController();
         currentSceneController.initializeUsingGameInformation();
         primaryStage.show();
-        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent windowEvent) {
-                System.exit(0);
-            }
+        primaryStage.setOnCloseRequest(windowEvent -> {
+            try {
+                controller.disconnect(controller.getMainPlayerUsername());
+            } catch (RemoteException ignored) {
 
+            }
+            System.exit(0);
         });
 
         primaryStage.setResizable(false);
