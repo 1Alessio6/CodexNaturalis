@@ -13,7 +13,7 @@ public enum SceneType {
 
     CRASH("/gui/CrashScene.fxml"),
 
-    END("/gui/SelectUsernameScene.fxml");
+    END("/gui/EndScene.fxml");
 
     private final String path;
 
