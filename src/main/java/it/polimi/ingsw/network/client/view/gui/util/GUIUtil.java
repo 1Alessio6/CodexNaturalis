@@ -35,6 +35,27 @@ public class GUIUtil {
         return null;
     }
 
+    public static String convertPlayerColorIntoHexCode(PlayerColor color) {
+        switch (color) {
+            case RED -> {
+                return "#FF0000";
+            }
+            case BLACK -> {
+                return "#000000";
+            }
+            case BLUE -> {
+                return "#0000FF";
+            }
+            case GREEN -> {
+                return "#00FF00";
+            }
+            case YELLOW -> {
+                return "#FCBA03"; //other possible solution #DAA520, #FFD700
+            }
+        }
+        return null;
+    }
+
     public static Background setBackgroundColor(String backgroundColor) {
         return new Background(new BackgroundFill(Color.web(backgroundColor), CornerRadii.EMPTY, null));
     }
