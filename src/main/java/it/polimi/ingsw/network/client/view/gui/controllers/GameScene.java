@@ -153,6 +153,8 @@ public class GameScene extends SceneController {
         playgroundInfoPane.setPlaygroundInfo(gui.getController().getMainPlayer(), true);
         mainPane.getChildren().add(playgroundInfoPane.getMainPane());
         initializeReturnToMainPlayground();
+        playgroundInfoPane.updateRank(gui.getController().getPlayerRank(gui.getController().getMainPlayerUsername()));
+        playgroundInfoPane.updateScore(gui.getController().getMainPlayerPlayground().getPoints());
     }
 
     private void initializeReturnToMainPlayground() {
@@ -181,6 +183,8 @@ public class GameScene extends SceneController {
         for (ClientPlayer player : gui.getController().getPlayers()) {
             if (!player.getUsername().equals(gui.getController().getMainPlayerUsername())) {
                 PlayerInfoPane playerInfoPane = new PlayerInfoPane(player);
+                playerInfoPane.updateRank(gui.getController().getPlayerRank(player.getUsername()));
+                playerInfoPane.updateScore(player.getScore());
                 Pane pane = playerInfoPane.getPlayerMainPane();
                 pane.setLayoutX(layoutX);
                 pane.setLayoutY(layoutY);
@@ -442,6 +446,13 @@ public class GameScene extends SceneController {
             mainPlayerCards.get(selectedCardHandPosition).setVisible(false);
             selectedCardHandPosition = -1;
         }
+
+        for(PlayerInfoPane playerInfoPane : playerInfoPanes){
+            playerInfoPane.updateRank(gui.getController().getPlayerRank(playerInfoPane.getPlayerUsername()));
+            playerInfoPane.updateScore(gui.getController().getPlaygroundByUsername(playerInfoPane.getPlayerUsername()).getPoints());
+        }
+        playgroundInfoPane.updateRank(gui.getController().getPlayerRank(gui.getController().getMainPlayerUsername()));
+        playgroundInfoPane.updateScore(gui.getController().getMainPlayerPlayground().getPoints());
     }
 
     /*
