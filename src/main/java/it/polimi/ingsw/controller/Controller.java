@@ -59,21 +59,25 @@ public class Controller implements EventListener, GameRequest {
      * @param username the user's name.
      */
     public synchronized boolean handleConnection(String username, VirtualView user) {
+        boolean isAccepted;
         if (!validUsername(username)) {
             try {
                 user.reportError(new InvalidUsernameException().getMessage());
-                return false;
+                isAccepted = false;
             } catch (RemoteException remoteException) {
                 System.err.println("Connection error");
-                return false;
+                isAccepted = false;
             }
-        }
-        if (!lobby.isGameReady() || game.isFinished()) {
+        } else if (!lobby.isGameReady()) {
+            isAccepted = joinLobby(username, user);
+        } else if (game.isFinished()) {
             game = null;
-            return joinLobby(username, user);
+            lobby = new Lobby();
+            isAccepted = joinLobby(username, user);
         } else {
-            return joinGame(username, user);
+            isAccepted = joinGame(username, user);
         }
+        return isAccepted;
     }
 
     private void removeExceedingPlayers() {
