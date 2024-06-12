@@ -4,15 +4,13 @@ import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +31,8 @@ public class PlayerInfoPane {
     private static final int cardsPaneHeight = 48;
 
     private final ResourcePane resourcesPane;
+
+    private final RankPane rank;
 
     private static final int resourcesPaneWidth = 347;
 
@@ -58,6 +58,15 @@ public class PlayerInfoPane {
         playerMainPane.setBackground(setBackgroundColor("#EEE5BC"));
         //playerMainPane.setBackground(setBackgroundColor(convertPlayerColorIntoHexCode(player.getColor())));
         playerMainPane.setPrefSize(mainPaneWidth, mainPaneHeight);
+
+        rank = new RankPane(55,40,30);
+        Pane rankMainPane = rank.getMainPane();
+        rankMainPane.setBackground(setBackgroundColor("#EEE5BC"));
+        rankMainPane.setLayoutX(275);
+        rankMainPane.setLayoutY(10);
+
+        playerMainPane.getChildren().add(rankMainPane);
+
 
         //initialize card pane
         playerCardsPane = new Pane();
@@ -110,6 +119,14 @@ public class PlayerInfoPane {
     public void updatePlayerCards(List<ClientCard> cards) {
         playerCardsPane.getChildren().clear();
         GUICards.initializePlayerCards(playerCardsPane, cards, cardWidth, cardHeight, distance, MouseButton.PRIMARY);
+    }
+
+    public void updateRank(int rank){
+        this.rank.updateRank(rank);
+    }
+
+    public void updateScore(int score){
+        this.rank.updateScore(score);
     }
 
     public ImageView getSwitchPlayground() {
