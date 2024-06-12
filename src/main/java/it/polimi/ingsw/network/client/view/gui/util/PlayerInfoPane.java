@@ -3,18 +3,20 @@ package it.polimi.ingsw.network.client.view.gui.util;
 import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.convertPlayerColor;
-import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.setBackgroundColor;
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
 
 public class PlayerInfoPane {
 
@@ -36,7 +38,7 @@ public class PlayerInfoPane {
 
     private static final int resourcesPaneHeight = 37;
 
-    private final Text username;
+    private final Label username;
 
     private ImageView switchPlayground;
 
@@ -54,6 +56,7 @@ public class PlayerInfoPane {
     public PlayerInfoPane(ClientPlayer player) {
         playerMainPane = new Pane();
         playerMainPane.setBackground(setBackgroundColor("#EEE5BC"));
+        //playerMainPane.setBackground(setBackgroundColor(convertPlayerColorIntoHexCode(player.getColor())));
         playerMainPane.setPrefSize(mainPaneWidth, mainPaneHeight);
 
         //initialize card pane
@@ -71,10 +74,14 @@ public class PlayerInfoPane {
         playerMainPane.getChildren().add(playerCardsPane);
 
         //initialize player text
-        username = new Text(player.getUsername());
-        username.setFill(convertPlayerColor(player.getColor()));
-        username.setLayoutX(15);
-        username.setLayoutY(26);
+        username = new Label(player.getUsername());
+        username.setStyle("-fx-text-fill: " + convertPlayerColorIntoHexCode(player.getColor()) + ";");
+        username.setFont(new Font("Cambria Math", 12));
+        username.setPrefHeight(15);
+        username.setBackground(GUIUtil.setBackgroundColor("#FFFFFF"));
+        username.setPadding(new Insets(7));
+        username.setLayoutX(7);
+        username.setLayoutY(15);
         playerMainPane.getChildren().add(username);
 
 

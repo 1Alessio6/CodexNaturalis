@@ -37,8 +37,6 @@ public class ResourcePane {
             resources.put(symbol, points);
             points.setLayoutX(layoutX + resourceWidth + 5);
             points.setLayoutY(paneHeight * 0.595);
-            System.err.println(points.getY());
-            System.err.println(resourcesPane.getHeight());
             resourcesPane.getChildren().add(symbolImage);
             resourcesPane.getChildren().add(points);
             layoutX = layoutX + resourceWidth + distance;
