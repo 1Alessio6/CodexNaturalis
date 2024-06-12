@@ -60,6 +60,16 @@ public class GUIUtil {
         return new Background(new BackgroundFill(Color.web(backgroundColor), CornerRadii.EMPTY, null));
     }
 
+    public static Icon convertRankIntoIcon(int rank){
+        return switch (rank) {
+            case 1 -> Icon.FIRST;
+            case 2 -> Icon.SECOND;
+            case 3 -> Icon.THIRD;
+            case 4 -> Icon.FOURTH;
+            default -> null;
+        };
+    }
+
 
 
 }
