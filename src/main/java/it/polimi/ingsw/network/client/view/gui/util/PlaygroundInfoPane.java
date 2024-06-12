@@ -19,6 +19,9 @@ public class PlaygroundInfoPane {
     Pane mainPane;
     Label playGroundOwner;
 
+    private final RankPane rank;
+
+
     ImageView returnToMainPlayground;
     ResourcePane resourcePane;
 
@@ -29,12 +32,19 @@ public class PlaygroundInfoPane {
         returnToMainPlayground.setLayoutX(600);
         returnToMainPlayground.setLayoutY(5);
 
+        rank = new RankPane(55,40,30);
+        Pane rankMainPane = rank.getMainPane();
+        rankMainPane.setLayoutX(560);
+        rankMainPane.setLayoutY(5);
+
+
         playGroundOwner = new Label();
         mainPane = new Pane();
         mainPane.setPrefSize(643.08, 40);
         mainPane.setLayoutX(345);
         mainPane.setLayoutY(183);
         mainPane.setBackground(setBackgroundColor("#EEE5BC"));
+        mainPane.getChildren().add(rankMainPane);
 
         playGroundOwner.setLayoutY(15);
         playGroundOwner.setLayoutX(5);
@@ -55,9 +65,11 @@ public class PlaygroundInfoPane {
 
         if (!isMainPlayer) {
             playGroundOwner.setText(player.getUsername() + "'s Playground");
+            rank.getMainPane().setVisible(false);
             returnToMainPlayground.setVisible(true);
         } else {
             playGroundOwner.setText("Your Playground");
+            rank.getMainPane().setVisible(true);
             returnToMainPlayground.setVisible(false);
         }
         playGroundOwner.setFont(new Font("Arial", 11));
@@ -65,8 +77,13 @@ public class PlaygroundInfoPane {
         resourcePane.updateResources(player.getPlayground().getResources());
     }
 
+    public void updateRank(int rank){
+        this.rank.updateRank(rank);
+    }
 
-
+    public void updateScore(int score){
+        this.rank.updateScore(score);
+    }
 
     public Pane getMainPane() {
         return mainPane;
