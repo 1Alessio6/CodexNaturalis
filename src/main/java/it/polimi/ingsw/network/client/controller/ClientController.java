@@ -394,11 +394,11 @@ public class ClientController implements ClientActions {
         return game.getPlaygroundByUsername(username);
     }
 
-    public ClientObjectiveCard getMainPlayerObjectiveCard(){
+    public ClientObjectiveCard getMainPlayerObjectiveCard() {
         return getMainPlayer().getObjectiveCards().getFirst();
     }
 
-    public ClientBoard getBoard(){
+    public ClientBoard getBoard() {
         return game.getClientBoard();
     }
 
@@ -409,4 +409,21 @@ public class ClientController implements ClientActions {
     public boolean isActive() {
         return game.isGameActive();
     }
+
+    public int getPlayerRank(String playerUsername) {
+
+        int rank = 1;
+        int playerScore = getPlayer(playerUsername).getScore();
+
+
+        for (ClientPlayer player : getPlayers()) {
+            if (player.getScore() > playerScore) {
+                rank++;
+            }
+        }
+
+
+        return rank;
+    }
+
 }
