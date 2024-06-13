@@ -35,6 +35,9 @@ public class ServerHandler implements VirtualServer {
         this.gson = builder.create();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void hear() {
         System.out.println("I'm hearing");
         try {
@@ -130,6 +133,9 @@ public class ServerHandler implements VirtualServer {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void connect(VirtualView client, String username) {
         ConnectMessage message = new ConnectMessage(username);
@@ -138,6 +144,9 @@ public class ServerHandler implements VirtualServer {
         out.flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void placeStarter(String username, Side side) {
         PlaceStarterMessage message = new PlaceStarterMessage(username, side);
@@ -146,6 +155,9 @@ public class ServerHandler implements VirtualServer {
         out.flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void chooseColor(String username, PlayerColor color) {
         ChooseColorMessage message = new ChooseColorMessage(username, color);
@@ -154,6 +166,9 @@ public class ServerHandler implements VirtualServer {
         out.flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void placeObjectiveCard(String username, int chosenObjective) {
         PlaceObjectiveMessage message = new PlaceObjectiveMessage(username, chosenObjective);
@@ -162,6 +177,9 @@ public class ServerHandler implements VirtualServer {
         out.flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void placeCard(String username, int frontId, int backId, Side side, Position position) {
         PlaceCardMessage message = new PlaceCardMessage(username, frontId, backId, side, position);
@@ -170,6 +188,9 @@ public class ServerHandler implements VirtualServer {
         out.flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void draw(String username, int idToDraw) {
         DrawMessage message = new DrawMessage(username, idToDraw);
@@ -178,6 +199,9 @@ public class ServerHandler implements VirtualServer {
         out.flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void sendMessage(Message chatMessage) {
         SendChatMessage message = new SendChatMessage(chatMessage.getSender(), chatMessage);
@@ -186,6 +210,9 @@ public class ServerHandler implements VirtualServer {
         out.flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setPlayersNumber(String username, int playersNumber) {
         SetPlayerNumberMessage message = new SetPlayerNumberMessage(username, playersNumber);
@@ -194,6 +221,9 @@ public class ServerHandler implements VirtualServer {
         out.flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void disconnect(String username) {
         DisconnectMessage message = new DisconnectMessage(username);
@@ -207,12 +237,18 @@ public class ServerHandler implements VirtualServer {
         out.close();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void handleUnresponsiveness(String unresponsiveListener) {
         //System.err.println("Server doesn't respond to ping, I'll assume is inactive");
         //closeResources();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void receivePing(HeartBeatMessage ping) throws RemoteException {
         //System.out.println("Sending ping...");
