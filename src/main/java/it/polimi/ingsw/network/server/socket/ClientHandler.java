@@ -112,6 +112,9 @@ public class ClientHandler implements VirtualView {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateCreator() throws RemoteException {
         UpdateCreatorMessage message = new UpdateCreatorMessage();
@@ -120,6 +123,9 @@ public class ClientHandler implements VirtualView {
         out.flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateAfterLobbyCrash() throws RemoteException {
         UpdateAfterLobbyCrashMessage message = new UpdateAfterLobbyCrashMessage();
@@ -128,6 +134,9 @@ public class ClientHandler implements VirtualView {
         out.flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateAfterConnection(ClientGame clientGame) throws RemoteException {
         //System.out.println("UpdateAfterConnection");
@@ -138,6 +147,9 @@ public class ClientHandler implements VirtualView {
         out.flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdatePlayersInLobby(List<String> usernames) throws RemoteException {
         UpdatePlayersInLobbyMessage message = new UpdatePlayersInLobbyMessage(usernames);
@@ -146,6 +158,9 @@ public class ClientHandler implements VirtualView {
         out.flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdatePlayerStatus(boolean isConnected, String username) throws RemoteException {
         UpdatePlayerStatusMessage message = new UpdatePlayerStatusMessage(isConnected, username);
@@ -154,6 +169,9 @@ public class ClientHandler implements VirtualView {
         out.flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateColor(PlayerColor color, String username) throws RemoteException {
         UpdateColorMessage message = new UpdateColorMessage(username, color);
@@ -162,6 +180,9 @@ public class ClientHandler implements VirtualView {
         out.flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateObjectiveCard(ClientObjectiveCard chosenObjective, String username) throws RemoteException {
         UpdateObjectiveCardMessage message = new UpdateObjectiveCardMessage(chosenObjective, username);
@@ -170,6 +191,9 @@ public class ClientHandler implements VirtualView {
         out.flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide, Position position) throws RemoteException {
         UpdateAfterPlaceMessage message = new UpdateAfterPlaceMessage(positionToCornerCovered, newAvailablePositions, newResources, points, username, placedCard, placedSide, position);
@@ -178,6 +202,9 @@ public class ClientHandler implements VirtualView {
         out.flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateAfterDraw(ClientCard drawnCard, ClientFace newTopDeck, ClientCard newFaceUpCard, String username, int boardPosition) throws RemoteException {
         UpdateAfterDrawMessage message = new UpdateAfterDrawMessage(drawnCard, newTopDeck, newFaceUpCard, username, boardPosition);
@@ -186,6 +213,9 @@ public class ClientHandler implements VirtualView {
         out.flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateChat(Message message) throws RemoteException {
         UpdateChatMessage clientMessage = new UpdateChatMessage(message);
@@ -194,6 +224,9 @@ public class ClientHandler implements VirtualView {
         out.flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateCurrentPlayer(int currentPlayerIdx, GamePhase phase) throws RemoteException {
         UpdateCurrentPlayerMessage message = new UpdateCurrentPlayerMessage(currentPlayerIdx, phase);
@@ -202,6 +235,9 @@ public class ClientHandler implements VirtualView {
         out.flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateGameState() throws RemoteException {
         UpdateSuspendedGameMessage message = new UpdateSuspendedGameMessage();
@@ -210,6 +246,9 @@ public class ClientHandler implements VirtualView {
         out.flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showWinners(List<String> winners) throws RemoteException {
         ShowWinnersMessage message = new ShowWinnersMessage(winners);
@@ -218,6 +257,9 @@ public class ClientHandler implements VirtualView {
         out.flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void reportError(String details) throws RemoteException {
         ReportErrorMessage message = new ReportErrorMessage(details);
@@ -226,17 +268,26 @@ public class ClientHandler implements VirtualView {
         out.flush();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setName(String name) {
         this.username = name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void handleUnresponsiveness(String unresponsiveListener) {
         System.err.println("User " + unresponsiveListener + " has crashed");
         terminate();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void receivePing(HeartBeatMessage ping) throws RemoteException {
         String jsonMessage = gson.toJson(ping);
@@ -244,6 +295,9 @@ public class ClientHandler implements VirtualView {
         out.flush();
     }
 
+    /**
+     * Closes input.
+     */
     private void closeResources() {
         try {
             input.close();
@@ -253,6 +307,9 @@ public class ClientHandler implements VirtualView {
         out.close();
     }
 
+    /**
+     * Closes input, ends the timer and disconnects the player from the game.
+     */
     private void terminate() {
         closeResources();
         heartBeat.terminate();
