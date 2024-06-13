@@ -219,7 +219,9 @@ public class ClientController implements ClientActions {
 
     @Override
     public void disconnect(String username) throws RemoteException {
-        server.disconnect(username);
+        if (server != null) {
+            server.disconnect(username);
+        }
     }
 
     public void updateAfterConnection(ClientGame clientGame) {

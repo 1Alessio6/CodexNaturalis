@@ -49,6 +49,10 @@ public class Controller implements EventListener, GameRequest {
         return username != null && !username.isEmpty();
     }
 
+    public synchronized boolean isRegisteredUsername(String username) {
+        return listenerHandler.getIds().contains(username);
+    }
+
     /**
      * Handle connection of the user.
      * If the game is not already started, the user is added to the lobby;

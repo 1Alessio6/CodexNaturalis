@@ -80,6 +80,9 @@ public class ServerRMI implements VirtualServer {
     }
 
     private void handleDisconnection(String disconnectedUser) {
+        if (!myController.isRegisteredUsername(disconnectedUser)) {
+            return;
+        }
         myController.handleDisconnection(disconnectedUser);
         synchronized (lockOnClientsNetworkStatus) {
             HeartBeat heartBeat = activeClients.get(disconnectedUser);
@@ -145,7 +148,6 @@ public class ServerRMI implements VirtualServer {
             if (heartBeat==null) {
                 System.err.println("received ping from " + ping.getSender() + " which is unknown user: never connected or crashed");
             } else {
-                //System.err.println("which is known");
                 heartBeat.registerMessage(ping);
             }
         }
