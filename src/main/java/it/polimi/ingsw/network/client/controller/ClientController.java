@@ -15,7 +15,8 @@ import it.polimi.ingsw.model.lobby.FullLobbyException;
 import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.network.VirtualServer;
-import it.polimi.ingsw.network.VirtualView;
+import it.polimi.ingsw.network.client.Client;
+import it.polimi.ingsw.network.client.UnReachableServerException;
 import it.polimi.ingsw.network.client.model.ClientGame;
 import it.polimi.ingsw.network.client.model.board.ClientBoard;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
@@ -24,6 +25,7 @@ import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
+import it.polimi.ingsw.network.client.view.View;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -32,18 +34,33 @@ import java.util.Map;
 
 public class ClientController implements ClientActions {
 
-    private final VirtualServer server;
+    private VirtualServer server;
     private ClientGame game;
+    private Client client;
 
     private String mainPlayerUsername = ""; // todo. set by the view after user's input
 
-    public ClientController(VirtualServer server) {
-        this.server = server;
+    //public ClientController(VirtualServer server) {
+    //    this.server = server;
+    //}
+
+    public ClientController(Client client) {
+        this.client = client;
     }
 
+    public void configureClient(View view, String ip, String port) throws UnReachableServerException {
+        client.configure(this, view);
+        server = client.bindServer(ip, port);
+    }
+
+    //public void bindServer(String ip, String port) {
+    //    server = client.bindServer(ip, port);
+    //}
+
     @Override
-    public void connect(VirtualView client, String username) throws InvalidUsernameException, RemoteException, FullLobbyException {
-        server.connect(client, username);
+    public void connect(String username) throws InvalidUsernameException, RemoteException, FullLobbyException {
+        server.connect(client.getInstanceForTheServer(), username);
+        client.setName(username);
         this.mainPlayerUsername = username;
     }
 
