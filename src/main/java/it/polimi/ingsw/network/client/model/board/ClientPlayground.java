@@ -18,9 +18,6 @@ public class ClientPlayground implements Serializable {
     private final Map<Symbol, Integer> resources;
     List<Position> positioningOrder;
 
-    List<Position> availablePosition;
-
-
     public ClientPlayground(Map<Position, ClientTile> area, Map<Symbol, Integer> resources) {
         this.area = new HashMap<>();
         Position origin = new Position(0, 0);
@@ -43,15 +40,14 @@ public class ClientPlayground implements Serializable {
         positioningOrder = new ArrayList<>(playgroundToCopy.getPositioningOrder());
         resources = new HashMap<>(playgroundToCopy.getResources());
         points = playgroundToCopy.getPoints();
-        availablePosition = new ArrayList<>();
     }
 
-    private Map<Position, ClientTile> createClientArea(Map<Position, Tile> areaToCopy){
+    private Map<Position, ClientTile> createClientArea(Map<Position, Tile> areaToCopy) {
 
         Map<Position, ClientTile> area = new HashMap<>();
 
-        for(Position position : areaToCopy.keySet()){
-            if(areaToCopy.get(position).getAvailability() != Availability.NOTAVAILABLE){
+        for (Position position : areaToCopy.keySet()) {
+            if (areaToCopy.get(position).getAvailability() != Availability.NOTAVAILABLE) {
                 area.put(position, new ClientTile(areaToCopy.get(position)));
             }
 
@@ -79,20 +75,13 @@ public class ClientPlayground implements Serializable {
     public void placeTile(Position position, ClientTile tile) {
 
         this.area.put(position, tile);
-        if(tile.sameAvailability(Availability.OCCUPIED)){
+        if (tile.sameAvailability(Availability.OCCUPIED)) {
             this.positioningOrder.add(position);
         }
     }
 
     public List<Position> getAvailablePositions() {
-        /*
         return this.area.keySet().stream().filter(x -> this.area.get(x).sameAvailability(Availability.EMPTY)).collect(Collectors.toList());
-
-         */
-
-        //todo maintain like this till concurrency problems are resolved
-
-        return availablePosition;
     }
 
     public String toString() {
@@ -116,37 +105,32 @@ public class ClientPlayground implements Serializable {
     }// updateResources doesn't calculate the sum of the different calculated points, it only updates the actual amount of a particular
     // symbol in the resources map
 
-    public void addNewAvailablePositions(List <Position> newAvailablePosition){
-
-        //todo correct concurrency problems, this block of code generate concurrency problems with gui, as the actual
-
-        /*
-        for(Position position : area.keySet()){
-            if(getTile(position).sameAvailability(Availability.EMPTY)){
-                area.remove(position);
+    public void addNewAvailablePositions(List<Position> newAvailablePosition) {
+        List<Position> emptyTiles = new ArrayList<>();
+        for (Position position : area.keySet()) {
+            if (getTile(position).sameAvailability(Availability.EMPTY)) {
+                emptyTiles.add(position);
             }
         }
-        */
 
-        //
-
-
-        for(Position position : newAvailablePosition){
-            placeTile(position, new ClientTile(Availability.EMPTY));
+        for (Position p : emptyTiles) {
+            area.remove(p);
         }
 
-        availablePosition = newAvailablePosition;
+        for (Position position : newAvailablePosition) {
+            placeTile(position, new ClientTile(Availability.EMPTY));
+        }
     }
 
-    public ClientTile getTile(Position position){
-        if(area.containsKey(position)){
+    public ClientTile getTile(Position position) {
+        if (area.containsKey(position)) {
             return area.get(position);
         }
         return null;
     }
 
-    public void setCoveredCorner(Map<Position, CornerPosition> coveredCorner){
-        for(Position position : coveredCorner.keySet()){
+    public void setCoveredCorner(Map<Position, CornerPosition> coveredCorner) {
+        for (Position position : coveredCorner.keySet()) {
             getTile(position).getFace().setCornerCovered(coveredCorner.get(position));
         }
     }
@@ -168,6 +152,7 @@ public class ClientPlayground implements Serializable {
 
     /**
      * Returns the maximum x and the maximum y in absolute value of the tiles' position in the playground.
+     *
      * @return an array where the first index is the maximum x and the second one is the maximum y.
      */
     public int[] getRange() {
