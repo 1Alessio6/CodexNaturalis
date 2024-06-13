@@ -201,7 +201,7 @@ public class GameScene extends SceneController {
     private void initializeMainPlayerCardPane() {
         mainPlayerCardsPane = new Pane();
         mainPlayerCardsPane.setPrefSize(700, 90);
-        mainPlayerCardsPane.setLayoutX(334);
+        mainPlayerCardsPane.setLayoutX(345);
         mainPlayerCardsPane.setLayoutY(630);
         initializeMainPlayerObjectiveCard();
         initializeMainPlayerCards();
@@ -389,10 +389,10 @@ public class GameScene extends SceneController {
     private void initializeBoardCards(BoardPane boardPane) {
         setIdToDraw(boardPane.getGoldenDeckTopCard(), 4);
         setIdToDraw(boardPane.getResourceDeckTopCard(), 5);
-        setIdToDraw(boardPane.getGoldenFaceUp().get(0), 2);
-        setIdToDraw(boardPane.getGoldenFaceUp().get(1), 3);
-        setIdToDraw(boardPane.getResourceFaceUp().get(0), 0);
-        setIdToDraw(boardPane.getResourceFaceUp().get(1), 1);
+        setIdToDraw(boardPane.getGoldenFaceUp().getFirst(), 2);
+        setIdToDraw(boardPane.getGoldenFaceUp().getLast(), 3);
+        setIdToDraw(boardPane.getResourceFaceUp().getFirst(), 0);
+        setIdToDraw(boardPane.getResourceFaceUp().getLast(), 1);
     }
 
     private void setIdToDraw(Rectangle card, int idToDraw) {
