@@ -21,7 +21,7 @@ import java.rmi.RemoteException;
 
 public interface ClientActions {
 
-    void connect(VirtualView client, String username) throws InvalidUsernameException, RemoteException, FullLobbyException;
+    void connect(String username) throws InvalidUsernameException, RemoteException, FullLobbyException;
     void placeCard(int cardHandPosition, Side selectedSide, Position position) throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException, RemoteException;
     void draw(int IdToDraw) throws  InvalidGamePhaseException, EmptyDeckException, NotExistingFaceUp, SuspendedGameException, RemoteException, InvalidIdForDrawingException;
 

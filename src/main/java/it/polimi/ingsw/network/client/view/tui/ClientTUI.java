@@ -17,7 +17,7 @@ import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.model.lobby.FullLobbyException;
 import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
-import it.polimi.ingsw.network.VirtualView;
+import it.polimi.ingsw.network.client.UnReachableServerException;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
@@ -209,19 +209,34 @@ public class ClientTUI implements View {
         ClientUtil.putCursorToInputArea();
     }
 
+    private void getInfoForConnection() {
+        System.out.println("Insert the ip of the server (empty for localhost)");
+        String ip = console.nextLine();
+        System.out.println("Insert the port of the server");
+        String port = console.nextLine();
+        try {
+            if (ip.isEmpty()) {
+                ip = "127.0.0.1";
+            }
+            controller.configureClient(this, ip, port);
+        } catch(UnReachableServerException e) {
+            System.err.println("Error during connection to the server: " + e.getMessage());
+            System.exit(1);
+        }
+    }
+
     /**
      * This method is invoked in a new thread at the beginning of a game
      * Commands can't be interrupted
      */
     @Override
-    public void runView(VirtualView client) {
-        // connection logic
+    public void runView() {
+        getInfoForConnection();
         while(true) {
             try {
                 System.out.print("Insert username: ");
                 String username = console.nextLine();
-                controller.connect(client, username);
-                client.setName(username);
+                controller.connect(username);
                 break;
             } catch(InvalidUsernameException | FullLobbyException | RemoteException e){
                 System.err.println(e.getMessage());
