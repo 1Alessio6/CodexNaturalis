@@ -323,6 +323,10 @@ public class GameScene extends SceneController {
     public void drawPlayground(ClientPlayground clientPlayground) {
 
         //do not remove
+        for(Rectangle rectangle : availablePositions){
+            mainPane.getChildren().remove(rectangle);
+        }
+
         availablePositions.clear();
 
         GUIPlayground guiPlayground = new GUIPlayground(playerCardsWidth, playerCardsHeight);
@@ -340,7 +344,10 @@ public class GameScene extends SceneController {
             if (!clientPlayground.getTile(pos).sameAvailability(Availability.EMPTY)) {
                 playgroundPane.getChildren().add(guiPlayground.getRectangle(pos, pathToImage(clientPlayground.getTile(pos).getFace().getPath())));
             } else {
-                playgroundPane.getChildren().add(guiPlayground.getRectangleEmptyTile(pos));
+                if(clientPlayground.getAvailablePositions().contains(pos)){
+                    playgroundPane.getChildren().add(guiPlayground.getRectangleEmptyTile(pos));
+                }
+
             }
         }
 
