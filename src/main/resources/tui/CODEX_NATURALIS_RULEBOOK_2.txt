@@ -19,11 +19,11 @@ one of the two cards shown at the start of the game.
 Digit <1> to select the first objective card, <2>                         ~ Golden and Resource Decks ~
 otherwise.
 
-               ╔ ═════ ╗    ╔ ═════ ╗                        To draw a card from the golden deck, digit the number <4>,
-               ║  <1>  ║    ║  <2>  ║                        otherwise, digit the number <5>.
+               ╔ ═════ ╗    ╔ ═════ ╗                        To draw a card from the golden deck, digit the number <5>,
+               ║  <1>  ║    ║  <2>  ║                        otherwise, digit the number <6>.
                ╚ ═════ ╝    ╚ ═════ ╝
                                                                             ╔ ═════ ╗    ╔ ═════ ╗
-                                                                            ║  <5>  ║    ║  <4>  ║
+                                                                            ║  <6>  ║    ║  <5>  ║
                                                                             ╚ ═════ ╝    ╚ ═════ ╝
 
              ~ DRAWING A CARD LEGEND ~
