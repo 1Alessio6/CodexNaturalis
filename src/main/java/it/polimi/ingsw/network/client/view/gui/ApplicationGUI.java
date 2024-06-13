@@ -35,8 +35,8 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
     private Parent currentRoot;
 
     @Override
-    public void run(String typeConnection, String host, String port) {
-        launch(typeConnection, host, port);
+    public void run(String typeConnection) {
+        launch(typeConnection);
     }
 
 
@@ -47,37 +47,16 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
     @Override
     public void start(Stage primaryStage) throws Exception {
         System.out.println("Start the gui");
-        System.out.println("Prepare everything for the gui");
-        this.client = ClientMain.createClient(getParameters().getUnnamed());
-        this.controller = client.getController();
+        client = ClientMain.createClient(getParameters().getUnnamed().getFirst());
+        controller = new ClientController(client);
         this.primaryStage = primaryStage;
-        client.addView(this);
-        client.runView();
-
-
-//        this.primaryStage = primaryStage;
-//        //add all controllers constructors
-//
-//        //FXMLLoader loader = loadScene("/gui/SelectUsernameScene.fxml");
-//        loadScene(SceneType.SELECT_USERNAME);
-//        /*
-//        SelectUsernameScene sceneController = loader.getController();
-//
-//         */
-//
-//        //  initializeCurrentSceneController();
-//        //((LobbyScene)currentSceneController).initializeCreatorScene();
-//
-//
-//        //((GameScene)currentSceneController).drawPlayground(null);
-//
-//        this.primaryStage.setTitle("Codex Naturalis");
-//        this.primaryStage.show();
+        runView();
     }
 
     @Override
-    public void runView(VirtualView client) {
-        loadScene(SceneType.SELECT_USERNAME);
+    public void runView() {
+        // todo. change scene to the one that requires ip/port
+        loadScene(SceneType.CONNECTION);
         this.primaryStage.setTitle("Codex Naturalis");
         this.primaryStage.show();
     }
@@ -89,8 +68,15 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
             //todo set crash message
             currentScene = SceneType.CRASH;
         });
-
     }
+
+    public void showSelectUsername() {
+        Platform.runLater(() -> {
+            loadScene(SceneType.SELECT_USERNAME);
+            currentScene = SceneType.SELECT_USERNAME;
+        });
+    }
+
 
     @Override
     public void showUpdatePlayersInLobby() {

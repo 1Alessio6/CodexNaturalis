@@ -23,10 +23,7 @@ public class SelectUsernameScene extends SceneController{
     private void connect(KeyEvent event) {
         if(event.getCode() == KeyCode.ENTER){
             try{
-                VirtualView client = gui.getClient();
-                String name = usernameCatcher.getText();
-                gui.getController().connect(gui.getClient(), usernameCatcher.getText());
-                client.setName(name);
+                gui.getController().connect(usernameCatcher.getText());
             }catch (RemoteException e){
                 //todo add a screen
             }
