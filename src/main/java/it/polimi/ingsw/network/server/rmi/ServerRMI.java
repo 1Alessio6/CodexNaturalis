@@ -27,6 +27,9 @@ public class ServerRMI implements VirtualServer {
         return SERVER_NAME;
     }
 
+    /**
+     * Constructs the ServerRMI
+     */
     public ServerRMI() {
         this.myController = new Controller();
         activeClients = new HashMap<>();
@@ -63,6 +66,9 @@ public class ServerRMI implements VirtualServer {
         System.out.println("ServerRMI ready");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void connect(VirtualView client, String username) throws RemoteException {
         System.out.println("Received connection from " + username);
@@ -79,6 +85,11 @@ public class ServerRMI implements VirtualServer {
         }
     }
 
+    /**
+     * Disconnects the <code>disconnectedUser</code>.
+     *
+     * @param disconnectedUser the username of the player to be disconnected.
+     */
     private void handleDisconnection(String disconnectedUser) {
         myController.handleDisconnection(disconnectedUser);
         synchronized (lockOnClientsNetworkStatus) {
@@ -89,46 +100,73 @@ public class ServerRMI implements VirtualServer {
         System.out.println("User " + disconnectedUser + " left the server :(");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void disconnect(String username) throws RemoteException {
         handleDisconnection(username);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void placeStarter(String username, Side side) throws RemoteException {
         myController.placeStarter(username, side);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void chooseColor(String username, PlayerColor color) throws RemoteException {
         myController.chooseColor(username, color);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void placeObjectiveCard(String username, int chosenObjective) throws RemoteException {
         myController.placeObjectiveCard(username, chosenObjective);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void placeCard(String username, int frontId, int backId, Side side, Position position) throws RemoteException {
         myController.placeCard(username, frontId, backId, side, position);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void draw(String username, int idToDraw) throws RemoteException {
         myController.draw(username, idToDraw);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void sendMessage(Message message) throws RemoteException {
         myController.sendMessage(message);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setPlayersNumber(String username, int playersNumber) throws RemoteException {
         myController.setPlayersNumber(username, playersNumber);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void handleUnresponsiveness(String unresponsiveListener) throws RemoteException {
         System.err.println("Client " + unresponsiveListener + " has crashed");
@@ -137,6 +175,9 @@ public class ServerRMI implements VirtualServer {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void receivePing(HeartBeatMessage ping) throws RemoteException {
         synchronized (lockOnClientsNetworkStatus) {
@@ -151,6 +192,9 @@ public class ServerRMI implements VirtualServer {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void hear() throws RemoteException {
 
