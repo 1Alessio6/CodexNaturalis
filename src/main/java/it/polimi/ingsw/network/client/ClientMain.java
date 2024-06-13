@@ -28,7 +28,7 @@ public class ClientMain {
     }
 
     public static void main(String[] args) {
-        String typeConnection = OPTION_RMI;
+        String typeConnection = OPTION_SOCKET;
         String typeView = OPTION_GUI;
         try {
             int maxArgs = 2; // <connectionType> + <viewType>
