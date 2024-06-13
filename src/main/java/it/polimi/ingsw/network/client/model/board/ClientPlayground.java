@@ -16,8 +16,9 @@ public class ClientPlayground implements Serializable {
     private final Map<Position, ClientTile> area;
     private int points;
     private final Map<Symbol, Integer> resources;
-
     List<Position> positioningOrder;
+
+    List<Position> availablePosition;
 
 
     public ClientPlayground(Map<Position, ClientTile> area, Map<Symbol, Integer> resources) {
@@ -42,6 +43,7 @@ public class ClientPlayground implements Serializable {
         positioningOrder = new ArrayList<>(playgroundToCopy.getPositioningOrder());
         resources = new HashMap<>(playgroundToCopy.getResources());
         points = playgroundToCopy.getPoints();
+        availablePosition = new ArrayList<>();
     }
 
     private Map<Position, ClientTile> createClientArea(Map<Position, Tile> areaToCopy){
@@ -83,7 +85,14 @@ public class ClientPlayground implements Serializable {
     }
 
     public List<Position> getAvailablePositions() {
+        /*
         return this.area.keySet().stream().filter(x -> this.area.get(x).sameAvailability(Availability.EMPTY)).collect(Collectors.toList());
+
+         */
+
+        //todo maintain like this till concurrency problems are resolved
+
+        return availablePosition;
     }
 
     public String toString() {
@@ -108,9 +117,25 @@ public class ClientPlayground implements Serializable {
     // symbol in the resources map
 
     public void addNewAvailablePositions(List <Position> newAvailablePosition){
+
+        //todo correct concurrency problems, this block of code generate concurrency problems with gui, as the actual
+
+        /*
+        for(Position position : area.keySet()){
+            if(getTile(position).sameAvailability(Availability.EMPTY)){
+                area.remove(position);
+            }
+        }
+        */
+
+        //
+
+
         for(Position position : newAvailablePosition){
             placeTile(position, new ClientTile(Availability.EMPTY));
         }
+
+        availablePosition = newAvailablePosition;
     }
 
     public ClientTile getTile(Position position){
