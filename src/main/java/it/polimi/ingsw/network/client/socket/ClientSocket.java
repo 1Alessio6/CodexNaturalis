@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
+import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.UnReachableServerException;
@@ -33,13 +34,16 @@ public class ClientSocket extends Client implements VirtualView {
     private BufferedReader in;
     private HeartBeat heartBeat;
 
-    public ClientSocket(String host, Integer port) throws UnReachableServerException{
-        super(host, port);
-    }
+    public ClientSocket() {}
 
     @Override
     public void runView() {
-        clientView.runView(this);
+        clientView.runView();
+    }
+
+    @Override
+    public VirtualView getInstanceForTheServer() {
+        return this;
     }
 
     private void closeResources() {
@@ -53,15 +57,15 @@ public class ClientSocket extends Client implements VirtualView {
     }
 
     @Override
-    protected void connect(String ip, Integer port) throws UnReachableServerException {
-        System.out.println("Connect to ip " + ip + " at port " + port);
+    public VirtualServer bindServer(String ip, String port) throws UnReachableServerException {
+        System.out.println("Trying to connect to ip " + ip + " at port " + port);
         try {
-            this.socket = new Socket(ip, port);
+            this.socket = new Socket(ip, Integer.parseInt(port));
             this.out = new PrintWriter(this.socket.getOutputStream(), true);
             this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            server = new ServerHandler(this, in, out);
+            VirtualServer server = new ServerHandler(this, in, out);
 
-            heartBeat = new HeartBeat(this, "unkown", server, "server");
+            heartBeat = new HeartBeat(this, "unknown", server, "server");
             heartBeat.startHeartBeat();
             new Thread(() -> {
                 try {
@@ -70,15 +74,16 @@ public class ClientSocket extends Client implements VirtualView {
                     // impossible from a socket server
                 }
             }).start();
-            return;
+            return server;
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + ip);
             closeResources();
+            throw new UnReachableServerException(e.getMessage());
         } catch (IOException e) {
             System.err.println("Couldn't get I/O for the connection to " + ip);
             closeResources();
+            throw new UnReachableServerException(e.getMessage());
         }
-        throw new UnReachableServerException();
     }
 
     //   public void terminateConnection() {

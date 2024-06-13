@@ -15,6 +15,7 @@ import it.polimi.ingsw.network.client.model.card.*;
 import it.polimi.ingsw.network.heartbeat.HeartBeat;
 import it.polimi.ingsw.network.heartbeat.HeartBeatMessage;
 import it.polimi.ingsw.network.server.rmi.ServerRMI;
+
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -26,28 +27,31 @@ import java.util.Map;
 public class ClientRMI extends Client {
     private HeartBeat heartBeat;
 
-    public ClientRMI(String host, Integer port) throws UnReachableServerException {
-        super(host, port);
+    public ClientRMI() {
     }
 
     @Override
-    protected void connect(String ip, Integer port) throws UnReachableServerException {
+    public VirtualServer bindServer(String ip, String port) throws UnReachableServerException {
         String serverName = ServerRMI.getServerName();
         try {
-            Registry registry = LocateRegistry.getRegistry(ip, port);
-            server = (VirtualServer) registry.lookup(serverName);
+            Registry registry = LocateRegistry.getRegistry(ip, Integer.parseInt(port));
+            VirtualServer server = (VirtualServer) registry.lookup(serverName);
+            heartBeat = new HeartBeat(this, name, server, "server");
+            return server;
         } catch (RemoteException | NotBoundException e) {
-            throw new UnReachableServerException();
+            throw new UnReachableServerException(e.getMessage());
         }
+    }
+
+    @Override
+    public VirtualView getInstanceForTheServer() throws RemoteException {
+        return (VirtualView) UnicastRemoteObject.exportObject(this, 0);
     }
 
     @Override
     public void runView() throws RemoteException {
         // register stub
-        VirtualView stub =
-                (VirtualView) UnicastRemoteObject.exportObject(this, 0);
-        heartBeat = new HeartBeat(this, name, server, "server");
-        clientView.runView(stub);
+        clientView.runView();
     }
 
     @Override
@@ -95,7 +99,7 @@ public class ClientRMI extends Client {
     public void showUpdateObjectiveCard(ClientObjectiveCard chosenObjective, String username) {
         controller.updateObjectiveCard(chosenObjective, username);
         //todo: if the objective card isn't of the main player the view should not show the card
-        if(controller.getMainPlayerUsername().equals(username)){
+        if (controller.getMainPlayerUsername().equals(username)) {
             clientView.showUpdateObjectiveCard();
         }
     }
@@ -104,7 +108,7 @@ public class ClientRMI extends Client {
     public void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide, Position position) throws RemoteException {
         controller.updateAfterPlace(positionToCornerCovered, newAvailablePositions, newResources, points, username, placedCard, placedSide, position);
 
-        if (controller.getGamePhase().equals(GamePhase.Setup)){
+        if (controller.getGamePhase().equals(GamePhase.Setup)) {
             clientView.showStarterPlacement(username);
         } else {
             clientView.showUpdateAfterPlace(username);
@@ -113,7 +117,7 @@ public class ClientRMI extends Client {
 
     @Override
     public void showUpdateAfterDraw(ClientCard drawnCard, ClientFace newTopDeck, ClientCard newFaceUpCard, String username, int boardPosition) throws RemoteException {
-        controller.updateAfterDraw(drawnCard,newTopDeck,newFaceUpCard,username,boardPosition);
+        controller.updateAfterDraw(drawnCard, newTopDeck, newFaceUpCard, username, boardPosition);
         clientView.showUpdateAfterDraw(username);
     }
 
@@ -130,7 +134,7 @@ public class ClientRMI extends Client {
 
     @Override
     public void showUpdateCurrentPlayer(int currentPlayerIdx, GamePhase phase) throws RemoteException {
-        controller.updateCurrentPlayer(currentPlayerIdx,phase);
+        controller.updateCurrentPlayer(currentPlayerIdx, phase);
         clientView.showUpdateCurrentPlayer();
     }
 
