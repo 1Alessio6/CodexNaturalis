@@ -10,6 +10,8 @@ import javafx.scene.paint.Color;
 
 public class GUIUtil {
 
+    public static final String  Font = "Cambria Math";
+
     public static boolean isClicked(MouseEvent mouseEvent, MouseButton mouseButton) {
         return mouseEvent.getEventType() == MouseEvent.MOUSE_CLICKED && mouseEvent.getButton() == mouseButton;
     }
