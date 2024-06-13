@@ -33,15 +33,28 @@ public class ClientSocket extends Client implements VirtualView {
     private BufferedReader in;
     private HeartBeat heartBeat;
 
+    /**
+     * Constructs the ClientSocket using the <code>host</code> and the <code>port</code> provided.
+     *
+     * @param host the name of the host to connect to.
+     * @param port the port number.
+     * @throws UnReachableServerException if the server isn't reachable.
+     */
     public ClientSocket(String host, Integer port) throws UnReachableServerException{
         super(host, port);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void runView() {
         clientView.runView(this);
     }
 
+    /**
+     * Closes input, output and socket.
+     */
     private void closeResources() {
         try {
             this.socket.close();
@@ -52,6 +65,9 @@ public class ClientSocket extends Client implements VirtualView {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void connect(String ip, Integer port) throws UnReachableServerException {
         System.out.println("Connect to ip " + ip + " at port " + port);
@@ -90,22 +106,34 @@ public class ClientSocket extends Client implements VirtualView {
     //       }
     //   }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateCreator() {
         clientView.showUpdateCreator();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateAfterLobbyCrash() {
         clientView.showUpdateAfterLobbyCrash();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateAfterConnection(ClientGame clientGame) {
         controller.updateAfterConnection(clientGame);
         clientView.showUpdateAfterConnection();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdatePlayersInLobby(List<String> usernames) {
         controller.updatePlayersInLobby(usernames);
@@ -117,6 +145,9 @@ public class ClientSocket extends Client implements VirtualView {
 
     //   }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdatePlayerStatus(boolean isConnected, String username) {
         controller.updatePlayerStatus(isConnected, username);
@@ -128,12 +159,18 @@ public class ClientSocket extends Client implements VirtualView {
 
     //   }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateColor(PlayerColor color, String username) {
         controller.updateColor(color, username);
         clientView.showUpdateColor(username);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateObjectiveCard(ClientObjectiveCard chosenObjective, String username) {
         controller.updateObjectiveCard(chosenObjective, username);
@@ -143,6 +180,9 @@ public class ClientSocket extends Client implements VirtualView {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide, Position position) {
         controller.updateAfterPlace(positionToCornerCovered, newAvailablePositions, newResources, points, username, placedCard, placedSide, position);
@@ -152,12 +192,18 @@ public class ClientSocket extends Client implements VirtualView {
             clientView.showUpdateAfterPlace(username);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateAfterDraw(ClientCard drawnCard, ClientFace newTopDeck, ClientCard newFaceUpCard, String username, int boardPosition) {
         controller.updateAfterDraw(drawnCard, newTopDeck, newFaceUpCard, username, boardPosition);
         clientView.showUpdateAfterDraw();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateChat(Message message) {
         controller.updateChat(message);
@@ -169,33 +215,51 @@ public class ClientSocket extends Client implements VirtualView {
 
     //}
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateCurrentPlayer(int currentPlayerIdx, GamePhase phase) {
         controller.updateCurrentPlayer(currentPlayerIdx, phase);
         clientView.showUpdateCurrentPlayer();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateGameState() {
         controller.updateSuspendedGame();
         clientView.showUpdateSuspendedGame();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showWinners(List<String> winners) {
         clientView.showWinners(winners);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void reportError(String details) {
         System.err.println(details);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setName(String name) throws RemoteException {
         super.name = name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void handleUnresponsiveness(String unresponsiveListener) {
         System.err.println("Server doesn't respond to ping, I'll assume is inactive");
@@ -207,6 +271,9 @@ public class ClientSocket extends Client implements VirtualView {
         System.exit(1);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void receivePing(HeartBeatMessage ping) throws RemoteException {
         heartBeat.registerMessage(ping);
