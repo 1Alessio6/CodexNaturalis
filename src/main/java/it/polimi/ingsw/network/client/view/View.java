@@ -12,7 +12,11 @@ import java.util.List;
  */
 public interface View {
 
-    //method used to read client input
+    /**
+     * Method used to read client input.
+     *
+     * @param client the representation of the client.
+     */
     void runView(VirtualView client);
 
     //method used to update after a controller update, invoked by the client class
