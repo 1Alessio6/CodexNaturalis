@@ -13,13 +13,32 @@ public abstract class Client implements VirtualView {
     protected VirtualServer server;
     protected String name;
 
+    /**
+     * Connects the client to the <code>ip</code> and <code>port</code> provided.
+     *
+     * @param ip   the ip address.
+     * @param port the port number.
+     * @throws UnReachableServerException if the server isn't reachable.
+     */
     protected abstract void connect(String ip, Integer port) throws UnReachableServerException;
 
+    /**
+     * Constructs the Client using the <code>ip</code> and the <code>port</code> provided.
+     *
+     * @param ip   the ip address.
+     * @param port the port number.
+     * @throws UnReachableServerException if the server isn't reachable.
+     */
     public Client(String ip, int port) throws UnReachableServerException {
         connect(ip, port);
         this.controller = new ClientController(server);
     }
 
+    /**
+     * Adds the <code>view</code> to the Client.
+     *
+     * @param view the representation of the view.
+     */
     public void addView(View view) {
         clientView = view;
     }
@@ -28,5 +47,10 @@ public abstract class Client implements VirtualView {
         return controller;
     }
 
+    /**
+     * Runs the view.
+     *
+     * @throws RemoteException in the event of an error occurring during the execution of a remote method.
+     */
     public abstract void runView() throws RemoteException;
 }
