@@ -1083,7 +1083,7 @@ public class ClientUtil {
      * @param messages the messages in the game.
      * @return the last messages with maximum 9 lines.
      */
-    public static List<String> searchForLastNineLineMessages(List<Message> messages) {
+    public static List<String> searchForLastNineLineMessages(List<Message> messages,ClientPlayer mainPlayer) {
         int i = messages.size() - 1, j = 0;
         List<String> messagesToPrint = new ArrayList<>();
         int linesOccupiedByLastMessage;
@@ -1099,7 +1099,9 @@ public class ClientUtil {
             if (j + linesOccupiedByLastMessage > 9) {
                 break;
             }
-            messagesToPrint.add(messageModifier(lastSender, lastRecipient, lastMessage));
+            if(lastSender.equals(mainPlayer.getUsername())||lastRecipient.equals(mainPlayer.getUsername())||lastRecipient.equals("Everyone")){
+                messagesToPrint.add(messageModifier(lastSender, lastRecipient, lastMessage));
+            }
             j += linesOccupiedByLastMessage;
             i--;
         }
@@ -1110,8 +1112,8 @@ public class ClientUtil {
      * Prints the chat on the screen.
      * @param messages the messages in the game.
      */
-    public static void printChat(List<Message> messages) {
-        List<String> messagesToPrint = searchForLastNineLineMessages(messages);
+    public static void printChat(List<Message> messages, ClientPlayer mainPlayer) {
+        List<String> messagesToPrint = searchForLastNineLineMessages(messages,mainPlayer);
         int occupiedLines = 0;
 
         ClientUtil.printChatSquare();

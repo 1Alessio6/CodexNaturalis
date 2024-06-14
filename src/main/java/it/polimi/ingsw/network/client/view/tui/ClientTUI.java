@@ -616,7 +616,7 @@ public class ClientTUI implements View {
      */
     @Override
     public void showUpdateChat() {
-        ClientUtil.printChat(controller.getMessage());
+        ClientUtil.printChat(controller.getMessage(),controller.getMainPlayer());
 
         ClientUtil.putCursorToInputArea();
     }
