@@ -18,6 +18,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 
 import java.rmi.RemoteException;
 
@@ -26,6 +27,9 @@ import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.createMainBac
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.isClicked;
 
 public class CrashScene extends SceneController {
+
+    @FXML
+    private Text message;
     @FXML
     private Pane mainPane;
 
@@ -67,6 +71,10 @@ public class CrashScene extends SceneController {
             }
         });
 
+    }
+
+    public void setLobbyFullMessage(){
+        message.setText("LOBBY ALREADY FULL");
     }
 
 

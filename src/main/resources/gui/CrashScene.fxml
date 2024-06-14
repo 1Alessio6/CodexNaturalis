@@ -17,7 +17,7 @@
         </ImageView>
         <Pane layoutX="367.0" layoutY="211.0" opacity="0.9" prefHeight="298.0" prefWidth="346.0" style="-fx-background-color: #EEE5BC;">
          <children>
-                <Text fill="#dd2d2a" layoutX="72.0" layoutY="103.0" strokeType="OUTSIDE" strokeWidth="0.0" text="  SERVER CRASHED">
+                <Text fx:id="message" fill="#dd2d2a" layoutX="72.0" layoutY="103.0" strokeType="OUTSIDE" strokeWidth="0.0" text="  SERVER CRASHED">
                     <font>
                         <Font name="Cambria Math" size="24.0" />
                     </font>

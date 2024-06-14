@@ -108,6 +108,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
             loadScene(SceneType.CRASH);
             //todo set crash message
             currentScene = SceneType.CRASH;
+            ((CrashScene)currentSceneController).setLobbyFullMessage();
         });
     }
 
