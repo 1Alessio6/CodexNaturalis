@@ -1,11 +1,10 @@
 package it.polimi.ingsw.network.client.view.gui.util;
 
 import it.polimi.ingsw.model.card.Color.PlayerColor;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 public class GUIUtil {
@@ -71,6 +70,13 @@ public class GUIUtil {
             default -> null;
         };
     }
+
+    public static Background createMainBackground(){
+        BackgroundImage backgroundImage = new BackgroundImage(new Image("/gui/png/background_tile.png"), BackgroundRepeat.REPEAT,
+                BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+        return new Background(backgroundImage);
+    }
+
 
 
 
