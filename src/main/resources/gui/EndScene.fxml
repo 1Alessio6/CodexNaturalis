@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<Pane prefHeight="755.0" prefWidth="1325.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.network.client.view.gui.controllers.EndScene">
+<Pane fx:id="mainPane" prefHeight="755.0" prefWidth="1325.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.network.client.view.gui.controllers.EndScene">
    <children>
       <Label layoutX="601.0" layoutY="180.0" prefHeight="25.0" prefWidth="66.0" text="Winners" />
       <Button fx:id="buttonForStartANewGame" layoutX="548.0" layoutY="465.0" mnemonicParsing="false" onMouseClicked="#backToLobby" prefHeight="24.0" prefWidth="183.0" text="Start a new game" />

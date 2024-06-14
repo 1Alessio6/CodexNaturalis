@@ -88,6 +88,7 @@ public class GameScene extends SceneController {
 
     public void initialize() {
 
+        mainPane.setBackground(createMainBackground());
         playerCardsVisibleSide = new ArrayList<>();
         availablePositions = new ArrayList<>();
         mainPlayerCards = new ArrayList<>();
