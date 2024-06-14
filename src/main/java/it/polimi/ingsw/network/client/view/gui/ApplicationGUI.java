@@ -58,7 +58,6 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         // todo. change scene to the one that requires ip/port
         loadScene(SceneType.CONNECTION);
         this.primaryStage.setTitle("Codex Naturalis");
-        this.primaryStage.show();
     }
 
     @Override
@@ -112,6 +111,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         });
     }
 
+    //todo fix bug after multiple cards in hand after a connection after a crash
     @Override
     public void showUpdateAfterConnection() {
         Platform.runLater(() -> {

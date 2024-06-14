@@ -5,7 +5,8 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.network.client.view.gui.controllers.ConnectionScene">
+<?import javafx.scene.layout.Pane?>
+<Pane fx:id="mainPane" prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.network.client.view.gui.controllers.ConnectionScene">
    <children>
       <Label layoutX="483.0" layoutY="167.0" prefHeight="16.0" prefWidth="112.0" text="Welcome" />
       <Label layoutX="424.0" layoutY="220.0" text="Enter the server ip" />
@@ -15,4 +16,4 @@
       <Button layoutX="891.0" layoutY="514.0" mnemonicParsing="false" text="Connect" onMouseClicked="#connect" />
       <Button layoutX="72.0" layoutY="514.0" mnemonicParsing="false" text="Exit" onMouseClicked="#exitTheGame" />
    </children>
-</AnchorPane>
+</Pane>
