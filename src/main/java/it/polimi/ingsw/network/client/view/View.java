@@ -61,4 +61,6 @@ public interface View {
 
     void showWinners(List<String> winners);
 
+    void reportError(String error);
+
 }

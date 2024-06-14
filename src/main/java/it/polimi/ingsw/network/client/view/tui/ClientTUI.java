@@ -486,4 +486,9 @@ public class ClientTUI implements View {
 
     }
 
+    @Override
+    public void reportError(String error) {
+        System.err.println(error);
+    }
+
 }

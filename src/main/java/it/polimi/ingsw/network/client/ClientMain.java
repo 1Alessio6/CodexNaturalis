@@ -1,15 +1,13 @@
 package it.polimi.ingsw.network.client;
 
-import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.rmi.ClientRMI;
 import it.polimi.ingsw.network.client.socket.ClientSocket;
-import it.polimi.ingsw.network.client.view.View;
 import it.polimi.ingsw.network.client.view.gui.ApplicationGUI;
+import it.polimi.ingsw.network.client.view.tui.ApplicationTUI;
 import it.polimi.ingsw.network.client.view.tui.ClientUtil;
 
 import java.rmi.RemoteException;
 import java.util.Arrays;
-import java.util.List;
 
 public class ClientMain {
     private static final String OPTION_RMI = "rmi";

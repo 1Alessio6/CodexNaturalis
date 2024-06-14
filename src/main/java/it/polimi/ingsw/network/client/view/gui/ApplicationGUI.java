@@ -222,6 +222,13 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     }
 
+    @Override
+    public void reportError(String error) {
+
+        //todo replace with alert/report error message
+        System.err.println(error);
+    }
+
     public ClientController getController() {
         return controller;
     }
