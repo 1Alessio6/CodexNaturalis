@@ -308,6 +308,10 @@ public class ClientTUI implements View {
     @Override
     public void showServerCrash() {
         ClientUtil.printCommand("Server is crashed. To connect again you have to join the game");
+        availableActions.clear();
+        availableActions.add(TUIActions.HELP);
+        availableActions.add(TUIActions.QUIT);
+        availableActions.add(TUIActions.CONNECT);
     }
 
     private void setAvailableActions() {
