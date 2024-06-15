@@ -11,16 +11,13 @@ import it.polimi.ingsw.network.client.view.View;
 import it.polimi.ingsw.network.client.view.gui.controllers.*;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import java.io.IOException;
-import java.rmi.RemoteException;
 import java.util.List;
 
 public class ApplicationGUI extends Application implements View, ClientApplication {
@@ -269,11 +266,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         currentSceneController.initializeUsingGameInformation();
         primaryStage.show();
         primaryStage.setOnCloseRequest(windowEvent -> {
-            try {
-                controller.disconnect(controller.getMainPlayerUsername());
-            } catch (RemoteException ignored) {
-                System.out.println("disconnection after the server crashed");
-            }
+            controller.disconnect(controller.getMainPlayerUsername());
             System.exit(0);
         });
 

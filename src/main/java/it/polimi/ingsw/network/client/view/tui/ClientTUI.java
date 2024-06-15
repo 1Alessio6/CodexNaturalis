@@ -82,7 +82,7 @@ public class ClientTUI implements View {
                 ClientUtil.printToLineColumn(GameScreenArea.INPUT_AREA.getScreenPosition().getX() + 2, GameScreenArea.INPUT_AREA.getScreenPosition().getY() + 1, e.getMessage());
                 // print help for consented commands
                 ClientUtil.printHelpCommands(availableActions);
-            } catch (RemoteException | UnReachableServerException e) {
+            } catch (UnReachableServerException e) {
                 System.out.println("Server is down, please connect to another server");
                 availableActions.clear();
                 availableActions.add(TUIActions.HELP);
@@ -116,13 +116,13 @@ public class ClientTUI implements View {
         ClientUtil.printPlayerHand(this.controller.getMainPlayerCards(), cardSide);
     }
 
-    private void quit() throws RemoteException {
+    private void quit() {
         controller.disconnect(controller.getMainPlayerUsername());
 
         System.exit(0);
     }
 
-    private void chooseObjective() throws RemoteException, InvalidGamePhaseException, SuspendedGameException, NumberFormatException {
+    private void chooseObjective() throws InvalidGamePhaseException, SuspendedGameException, NumberFormatException {
         ClientUtil.printCommand("Choose objective idx: ");
         int objectiveIdx = Integer.parseInt(console.nextLine()); // starting from 1
         controller.placeObjectiveCard(objectiveIdx - 1);
@@ -130,7 +130,7 @@ public class ClientTUI implements View {
         ClientUtil.putCursorToInputArea();
     }
 
-    private void setupLobbyPlayerNumber(int size) throws InvalidPlayersNumberException, RemoteException, NumberFormatException {
+    private void setupLobbyPlayerNumber(int size) throws InvalidPlayersNumberException, NumberFormatException {
         controller.setPlayersNumber(size);
         // remove manually: only creator has this command
         availableActions.remove(TUIActions.LOBBYSIZE);
@@ -138,7 +138,7 @@ public class ClientTUI implements View {
         ClientUtil.putCursorToInputArea();
     }
 
-    private void chooseColor() throws InvalidColorException, RemoteException, InvalidGamePhaseException, SuspendedGameException, IllegalArgumentException {
+    private void chooseColor() throws InvalidColorException, InvalidGamePhaseException, SuspendedGameException, IllegalArgumentException {
         ClientUtil.printCommand("Choose color: ");
         PlayerColor color = PlayerColor.valueOf(console.nextLine().toUpperCase());
         controller.chooseColor(color);
@@ -146,7 +146,7 @@ public class ClientTUI implements View {
         ClientUtil.putCursorToInputArea();
     }
 
-    private void sendMessage(String[] command) throws InvalidMessageException, RemoteException, IndexOutOfBoundsException {
+    private void sendMessage(String[] command) throws InvalidMessageException, IndexOutOfBoundsException {
         String commandContent = command[1];
         Message myMessage = command[0].equals("pm") ? createPrivateMessage(commandContent) : createBroadcastMessage(commandContent);
         controller.sendMessage(myMessage);
@@ -166,7 +166,7 @@ public class ClientTUI implements View {
         return new Message(controller.getMainPlayerUsername(), messageContent);
     }
 
-    private void draw() throws InvalidIdForDrawingException, EmptyDeckException, NotExistingFaceUp, RemoteException, InvalidGamePhaseException, SuspendedGameException {
+    private void draw() throws InvalidIdForDrawingException, EmptyDeckException, NotExistingFaceUp, InvalidGamePhaseException, SuspendedGameException {
         ClientUtil.printCommand("Insert the position of the card you want to draw: ");
         int drawFromId = Integer.parseInt(console.nextLine()) - 1;
         controller.draw(drawFromId);
@@ -174,14 +174,14 @@ public class ClientTUI implements View {
         ClientUtil.putCursorToInputArea();
     }
 
-    private void place() throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, RemoteException, InvalidGamePhaseException, SuspendedGameException, InputMismatchException {
+    private void place() throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException, InputMismatchException {
         int handPos = receivePlayerCardPosition();
         Side cardSide = receiveSide();
         Position newCardPos = receivePosition();
         controller.placeCard(handPos, cardSide, newCardPos);
     }
 
-    private void placeStarter() throws RemoteException, InvalidGamePhaseException, SuspendedGameException {
+    private void placeStarter() throws InvalidGamePhaseException, SuspendedGameException {
         Side starterSide = receiveSide();
         controller.placeStarter(starterSide);
 
@@ -256,7 +256,7 @@ public class ClientTUI implements View {
         availableActions.add(TUIActions.SELECTUSERNAME);
     }
 
-    private void selectUsername(String username) throws RemoteException {
+    private void selectUsername(String username) {
         availableActions.remove(TUIActions.SELECTUSERNAME);
         controller.connect(username);
     }

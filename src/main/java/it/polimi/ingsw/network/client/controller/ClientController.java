@@ -58,14 +58,17 @@ public class ClientController implements ClientActions {
     //}
 
     @Override
-    public void connect(String username) throws RemoteException {
-        server.connect(client.getInstanceForTheServer(), username);
-        //client.setName(username);
-        //this.mainPlayerUsername = username;
+    public void connect(String username)  {
+        try {
+            server.connect(client.getInstanceForTheServer(), username);
+        } catch (RemoteException e) {
+            System.err.println(e.getMessage());
+            client.handleUnresponsiveness("server");
+        }
     }
 
     @Override
-    public void placeCard(int cardHandPosition, Side selectedSide, Position position) throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException, RemoteException {
+    public void placeCard(int cardHandPosition, Side selectedSide, Position position) throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException {
 
         if (!game.isGameActive()) {
             throw new SuspendedGameException("The game is suspended, you can only text messages");
@@ -89,11 +92,15 @@ public class ClientController implements ClientActions {
             throw new Playground.UnavailablePositionException("The position selected isn't available");
         }
 
-        server.placeCard(getMainPlayerUsername(), getMainPlayerCard(cardHandPosition).getFrontId(), getMainPlayerCard(cardHandPosition).getBackId(), selectedSide, position);
+        try {
+            server.placeCard(getMainPlayerUsername(), getMainPlayerCard(cardHandPosition).getFrontId(), getMainPlayerCard(cardHandPosition).getBackId(), selectedSide, position);
+        } catch (RemoteException e) {
+            client.handleUnresponsiveness("server");
+        }
     }
 
     @Override
-    public void draw(int IdToDraw) throws InvalidGamePhaseException, EmptyDeckException, NotExistingFaceUp, SuspendedGameException, RemoteException, InvalidIdForDrawingException {
+    public void draw(int IdToDraw) throws InvalidGamePhaseException, EmptyDeckException, NotExistingFaceUp, SuspendedGameException, InvalidIdForDrawingException {
 
         if (IdToDraw > 5 || IdToDraw < 0) {
             throw new InvalidIdForDrawingException();
@@ -147,11 +154,15 @@ public class ClientController implements ClientActions {
                 break;
         }
 
-        server.draw(getMainPlayerUsername(), IdToDraw);
+        try {
+            server.draw(getMainPlayerUsername(), IdToDraw);
+        } catch (RemoteException e) {
+            client.handleUnresponsiveness("server");
+        }
     }
 
     @Override
-    public void placeStarter(Side side) throws SuspendedGameException, RemoteException, InvalidGamePhaseException {
+    public void placeStarter(Side side) throws SuspendedGameException, InvalidGamePhaseException {
 
         if (!game.isGameActive()) {
             throw new SuspendedGameException("The game is suspended, you can only text messages");
@@ -161,11 +172,15 @@ public class ClientController implements ClientActions {
             throw new InvalidGamePhaseException("You can only place your starter card during the setup phase");
         }
 
-        server.placeStarter(getMainPlayerUsername(), side);
+        try {
+            server.placeStarter(getMainPlayerUsername(), side);
+        } catch (RemoteException e) {
+            client.handleUnresponsiveness("server");
+        }
     }
 
     @Override
-    public void chooseColor(PlayerColor color) throws InvalidColorException, SuspendedGameException, RemoteException, InvalidGamePhaseException {
+    public void chooseColor(PlayerColor color) throws InvalidColorException, SuspendedGameException, InvalidGamePhaseException {
 
         if (!game.isGameActive()) {
             throw new SuspendedGameException("The game is suspended, you can only text messages");
@@ -179,12 +194,16 @@ public class ClientController implements ClientActions {
             throw new InvalidColorException("The color selected is already taken");
         }
 
-        server.chooseColor(getMainPlayerUsername(), color);
+        try {
+            server.chooseColor(getMainPlayerUsername(), color);
+        } catch (RemoteException e) {
+            client.handleUnresponsiveness("server");
+        }
 
     }
 
     @Override
-    public void placeObjectiveCard(int chosenObjective) throws SuspendedGameException, RemoteException, InvalidGamePhaseException {
+    public void placeObjectiveCard(int chosenObjective) throws SuspendedGameException, InvalidGamePhaseException {
         if (!game.isGameActive()) {
             throw new SuspendedGameException("The game is suspended, you can only text messages");
         }
@@ -193,11 +212,15 @@ public class ClientController implements ClientActions {
             throw new InvalidGamePhaseException("You can only choose your private objective during the setup phase");
         }
 
-        server.placeObjectiveCard(getMainPlayerUsername(), chosenObjective);
+        try {
+            server.placeObjectiveCard(getMainPlayerUsername(), chosenObjective);
+        } catch (RemoteException e) {
+            client.handleUnresponsiveness("server");
+        }
     }
 
     @Override
-    public void sendMessage(Message message) throws InvalidMessageException, RemoteException {
+    public void sendMessage(Message message) throws InvalidMessageException{
 
         if (!message.getSender().equals(getMainPlayerUsername())) {
             throw new InvalidMessageException("sender doesn't match the author's username");
@@ -206,21 +229,33 @@ public class ClientController implements ClientActions {
             throw new InvalidMessageException("recipient doesn't exists");
         }
 
-        server.sendMessage(message);
+        try {
+            server.sendMessage(message);
+        } catch (RemoteException e) {
+            client.handleUnresponsiveness("server");
+        }
     }
 
     @Override
-    public void setPlayersNumber(int playersNumber) throws RemoteException, InvalidPlayersNumberException {
+    public void setPlayersNumber(int playersNumber) throws InvalidPlayersNumberException {
         if (playersNumber > 4 || playersNumber < 2) {
             throw new InvalidPlayersNumberException();
         }
-        server.setPlayersNumber(mainPlayerUsername, playersNumber);
+        try {
+            server.setPlayersNumber(mainPlayerUsername, playersNumber);
+        } catch (RemoteException e) {
+            client.handleUnresponsiveness("server");
+        }
     }
 
     @Override
-    public void disconnect(String username) throws RemoteException {
+    public void disconnect(String username) {
         if (server != null) {
-            server.disconnect(username);
+            try {
+                server.disconnect(username);
+            } catch (RemoteException ignored) {
+
+            }
         }
     }
 

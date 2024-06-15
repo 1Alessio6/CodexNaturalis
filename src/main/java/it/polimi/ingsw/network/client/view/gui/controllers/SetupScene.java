@@ -21,7 +21,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +62,7 @@ public class SetupScene extends SceneController {
                     try {
                         gui.getController().chooseColor(availableColor);
                         // todo. change with specific report error
-                    } catch (InvalidColorException | RemoteException | InvalidGamePhaseException |
+                    } catch (InvalidColorException | InvalidGamePhaseException |
                              SuspendedGameException e) {
                         throw new RuntimeException(e);
                     }
@@ -97,7 +96,7 @@ public class SetupScene extends SceneController {
                 if (isClicked(mouseEvent, MouseButton.PRIMARY) && !isStarterSelected) {
                     try {
                         gui.getController().placeStarter(starterSide);
-                    } catch (SuspendedGameException | RemoteException | InvalidGamePhaseException e) {
+                    } catch (SuspendedGameException | InvalidGamePhaseException e) {
                         //todo update
                         Alert error = new Alert(Alert.AlertType.ERROR);
                         error.setTitle("place starter has generated an error");
@@ -156,7 +155,7 @@ public class SetupScene extends SceneController {
                 if (isClicked(mouseEvent, MouseButton.PRIMARY) && isStarterSelected && card.isVisible()) {
                     try {
                         gui.getController().placeObjectiveCard(objectiveCardId);
-                    } catch (SuspendedGameException | RemoteException | InvalidGamePhaseException e) {
+                    } catch (SuspendedGameException | InvalidGamePhaseException e) {
                         Alert error = new Alert(Alert.AlertType.ERROR);
                         error.setTitle("Error in placing the objective");
                         error.show();

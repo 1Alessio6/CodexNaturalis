@@ -74,11 +74,6 @@ public class LobbyScene extends SceneController {
         try{
             gui.getController().setPlayersNumber(numberPlayerCatcher.getValue());
         }catch (InvalidPlayersNumberException ignored) {
-        } catch (RemoteException e) {
-            Alert remoteException = new Alert(Alert.AlertType.ERROR);
-            remoteException.setTitle("Server Crashed");
-            remoteException.setContentText("Remote Exception");
-            remoteException.show();
         }
 
         numberPlayerCatcher.setVisible(false);

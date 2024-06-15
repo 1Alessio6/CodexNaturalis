@@ -364,7 +364,7 @@ public class GameScene extends SceneController {
                         try {
                             gui.getController().placeCard(selectedCardHandPosition, playerCardsVisibleSide.get(selectedCardHandPosition), pos);
                         } catch (Playground.UnavailablePositionException | InvalidGamePhaseException |
-                                 SuspendedGameException | Playground.NotEnoughResourcesException | RemoteException e) {
+                                 SuspendedGameException | Playground.NotEnoughResourcesException e) {
                             Alert alert = new Alert(Alert.AlertType.ERROR);
                             alert.setTitle(e.getMessage());
                             alert.setContentText(e.getMessage());
