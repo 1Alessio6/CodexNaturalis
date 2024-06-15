@@ -23,21 +23,12 @@ public class SelectUsernameScene extends SceneController{
     private void connect(KeyEvent event) {
         if(event.getCode() == KeyCode.ENTER){
             try{
+                System.out.println("Trying to connect");
                 gui.getController().connect(usernameCatcher.getText());
+                usernameCatcher.setText("");
             }catch (RemoteException e){
                 //todo add a screen
-            }
-            catch (FullLobbyException e){
-                //todo launch a full lobby screen and then restart from the first one
-            }
-            catch (InvalidUsernameException e){
-                //could be changed with an error scene
-                Alert alreadyTakenUsername = new Alert(Alert.AlertType.ERROR);
-                alreadyTakenUsername.setTitle("Invalid Username");
-                //alreadyTakenUsername.setContentText("Username already taken");
-                alreadyTakenUsername.setContentText("Exception: " + e.getMessage());
-                alreadyTakenUsername.show();
-                usernameCatcher.setText("");
+                System.err.println("RemoteException: " + e.getMessage());
             }
         }
     }
