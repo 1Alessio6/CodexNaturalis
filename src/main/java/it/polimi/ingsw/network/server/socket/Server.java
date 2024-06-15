@@ -39,12 +39,8 @@ public class Server {
         new Server(listenSocket).runServer();
     }
 
-    public boolean connect(ClientHandler client, String username) {
-        boolean status = controller.handleConnection(username, client);
-        if (status) {
-            client.setName(username);
-        }
-        return status;
+    public void connect(ClientHandler client, String username) {
+        controller.handleConnection(username, client);
     }
 
     public void disconnect(String username) {

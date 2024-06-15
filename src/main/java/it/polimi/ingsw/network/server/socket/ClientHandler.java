@@ -57,10 +57,7 @@ public class ClientHandler implements VirtualView {
 
                 switch (type) {
                     case CONNECT:
-                        boolean accepted = server.connect(this, sender);
-                        if (!accepted) {
-                            terminate();
-                        }
+                        server.connect(this, sender);
                         break;
                     case PLACE_STARTER:
                         PlaceStarterMessage placeStarterMessage = gson.fromJson(line, PlaceStarterMessage.class);
