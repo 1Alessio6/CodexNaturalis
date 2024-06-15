@@ -48,7 +48,7 @@ public class ClientController implements ClientActions {
         this.client = client;
     }
 
-    public void configureClient(View view, String ip, String port) throws UnReachableServerException {
+    public void configureClient(View view, String ip, Integer port) throws UnReachableServerException {
         client.configure(this, view);
         server = client.bindServer(ip, port);
     }

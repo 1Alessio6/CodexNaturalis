@@ -31,7 +31,7 @@ public class ClientRMI extends Client {
     }
 
     @Override
-    public VirtualServer bindServer(String ip, String port) throws UnReachableServerException {
+    public VirtualServer bindServer(String ip, Integer port) throws UnReachableServerException {
         String serverName = ServerRMI.getServerName();
         try {
             Registry registry = LocateRegistry.getRegistry(ip, Integer.parseInt(port));

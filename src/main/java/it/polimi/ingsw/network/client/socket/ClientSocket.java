@@ -57,7 +57,7 @@ public class ClientSocket extends Client implements VirtualView {
     }
 
     @Override
-    public VirtualServer bindServer(String ip, String port) throws UnReachableServerException {
+    public VirtualServer bindServer(String ip, Integer port) throws UnReachableServerException {
         System.out.println("Trying to connect to ip " + ip + " at port " + port);
         try {
             this.socket = new Socket(ip, Integer.parseInt(port));

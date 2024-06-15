@@ -37,7 +37,7 @@ public abstract class Client implements VirtualView {
 
     public abstract VirtualView getInstanceForTheServer() throws RemoteException;
 
-    public abstract VirtualServer bindServer(String ip, String port) throws UnReachableServerException;
+    public abstract VirtualServer bindServer(String ip, Integer port) throws UnReachableServerException;
 
     public ClientController getController() {
         return controller;
