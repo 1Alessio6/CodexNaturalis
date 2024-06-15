@@ -159,7 +159,7 @@ public class ClientRMI extends Client {
 
     @Override
     public void reportError(String details) throws RemoteException {
-        System.err.println(details);
+        clientView.reportError(details);
     }
 
     @Override
