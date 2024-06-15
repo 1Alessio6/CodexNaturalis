@@ -26,6 +26,7 @@ import java.util.Map;
 
 public class ClientRMI extends Client {
     private HeartBeat heartBeat;
+    private VirtualView stub;
 
     public ClientRMI() {
     }
@@ -34,7 +35,7 @@ public class ClientRMI extends Client {
     public VirtualServer bindServer(String ip, Integer port) throws UnReachableServerException {
         String serverName = ServerRMI.getServerName();
         try {
-            Registry registry = LocateRegistry.getRegistry(ip, Integer.parseInt(port));
+            Registry registry = LocateRegistry.getRegistry(ip, port);
             VirtualServer server = (VirtualServer) registry.lookup(serverName);
             heartBeat = new HeartBeat(this, name, server, "server");
             return server;
@@ -45,7 +46,10 @@ public class ClientRMI extends Client {
 
     @Override
     public VirtualView getInstanceForTheServer() throws RemoteException {
-        return (VirtualView) UnicastRemoteObject.exportObject(this, 0);
+        if (stub == null) {
+            stub = (VirtualView) UnicastRemoteObject.exportObject(this, 0);
+        }
+        return stub;
     }
 
     @Override
