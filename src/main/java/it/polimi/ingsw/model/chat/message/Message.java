@@ -29,6 +29,10 @@ public class Message implements Serializable {
         return isBroadcast;
     }
 
+    public static String getNameForGroup() {
+        return NAME_FOR_GROUP;
+    }
+
     private static void checkMessageInfo(String sender, String receiver, String content) throws InvalidMessageException {
         if (sender == null) {
             throw new InvalidMessageException("sender" + " has not been specified");
