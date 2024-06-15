@@ -41,17 +41,21 @@ public class ClientTUI implements View {
 
         availableActions.add(TUIActions.HELP);
         availableActions.add(TUIActions.QUIT);
+        availableActions.add(TUIActions.CONNECT);
+        //availableActions.add(TUIActions.SELECTUSERNAME);
     }
 
     private void parseGameCommands() {
         // TODO: command condition should be changed
         while (console.hasNextLine()) {
             // split command with spaces and analyze the first word
-            String[] nextCommand = console.nextLine().toLowerCase().split(" ", 2);
+            String[] nextCommand = console.nextLine().toLowerCase().split(" ", 3);
 
             try {
                 if (availableActions.contains(TUIActions.valueOf(nextCommand[0].toUpperCase()))) {
                     switch (TUIActions.valueOf(nextCommand[0].toUpperCase())) {
+                        case CONNECT -> connect(nextCommand[1], Integer.parseInt(nextCommand[2]));
+                        case SELECTUSERNAME -> selectUsername(nextCommand[1]);
                         case BACK -> goBack();
                         case COLOR -> chooseColor();
                         case FLIP -> flip();
@@ -72,12 +76,18 @@ public class ClientTUI implements View {
                     ClientUtil.printHelpCommands(availableActions);
                 }
             } catch (IllegalArgumentException | IndexOutOfBoundsException | InvalidPlayersNumberException |
-                     RemoteException | InvalidMessageException | InvalidIdForDrawingException | EmptyDeckException |
+                     InvalidMessageException | InvalidIdForDrawingException | EmptyDeckException |
                      InvalidColorException | NotExistingFaceUp | Playground.UnavailablePositionException |
                      Playground.NotEnoughResourcesException | InvalidGamePhaseException | SuspendedGameException e) {
-                ClientUtil.printToLineColumn(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+2,GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1,e.getMessage());
+                ClientUtil.printToLineColumn(GameScreenArea.INPUT_AREA.getScreenPosition().getX() + 2, GameScreenArea.INPUT_AREA.getScreenPosition().getY() + 1, e.getMessage());
                 // print help for consented commands
                 ClientUtil.printHelpCommands(availableActions);
+            } catch (RemoteException | UnReachableServerException e) {
+                System.out.println("Server is down, please connect to another server");
+                availableActions.clear();
+                availableActions.add(TUIActions.HELP);
+                availableActions.add(TUIActions.QUIT);
+                availableActions.add(TUIActions.CONNECT);
             } finally {
                 ClientUtil.putCursorToInputArea();
             }
@@ -209,20 +219,46 @@ public class ClientTUI implements View {
         ClientUtil.putCursorToInputArea();
     }
 
-    private void getInfoForConnection() {
-        System.out.println("Insert the ip of the server (empty for localhost)");
-        String ip = console.nextLine();
-        System.out.println("Insert the port of the server");
-        String port = console.nextLine();
-        try {
-            if (ip.isEmpty()) {
-                ip = "127.0.0.1";
-            }
-            controller.configureClient(this, ip, port);
-        } catch(UnReachableServerException e) {
-            System.err.println("Error during connection to the server: " + e.getMessage());
-            System.exit(1);
-        }
+    //private void getInfoForConnection() {
+    //    System.out.println("Insert the ip of the server (empty for localhost)");
+    //    String ip = console.nextLine();
+    //    System.out.println("Insert the port of the server");
+    //    String port = console.nextLine();
+    //    try {
+    //        if (ip.isEmpty()) {
+    //            ip = "127.0.0.1";
+    //        }
+    //        controller.configureClient(this, ip, port);
+    //    } catch(UnReachableServerException e) {
+    //        System.err.println("Error during connection to the server: " + e.getMessage());
+    //        System.exit(1);
+    //    }
+    //}
+
+    //private void getUsername() {
+    //    while (true) {
+    //        try {
+    //            System.out.print("Insert username: ");
+    //            String username = console.nextLine();
+    //            controller.connect(username);
+    //            break;
+    //        } catch (RemoteException e) {
+    //            System.err.println(e.getMessage());
+    //            break;
+    //        }
+    //    }
+    //}
+
+    private void connect(String ip, Integer port) throws UnReachableServerException {
+        controller.configureClient(this, ip, port);
+        availableActions.remove(TUIActions.CONNECT);
+        System.out.println("Insert your username: type <selectusername> <your username>");
+        availableActions.add(TUIActions.SELECTUSERNAME);
+    }
+
+    private void selectUsername(String username) throws RemoteException {
+        availableActions.remove(TUIActions.SELECTUSERNAME);
+        controller.connect(username);
     }
 
     /**
@@ -231,17 +267,18 @@ public class ClientTUI implements View {
      */
     @Override
     public void runView() {
-        getInfoForConnection();
-        while(true) {
-            try {
-                System.out.print("Insert username: ");
-                String username = console.nextLine();
-                controller.connect(username);
-                break;
-            } catch(InvalidUsernameException | FullLobbyException | RemoteException e){
-                System.err.println(e.getMessage());
-            }
-        }
+        System.out.println("Welcome. To play connect to the server: type connect <ip> <port>");
+        //getUsername();
+        //while(true) {
+        //    try {
+        //        System.out.print("Insert username: ");
+        //        String username = console.nextLine();
+        //        controller.connect(username);
+        //        break;
+        //    } catch(RemoteException e){
+        //        System.err.println(e.getMessage());
+        //    }
+        //}
         // todo: synchronize to have correct command list
         new Thread(this::parseGameCommands).start();
     }

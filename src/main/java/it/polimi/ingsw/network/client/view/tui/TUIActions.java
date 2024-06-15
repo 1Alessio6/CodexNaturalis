@@ -1,6 +1,8 @@
 package it.polimi.ingsw.network.client.view.tui;
 
 public enum TUIActions {
+    CONNECT("enter the server ip and port in the format <ip> <port>"),
+    SELECTUSERNAME("select your username"),
     BACK("go back at your playground"),
     COLOR("choose color"),
     DRAW("draw a card"),
