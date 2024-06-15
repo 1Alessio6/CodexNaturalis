@@ -66,7 +66,7 @@ public class Controller implements EventListener, GameRequest {
         boolean isAccepted;
         if (!validUsername(username)) {
             try {
-                user.reportError(new InvalidUsernameException().getMessage());
+                user.resultOfLogin(false, username);
                 isAccepted = false;
             } catch (RemoteException remoteException) {
                 System.err.println("Connection error");
@@ -108,14 +108,21 @@ public class Controller implements EventListener, GameRequest {
                 removeExceedingPlayers();
             }
             isJoined = true;
-        } catch (InvalidUsernameException | FullLobbyException e) {
+        } catch (FullLobbyException e) {
             try {
                 lobbyListener.reportError(e.getMessage());
                 isJoined = false;
             } catch (RemoteException remoteException) {
-                System.err.println("Connection error");
+                System.err.println("Connection error: " + remoteException.getMessage());
                 isJoined = false;
             }
+        } catch (InvalidUsernameException e) {
+            try {
+                lobbyListener.resultOfLogin(false, username);
+            } catch (RemoteException remoteException) {
+                System.err.println("Connection error: " + remoteException.getMessage());
+            }
+            isJoined = false;
         }
         return isJoined;
     }
@@ -125,7 +132,7 @@ public class Controller implements EventListener, GameRequest {
             game.add(username, gameListener);
         } catch (InvalidUsernameException e) {
             try {
-                gameListener.reportError(e.getMessage());
+                gameListener.resultOfLogin(false, username);
                 return false;
             } catch (RemoteException remoteException) {
                 System.err.println("Connection error");

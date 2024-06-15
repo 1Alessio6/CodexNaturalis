@@ -252,6 +252,8 @@ public class Game {
 
         setNetworkStatus(username, true);
 
+        listenerHandler.notify(username, receiver -> receiver.resultOfLogin(true, username));
+
         //   System.out.println("Notify the game representation.\tIsActive = " + isActive);
         ClientGame clientRepresentationOfTheGame = new ClientGame(this);
         listenerHandler.notify(username, receiver -> receiver.updateAfterConnection(clientRepresentationOfTheGame));

@@ -59,6 +59,8 @@ public class Lobby {
 
         listenerHandler.add(username, listener);
 
+        listenerHandler.notify(username, receiver -> receiver.resultOfLogin(true, username));
+
         if (creator == null) {
             creator = username;
             listenerHandler.notify(creator, VirtualView::updateCreator);
