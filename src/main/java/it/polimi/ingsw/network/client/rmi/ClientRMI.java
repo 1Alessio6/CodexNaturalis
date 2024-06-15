@@ -162,10 +162,14 @@ public class ClientRMI extends Client {
         clientView.reportError(details);
     }
 
+    // synchronized because two threads may invoke the method: the client controller and the heartbeat
     @Override
-    public void handleUnresponsiveness(String unresponsiveListener) {
-        clientView.showServerCrash();
-        System.exit(1);
+    public synchronized void handleUnresponsiveness(String unresponsiveListener) {
+        if (heartBeat.isActive()) {
+            clientView.showServerCrash();
+            heartBeat.terminate();
+            clientView.showServerCrash();
+        }
     }
 
     @Override

@@ -16,6 +16,7 @@ public class HeartBeat extends TimerTask {
     private final Timer timer;
     private AtomicInteger mostRecentReceivedId;
     private Integer lastSentId;
+    private boolean isActive;
 
 
     public HeartBeat(HeartBeatHandler heartBeatHandler, String handlerName, HeartBeatListener heartBeatListener, String listenerName) {
@@ -28,6 +29,7 @@ public class HeartBeat extends TimerTask {
         this.delay = 0;
         this.lastSentId = 0;
         timer = new Timer();
+        isActive = true;
     }
 
     public synchronized void setHeartBeatPeriod(int heartBeatPeriod) {
@@ -46,6 +48,7 @@ public class HeartBeat extends TimerTask {
     }
 
     public synchronized void startHeartBeat() {
+        isActive = true;
         timer.scheduleAtFixedRate(this, delay, heartBeatPeriod);
     }
 
@@ -56,7 +59,6 @@ public class HeartBeat extends TimerTask {
 
     public void registerMessage(HeartBeatMessage pong) {
         mostRecentReceivedId.set(pong.getId());
-        //System.out.println("Most recent ping id is " + mostRecentReceivedId);
     }
 
     @Override
@@ -70,22 +72,18 @@ public class HeartBeat extends TimerTask {
                 heartBeatListener.receivePing(ping);
             } catch (RemoteException e) {
                 System.err.println("Remote exception in Heartbeat: the listener has disconnected for this reason: " + e.getMessage());
-                try {
-                    heartBeatHandler.handleUnresponsiveness(listenerName);
-                } catch (RemoteException ignored) {
-                    System.err.println("Exception should not be thrown: heart beat handler is local");
-                }
+                heartBeatHandler.handleUnresponsiveness(listenerName);
             }
         } else {
-            try {
-                heartBeatHandler.handleUnresponsiveness(listenerName);
-            } catch (RemoteException ignored) {
-                System.err.println("Exception should not be thrown: heart beat handler is local");
-            }
+            heartBeatHandler.handleUnresponsiveness(listenerName);
         }
     }
 
     public synchronized void terminate() {
         timer.cancel();
+    }
+
+    public synchronized boolean isActive() {
+        return isActive;
     }
 }

@@ -210,13 +210,12 @@ public class ClientSocket extends Client implements VirtualView, HeartBeatHandle
 
     @Override
     public void handleUnresponsiveness(String unresponsiveListener) {
-        System.err.println("Server doesn't respond to ping, I'll assume is inactive");
-        if (clientView != null) {
+        if (heartBeat.isActive()) {
+            System.err.println("Server doesn't respond to ping, I'll assume is inactive");
             clientView.showServerCrash();
+            heartBeat.terminate();
+            closeResources();
         }
-        closeResources();
-        heartBeat.terminate();
-        System.exit(1);
     }
 
     @Override
