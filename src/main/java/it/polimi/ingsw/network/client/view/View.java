@@ -26,6 +26,8 @@ public interface View {
 
     void showUpdateAfterLobbyCrash();
 
+    void showInvalidLogin();
+
     void showUpdateAfterConnection();
 
     void showUpdatePlayerStatus();

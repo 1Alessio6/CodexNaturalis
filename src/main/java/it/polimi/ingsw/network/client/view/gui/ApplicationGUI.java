@@ -113,6 +113,11 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
     }
 
     @Override
+    public void showInvalidLogin() {
+       reportError("Invalid username");
+    }
+
+    @Override
     public void showUpdateAfterConnection() {
         Platform.runLater(() -> {
             if (currentScene == SceneType.LOBBY) {
@@ -221,6 +226,16 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     }
 
+    @Override
+    public void reportError(String details) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("ERROR");
+            alert.setContentText(details);
+            alert.show();
+        });
+    }
+
     public ClientController getController() {
         return controller;
     }
@@ -256,7 +271,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
             try {
                 controller.disconnect(controller.getMainPlayerUsername());
             } catch (RemoteException ignored) {
-
+                System.out.println("disconnection after the server crashed");
             }
             System.exit(0);
         });

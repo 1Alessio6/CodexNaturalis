@@ -336,6 +336,12 @@ public class ClientTUI implements View {
     }
 
     @Override
+    public void showInvalidLogin() {
+        System.out.println("Invalid username! Please insert a new username with the command <selectusername> <your name>");
+        availableActions.add(TUIActions.SELECTUSERNAME);
+    }
+
+    @Override
     public void showUpdateAfterConnection() {
         ClientUtil.clearScreen();
         setAvailableActions();
