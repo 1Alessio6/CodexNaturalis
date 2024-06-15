@@ -9,7 +9,6 @@ import it.polimi.ingsw.network.client.model.ClientGame;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
-import it.polimi.ingsw.network.heartbeat.HeartBeatHandler;
 import it.polimi.ingsw.network.heartbeat.HeartBeatListener;
 
 import java.rmi.Remote;
@@ -20,7 +19,7 @@ import java.util.*;
 This class defines a "virtual client" and represent the means with which the client interacts with the server.
 Follow the observer design pattern
  */
-public interface VirtualView extends HeartBeatListener, HeartBeatHandler, Remote {
+public interface VirtualView extends HeartBeatListener, Remote {
     void updateCreator() throws RemoteException;
 
     void updateAfterLobbyCrash() throws RemoteException;

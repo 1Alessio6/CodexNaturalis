@@ -16,6 +16,7 @@ import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 import it.polimi.ingsw.network.heartbeat.HeartBeat;
+import it.polimi.ingsw.network.heartbeat.HeartBeatHandler;
 import it.polimi.ingsw.network.heartbeat.HeartBeatMessage;
 
 import java.io.BufferedReader;
@@ -28,7 +29,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 
-public class ClientSocket extends Client implements VirtualView {
+public class ClientSocket extends Client implements VirtualView, HeartBeatHandler {
     private Socket socket;
     private PrintWriter out;
     private BufferedReader in;

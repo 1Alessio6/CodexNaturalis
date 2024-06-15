@@ -4,6 +4,6 @@ import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface HeartBeatHandler extends Remote {
-    void handleUnresponsiveness(String unresponsiveListener) throws RemoteException;
+public interface HeartBeatHandler {
+    void handleUnresponsiveness(String unresponsiveListener) ;
 }

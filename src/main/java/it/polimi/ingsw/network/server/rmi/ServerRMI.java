@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.heartbeat.HeartBeat;
+import it.polimi.ingsw.network.heartbeat.HeartBeatHandler;
 import it.polimi.ingsw.network.heartbeat.HeartBeatMessage;
 
 import java.rmi.AlreadyBoundException;
@@ -17,7 +18,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
-public class ServerRMI implements VirtualServer {
+public class ServerRMI implements VirtualServer, HeartBeatHandler {
     private final Controller myController;
     private final static String SERVER_NAME = "ServerRmi";
     private final Object lockOnClientsNetworkStatus;
@@ -41,7 +42,7 @@ public class ServerRMI implements VirtualServer {
         try {
             stub = (VirtualServer) UnicastRemoteObject.exportObject(myServer, port);
         } catch (RemoteException e) {
-            System.err.println("Export failed");
+            System.err.println("Export failed: " + e.getMessage());
             System.exit(1);
         }
 
@@ -133,7 +134,7 @@ public class ServerRMI implements VirtualServer {
     }
 
     @Override
-    public void handleUnresponsiveness(String unresponsiveListener) throws RemoteException {
+    public void handleUnresponsiveness(String unresponsiveListener) {
         System.err.println("Client " + unresponsiveListener + " has crashed");
         synchronized (lockOnClientsNetworkStatus) {
             handleDisconnection(unresponsiveListener);

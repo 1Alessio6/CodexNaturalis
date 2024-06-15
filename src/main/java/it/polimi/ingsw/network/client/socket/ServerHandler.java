@@ -211,11 +211,9 @@ public class ServerHandler implements VirtualServer {
         out.close();
     }
 
-    @Override
-    public void handleUnresponsiveness(String unresponsiveListener) {
-        //System.err.println("Server doesn't respond to ping, I'll assume is inactive");
-        //closeResources();
-    }
+    //@Override
+    //public void handleUnresponsiveness(String unresponsiveListener) {
+    //}
 
     @Override
     public void receivePing(HeartBeatMessage ping) throws RemoteException {

@@ -4,10 +4,11 @@ import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.view.View;
+import it.polimi.ingsw.network.heartbeat.HeartBeatHandler;
 
 import java.rmi.RemoteException;
 
-public abstract class Client implements VirtualView {
+public abstract class Client implements VirtualView, HeartBeatHandler {
     protected ClientController controller;
     protected View clientView;
 
