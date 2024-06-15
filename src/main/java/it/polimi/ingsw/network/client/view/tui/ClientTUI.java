@@ -641,9 +641,9 @@ public class ClientTUI implements View {
         ClientUtil.printScoreboard(this.controller.getPlayers());
         boolean isActive = controller.isGameActive();
         if (isActive) {
-            ClientUtil.printCommand("\u001B[1m GAME IS NOW ACTIVE \u001B[0m\n");
+            ClientUtil.printCommand(" GAME IS NOW ACTIVE \n");
         } else {
-            ClientUtil.printCommand("\u001B[1m SUSPENDED GAME \u001B[0m\n");
+            ClientUtil.printCommand(" SUSPENDED GAME \n");
         }
         ClientUtil.putCursorToInputArea();
 
@@ -655,9 +655,9 @@ public class ClientTUI implements View {
      */
     @Override
     public void showWinners(List<String> winners) {
-        ClientUtil.printCommand("\u001B[1m\u001B[5m" + "Winners\n" + "\u001B[0m\u001B[5m");
+        ClientUtil.printCommand("Winners\n");
         for (String i : winners) {
-            ClientUtil.printCommand("\u001B[3m" + i + "\u001B[0m\n");
+            ClientUtil.printCommand(i + "\n");
         }
 
     }
