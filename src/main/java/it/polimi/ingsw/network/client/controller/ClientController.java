@@ -413,7 +413,7 @@ public class ClientController implements ClientActions {
         return game.getPlaygroundByUsername(username);
     }
 
-    public ClientObjectiveCard getMainPlayerObjectiveCard() {
+    public synchronized ClientObjectiveCard getMainPlayerObjectiveCard() {
         return getMainPlayer().getObjectiveCards().getFirst();
     }
 
