@@ -80,6 +80,7 @@ public class HeartBeat extends TimerTask {
     }
 
     public synchronized void terminate() {
+        isActive = false;
         timer.cancel();
     }
 
