@@ -45,6 +45,10 @@ public class ServerHandler implements VirtualServer {
                 Type type = message.getNetworkType();
 
                 switch (type) {
+                    case RESULT_OF_LOGIN:
+                        ResultOfLogin resultOfLogin = gson.fromJson(line, ResultOfLogin.class);
+                        clientSocket.resultOfLogin(resultOfLogin.getAccepted(), resultOfLogin.getSender());
+                        break;
                     case UPDATE_CREATOR:
                         clientSocket.updateCreator();
                         break;

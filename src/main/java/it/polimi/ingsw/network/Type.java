@@ -29,4 +29,5 @@ public enum Type {
     SEND_CHAT_MESSAGE,
     SET_PLAYER_NUMBER,
     DISCONNECT,
+    RESULT_OF_LOGIN
 }
