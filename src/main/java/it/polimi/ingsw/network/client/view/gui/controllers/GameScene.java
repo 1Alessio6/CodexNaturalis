@@ -108,28 +108,37 @@ public class GameScene extends SceneController {
 
     private void appendMessage(Message m) {
         ClientController controller = gui.getController();
-        String senderName = m.getSender();
-        Text sender = new Text(m.getSender());
-        sender.setStyle("-fx-fill: "
-                +
-                PlayerColor.conversionToCssStyle.get(controller.getPlayer(senderName).getColor())
-        );
-        Text recipient = new Text(m.getRecipient());
-        String recipientName = m.getRecipient();
-        if (!recipientName.equals("Everyone")) {
-            recipient.setStyle("-fx-fill:"
+        String myName = controller.getMainPlayerUsername();
+        String preposition;
+        String user;
+        String sender = m.getSender();
+        String recipient = m.getRecipient();
+        if (sender.equals(myName)) {
+            preposition = "to";
+            user = recipient;
+        } else {
+            preposition = "from";
+            user = sender;
+        }
+        Text userText = new Text(user);
+        if (!user.equals(Message.getNameForGroup())) {
+            userText.setStyle("-fx-fill:"
                     +
-                    PlayerColor.conversionToCssStyle.get(controller.getPlayer(recipientName).getColor())
+                    PlayerColor.conversionToCssStyle.get(controller.getPlayer(user).getColor())
             );
         }
         Text content = new Text(": " + m.getContent() + "\n\n");
-        sentMessages.getChildren().addAll(sender, new Text(" to "), recipient, content);
+        sentMessages.getChildren().addAll(new Text(preposition + " "), userText, content);
     }
 
     private void initializeChat() {
-        recipients.getItems().addAll(gui.getController().getUsernames());
-        recipients.getItems().add("Everyone");
-        chat = new Chat(gui.getController().getMainPlayerUsername());
+        ClientController controller = gui.getController();
+        List<String> usernames = new ArrayList<>(controller.getUsernames());
+        String myName = controller.getMainPlayerUsername();
+        usernames.remove(myName);
+        usernames.add("Everyone");
+        recipients.getItems().addAll(usernames);
+        chat = new Chat(myName);
         for (Message m : gui.getController().getMessages()) {
             if (isReferringToMe(m)) {
                 appendMessage(m);
