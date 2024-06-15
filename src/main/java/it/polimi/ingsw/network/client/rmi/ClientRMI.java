@@ -37,7 +37,7 @@ public class ClientRMI extends Client {
         try {
             Registry registry = LocateRegistry.getRegistry(ip, port);
             VirtualServer server = (VirtualServer) registry.lookup(serverName);
-            heartBeat = new HeartBeat(this, name, server, "server");
+            heartBeat = new HeartBeat(this, "unknown", server, "server");
             return server;
         } catch (RemoteException | NotBoundException e) {
             throw new UnReachableServerException(e.getMessage());
