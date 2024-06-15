@@ -46,11 +46,18 @@ public class ConnectionScene extends SceneController{
         String port = portField.getText();
         ClientController controller = gui.getController();
         try {
-            controller.configureClient(gui, ip, port);
+            controller.configureClient(gui, ip, Integer.parseInt(port));
             gui.showSelectUsername();
         } catch(UnReachableServerException e) {
             Alert serverAlert = new Alert(Alert.AlertType.ERROR);
             serverAlert.setTitle("Unable to connect to the server");
+            serverAlert.setContentText("Exception: " + e.getMessage());
+            serverAlert.show();
+            ipField.setText("");
+            portField.setText("");
+        } catch (NumberFormatException e) {
+            Alert serverAlert = new Alert(Alert.AlertType.ERROR);
+            serverAlert.setTitle("Invalid IP + Port");
             serverAlert.setContentText("Exception: " + e.getMessage());
             serverAlert.show();
             ipField.setText("");
