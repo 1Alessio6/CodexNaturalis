@@ -414,7 +414,7 @@ public class ClientTUI implements View {
                         availableActions.add(TUIActions.STARTER);
                     } else if (controller.getMainColor() == null) {
                         availableActions.add(TUIActions.COLOR);
-                    } else {
+                    } else if(controller.getMainPlayer().getObjectiveCards().size()!=1){
                         availableActions.add(TUIActions.OBJECTIVE);
                     }
                 }
