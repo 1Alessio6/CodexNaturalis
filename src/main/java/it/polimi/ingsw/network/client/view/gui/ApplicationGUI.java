@@ -58,7 +58,6 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         // todo. change scene to the one that requires ip/port
         loadScene(SceneType.CONNECTION);
         this.primaryStage.setTitle("Codex Naturalis");
-        this.primaryStage.show();
     }
 
     @Override
