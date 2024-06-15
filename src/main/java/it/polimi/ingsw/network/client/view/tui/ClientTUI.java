@@ -492,4 +492,9 @@ public class ClientTUI implements View {
 
     }
 
+    @Override
+    public void reportError(String details) {
+        ClientUtil.printCommand("Error: " + details);
+    }
+
 }
