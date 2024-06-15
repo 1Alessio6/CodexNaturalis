@@ -197,8 +197,14 @@ public class ClientSocket extends Client implements VirtualView {
     }
 
     @Override
-    public void setName(String name) throws RemoteException {
-        super.name = name;
+    public void resultOfLogin(boolean accepted, String username) throws RemoteException {
+        if (accepted) {
+            controller.setMainPlayerUsername(username);
+            heartBeat.setHandlerName(username);
+           // heartBeat.startHeartBeat();
+        } else {
+            clientView.showInvalidLogin();
+        }
     }
 
     @Override

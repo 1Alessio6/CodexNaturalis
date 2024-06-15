@@ -228,8 +228,14 @@ public class ClientHandler implements VirtualView {
     }
 
     @Override
-    public void setName(String name) {
-        this.username = name;
+    public void resultOfLogin(boolean accepted, String username) throws RemoteException {
+        if (accepted) {
+            this.username = username;
+        }
+        ResultOfLogin message = new ResultOfLogin(accepted, username);
+        String jsonMessage = gson.toJson(message);
+        out.println(jsonMessage);
+        out.flush();
     }
 
     @Override

@@ -55,10 +55,14 @@ public class ClientRMI extends Client {
     }
 
     @Override
-    public void setName(String name) {
-        this.name = name;
-        heartBeat.setHandlerName(name);
-        heartBeat.startHeartBeat();
+    public void resultOfLogin(boolean accepted, String username) throws RemoteException {
+        if (accepted) {
+            controller.setMainPlayerUsername(username);
+            heartBeat.setHandlerName(username);
+            heartBeat.startHeartBeat();
+        } else {
+            clientView.showInvalidLogin();
+        }
     }
 
     @Override
