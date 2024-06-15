@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -16,16 +17,22 @@ import java.util.List;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
 
-public class EndScene extends SceneController{
+public class EndScene extends SceneController {
+
+    @FXML
+    private Pane mainPane;
+
     @FXML
     private VBox winnersPane;
 
     @FXML
     private Button buttonForStartANewGame;
 
-    public EndScene(){}
+    public EndScene() {
+    }
 
     public void initialize() {
+        mainPane.setBackground(createMainBackground());
         winnersPane.setAlignment(Pos.TOP_CENTER);
     }
 

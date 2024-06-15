@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane prefHeight="755" prefWidth="1325" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.network.client.view.gui.controllers.LobbyScene">
+<Pane fx:id="mainPane" prefHeight="755" prefWidth="1325" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.network.client.view.gui.controllers.LobbyScene">
     <children>
     <TextArea fx:id="connectedPlayers" editable="false" layoutX="580.0" layoutY="251.0" prefHeight="200.0" prefWidth="200.0"  />
     <Text layoutX="580.0" layoutY="226.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Players connected to the lobby:" />

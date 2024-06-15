@@ -1,5 +1,9 @@
-package it.polimi.ingsw.network.client;
+package it.polimi.ingsw.network.client.view.tui;
 
+import it.polimi.ingsw.network.client.Client;
+import it.polimi.ingsw.network.client.ClientApplication;
+import it.polimi.ingsw.network.client.ClientMain;
+import it.polimi.ingsw.network.client.UnReachableServerException;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.view.tui.ClientTUI;
 

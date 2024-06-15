@@ -18,13 +18,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.Alert;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.createMainBackground;
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.isClicked;
 
 public class SetupScene extends SceneController {
@@ -80,6 +81,7 @@ public class SetupScene extends SceneController {
     public void initialize() {
         isStarterSelected = false;
         text.setText("Choose your starter");
+        mainPane.setBackground(createMainBackground());
     }
 
     @Override

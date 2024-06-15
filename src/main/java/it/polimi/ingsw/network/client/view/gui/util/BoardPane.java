@@ -4,10 +4,14 @@ import it.polimi.ingsw.model.Deck.DeckType;
 import it.polimi.ingsw.network.client.model.board.ClientBoard;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
+import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
+import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 
 import java.util.ArrayList;
@@ -21,16 +25,20 @@ public class BoardPane {
     private Pane boardMainPane;
     private Rectangle goldenDeckTopCard;
     private Rectangle resourceDeckTopCard;
-
     private final List<Rectangle> goldenFaceUp;
 
+    private final Pane commonObjectivePane;
     private final List<Rectangle> resourceFaceUp;
 
     public BoardPane(ClientBoard clientBoard) {
+
+        commonObjectivePane = new Pane();
+        commonObjectivePane.setPrefSize(295,120);
+
         goldenFaceUp = new ArrayList<>();
         resourceFaceUp = new ArrayList<>();
         boardMainPane = new Pane();
-        boardMainPane.setPrefSize(295, 450);
+        boardMainPane.setPrefSize(295, 500);
         boardMainPane.setLayoutX(24);
         boardMainPane.setLayoutY(217);
 
@@ -44,6 +52,8 @@ public class BoardPane {
         boardMainPane.getChildren().add(resourceDeckTopCard);
         boardMainPane.setBackground(setBackgroundColor("#EEE5BC"));
         initializeBoardCardsPosition(34, 11);
+        initializeCommonObjective(clientBoard.getCommonObjectives());
+        boardMainPane.getChildren().add(commonObjectivePane);
 
     }
 
@@ -104,6 +114,28 @@ public class BoardPane {
         } else {
             resourceDeckTopCard = createBoardRectangle();
             resourceDeckTopCard.setFill(new ImagePattern(new Image(face.getPath())));
+        }
+    }
+
+    private void initializeCommonObjective(List<ClientObjectiveCard> commonObjectives){
+        commonObjectivePane.setLayoutY(383.5);
+
+        Text commonObjectiveTitle = new Text();
+        commonObjectiveTitle.setFont(new Font(GUIUtil.Font,15));
+        commonObjectiveTitle.setLayoutY(2);
+        commonObjectiveTitle.setLayoutX(70);
+        commonObjectiveTitle.setText("COMMON OBJECTIVE");
+        commonObjectivePane.getChildren().add(commonObjectiveTitle);
+
+        double layoutX = 20;
+
+        for(ClientObjectiveCard clientObjectiveCard : commonObjectives){
+            Rectangle card = createBoardRectangle();
+            card.setFill(pathToImage(clientObjectiveCard.getPath()));
+            card.setLayoutX(layoutX);
+            card.setLayoutY(29.5);
+            layoutX = updateLayoutX(layoutX,11);
+            commonObjectivePane.getChildren().add(card);
         }
     }
 

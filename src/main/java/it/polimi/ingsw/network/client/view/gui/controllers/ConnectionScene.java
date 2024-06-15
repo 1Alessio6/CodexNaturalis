@@ -8,10 +8,16 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
 
 import java.awt.event.MouseEvent;
 
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.createMainBackground;
+
 public class ConnectionScene extends SceneController{
+
+    @FXML
+    private Pane mainPane;
     @FXML
     private TextField ipField;
 
@@ -33,6 +39,12 @@ public class ConnectionScene extends SceneController{
     //
     //@FXML
     //private void enterThePort()
+
+
+    @Override
+    public void initialize() {
+        mainPane.setBackground(createMainBackground());
+    }
 
     @FXML
     private void exitTheGame() {

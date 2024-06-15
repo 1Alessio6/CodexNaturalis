@@ -193,7 +193,7 @@ public class ClientSocket extends Client implements VirtualView {
 
     @Override
     public void reportError(String details) {
-        System.err.println(details);
+        clientView.reportError(details);
     }
 
     @Override

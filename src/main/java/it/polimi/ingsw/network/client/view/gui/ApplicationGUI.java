@@ -109,6 +109,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
             loadScene(SceneType.CRASH);
             //todo set crash message
             currentScene = SceneType.CRASH;
+            ((CrashScene)currentSceneController).setLobbyFullMessage();
         });
     }
 
@@ -117,6 +118,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
        reportError("Invalid username");
     }
 
+    //todo fix bug after multiple cards in hand after a connection after a crash
     @Override
     public void showUpdateAfterConnection() {
         Platform.runLater(() -> {

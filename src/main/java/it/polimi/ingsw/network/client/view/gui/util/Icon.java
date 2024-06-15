@@ -16,9 +16,11 @@ public enum Icon {
 
     THIRD("/gui/png/icons/third-place.png"),
 
-    FOURTH("/gui/png/icons/fourth-place.png");
+    FOURTH("/gui/png/icons/fourth-place.png"),
 
+    RETURN("/gui/png/icons/return-to-menu.png"),
 
+    SERVER("/gui/png/icons/server.png");
 
     private final String path;
 
