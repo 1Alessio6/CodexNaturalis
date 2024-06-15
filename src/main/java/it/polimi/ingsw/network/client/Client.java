@@ -10,8 +10,6 @@ import java.rmi.RemoteException;
 public abstract class Client implements VirtualView {
     protected ClientController controller;
     protected View clientView;
-    //protected VirtualServer server;
-    protected String name;
 
     //public Client(String ip, int port) throws UnReachableServerException {
     //    connect(ip, port);

@@ -58,10 +58,10 @@ public class ClientController implements ClientActions {
     //}
 
     @Override
-    public void connect(String username) throws InvalidUsernameException, RemoteException, FullLobbyException {
+    public void connect(String username) throws RemoteException {
         server.connect(client.getInstanceForTheServer(), username);
-        client.setName(username);
-        this.mainPlayerUsername = username;
+        //client.setName(username);
+        //this.mainPlayerUsername = username;
     }
 
     @Override
@@ -445,4 +445,7 @@ public class ClientController implements ClientActions {
         return rank;
     }
 
+    public synchronized void setMainPlayerUsername(String name) {
+        mainPlayerUsername = name;
+    }
 }
