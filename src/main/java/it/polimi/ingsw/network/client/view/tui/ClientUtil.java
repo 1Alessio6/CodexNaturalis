@@ -33,8 +33,8 @@ enum GameScreenArea {
     INPUT_AREA(62,11,new Position(36,126)),
     TITLE(80,5,new Position(2,55)),
     SCOREBOARD(10, 26, new Position(2, 2)),
-    PRIVATE_OBJECTIVE(ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(37, 7)),
-    COMMON_OBJECTIVE(2 + 2 * ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(44, 2)),
+    PRIVATE_OBJECTIVE(ClientUtil.objectiveCardWidth, ClientUtil.objectiveCardHeight, new Position(35, 2)),
+    COMMON_OBJECTIVE(2 + 2 * ClientUtil.objectiveCardWidth, ClientUtil.objectiveCardHeight, new Position(42, 2)),
     RESOURCES(26, 15, new Position(14, 2));
 
     final int width;
@@ -63,6 +63,8 @@ enum GameScreenArea {
 public class ClientUtil {
     public final static int cardWidth = 9;
     public final static int cardHeight = 3;
+    public final static int objectiveCardWidth = 11;
+    public final static int objectiveCardHeight = 5;
     final static int areaPadding = 2;
     final static int maxUsernameLength=15;
     final static int maxPointsLength=8;
@@ -190,9 +192,9 @@ public class ClientUtil {
         appendNewResources(cornerPositionCornerMap, cardMatrix, color);
         appendMatrixLines(resources, pointsCondition, cardMatrix, color);
         if (resources.isEmpty()) {
-            appendPoints(cardMatrix, pointsCondition, points);
+            appendPoints(cardMatrix, pointsCondition, points, 0);
         } else {
-            appendInternalResources(resources, cardMatrix);
+            appendInternalResources(resources, cardMatrix, false);
         }
         return cardMatrix;
     }
@@ -249,7 +251,7 @@ public class ClientUtil {
      * @return the objective card seen as a matrix of strings.
      */
     public static String[][] designObjectiveCard(ClientObjectiveCard objectiveCard) {
-        String[][] cardMatrix = new String[3][7];
+        String[][] cardMatrix = new String[5][9];
         initializeMatrix(cardMatrix);
         ANSIColor color = YELLOW;
         int points;
@@ -259,15 +261,15 @@ public class ClientUtil {
         int switchCase = positionOrResourcesSwitchCase(positionCondition, resourceCondition);
 
         if (switchCase == 1) {//it is a card with a position condition
-            points=positionCase(positionCondition)==1 ||positionCase(positionCondition)==3 ? 2:3;
+            points = positionCase(positionCondition) == 1 || positionCase(positionCondition) == 3 ? 2 : 3;
             appendNewResources(new HashMap<>(), cardMatrix, color);
-            appendMatrixLines(new HashMap<>(), null, cardMatrix, color);
-            paintBackground(cardMatrix,positionCondition);
-            appendPoints(cardMatrix, null, points);
+            appendObjectiveMatrixLines(new HashMap<>(), cardMatrix, color);
+            paintBackground(cardMatrix, positionCondition);
+            appendPoints(cardMatrix, null, points, switchCase);
         } else if (switchCase == 2) {
             appendNewResources(new HashMap<>(), cardMatrix, color);
-            appendMatrixLines(resourceCondition, null, cardMatrix, color);
-            appendInternalResources(resourceCondition, cardMatrix);
+            appendObjectiveMatrixLines(resourceCondition, cardMatrix, color);
+            appendInternalResources(resourceCondition, cardMatrix, true);
         }
         return cardMatrix;
     }
@@ -457,14 +459,44 @@ public class ClientUtil {
     }
 
     /**
+     * Appends the outer edges to the <B>objective</B> <code>cardMatrix</code>. It adds the bottom, top and side edges.
+     *
+     * @param resources  a map containing the resources of the card and their quantities.
+     * @param cardMatrix the <B>objective</B> card seen as an array of strings.
+     * @param color      the color of the <B>objective</B> card.
+     */
+    private static void appendObjectiveMatrixLines(Map<Symbol, Integer> resources, String[][] cardMatrix, ANSIColor color) {
+        int midLine = cardMatrix.length / 2;
+        for (int i = 0; i < cardMatrix.length; i++) {
+            if (i == 0 || i == cardMatrix.length - 1) {
+                for (int j = 1; j < cardMatrix[0].length - 1; j++) {
+                    cardMatrix[i][j] = color + "═" + RESET;
+                }
+            }
+        }
+        for (int i = 1; i < cardMatrix.length - 1; i++) {
+            cardMatrix[i][0] = color + "║" + RESET;
+            if ((resourcesSize(resources) == 1 || resourcesSize(resources) == 2) && i == midLine) {
+                cardMatrix[i][cardMatrix[0].length - 1] = color + "║" + RESET;
+            } else if (resourcesSize(resources) == 3 && i == midLine) {
+                cardMatrix[i][cardMatrix[0].length - 2] = color + "║" + RESET;
+            } else {
+                cardMatrix[i][cardMatrix[0].length - 1] = color + "  ║" + RESET;
+            }
+        }
+    }
+
+    /**
      * Appends possible <code>points</code> to the <code>cardMatrix</code>.
      *
      * @param cardMatrix      the card seen as an array of strings.
      * @param pointsCondition the condition to be fulfilled in order to earn the <code>points</code>.
      * @param points          card points.
      */
-    private static void appendPoints(String[][] cardMatrix, Condition pointsCondition, int points) {
-        if (pointsCondition == null) {
+    private static void appendPoints(String[][] cardMatrix, Condition pointsCondition, int points,int switchCase) {
+        if(pointsCondition==null && switchCase==1){
+            cardMatrix[2][6] = YELLOW + printPoints(points) + RESET;
+        }else if (pointsCondition == null) {
             cardMatrix[1][4] = YELLOW + printPoints(points) + RESET;//
         } else {
             cardMatrix[1][3] = YELLOW + printPoints(points) + RESET;
@@ -479,26 +511,31 @@ public class ClientUtil {
      * @param resources  a map containing the resources of the card and their quantities.
      * @param cardMatrix the card seen as an array of strings.
      */
-    private static void appendInternalResources(Map<Symbol, Integer> resources, String[][] cardMatrix) {//works only in starter and back cards
+    private static void appendInternalResources(Map<Symbol, Integer> resources, String[][] cardMatrix,boolean isObjective) {//works only in starter and back cards
         int i = 0;
+        int objPad=0;
+        int midLine=cardMatrix.length/2;
+        if(isObjective){
+            objPad=1;
+        }
         for (Map.Entry<Symbol, Integer> entry : resources.entrySet()) {
             for (int j = 0; j < entry.getValue(); j++) {
                 if (i == 0) {
                     if (resourcesSize(resources) == 1) {
-                        cardMatrix[1][3] = printResources(entry.getKey());
+                        cardMatrix[midLine][3+objPad] = printResources(entry.getKey());
                     } else if (resourcesSize(resources) == 2) {
-                        cardMatrix[1][2] = printResources(entry.getKey());//5//2,3,4
+                        cardMatrix[midLine][2+objPad] = printResources(entry.getKey());//5//2,3,4
                     } else if (resourcesSize(resources) == 3) {
-                        cardMatrix[1][1] = printResources(entry.getKey());
+                        cardMatrix[midLine][1+objPad] = printResources(entry.getKey());
                     }
                 } else if (i == 1) {
                     if (resourcesSize(resources) == 2) {
-                        cardMatrix[1][3] = printResources(entry.getKey());
+                        cardMatrix[midLine][3+objPad] = printResources(entry.getKey());
                     } else {
-                        cardMatrix[1][2] = printResources(entry.getKey());
+                        cardMatrix[midLine][2+objPad] = printResources(entry.getKey());
                     }
                 } else if (i == 2) {
-                    cardMatrix[1][3] = printResources(entry.getKey());
+                    cardMatrix[midLine][3+objPad] = printResources(entry.getKey());
                 }
                 i++;
             }
@@ -515,6 +552,10 @@ public class ClientUtil {
     public static void appendNewResources(Map<CornerPosition, Corner> cornerPositionCornerMap, String[][] card, ANSIColor color) {
         ArrayList<CornerPosition> cornerPositions = new ArrayList<>();
 
+        int upperRight = card[0].length - 1;
+        int lowerLeft = card.length - 1;
+
+
         for (Map.Entry<CornerPosition, Corner> entry : cornerPositionCornerMap.entrySet()) {
             cornerPositions.add(entry.getKey());
 
@@ -528,23 +569,23 @@ public class ClientUtil {
                 }
                 case TOP_RIGHT -> {
                     if (entry.getValue().isCovered()) {
-                        card[0][6] = YELLOW + "╚ " + RESET;
+                        card[0][upperRight] = YELLOW + "╚ " + RESET;
                     } else if (entry.getValue() != null) {
-                        card[0][6] = printResources(entry.getValue().getSymbol());
+                        card[0][upperRight] = printResources(entry.getValue().getSymbol());
                     }
                 }
                 case LOWER_LEFT -> {
                     if (entry.getValue().isCovered()) {
-                        card[2][0] = YELLOW + " ╗" + RESET;
+                        card[lowerLeft][0] = YELLOW + " ╗" + RESET;
                     } else if (entry.getValue() != null) {
-                        card[2][0] = printResources(entry.getValue().getSymbol());
+                        card[lowerLeft][0] = printResources(entry.getValue().getSymbol());
                     }
                 }
                 case LOWER_RIGHT -> {
                     if (entry.getValue().isCovered()) {
-                        card[2][6] = YELLOW + "╔ " + RESET;
+                        card[lowerLeft][upperRight] = YELLOW + "╔ " + RESET;
                     } else if (entry.getValue() != null) {
-                        card[2][6] = printResources(entry.getValue().getSymbol());
+                        card[lowerLeft][upperRight] = printResources(entry.getValue().getSymbol());
                     }
                 }
             }
@@ -553,13 +594,13 @@ public class ClientUtil {
             card[0][0] = color + "╔ " + RESET;
         }
         if (!cornerPositions.contains(CornerPosition.TOP_RIGHT)) {
-            card[0][6] = color + " ╗" + RESET;
+            card[0][upperRight] = color + " ╗" + RESET;
         }
         if (!cornerPositions.contains(CornerPosition.LOWER_RIGHT)) {
-            card[2][6] = color + " ╝" + RESET;
+            card[lowerLeft][upperRight] = color + " ╝" + RESET;
         }
         if (!cornerPositions.contains(CornerPosition.LOWER_LEFT)) {
-            card[2][0] = color + "╚ " + RESET;
+            card[lowerLeft][0] = color + "╚ " + RESET;
         }
 
     }
@@ -570,8 +611,8 @@ public class ClientUtil {
      * @param cardMatrix the card seen as an array of strings.
      */
     private static void initializeMatrix(String[][] cardMatrix) {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 7; j++) {
+        for (int i = 0; i < cardMatrix.length; i++) {
+            for (int j = 0; j < cardMatrix[0].length; j++) {
                 cardMatrix[i][j] = " ";
             }
         }
@@ -634,34 +675,34 @@ public class ClientUtil {
         }
         switch (posCase) {
             case 1:
-                card[2][1] = cardColorToBGConversion(colors.get(0)) + " " + RESET;
-                card[1][3] = cardColorToBGConversion(colors.get(1)) + " " + RESET;
-                card[0][3] = cardColorToBGConversion(colors.get(2)) + " " + RESET;
+                card[3][3] = cardColorConversion(colors.get(0)) + "○" + RESET;
+                card[2][4] = cardColorConversion(colors.get(1)) + "○" + RESET;
+                card[1][5] = cardColorConversion(colors.get(2)) + "○" + RESET;
                 break;
             case 2:
-                card[0][2]=cardColorToBGConversion(colors.get(0))+" "+RESET;
-                card[1][3]=cardColorToBGConversion(colors.get(1))+" "+RESET;
-                card[2][3]=cardColorToBGConversion(colors.get(2))+" "+RESET;
+                card[1][3] = cardColorConversion(colors.get(0)) + "○" + RESET;
+                card[2][3] = cardColorConversion(colors.get(1)) + "○" + RESET;
+                card[3][4] = cardColorConversion(colors.get(2)) + "○" + RESET;
                 break;
             case 3:
-                card[0][1]=cardColorToBGConversion(colors.get(0))+" "+RESET;
-                card[1][3]=cardColorToBGConversion(colors.get(1))+" "+RESET;
-                card[2][3]=cardColorToBGConversion(colors.get(2))+" "+RESET;
+                card[1][3] = cardColorConversion(colors.get(0)) + "○" + RESET;
+                card[2][4] = cardColorConversion(colors.get(1)) + "○" + RESET;
+                card[3][5] = cardColorConversion(colors.get(2)) + "○" + RESET;
                 break;
             case 4:
-                card[0][1]=cardColorToBGConversion(colors.get(0))+" "+RESET;
-                card[1][3]=cardColorToBGConversion(colors.get(1))+" "+RESET;
-                card[2][2]=cardColorToBGConversion(colors.get(2))+" "+RESET;
+                card[1][3] = cardColorConversion(colors.get(0)) + "○" + RESET;
+                card[2][4] = cardColorConversion(colors.get(1)) + "○" + RESET;
+                card[3][4] = cardColorConversion(colors.get(2)) + "○" + RESET;
                 break;
             case 5:
-                card[2][2]=cardColorToBGConversion(colors.get(0))+" "+RESET;
-                card[1][3]=cardColorToBGConversion(colors.get(1))+" "+RESET;
-                card[0][3]=cardColorToBGConversion(colors.get(2))+" "+RESET;
+                card[3][3] = cardColorConversion(colors.get(0)) + "○" + RESET;
+                card[2][3] = cardColorConversion(colors.get(1)) + "○" + RESET;
+                card[1][4] = cardColorConversion(colors.get(2)) + "○" + RESET;
                 break;
             case 6:
-                card[2][1]=cardColorToBGConversion(colors.get(0))+" "+RESET;
-                card[1][3]=cardColorToBGConversion(colors.get(1))+" "+RESET;
-                card[0][2]=cardColorToBGConversion(colors.get(2))+" "+RESET;
+                card[3][3] = cardColorConversion(colors.get(0)) + "○" + RESET;
+                card[2][4] = cardColorConversion(colors.get(1)) + "○" + RESET;
+                card[1][4] = cardColorConversion(colors.get(2)) + "○" + RESET;
                 break;
         }
     }
@@ -1228,10 +1269,10 @@ public class ClientUtil {
         int x = area.getScreenPosition().getX();
         int y = area.getScreenPosition().getY();
 
-        for(int i = 0; i < 2; ++i, y += cardWidth + areaPadding) {
+        for (int i = 0; i < 2; ++i, y += objectiveCardWidth + areaPadding) {
             String[][] toPrint = i + 1 <= objectives.size() ?
                     designObjectiveCard(objectives.get(i)) :
-                    createEmptyArea(cardHeight, cardWidth);
+                    createEmptyArea(objectiveCardHeight, objectiveCardWidth);
 
             ClientUtil.printToLineColumn(x, y, toPrint);
         }
