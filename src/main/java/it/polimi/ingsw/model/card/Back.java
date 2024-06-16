@@ -45,7 +45,7 @@ public class Back extends Face {
     /**
      * Returns a map with the resources present in the back.
      *
-     * @return resoucers map
+     * @return resources map
      */
     public Map<Symbol, Integer> getResources() {
 
