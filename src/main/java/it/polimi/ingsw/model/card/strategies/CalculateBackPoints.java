@@ -9,7 +9,7 @@ import it.polimi.ingsw.model.board.Position;
 public class CalculateBackPoints implements CalculatePoints {
 
     /**
-     * Calculate the points found on the front od the card.
+     * Calculate the points found on the front of the card.
      *
      * @param pos        in the playground.
      * @param playground on which the calculation will be performed.
