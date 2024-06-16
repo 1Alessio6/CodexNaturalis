@@ -23,6 +23,10 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The ClientRMI updates the view content and the information present in the ClientController when RMI communication is
+ * used.
+ */
 public class ClientRMI extends Client {
     private HeartBeat heartBeat;
 
