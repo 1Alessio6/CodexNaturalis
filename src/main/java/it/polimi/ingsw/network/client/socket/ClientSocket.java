@@ -27,6 +27,10 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The ClientSocket updates the view content and the information present in the ClientController when Socket
+ * communication is used.
+ */
 public class ClientSocket extends Client implements VirtualView {
     private Socket socket;
     private PrintWriter out;
