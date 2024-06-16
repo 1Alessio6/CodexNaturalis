@@ -17,6 +17,9 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
+/**
+ * ServerRMI notifies the controller of changes made by the player in the view when RMI communication is used.
+ */
 public class ServerRMI implements VirtualServer {
     private final Controller myController;
     private final static String SERVER_NAME = "ServerRmi";
