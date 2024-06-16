@@ -570,28 +570,28 @@ public class ClientUtil {
             switch (entry.getKey()) {
                 case TOP_LEFT -> {
                     if (entry.getValue().isCovered()) {
-                        card[0][0] = YELLOW + " ╝" + RESET;
+                        card[0][0] = YELLOW + "═╝" + RESET;
                     } else if (entry.getValue() != null) {
                         card[0][0] = printResources(entry.getValue().getSymbol());
                     }
                 }
                 case TOP_RIGHT -> {
                     if (entry.getValue().isCovered()) {
-                        card[0][upperRight] = YELLOW + "╚ " + RESET;
+                        card[0][upperRight] = YELLOW + "╚═" + RESET;
                     } else if (entry.getValue() != null) {
                         card[0][upperRight] = printResources(entry.getValue().getSymbol());
                     }
                 }
                 case LOWER_LEFT -> {
                     if (entry.getValue().isCovered()) {
-                        card[lowerLeft][0] = YELLOW + " ╗" + RESET;
+                        card[lowerLeft][0] = YELLOW + "═╗" + RESET;
                     } else if (entry.getValue() != null) {
                         card[lowerLeft][0] = printResources(entry.getValue().getSymbol());
                     }
                 }
                 case LOWER_RIGHT -> {
                     if (entry.getValue().isCovered()) {
-                        card[lowerLeft][upperRight] = YELLOW + "╔ " + RESET;
+                        card[lowerLeft][upperRight] = YELLOW + "╔═" + RESET;
                     } else if (entry.getValue() != null) {
                         card[lowerLeft][upperRight] = printResources(entry.getValue().getSymbol());
                     }
@@ -599,16 +599,16 @@ public class ClientUtil {
             }
         }
         if (!cornerPositions.contains(CornerPosition.TOP_LEFT)) {
-            card[0][0] = color + "╔ " + RESET;
+            card[0][0] = color + "╔═" + RESET;
         }
         if (!cornerPositions.contains(CornerPosition.TOP_RIGHT)) {
-            card[0][upperRight] = color + " ╗" + RESET;
+            card[0][upperRight] = color + "═╗" + RESET;
         }
         if (!cornerPositions.contains(CornerPosition.LOWER_RIGHT)) {
-            card[lowerLeft][upperRight] = color + " ╝" + RESET;
+            card[lowerLeft][upperRight] = color + "═╝" + RESET;
         }
         if (!cornerPositions.contains(CornerPosition.LOWER_LEFT)) {
-            card[lowerLeft][0] = color + "╚ " + RESET;
+            card[lowerLeft][0] = color + "╚═" + RESET;
         }
 
     }
