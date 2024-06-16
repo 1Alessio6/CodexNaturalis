@@ -126,6 +126,20 @@ public class ClientUtil {
     }
 
     /**
+     * Prints exception <code>string</code> bellow of the input area.
+     *
+     * @param string the message to be printed.
+     */
+    public static void printExceptions(String string){
+        ClientUtil.clearExceptionSpace();
+
+        ClientUtil.writeLine(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+11,
+                GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1,
+                GameScreenArea.INPUT_AREA.getWidth()-2,
+                string);
+    }
+
+    /**
      * Prints the <code>string</code> inside the command square.
      *
      * @param string the command to be printed.

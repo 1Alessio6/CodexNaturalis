@@ -74,22 +74,29 @@ public class ClientTUI implements View {
                         case RULEBOOK -> displayRulebook();
                     }
                 } else {
-                    ClientUtil.printCommand("Invalid game command");
+                    ClientUtil.printExceptions(ExceptionsTUI.INVALID_GAME_COMMAND.getMessage());
                     // print help for consented commands
                     ClientUtil.printHelpCommands(availableActions);
                 }
-            } catch (IllegalArgumentException | IndexOutOfBoundsException | InvalidPlayersNumberException |
-                     RemoteException | InvalidMessageException | InvalidIdForDrawingException | EmptyDeckException |
-                     InvalidColorException | NotExistingFaceUp | Playground.UnavailablePositionException |
-                     Playground.NotEnoughResourcesException | InvalidGamePhaseException | SuspendedGameException e) {
-                ClientUtil.clearExceptionSpace();
-                ClientUtil.writeLine(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+11,
-                        GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1,
-                        GameScreenArea.INPUT_AREA.getWidth()-2,
-                        e.getMessage());
+            } catch (InvalidPlayersNumberException | RemoteException | InvalidMessageException |
+                     InvalidIdForDrawingException | EmptyDeckException | InvalidColorException | NotExistingFaceUp |
+                     Playground.UnavailablePositionException | Playground.NotEnoughResourcesException |
+                     InvalidGamePhaseException | SuspendedGameException | TUIException e) {
+
+                ClientUtil.printExceptions(e.getMessage());
                 // print help for consented commands
                 ClientUtil.printHelpCommands(availableActions);
-            } finally {
+            } catch (IllegalArgumentException e) {
+
+                ClientUtil.printExceptions(ExceptionsTUI.INVALID_GAME_COMMAND.getMessage());
+                // print help for consented commands
+                ClientUtil.printHelpCommands(availableActions);
+            } catch (IndexOutOfBoundsException e){
+
+                ClientUtil.printExceptions(ExceptionsTUI.INVALID_SPY_INPUT.getMessage());
+                // print help for consented commands
+                ClientUtil.printHelpCommands(availableActions);
+            }finally {
                 ClientUtil.putCursorToInputArea();
             }
         }
@@ -140,16 +147,23 @@ public class ClientTUI implements View {
      * @throws RemoteException           in the event of an error occurring during the execution of a remote method.
      * @throws InvalidGamePhaseException if the game phase doesn't allow choosing objective cards.
      * @throws SuspendedGameException    if the game is suspended.
-     * @throws NumberFormatException     if the player digits an entry that isn't a number.
+     * @throws TUIException              if the player enters an invalid objective index.
      */
-    private void chooseObjective() throws RemoteException, InvalidGamePhaseException, SuspendedGameException, NumberFormatException {
-        ClientUtil.printCommand("Choose objective idx: ");
-        int objectiveIdx = Integer.parseInt(console.nextLine()); // starting from 1
-        controller.placeObjectiveCard(objectiveIdx - 1);
+    private void chooseObjective() throws RemoteException, InvalidGamePhaseException, SuspendedGameException, TUIException {
+        try{
+            ClientUtil.printCommand("Choose objective idx: ");
+            int objectiveIdx = Integer.parseInt(console.nextLine()); // starting from 1
 
-        // clear input area
-        ClientUtil.printCommandSquare();
-        //ClientUtil.putCursorToInputArea();
+            if(objectiveIdx==1||objectiveIdx==2){
+                controller.placeObjectiveCard(objectiveIdx - 1);
+            }else throw new TUIException(ExceptionsTUI.INVALID_IDX);
+
+            // clear input area
+            ClientUtil.printCommandSquare();
+            //ClientUtil.putCursorToInputArea();
+        }catch (NumberFormatException e){
+            throw new TUIException(ExceptionsTUI.INVALID_IDX);
+        }
     }
 
     /**
@@ -175,12 +189,17 @@ public class ClientTUI implements View {
      * @throws RemoteException           in the event of an error occurring during the execution of a remote method.
      * @throws InvalidGamePhaseException if the game phase doesn't allow choosing colors.
      * @throws SuspendedGameException    if the game is suspended.
-     * @throws IllegalArgumentException  if the color doesn't match with any <code>PlayerColor</code> color.
+     * @throws TUIException              if the player enters an invalid color.
      */
-    private void chooseColor() throws InvalidColorException, RemoteException, InvalidGamePhaseException, SuspendedGameException, IllegalArgumentException {
+    private void chooseColor() throws InvalidColorException, RemoteException, InvalidGamePhaseException, SuspendedGameException, TUIException {
         ClientUtil.printCommand("Choose color: ");
-        PlayerColor color = PlayerColor.valueOf(console.nextLine().toUpperCase());
-        controller.chooseColor(color);
+
+        try{
+            PlayerColor color = PlayerColor.valueOf(console.nextLine().toUpperCase());
+            controller.chooseColor(color);
+        }catch (IllegalArgumentException e){//catch (IllegalArgumentException |InvalidColorException e){
+            throw new TUIException(ExceptionsTUI.INVALID_COLOR);
+        }
 
         // clear input area
         ClientUtil.printCommandSquare();
@@ -188,21 +207,26 @@ public class ClientTUI implements View {
     }
 
     /**
-     * Sends a message
+     * Sends a message.
      *
      * @param command an array of strings containing the message and the form in which the message is to be transmitted.
-     * @throws InvalidMessageException   if the author doesn't match the author or the recipient doesn't exist.
-     * @throws RemoteException           in the event of an error occurring during the execution of a remote method.
-     * @throws IndexOutOfBoundsException if the array of strings is out of range.
+     * @throws InvalidMessageException if the author doesn't match the author or the recipient doesn't exist.
+     * @throws RemoteException         in the event of an error occurring during the execution of a remote method.
+     * @throws TUIException            if the player attempts to send a message incorrectly, that means, not following
+     *                                 the sending message structure.
      */
-    private void sendMessage(String[] command) throws InvalidMessageException, RemoteException, IndexOutOfBoundsException {
-        String commandContent = command[1];
-        Message myMessage = command[0].equals("pm") ? createPrivateMessage(commandContent) : createBroadcastMessage(commandContent);
-        controller.sendMessage(myMessage);
+    private void sendMessage(String[] command) throws InvalidMessageException, RemoteException, TUIException {
+        try {
+            String commandContent = command[1];
+            Message myMessage = command[0].equals("pm") ? createPrivateMessage(commandContent) : createBroadcastMessage(commandContent);
+            controller.sendMessage(myMessage);
 
-        // clear input area
-        ClientUtil.printCommandSquare();
-        //ClientUtil.putCursorToInputArea();
+            // clear input area
+            ClientUtil.printCommandSquare();
+            //ClientUtil.putCursorToInputArea();
+        } catch (IndexOutOfBoundsException e) {
+            throw new TUIException(ExceptionsTUI.INVALID_MESSAGE_INPUT);
+        }
     }
 
     /**
@@ -238,13 +262,18 @@ public class ClientTUI implements View {
      * @throws RemoteException              in the event of an error occurring during the execution of a remote method.
      * @throws InvalidGamePhaseException    if the game doesn't allow to draw cards.
      * @throws SuspendedGameException       if the game is suspended.
+     * @throws TUIException                 if the player inserts an inappropriate argument.
      */
-    private void draw() throws InvalidIdForDrawingException, EmptyDeckException, NotExistingFaceUp, RemoteException, InvalidGamePhaseException, SuspendedGameException {
-        ClientUtil.printCommand("Insert the position of the card you want to draw: ");
-        int drawFromId = Integer.parseInt(console.nextLine()) - 1;
-        controller.draw(drawFromId);
+    private void draw() throws InvalidIdForDrawingException, EmptyDeckException, NotExistingFaceUp, RemoteException, InvalidGamePhaseException, SuspendedGameException, TUIException {
+        try{
+            ClientUtil.printCommand("Insert the position of the card you want to draw: ");
+            int drawFromId = Integer.parseInt(console.nextLine()) - 1;
+            controller.draw(drawFromId);
 
-        //ClientUtil.putCursorToInputArea();
+            //ClientUtil.putCursorToInputArea();
+        }catch (IllegalArgumentException e){
+            throw new TUIException(ExceptionsTUI.INVALID_CARD_POSITION);
+        }
     }
 
     /**
@@ -255,10 +284,9 @@ public class ClientTUI implements View {
      * @throws RemoteException                         in the event of an error occurring during the execution of a remote method.
      * @throws InvalidGamePhaseException               if the game phase doesn't allow placing cards.
      * @throws SuspendedGameException                  if the game is suspended.
-     * @throws InputMismatchException                  if the entry made by the player does not match the pattern of the type of entry
-     *                                                 that is expected.
+     * @throws TUIException                            if the player enters an invalid side or position to place in.
      */
-    private void place() throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, RemoteException, InvalidGamePhaseException, SuspendedGameException, InputMismatchException {
+    private void place() throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, RemoteException, InvalidGamePhaseException, SuspendedGameException, TUIException {
         int handPos = receivePlayerCardPosition();
         Side cardSide = receiveSide();
         Position newCardPos = receivePosition();
@@ -271,8 +299,9 @@ public class ClientTUI implements View {
      * @throws RemoteException           in the event of an error occurring during the execution of a remote method.
      * @throws InvalidGamePhaseException if the game doesn't allow placing starter cards.
      * @throws SuspendedGameException    if the game is suspended.
+     * @throws TUIException              if the player enters an invalid card side.
      */
-    private void placeStarter() throws RemoteException, InvalidGamePhaseException, SuspendedGameException {
+    private void placeStarter() throws RemoteException, InvalidGamePhaseException, SuspendedGameException, TUIException {
         Side starterSide = receiveSide();
         controller.placeStarter(starterSide);
 
@@ -285,49 +314,67 @@ public class ClientTUI implements View {
      * Receives the side of the card that is to be placed.
      *
      * @return the side of the card.
+     * @throws TUIException if the player enters an invalid card side.
      */
-    private Side receiveSide() {
-        ClientUtil.printCommand("What side of the card you want to place, front or back? ");
-        return Side.valueOf(console.nextLine().toUpperCase());
+    private Side receiveSide() throws TUIException {
+        try{
+            ClientUtil.printCommand("What side of the card you want to place, front or back? ");
+            return Side.valueOf(console.nextLine().toUpperCase());
+        }catch(IllegalArgumentException e){
+            throw new TUIException(ExceptionsTUI.INVALID_SIDE);
+        }
     }
 
     /**
      * Receives the position of the card in the player's hand.
      *
-     * @return the position of the card if it is valid, a runtime exception otherwise.
+     * @return the position of the card if it is valid, a TUIException otherwise.
+     * @throws TUIException if the player enters an invalid card position.
      */
-    private int receivePlayerCardPosition() {
+    private int receivePlayerCardPosition() throws TUIException {
         ClientUtil.printCommand("Enter card position in your hand: ");
-        int cardPosition = Integer.parseInt(console.nextLine());
+        try {
+            int cardPosition = Integer.parseInt(console.nextLine());
 
-        // ClientUtil.putCursorToInputArea();
+            // ClientUtil.putCursorToInputArea();
 
-        if(cardPosition >= 1 && cardPosition <= 3) return cardPosition - 1;
-        // todo: change exception
-        else throw new RuntimeException("not a valid card position");
+            if (cardPosition >= 1 && cardPosition <= 3) return cardPosition - 1;
+                // todo: change exception
+            else throw new TUIException(ExceptionsTUI.INVALID_CARD_POSITION);
+        } catch (InputMismatchException | IllegalArgumentException e) {
+
+            throw new TUIException(ExceptionsTUI.INVALID_CARD_POSITION);
+        }
+
     }
 
     /**
      * Receives a position of the playground.
      *
      * @return the position.
+     * @throws TUIException if the player enters an invalid playground position.
      */
-    private Position receivePosition() {
-        ClientUtil.printCommand("Insert position, with x and y space separated (e.g.: 1 2): ");
-        // todo: handle wrong input
-        int x = console.nextInt();
-        int y = console.nextInt();
-        //ClientUtil.putCursorToInputArea();
-        console.nextLine();
-        return new Position(x, y);
+    private Position receivePosition() throws TUIException {
+        try{
+            ClientUtil.printCommand("Insert position, with x and y space separated (e.g.: 1 2): ");
+            // todo: handle wrong input
+            int x = console.nextInt();
+            int y = console.nextInt();
+            //ClientUtil.putCursorToInputArea();
+            console.nextLine();
+            return new Position(x, y);
+        }catch (InputMismatchException e){
+            throw new TUIException(ExceptionsTUI.INVALID_CARD_POSITION);
+        }
     }
 
     /**
      * Displays the rulebook on the screen.
+     *
+     * @throws TUIException if the player enters an invalid page number.
      */
-    private void displayRulebook(){
-        ClientUtil.printCommand("Insert page (1 or 2): ");
-        int numberOfPage=Integer.parseInt(console.nextLine());
+    private void displayRulebook() throws TUIException {
+        int numberOfPage=receivePlayerRulebookPage();
         ClientUtil.printRulebook(numberOfPage);
         // remove game actions while reading manual
         availableActions.clear();
@@ -339,6 +386,22 @@ public class ClientTUI implements View {
         availableActions.add(TUIActions.RULEBOOK);
         //ClientUtil.putCursorToInputArea();
     }
+
+    /**
+     * Receives the number of the page to display.
+     *
+     * @return the number of the page.
+     * @throws TUIException if the player enters an invalid number of page.
+     */
+    private int receivePlayerRulebookPage() throws TUIException {
+        ClientUtil.printCommand("Insert page (1 or 2): ");
+        int numberOfPage=Integer.parseInt(console.nextLine());
+
+        if(numberOfPage==1 ||numberOfPage==2){
+            return numberOfPage;
+        }else throw new TUIException(ExceptionsTUI.INVALID_PAGE);
+    }
+
 
     /**
      * This method is invoked in a new thread at the beginning of a game
@@ -367,24 +430,28 @@ public class ClientTUI implements View {
      * Displays the playground of the <code>playerIdx</code> player.
      *
      * @param playerIdx the index of the player to spy.
+     * @throws TUIException if the player attempts to spy himself.
      */
-    private void spy(int playerIdx) {
+    private void spy(int playerIdx) throws TUIException {
         ClientPlayer player = this.controller.getPlayers().get(playerIdx);
         ClientPlayground playground = player.getPlayground();
 
         if (this.controller.getMainPlayer().equals(player)) {
-            throw new IllegalArgumentException("you can't spy yourself...");
+            throw new TUIException(ExceptionsTUI.INVALID_SPY_COMMAND);
         } else {
             // update commands when you are looking at other players
             availableActions.remove(TUIActions.DRAW);
             availableActions.remove(TUIActions.PLACE);
             availableActions.remove(TUIActions.FLIP);
-
             availableActions.add(TUIActions.BACK);
+
             // update only playground, hand and resources
             ClientUtil.printResourcesArea(playground.getResources());
             ClientUtil.printPlayground(playground);
             ClientUtil.printPlayerHand(this.controller.getMainPlayerCards(), cardSide);
+
+            //clear input area
+            ClientUtil.printCommandSquare();
         }
     }
 
