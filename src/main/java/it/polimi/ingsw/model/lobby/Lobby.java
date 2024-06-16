@@ -77,6 +77,11 @@ public class Lobby {
         return isGameReady;
     }
 
+    /**
+     * Creates a game.
+     *
+     * @return the game.
+     */
     public Game createGame() {
         if (!isGameReady) {
             return null;
@@ -103,6 +108,9 @@ public class Lobby {
         return game;
     }
 
+    /**
+     * Resets the lobby in case it crashes.
+     */
     private void resetLobby() {
         System.out.println("Lobby crashed");
         listenerHandler.notifyBroadcast(VirtualView::updateAfterLobbyCrash);
