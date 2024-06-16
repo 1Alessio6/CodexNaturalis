@@ -10,7 +10,9 @@ import it.polimi.ingsw.network.heartbeat.HeartBeatListener;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-
+/**
+ * This class defines a "virtual server" and represents the means by which the server interacts with the client.
+ */
 public interface VirtualServer extends Remote, HeartBeatHandler, HeartBeatListener {
     /**
      * Connects to server.
