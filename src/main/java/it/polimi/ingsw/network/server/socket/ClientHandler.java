@@ -26,6 +26,9 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Sends the commands received by the Server Socket to the Client Socket.
+ */
 public class ClientHandler implements VirtualView {
     private final Server server;
     private final PrintWriter out;
