@@ -11,6 +11,10 @@ import it.polimi.ingsw.network.client.model.card.ClientCard;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * UpdateAfterPlaceMessage represents the message containing the updated position map, the new available position,
+ * the new resources, the earned points, the position, the side and the placed card.
+ */
 public class UpdateAfterPlaceMessage extends NetworkMessage {
 
     private final Map<Position, CornerPosition> positionToCornerCovered;
@@ -29,7 +33,18 @@ public class UpdateAfterPlaceMessage extends NetworkMessage {
 
     private final Position position;
 
-
+    /**
+     * Constructs a <code>UpdateAfterPlaceMessage</code>-
+     *
+     * @param positionToCornerCovered a map with the new covered corners.
+     * @param newAvailablePositions   a list with every new available tile added after the last placement.
+     * @param newResources            the new resources added after the last placement.
+     * @param points                  the points present after the placement.
+     * @param username                the username of the player.
+     * @param placedCard              the card that has been placed.
+     * @param placedSide              the side of the card that has been placed.
+     * @param position                the position of the card in the playground.
+     */
     public UpdateAfterPlaceMessage(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide, Position position) {
         super(Type.SHOW_UPDATE_AFTER_PLACE, "server");
         this.positionToCornerCovered = positionToCornerCovered;
