@@ -21,6 +21,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.rmi.RemoteException;
 
+/**
+ * Server Handler processes and sends the incoming commands to ClientSocket.
+ */
 public class ServerHandler implements VirtualServer {
     private final BufferedReader in;
     private final PrintWriter out;
