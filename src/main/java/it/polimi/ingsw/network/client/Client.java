@@ -7,6 +7,9 @@ import it.polimi.ingsw.network.client.view.View;
 
 import java.rmi.RemoteException;
 
+/**
+ * The Client updates the view content and the information present in the ClientController.
+ */
 public abstract class Client implements VirtualView {
     protected ClientController controller;
     protected View clientView;
