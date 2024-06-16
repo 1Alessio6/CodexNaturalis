@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.board.Tile;
 import it.polimi.ingsw.model.card.CornerPosition;
 import it.polimi.ingsw.model.card.Symbol;
-import it.polimi.ingsw.network.client.model.card.ClientFace;
 
 import java.io.Serializable;
 import java.util.*;
@@ -23,12 +22,19 @@ public class ClientPlayground implements Serializable {
     List<Position> positioningOrder;
 
     /**
-     * Constructs a playground in accordance to its initial condition.
-     *
-     * @param area      of the game.
-     * @param resources in the game.
+     * "Copy" constructor, but just for area. Needed after an area manipulation
      */
-    public ClientPlayground(Map<Position, ClientTile> area, Map<Symbol, Integer> resources) {
+    public ClientPlayground(Map<Position, ClientTile> area, List<Position> positioningOrder) {
+        this.area = area;
+        this.positioningOrder = positioningOrder;
+        this.resources = new HashMap<>();
+    }
+
+    /**
+     * Default constructor: creates a playground in accordance to its initial condition.
+     *
+     */
+    public ClientPlayground() {
         this.area = new HashMap<>();
         Position origin = new Position(0, 0);
         Availability s = Availability.EMPTY;
