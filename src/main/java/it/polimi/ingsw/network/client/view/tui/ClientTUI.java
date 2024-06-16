@@ -22,6 +22,7 @@ import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 import it.polimi.ingsw.network.client.view.View;
+import it.polimi.ingsw.network.client.view.tui.drawplayground.*;
 
 import java.rmi.RemoteException;
 import java.util.*;
@@ -33,6 +34,9 @@ public class ClientTUI implements View {
     private Side cardSide = Side.FRONT;
 
     private final ClientController controller;
+
+    /* saves the coordinate to start print */
+    private Position currOffset = new Position(0, 0);
 
     /**
      * Constructs clientTUI with the <code>controller</code> provided.
@@ -72,6 +76,7 @@ public class ClientTUI implements View {
                         case OBJECTIVE -> chooseObjective();
                         case STARTER -> placeStarter();
                         case RULEBOOK -> displayRulebook();
+                        case MVPG -> movePlayground(nextCommand[1]);
                     }
                 } else {
                     ClientUtil.printExceptions(ExceptionsTUI.INVALID_GAME_COMMAND.getMessage());
@@ -81,7 +86,8 @@ public class ClientTUI implements View {
             } catch (InvalidPlayersNumberException | RemoteException | InvalidMessageException |
                      InvalidIdForDrawingException | EmptyDeckException | InvalidColorException | NotExistingFaceUp |
                      Playground.UnavailablePositionException | Playground.NotEnoughResourcesException |
-                     InvalidGamePhaseException | SuspendedGameException | TUIException e) {
+                     InvalidGamePhaseException |
+                     UndrawablePlaygroundException | SuspendedGameException | TUIException e) {
 
                 ClientUtil.printExceptions(e.getMessage());
                 // print help for consented commands
@@ -96,16 +102,34 @@ public class ClientTUI implements View {
                 ClientUtil.printExceptions(ExceptionsTUI.INVALID_SPY_INPUT.getMessage());
                 // print help for consented commands
                 ClientUtil.printHelpCommands(availableActions);
-            }finally {
+            } finally {
                 ClientUtil.putCursorToInputArea();
             }
         }
     }
 
     /**
+     * Method used to move the playground to a position (classic cartesian system)
+     * @param requestedOffsetString is the argument of the move command
+     */
+    private void movePlayground(String requestedOffsetString)
+            throws UndrawablePlaygroundException {
+        String[] requestedOffsetsString = requestedOffsetString.split(",", 2);
+        int[] requestedOffsetsInt = new int[2];
+        requestedOffsetsInt[0] = Integer.parseInt(requestedOffsetsString[0].trim());
+        requestedOffsetsInt[1] = Integer.parseInt(requestedOffsetsString[1].trim());
+
+        Position requestedOffset = new Position(requestedOffsetsInt[0],requestedOffsetsInt[1]);
+
+        // todo: move playground of every player
+        currOffset = ClientUtil.printPlayground(controller.getPlaygroundByUsername(controller.getMainPlayerUsername()),
+                currOffset, requestedOffset);
+    }
+
+    /**
      * Restores the current playing area of the player.
      */
-    private void goBack() {
+    private void goBack() throws UnInitializedPlaygroundException, FittablePlaygroundException, InvalidCardRepresentationException, InvalidCardDimensionException {
         // add back commands
         setAvailableActions();
         // print main player stuff again
@@ -433,6 +457,7 @@ public class ClientTUI implements View {
      * @throws TUIException if the player attempts to spy himself.
      */
     private void spy(int playerIdx) throws TUIException {
+    private void spy(int playerIdx) throws UndrawablePlaygroundException {
         ClientPlayer player = this.controller.getPlayers().get(playerIdx);
         ClientPlayground playground = player.getPlayground();
 
@@ -447,7 +472,7 @@ public class ClientTUI implements View {
 
             // update only playground, hand and resources
             ClientUtil.printResourcesArea(playground.getResources());
-            ClientUtil.printPlayground(playground);
+            currOffset = ClientUtil.printPlayground(playground, currOffset);
             ClientUtil.printPlayerHand(this.controller.getMainPlayerCards(), cardSide);
 
             //clear input area
@@ -472,6 +497,7 @@ public class ClientTUI implements View {
                 availableActions.add(TUIActions.PM);
                 availableActions.add(TUIActions.FLIP);
                 availableActions.add(TUIActions.RULEBOOK);
+                availableActions.add(TUIActions.MVPG);
             }
 
             switch (currentPhase) {
@@ -567,7 +593,16 @@ public class ClientTUI implements View {
         // print objective(s)
         showUpdateObjectiveCard();
 
-        ClientUtil.printPlayground(playerPlayground);
+        // when printing for first time,
+
+        try {
+            currOffset = ClientUtil.printPlayground(playerPlayground, currOffset);
+        } catch (UndrawablePlaygroundException e) {
+            ClientUtil.writeLine(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+11,
+                    GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1,
+                    GameScreenArea.INPUT_AREA.getWidth()-2,
+                    e.getMessage());
+        }
         // check if there is any occupied tile: it means starter has been placed
         ClientUtil.printPlayerHand(controller.isMainPlaygroundEmpty() ?
                 Collections.singletonList(this.controller.getMainPlayerStarter()) :
@@ -605,7 +640,14 @@ public class ClientTUI implements View {
             // resources may have changed
             ClientUtil.printResourcesArea(this.controller.getMainPlayer().getPlayground().getResources());
 
-            ClientUtil.printPlayground(this.controller.getMainPlayerPlayground());
+            try {
+                currOffset = ClientUtil.printPlayground(this.controller.getMainPlayerPlayground(), currOffset);
+            } catch (UndrawablePlaygroundException e) {
+                ClientUtil.writeLine(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+11,
+                        GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1,
+                        GameScreenArea.INPUT_AREA.getWidth()-2,
+                        e.getMessage());
+            }
             ClientUtil.printPlayerHand(controller.getMainPlayerCards(), cardSide);
 
             ClientUtil.putCursorToInputArea();
@@ -652,7 +694,14 @@ public class ClientTUI implements View {
         if (this.controller.getMainPlayerUsername().equals(username)) {
             ClientUtil.printPlayerHand(this.controller.getMainPlayerCards(), cardSide);
             // print playground
-            ClientUtil.printPlayground(this.controller.getMainPlayerPlayground());
+            try {
+                currOffset = ClientUtil.printPlayground(this.controller.getMainPlayerPlayground(), currOffset);
+            } catch (UndrawablePlaygroundException e) {
+                ClientUtil.writeLine(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+11,
+                        GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1,
+                        GameScreenArea.INPUT_AREA.getWidth()-2,
+                        e.getMessage());
+            }
             // resources may have changed
             ClientUtil.printResourcesArea(this.controller.getMainPlayer().getPlayground().getResources());
             ClientUtil.putCursorToInputArea();

@@ -16,11 +16,6 @@ public class DrawablePlayground {
     int[] xs;
     int[] ys;
 
-    public static int[] calculatePositionRangeFromMaxPrintableSize(int width, int height) {
-        // consider overlapping cards (integer division)
-        return new int[]{width/(ClientUtil.cardWidth - 1), height/(ClientUtil.cardHeight - 1)};
-    }
-
     private boolean validDimension(int cardWidth, int cardHeight) {
         // odd dimension to have a center
         return cardWidth % 2 == 1

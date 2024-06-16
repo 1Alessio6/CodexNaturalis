@@ -9,14 +9,15 @@ public enum TUIActions {
     DRAW("draw a card"),
     FLIP("flip the cards"),
     HELP("show this message"),
-    LOBBYSIZE("set size of the lobby"),
+    LOBBYSIZE("<n>: set size of the lobby"),
     OBJECTIVE("choose your objective"),
     PLACE("place a card in your playground"),
     STARTER("place your starter"),
-    SPY("spy <n>: look at n-index player"),
+    SPY("<n>: look at n-index player"),
     PM("write a private message"),
     M("write a public message"),
     RULEBOOK("take a look at the manual"),
+    MVPG("<x,y>: move playground to the given offset"),
     QUIT("quit the game safely");
 
     private final String description;

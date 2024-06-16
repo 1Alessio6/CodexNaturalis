@@ -6,28 +6,31 @@ import it.polimi.ingsw.model.card.Color.CardColor;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
+import it.polimi.ingsw.network.client.model.board.ClientTile;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
-import it.polimi.ingsw.network.client.view.drawplayground.DrawablePlayground;
-import it.polimi.ingsw.network.client.view.drawplayground.InvalidCardDimensionException;
-import it.polimi.ingsw.network.client.view.drawplayground.InvalidCardRepresentationException;
-import it.polimi.ingsw.network.client.view.drawplayground.UnInitializedPlaygroundException;
+import it.polimi.ingsw.network.client.view.tui.drawplayground.*;
 
 import java.io.*;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static it.polimi.ingsw.model.card.Symbol.*;
 import static it.polimi.ingsw.network.client.view.tui.ANSIColor.*;
+import static it.polimi.ingsw.network.client.view.tui.ClientUtil.cardHeight;
+import static it.polimi.ingsw.network.client.view.tui.ClientUtil.cardWidth;
 
 /**
  * This enum represents the space and position of each area in the screen
  */
 enum GameScreenArea {
-    PLAYGROUND(96, 40, new Position(30, 2)),
+    // Matrix 12 * 20 cards (considering last not overlapping)
+    PLAYGROUND(97, 41, new Position(28, 2)),
     FACE_UP_CARDS(24, 14, new Position(146, 2)),
-    HAND_CARDS(2*ClientUtil.areaPadding + 3*ClientUtil.cardWidth, ClientUtil.cardHeight, new Position(62 ,44)),
+    HAND_CARDS(2* ClientUtil.areaPadding + 3* cardWidth, cardHeight, new Position(62 ,44)),
     DECKS(24, 5, new Position(18, 149)),
     CHAT(62, 11, new Position(23, 126)),
     INPUT_AREA(62,11,new Position(36,126)),
@@ -70,6 +73,7 @@ public class ClientUtil {
     final static int maxPointsLength=8;
     final static int resourceBoardColumnSpace = 5;
     final static int requirementsHeight = 2;
+    final static int[] maxPrintablePlaygroundSize = maxPlaygroundScreenPositions();
 
     static String plant = "\uD83C\uDF43";
     static String butterfly = "\uD83E\uDD8B";
@@ -286,16 +290,6 @@ public class ClientUtil {
             appendInternalResources(resourceCondition, cardMatrix, true);
         }
         return cardMatrix;
-    }
-
-    private static void printInformation(ClientCard card) {
-        Map<Symbol, Integer> requirements;
-        if (card.getBack().getBackCenterResources().isEmpty()) {
-            requirements = card.getFront().getRequirements();
-        } else {
-            requirements = card.getBack().getRequirements();
-        }
-        searchForRelevantInformation(requirements);
     }
 
     // Secondary methods
@@ -1007,40 +1001,119 @@ public class ClientUtil {
         moveCursor(37, 127);
     }
 
-    public static String[][] buildPlayground(ClientPlayground clientPlayground) throws InvalidCardRepresentationException, UnInitializedPlaygroundException, InvalidCardDimensionException {
+    public static String[][] buildPlayground(ClientPlayground clientPlayground, Position currentOffset, Position requestedOffset)
+            throws InvalidCardRepresentationException, UnInitializedPlaygroundException, InvalidCardDimensionException, FittablePlaygroundException {
         DrawablePlayground dp = new DrawablePlayground(7, cardHeight); // 7 array cells for each matrix line of the card
-        dp.allocateMatrix(clientPlayground);
-        // todo: print available in different way
+        int[] numOfOverflowingTiles = dp.allocateMatrix(clientPlayground);
+        int[] entirePlaygroundSizes = new int[]{DrawablePlayground.calculateSizes(dp.getXs()),
+                DrawablePlayground.calculateSizes(dp.getYs())};
+        int[] maxPrintablePlaygroundSizes = ClientUtil.maxPlaygroundScreenPositions();
+
+        // make the playground fit
+        // considering only overlapping cards (the last not overlapping is counted in the integer division)
+        int finalPlaygroundWidth =  Math.min(maxPrintablePlaygroundSizes[0], entirePlaygroundSizes[0]);
+        int finalPlaygroundHeight =  Math.min(maxPrintablePlaygroundSizes[1], entirePlaygroundSizes[1]);
+
+        boolean isOverflowing = Arrays.stream(numOfOverflowingTiles).anyMatch(i -> i != 0);
+
+        // consider upper left and current offset
+        Position curStartPrintNoOffsets = Position.sum(dp.centeredStartPrintPos(numOfOverflowingTiles), currentOffset);
+
+        if (!requestedOffset.equals(new Position(0,0)) && !isOverflowing)
+            throw new FittablePlaygroundException();
+        else if (isOverflowing) { // if there is overflowing
+            // there is at least a coordinate that overflows
+            // normalize offset if the given one is exaggerated (will overwrite it)
+            // overwrite the value of the reference, os it can be updated in ClientTUI
+            requestedOffset = normalizeRequestedOffset(requestedOffset, dp, curStartPrintNoOffsets, entirePlaygroundSizes);
+        }
+        // no need of final else: if position is 0,0 this isn't a problem
+
+        // check if normalized requested offset won't change the displayed area
+        // and check if current offset is 0,0 because real playground fits the screen
+        // requested offset = 0,0 is the case when the system is autoupdating the screen
+        if (!currentOffset.equals(new Position(0,0)) && requestedOffset.equals(new Position(0,0)) && isOverflowing)
+            throw new FittablePlaygroundException();
+
+        Position newOffset = Position.sum(!isOverflowing ? new Position(0,0) : requestedOffset, curStartPrintNoOffsets);
+        Predicate<Position> noOverflowingPosition = p -> !(p.getX() < newOffset.getX() ||
+                        p.getX() > newOffset.getX() + finalPlaygroundWidth ||
+                        p.getY() > newOffset.getY() ||
+                        p.getY() < newOffset.getY() - finalPlaygroundHeight);
+
+        List<Position> positioningOrderNoOverflow = clientPlayground.getPositioningOrder().stream()
+                .filter(noOverflowingPosition).toList();
+
+        Map<Position, ClientTile> fittedArea =  clientPlayground.getAllPositions().stream().filter(noOverflowingPosition)
+                .collect(Collectors.toMap(position -> position, clientPlayground::getTile));
+
+        ClientPlayground printablePlayground = new ClientPlayground(fittedArea, positioningOrderNoOverflow);
 
         // print first available positions (so they don't override corners)
-        for (Position pos : clientPlayground.getAvailablePositions()) {
+        for (Position pos : printablePlayground.getAvailablePositions()) {
             dp.drawCard(pos, drawAvailablePosition(pos));
         }
 
         // then print occupied positions. Already ordered
-        for (Position pos : clientPlayground.getPositioningOrder()) {
+        for (Position pos : printablePlayground.getPositioningOrder()) {
             dp.drawCard(pos, designCard(clientPlayground.getTile(pos).getFace()));
         }
 
         return dp.getPlaygroundRepresentation();
     }
 
-    public static void printPlayground(ClientPlayground clientPlayground) {
-        try {
-            String[][]playgroundToPrint = buildPlayground(clientPlayground);
-            int playgroundHeight = playgroundToPrint.length;
-            int playgroundWidth = playgroundToPrint[0].length;
+    /**
+     * This method will adapt the requested offset, in order to maximize the use of the available space.
+     * Offsets are relative to centered offset
+     * @param dp drawable playground (to take the max and min of the playground)
+     * @param entirePlaygroundSizes consider the real playground, not the one that will fit the screen
+     * @return the requested offset, normalized
+     */
+    private static Position normalizeRequestedOffset(Position requestedOffset, DrawablePlayground dp, Position currentOffset, int[] entirePlaygroundSizes) {
+        //Position offsetPos = Position.sum(currentOffset, requestedOffset);
+        int[] normalizedPosArr = new int[2];
 
-            // center playground
-            int printX = GameScreenArea.PLAYGROUND.screenPosition.getX() + ((GameScreenArea.PLAYGROUND.getWidth() - playgroundWidth) / 2);
-            int printY = GameScreenArea.PLAYGROUND.screenPosition.getY() + ((GameScreenArea.PLAYGROUND.getHeight() - playgroundHeight) / 2);
+        if (requestedOffset.getX() < 0)
+            normalizedPosArr[0] = Math.max(dp.getXs()[1] - currentOffset.getX(), requestedOffset.getX());
+        else
+            normalizedPosArr[0] = Math.min(dp.getXs()[0] - currentOffset.getX() - entirePlaygroundSizes[0],
+                    requestedOffset.getX());
 
-            printToLineColumn(printY,
-                    printX,
-                    playgroundToPrint);
-        } catch (InvalidCardRepresentationException | UnInitializedPlaygroundException | InvalidCardDimensionException e) {
-            throw new RuntimeException(e);
-        }
+        if (requestedOffset.getY() > 0)
+            normalizedPosArr[1] = Math.min(dp.getYs()[0] - currentOffset.getY(), requestedOffset.getY());
+        else
+            normalizedPosArr[1] = Math.max(dp.getYs()[1] - currentOffset.getY() + entirePlaygroundSizes[1],
+                    requestedOffset.getY());
+
+        return new Position(normalizedPosArr[0], normalizedPosArr[1]);
+    }
+
+    public static int[] maxPlaygroundScreenPositions() {
+        return new int[]{GameScreenArea.PLAYGROUND.getWidth() / (cardWidth - 1),
+                GameScreenArea.PLAYGROUND.getHeight() / (cardHeight - 1)};
+    }
+
+    /**
+     * Method used to print the playground
+     * @param clientPlayground of reference
+     * @param currentOffset of the playground
+     * @param requestedOffset related to current playground position
+     */
+    public static Position printPlayground(ClientPlayground clientPlayground, Position currentOffset, Position requestedOffset)
+            throws UndrawablePlaygroundException {
+        String[][]playgroundToPrint = buildPlayground(clientPlayground, currentOffset, requestedOffset);
+        int playgroundHeight = playgroundToPrint.length;
+        int playgroundWidth = playgroundToPrint[0].length;
+
+        // center playground
+        int printX = GameScreenArea.PLAYGROUND.screenPosition.getX() + ((GameScreenArea.PLAYGROUND.getWidth() - playgroundWidth) / 2);
+        int printY = GameScreenArea.PLAYGROUND.screenPosition.getY() + ((GameScreenArea.PLAYGROUND.getHeight() - playgroundHeight) / 2);
+
+        printToLineColumn(printY,
+                printX,
+                playgroundToPrint);
+
+        return requestedOffset;
     }
 
     // todo: please update card representation
@@ -1311,5 +1384,10 @@ public class ClientUtil {
         }
 
         return requirementsArea;
+    }
+
+    public static Position printPlayground(ClientPlayground playground, Position currOffset)
+            throws UndrawablePlaygroundException {
+        return printPlayground(playground, currOffset, new Position(0,0));
     }
 }
