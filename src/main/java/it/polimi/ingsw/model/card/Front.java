@@ -48,7 +48,8 @@ public class Front extends Face {
      * ad hoc constructor for StartingCards
      *
      * @param corners of startingCard
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException if <code>cornerList</code> doesn't have 4 corners, one of them is null or the
+     *                                  calculator is null.
      */
     public Front(Map<CornerPosition, Corner> corners) throws IllegalArgumentException {
         super(null, corners, new CalculateNoCondition());
