@@ -57,11 +57,6 @@ public class Deck<T> {
     }
 
     /**
-     * Tests if the stack is empty.
-     *
-     * @return true if the deck is empty, false otherwise.
-     */
-    /**
      * Retrieves the StreamReader of the resource
      *
      * @param resourcePath virtual path inside resource folder
