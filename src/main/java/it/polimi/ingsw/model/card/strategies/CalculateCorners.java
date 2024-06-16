@@ -8,6 +8,14 @@ import it.polimi.ingsw.model.board.Position;
  * Strategy used for golden cards that add points based on number of corners covered after it's placement
  */
 public class CalculateCorners implements CalculatePoints {
+
+    /**
+     * Calculates the points in the golden cards with corners as condition.
+     *
+     * @param pos        the position in the playground.
+     * @param playground the playground on which the calculation is to be carried.
+     * @return the calculated points.
+     */
     @Override
     public int calculatePoints(Position pos, Playground playground) {
         int multiplier = playground.getTile(pos).getFace().getScore();
