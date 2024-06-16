@@ -29,6 +29,14 @@ public class Message implements Serializable {
         return isBroadcast;
     }
 
+    /**
+     * Checks if a message has valid <code>sender</code>,<code>receiver</code> and <code>content</code>.
+     *
+     * @param sender   the sender of the message.
+     * @param receiver the recipient of the message.
+     * @param content  the content of the message.
+     * @throws IllegalArgumentException if sender, receiver or content is null
+     */
     private static void checkMessageInfo(String sender, String receiver, String content) throws IllegalArgumentException {
         if (sender == null) {
             throw new IllegalArgumentException("sender" + " must be a valid reference");
