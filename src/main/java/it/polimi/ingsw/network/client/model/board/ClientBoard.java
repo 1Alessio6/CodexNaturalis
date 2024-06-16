@@ -76,6 +76,12 @@ public class ClientBoard implements Serializable {
         this.resourceDeckTopBack = resourceDeckTopBack;
     }
 
+    /**
+     * Replaces the face up card in the <code>positionFaceUp</code> with a new <code>faceUpCard</code>.
+     *
+     * @param faceUpCard     the new face up card to replace the previous one.
+     * @param positionFaceUp the position of the face up card to replace.
+     */
     public void replaceFaceUpCard(ClientCard faceUpCard, int positionFaceUp) {
         this.faceUpCards.set(positionFaceUp, faceUpCard);
     }
