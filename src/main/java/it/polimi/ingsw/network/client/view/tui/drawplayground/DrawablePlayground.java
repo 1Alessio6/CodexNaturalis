@@ -1,11 +1,8 @@
-package it.polimi.ingsw.network.client.view.drawplayground;
+package it.polimi.ingsw.network.client.view.tui.drawplayground;
 
 import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.card.CornerPosition;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.view.tui.ClientUtil;
-
-import java.util.*;
 
 
 public class DrawablePlayground {
@@ -15,10 +12,14 @@ public class DrawablePlayground {
 
     // playground has min references: start to print to the min
     // be careful: yMax in playground has the lowest coordinate in the screen, as it's printed top-bottom
-    int xMax;
-    int xMin;
-    int yMax;
-    int yMin;
+    // 0 : max, 1 : min
+    int[] xs;
+    int[] ys;
+
+    public static int[] calculatePositionRangeFromMaxPrintableSize(int width, int height) {
+        // consider overlapping cards (integer division)
+        return new int[]{width/(ClientUtil.cardWidth - 1), height/(ClientUtil.cardHeight - 1)};
+    }
 
     private boolean validDimension(int cardWidth, int cardHeight) {
         // odd dimension to have a center
@@ -34,22 +35,34 @@ public class DrawablePlayground {
         this.cardHeight = cardHeight;
     }
 
-    private int calculateSizes(int max, int min) {
-        return max - min + 1;
+    /**
+     * Method used to get the range of xs or ys
+     * @param coordinates considered (in order: max and min)
+     * @return the dimension (minimum value is 1)
+     */
+    public static int calculateSizes(int[] coordinates) {
+        return coordinates[0] - coordinates[1] + 1;
     }
 
-    public void allocateMatrix(ClientPlayground playground) {
-        int[] xs = playground.getXMaxAndMin();
-        int[] ys = playground.getYMaxAndMin();
-        xMax = xs[0];
-        xMin = xs[1];
-        yMax = ys[0];
-        yMin = ys[1];
+    /**
+     * Method used to create the base where card will lay
+     * @param playground: needed to check if it overflows screen area
+     * @return number of xs and ys that will overflow the screen (if present)
+     */
+    public int[] allocateMatrix(ClientPlayground playground) {
+        xs = playground.getXMaxAndMin();
+        ys = playground.getYMaxAndMin();
 
-        int playgroundWidth = calculateSizes(xMax, xMin);
-        int playgroundHeight = calculateSizes(yMax, yMin);
-        int matrixWidth = (playgroundWidth - 1) * (cardWidth - 1) + cardWidth;
-        int matrixHeight = (playgroundHeight - 1) * (cardHeight - 1) + cardHeight;
+        int[] entirePlaygroundSizes = new int[]{calculateSizes(xs), calculateSizes(ys)};
+        int[] maxPrintablePlaygroundSizes = ClientUtil.maxPlaygroundScreenPositions();
+
+        // make the playground fit
+        // considering only overlapping cards (the last not overlapping is counted in the integer division)
+        int finalPlaygroundWidth =  Math.min(maxPrintablePlaygroundSizes[0], entirePlaygroundSizes[0]);
+        int finalPlaygroundHeight =  Math.min(maxPrintablePlaygroundSizes[1], entirePlaygroundSizes[1]);
+
+        int matrixWidth = (finalPlaygroundWidth - 1) * (cardWidth - 1) + cardWidth;
+        int matrixHeight = (finalPlaygroundHeight - 1) * (cardHeight - 1) + cardHeight;
         // initialize empty spaces, so there are no null strings
         matPlayground = ClientUtil.createEmptyArea(matrixHeight, matrixWidth);
 
@@ -63,6 +76,21 @@ public class DrawablePlayground {
             // last card doesn't overlap: count last space
             matPlayground[y][x + 1] += " ";
         }
+
+        // count positions to remove along x and y. Don't remove if playground fits the screen area
+        return new int[]{Math.max(entirePlaygroundSizes[0] - maxPrintablePlaygroundSizes[0], 0),
+                Math.max(entirePlaygroundSizes[1] - maxPrintablePlaygroundSizes[1], 0)};
+    }
+
+    /**
+     * Method to build playground exactly centered
+     * @param numOfOverflowing tiles
+     * @return the upper left position, that will leave exactly half of the overflowing position along x and y.
+     *          If no overflowing along a direction, that coordinate will be the same
+     */
+    public Position centeredStartPrintPos(int[] numOfOverflowing){
+        return new Position(xs[1] + numOfOverflowing[0] / 2,
+                ys[0] - numOfOverflowing[1] / 2);
     }
 
     private boolean validCardRepresentation(String[][] card) {
@@ -80,9 +108,9 @@ public class DrawablePlayground {
 
     // calculates the position of the upper left corner
     private Position calcPosInMatrix(Position cardPos) {
-        int x = (cardPos.getX() - xMin) * (cardWidth - 1);
+        int x = (cardPos.getX() - xs[1]) * (cardWidth - 1);
         // be careful: yMax in playground has the lowest coordinate in the screen, as it's printed top-bottom
-        int y = (cardPos.getY() - yMax) * (1 - cardHeight); // invert sign, as playground's y grows bottom-top
+        int y = (cardPos.getY() - ys[0]) * (1 - cardHeight); // invert sign, as playground's y grows bottom-top
         return new Position(x, y);
     }
 
@@ -104,5 +132,13 @@ public class DrawablePlayground {
             throw new UnInitializedPlaygroundException();
         }
         return matPlayground;
+    }
+
+    public int[] getXs() {
+        return xs;
+    }
+
+    public int[] getYs() {
+        return ys;
     }
 }
