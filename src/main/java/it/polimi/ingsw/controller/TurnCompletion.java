@@ -25,6 +25,9 @@ import java.util.List;
 public class TurnCompletion {
     private boolean isGameActive;
 
+    /**
+     * Constructs a new <code>TurnCompletion</code> in which the game is active
+     */
     public TurnCompletion() {
         isGameActive = true;
     }
