@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.heartbeat;
 
 import java.rmi.RemoteException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class HeartBeat extends TimerTask {
@@ -29,7 +30,7 @@ public class HeartBeat extends TimerTask {
         this.delay = 0;
         this.lastSentId = 0;
         timer = new Timer();
-        isActive = true;
+        isActive = new AtomicBoolean(true);
     }
 
     public synchronized void setHeartBeatPeriod(int heartBeatPeriod) {
@@ -66,7 +67,11 @@ public class HeartBeat extends TimerTask {
         lastSentId += 1;
         HeartBeatMessage ping = new HeartBeatMessage(handlerName, lastSentId);
         int delta = ping.getId() - mostRecentReceivedId.get();
-        //System.out.println("Delta is " + delta);
+
+        if (!isActive.get()) {
+            return;
+        }
+
         if (delta <= MAX_DELTA) {
             try {
                 heartBeatListener.receivePing(ping);
@@ -79,9 +84,16 @@ public class HeartBeat extends TimerTask {
         }
     }
 
-    public synchronized void terminate() {
-        isActive = false;
-        timer.cancel();
+    /**
+     * Terminates the heartbeat.
+     * The method is invoked whenever a disconnection occurs.
+     * All references to external objects become invalid to avoid running task to interfere with the state of such objects.
+     */
+    public void terminate() {
+        isActive.set(false);
+        synchronized (this) {
+            timer.cancel();
+        }
     }
 
     public synchronized boolean isActive() {
