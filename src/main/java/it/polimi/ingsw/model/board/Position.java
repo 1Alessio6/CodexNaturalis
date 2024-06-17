@@ -25,6 +25,11 @@ public class Position implements Serializable {
         this.y = y;
     }
 
+    /**
+     * Constructs a position given an existing <code>other</code> position
+     *
+     * @param other the existing position provided
+     */
     public Position(Position other) {
         x = other.getX();
         y = other.getY();
@@ -106,10 +111,22 @@ public class Position implements Serializable {
         return new Position(lhs.x + rhs.x, lhs.y + rhs.y);
     }
 
+    /**
+     * Subtracts two position's coordinates.
+     *
+     * @param lhs the first position whose coordinates are subtracted
+     * @param rhs the second position whose coordinates are subtracted
+     * @return a position that has as coordinates the result of the two parameter's coordinates
+     */
     public static Position diff(Position lhs, Position rhs) {
         return new Position(lhs.x - rhs.x, lhs.y - rhs.y);
     }
 
+    /**
+     * Returns the positions of the corners of a card, taking the centre of the card as the origin.
+     *
+     * @return a list with the offset positions
+     */
     public static List<Position> getOffsets() {
         return Arrays.asList(
                 new Position(1, -1),
