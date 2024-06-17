@@ -15,7 +15,9 @@ public class Playground {
     private final Map<Position, Tile> area;
     private int points;
     private final Map<Symbol, Integer> resources;
-
+    /**
+     * <code>positioningOrder</code> list contains the positions of the tiles in order of placement.
+     */
     List<Position> positioningOrder;
 
 
@@ -298,12 +300,22 @@ public class Playground {
         return new Position(k, j);
     }
 
+    /**
+     * Returns a string representation of <code>Playground</code>
+     *
+     * @return a string representing the <code>Playground</code>
+     */
     public String toString() {
 
         return "Area: \n" + areaToString() + "\n\nResources:\n" + this.resources.toString() + "\n\nScore:\n" + points;
 
     }
 
+    /**
+     * Returns a string representation of <code>area</code>
+     *
+     * @return a string representing the <code>area</code>
+     */
     private String areaToString() {
         StringBuilder areaString = new StringBuilder();
 
@@ -316,11 +328,16 @@ public class Playground {
 
 
     /**
-     * Exception thrown when the resource aren't enough.
+     * Exception thrown when the resources aren't enough.
      * This exception indicates the player resources are less than resources needed to place the card's
      * face he's trying to place.
      */
     public static class NotEnoughResourcesException extends Exception {
+        /**
+         * Constructs a <code>NotEnoughResourcesException</code> with the <code>message</code> provided
+         *
+         * @param message the detail message
+         */
         public NotEnoughResourcesException(String message) {
             super(message);
         }
@@ -333,6 +350,11 @@ public class Playground {
      * his playground, or it's not empty the tile.
      */
     public static class UnavailablePositionException extends Exception {
+        /**
+         * Constructs an <code>UnavailablePositionException</code> with the <code>message</code> provided
+         *
+         * @param message the detail message
+         */
         public UnavailablePositionException(String message) {
             super(message);
         }
