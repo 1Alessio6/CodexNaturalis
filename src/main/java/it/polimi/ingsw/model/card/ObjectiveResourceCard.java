@@ -14,6 +14,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 public final class ObjectiveResourceCard extends ObjectiveCard {
     private final Map<Symbol,Integer> condition;
 
+    /**
+     * Constructs an objective resource card with no parameters provided
+     */
     public ObjectiveResourceCard() {
         super();
         condition = new Hashtable<>();
@@ -56,6 +59,12 @@ public final class ObjectiveResourceCard extends ObjectiveCard {
         return condition;
     }
 
+    /**
+     * Checks if two objects are equal, two objective resource cards in particular
+     *
+     * @param o the object to be compared
+     * @return true if this object is equal to <code>o</code>, otherwise false
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -65,6 +74,9 @@ public final class ObjectiveResourceCard extends ObjectiveCard {
         return Objects.equals(condition, that.condition);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), condition);
