@@ -14,6 +14,9 @@ public class ChatDatabase {
      */
     private final List<Message> messageList;
 
+    /**
+     * Constructs a ChatDatabase with no parameters provided.
+     */
     public ChatDatabase() {
         messageList = new ArrayList<>();
     }
