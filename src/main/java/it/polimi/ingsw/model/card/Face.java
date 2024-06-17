@@ -36,7 +36,9 @@ abstract public class Face {
                 && !corners.containsValue(null);
     }
 
-
+    /**
+     * Constructs a face card with no parameters provided.
+     */
     public Face() {
         id = getIncrementalId();
         color = null;
@@ -110,6 +112,13 @@ abstract public class Face {
         return new HashMap<>();
     }
 
+    /**
+     * Calculates the points earned after the placement of a card in the <code>playground</code>.
+     *
+     * @param pos        the position in the playground
+     * @param playground the playground on which the calculation is to be carried
+     * @return the calculated points
+     */
     public int calculatePoints(Position pos, Playground playground) {
         return calculator.calculatePoints(pos, playground);
     }
@@ -122,6 +131,12 @@ abstract public class Face {
         return new HashMap<>();
     }
 
+    /**
+     * Checks if two objects are equal, two faces in particular
+     *
+     * @param o the object to be compared
+     * @return true if the object is equal to <code>o</code>, otherwise false
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -132,6 +147,13 @@ abstract public class Face {
                 && corners.equals(face.corners);
     }
 
+    /**
+     * Returns a hashcode depending on the attributes.
+     * Given two instance with the same attributes this method returns the same hashcode.
+     * Overrides the hashCode() method in the Object class.
+     *
+     * @return an int value representing the hashcode of the object.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(color, calculator, corners);
