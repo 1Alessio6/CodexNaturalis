@@ -2,6 +2,10 @@ package it.polimi.ingsw.model.card;
 
 import java.util.Map;
 
+/**
+ * Card represents the card
+ * It has front and back
+ */
 public class Card{
 
     /**
@@ -26,7 +30,7 @@ public class Card{
     }
 
     /**
-     * Returns the face of the face with the given side.
+     * Returns the face of the card with the given side.
      *
      * @param side of the card.
      * @return the face of the card.
