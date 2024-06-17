@@ -45,4 +45,6 @@ public abstract class Client implements VirtualView, HeartBeatHandler {
     }
 
     public abstract void runView() throws RemoteException;
+
+    protected abstract void disconnect();
 }

@@ -43,6 +43,12 @@ public class ClientSocket extends Client implements VirtualView, HeartBeatHandle
     }
 
     @Override
+    protected void disconnect() {
+        heartBeat.terminate();
+        closeResources();
+    }
+
+    @Override
     public VirtualView getInstanceForTheServer() {
         return this;
     }
@@ -104,6 +110,7 @@ public class ClientSocket extends Client implements VirtualView, HeartBeatHandle
     @Override
     public void updateAfterLobbyCrash() {
         clientView.showUpdateAfterLobbyCrash();
+        disconnect();
     }
 
     @Override
@@ -223,10 +230,8 @@ public class ClientSocket extends Client implements VirtualView, HeartBeatHandle
     @Override
     public void handleUnresponsiveness(String unresponsiveListener) {
         if (heartBeat.isActive()) {
-            System.err.println("Server doesn't respond to ping, I'll assume is inactive");
             clientView.showServerCrash();
-            heartBeat.terminate();
-            closeResources();
+            disconnect();
         }
     }
 

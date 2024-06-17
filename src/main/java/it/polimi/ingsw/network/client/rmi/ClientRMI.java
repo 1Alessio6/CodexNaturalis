@@ -188,8 +188,7 @@ public class ClientRMI extends Client {
     public synchronized void handleUnresponsiveness(String unresponsiveListener) {
         if (heartBeat.isActive()) {
             clientView.showServerCrash();
-            heartBeat.terminate();
-            clientView.showServerCrash();
+            disconnect();
         }
     }
 
