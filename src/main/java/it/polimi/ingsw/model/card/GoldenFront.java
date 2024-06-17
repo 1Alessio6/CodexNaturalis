@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * GoldenFront is a class that extends Front and represents the front of a golden card
+ */
 public final class GoldenFront extends Front {
     /**
      * Represents the condition to be fulfilled.
@@ -18,6 +21,9 @@ public final class GoldenFront extends Front {
      */
     private final Map<Symbol, Integer> requirements; /* set? */
 
+    /**
+     * Constructs a golden front card with no parameters provided.
+     */
     public GoldenFront() {
         super();
         pointsCondition = Condition.CORNERS;
@@ -64,6 +70,12 @@ public final class GoldenFront extends Front {
         return this.pointsCondition;
     }
 
+    /**
+     * Checks if two objects are equal, two golden fronts in particular
+     *
+     * @param o the object to be compared
+     * @return true if this object is equal to <code>o</code>, otherwise false
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -75,6 +87,13 @@ public final class GoldenFront extends Front {
                super.equals(o);
     }
 
+    /**
+     * Returns a hashcode depending on the attributes.
+     * Given two instance with the same attributes this method returns the same hashcode.
+     * Overrides the hashCode() method in the Object class.
+     *
+     * @return an int value representing the hashcode of the object.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), pointsCondition, requirements);
