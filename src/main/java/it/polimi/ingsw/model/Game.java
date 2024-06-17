@@ -1,7 +1,5 @@
 package it.polimi.ingsw.model;
 
-import com.google.gson.reflect.TypeToken;
-import it.polimi.ingsw.jsondeserializer.DeserializationHandler;
 import it.polimi.ingsw.model.Deck.Deck;
 import it.polimi.ingsw.model.Deck.DeckType;
 import it.polimi.ingsw.model.board.*;
@@ -24,7 +22,6 @@ import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 
-import java.io.FileNotFoundException;
 import java.util.*;
 
 import static java.lang.Math.min;
@@ -61,7 +58,7 @@ public class Game {
 
     private PhaseHandler phaseHandler;
 
-    public static final int MAX_DELAY_FOR_SUSPENDED_GAME = 5000;
+    public static final int MAX_DELAY_FOR_SUSPENDED_GAME = 120000;
 
     private ListenerHandler<VirtualView> listenerHandler;
 
