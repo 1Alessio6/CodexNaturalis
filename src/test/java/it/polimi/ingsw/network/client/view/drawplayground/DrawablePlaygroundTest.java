@@ -8,6 +8,8 @@ import it.polimi.ingsw.model.card.CornerPosition;
 import it.polimi.ingsw.model.card.Face;
 import it.polimi.ingsw.model.card.Front;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
+import it.polimi.ingsw.network.client.view.tui.drawplayground.DrawablePlayground;
+import it.polimi.ingsw.network.client.view.tui.drawplayground.InvalidCardDimensionException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -38,7 +40,7 @@ class DrawablePlaygroundTest {
         DrawablePlayground drawablePlayground = new DrawablePlayground(cardWidth, cardHeight);
         drawablePlayground.allocateMatrix(clientPlayground);
         Assertions.assertDoesNotThrow(() -> {
-            drawablePlayground.drawCard(clientPlayground, starterPosition, starterRep);
+            drawablePlayground.drawCard(starterPosition, starterRep);
         });
     }
 }
