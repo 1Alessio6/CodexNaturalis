@@ -33,6 +33,13 @@ public class ServerRMI implements VirtualServer, HeartBeatHandler {
         lockOnClientsNetworkStatus = new Object();
     }
 
+    public void remove(String name) {
+        synchronized (lockOnClientsNetworkStatus) {
+            System.out.println("remove client" + name);
+            activeClients.remove(name);
+        }
+    }
+
     public static void main(String[] args) {
         ServerRMI myServer = new ServerRMI();
         VirtualServer stub = null;
