@@ -12,7 +12,9 @@ public enum ANSIColor {
      * STRIKETHROUGH strikes out the characters
      */
     STRIKETHROUGH("\033[9m"),
-
+    /**
+     * BLACK changes the color of the text to black
+     */
     BLACK("\033[0;30m"),
     /**
      * RED changes the color of the text to red
@@ -34,6 +36,9 @@ public enum ANSIColor {
      * PURPLE changes the color of the text to purple
      */
     PURPLE("\033[0;35m"),
+    /**
+     * BLACK_BOLD makes the text bold
+     */
     BLACK_BOLD("\033[1m"),
     /**
      * ITALIC makes the text italicised
