@@ -6,6 +6,8 @@ import java.lang.reflect.Type;
 
 /**
  * Custom interface adapter used for serializing and deserializing
+ *
+ * @param <T> object to serialize/deserialize
  */
 public class InterfaceAdaptor<T> implements JsonSerializer<T>, JsonDeserializer<T> {
 
