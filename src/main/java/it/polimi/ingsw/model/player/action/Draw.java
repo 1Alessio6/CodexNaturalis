@@ -30,7 +30,7 @@ public class Draw extends PlayerAction {
      * {@inheritDoc}
      */
     @Override
-    public void addCard(Player player, Card newCard) throws InvalidPlayerActionException {
+    public void addCard(Player player, Card newCard) {
         List<Card> cards = player.getCards();
         assert (cards.size() == 2);
         cards.add(newCard);
