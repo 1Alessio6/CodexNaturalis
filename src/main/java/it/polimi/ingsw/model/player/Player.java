@@ -197,7 +197,8 @@ public class Player {
      * @param card to be discarded.
      */
     public void discard(Card card) {
-        assert (cards.remove(card)); // the card must exist
+        boolean cardIsRemoved = cards.remove(card);
+        assert cardIsRemoved; // the card must exist
     }
 
 
