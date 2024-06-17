@@ -27,6 +27,9 @@ public class Lobby {
 
     private static final int INVALID_NUM_PLAYERS = -1;
 
+    /**
+     * Constructs a new lobby with no parameters provided.
+     */
     public Lobby() {
         numPlayersToStartTheGame = INVALID_NUM_PLAYERS;
         creator = null;
