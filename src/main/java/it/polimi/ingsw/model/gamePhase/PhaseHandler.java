@@ -27,6 +27,9 @@ public class PhaseHandler {
         this.lastPlayerIdx = numPlayers - 1;
     }
 
+    /**
+     * Sets the last normal turn active
+     */
     public void setLastNormalTurn() {
         lastNormalTurn = true;
     }
