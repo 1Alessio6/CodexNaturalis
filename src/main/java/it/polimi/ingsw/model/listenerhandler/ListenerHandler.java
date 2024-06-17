@@ -66,7 +66,7 @@ public class ListenerHandler<ListenerType> {
     }
 
     public synchronized void clear() {
-        Set<String> users = idToListener.keySet();
+        List<String> users = new ArrayList<>(idToListener.keySet());
 
         for (String user : users) {
             removeUser(user);
