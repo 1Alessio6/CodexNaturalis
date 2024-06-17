@@ -3,6 +3,9 @@ package it.polimi.ingsw.model.card;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * Corner represents the corner of a card
+ */
 public class Corner implements Serializable {
 
     /**
@@ -77,6 +80,12 @@ public class Corner implements Serializable {
         return String.valueOf(symbol);
     }
 
+    /**
+     * Checks if two objects are equal, two corners in particular.
+     *
+     * @param o the object to be compared
+     * @return true if this object is equal to <code>o</code>, otherwise false
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -85,6 +94,13 @@ public class Corner implements Serializable {
         return isCovered == corner.isCovered && symbol == corner.symbol;
     }
 
+    /**
+     * Returns a hashcode depending on the attributes.
+     * Given two instance with the same attributes this method returns the same hashcode.
+     * Overrides the hashCode() method in the Object class.
+     *
+     * @return an int value representing the hashcode of the object.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(isCovered, symbol);
