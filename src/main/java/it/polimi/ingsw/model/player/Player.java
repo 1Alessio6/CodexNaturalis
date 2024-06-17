@@ -128,6 +128,11 @@ public class Player {
         return playerAction;
     }
 
+    /**
+     * Returns the player's secret objective card.
+     *
+     * @return the secret objective card.
+     */
     public ObjectiveCard getObjective() {
         return objectiveCards.getFirst();
     }
