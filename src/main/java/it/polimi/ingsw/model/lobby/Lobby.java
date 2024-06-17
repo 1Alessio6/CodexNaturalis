@@ -49,17 +49,18 @@ public class Lobby {
      * @throws FullLobbyException       if the lobby contains 4 players or the number chosen by the creator of the lobby.
      */
     public void add(String username, VirtualView listener) throws IllegalArgumentException, FullLobbyException, InvalidUsernameException {
-        int numListener = listenerHandler.getNumListener();
-        if (numListener == numPlayersToStartTheGame || numListener == MAX_NUMBER) {
-            throw new FullLobbyException();
-        }
         if (!isValid(username)) {
             throw new InvalidUsernameException();
         }
 
+        int numListener = listenerHandler.getNumListener();
+        if (numListener == numPlayersToStartTheGame || numListener == MAX_NUMBER) {
+            throw new FullLobbyException();
+        }
+
         listenerHandler.add(username, listener);
 
-        listenerHandler.notify(username, receiver -> receiver.resultOfLogin(true, username));
+        listenerHandler.notify(username, receiver -> receiver.resultOfLogin(true, username, ""));
 
         if (creator == null) {
             creator = username;
@@ -93,26 +94,29 @@ public class Lobby {
             try {
                 game.add(user, listenerHandler.get(user));
             } catch (InvalidUsernameException e) {
-                System.err.println("Username is declared invalid even if it shouldn't ");
+                System.err.println("Username is declared invalid even if it shouldn't => server will die");
                 e.printStackTrace();
+
             }
         }
 
         for (String user : exceededPlayers) {
-            listenerHandler.notify(user, receiver -> receiver.reportError("The game is started with enough player: you are an exceeding player"));
+            listenerHandler.notify(user, VirtualView::showUpdateExceedingPlayer);
         }
 
         return game;
     }
 
-    private void resetLobby() {
+    private List<String> resetLobby() {
         System.out.println("Lobby crashed");
         listenerHandler.notifyBroadcast(VirtualView::updateAfterLobbyCrash);
 
-        listenerHandler.clear();
+        List<String> toRemoves = listenerHandler.getIds();
         creator = null;
         numPlayersToStartTheGame = INVALID_NUM_PLAYERS;
         isGameReady = false;
+        listenerHandler.clear();
+        return toRemoves;
     }
 
     /**
@@ -120,19 +124,25 @@ public class Lobby {
      * If the creator leaves the lobby before choosing the number of players, the lobby will reset itself.
      *
      * @param username of the player to remove.
+     * @return a list of usernames that have been removed.
+     * It's not a single return value because of the lobby auto reset.
+     * For which each player is removed.
      */
-    public void remove(String username) throws InvalidUsernameException {
+    public List<String> remove(String username) throws InvalidUsernameException {
+        System.out.println("User " + username + " has left the lobby");
         if (listenerHandler.get(username) == null) {
             throw new InvalidUsernameException();
         }
         listenerHandler.remove(username);
-        // if the creator leaves the lobby before setting the number of players
+        List<String> removedUsers = new ArrayList<>();
         if (creator != null && creator.equals(username) && numPlayersToStartTheGame == INVALID_NUM_PLAYERS) {
-            resetLobby();
+            removedUsers.addAll(resetLobby());
         } else {
             List<String> usernames = new ArrayList<>(listenerHandler.getIds());
             listenerHandler.notifyBroadcast(receiver -> receiver.showUpdatePlayersInLobby(usernames));
+            removedUsers.add(username);
         }
+        return removedUsers;
     }
 
     /**
