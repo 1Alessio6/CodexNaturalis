@@ -23,6 +23,7 @@ import it.polimi.ingsw.network.server.socket.message.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.Socket;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
@@ -31,14 +32,16 @@ public class ClientHandler implements VirtualView, HeartBeatHandler {
     private final Server server;
     private final PrintWriter out;
     private final BufferedReader input;
+    private final Socket clientSocket;
     private final Gson gson;
     private String username;
     private final HeartBeat heartBeat;
 
-    public ClientHandler(Server server, BufferedReader input, PrintWriter out) {
+    public ClientHandler(Server server, BufferedReader input, PrintWriter out, Socket clientSocket) {
         this.server = server;
         this.out = out;
         this.input = input;
+        this.clientSocket = clientSocket;
         GsonBuilder builder = new GsonBuilder().enableComplexMapKeySerialization();
         this.gson = builder.create();
         heartBeat = new HeartBeat(this, "handler", this, "handler");
