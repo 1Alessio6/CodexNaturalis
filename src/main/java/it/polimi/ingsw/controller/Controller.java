@@ -1,9 +1,7 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.Deck.DeckType;
-import it.polimi.ingsw.model.InvalidGamePhaseException;
-import it.polimi.ingsw.model.NonexistentPlayerException;
-import it.polimi.ingsw.model.SuspendedGameException;
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.card.Color.InvalidColorException;
@@ -16,7 +14,6 @@ import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.model.lobby.FullLobbyException;
 import it.polimi.ingsw.model.lobby.Lobby;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
-import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.VirtualView;
@@ -66,7 +63,7 @@ public class Controller implements EventListener, GameRequest {
         boolean isAccepted;
         if (!validUsername(username)) {
             try {
-                user.resultOfLogin(false, username);
+                user.resultOfLogin(false, username, "empty name is not allowed here");
                 isAccepted = false;
             } catch (RemoteException remoteException) {
                 System.err.println("Connection error");
@@ -110,7 +107,7 @@ public class Controller implements EventListener, GameRequest {
             isJoined = true;
         } catch (FullLobbyException e) {
             try {
-                lobbyListener.reportError(e.getMessage());
+                lobbyListener.showUpdateFullLobby();
                 isJoined = false;
             } catch (RemoteException remoteException) {
                 System.err.println("Connection error: " + remoteException.getMessage());
@@ -118,7 +115,7 @@ public class Controller implements EventListener, GameRequest {
             }
         } catch (InvalidUsernameException e) {
             try {
-                lobbyListener.resultOfLogin(false, username);
+                lobbyListener.resultOfLogin(false, username, e.getMessage());
             } catch (RemoteException remoteException) {
                 System.err.println("Connection error: " + remoteException.getMessage());
             }
@@ -132,14 +129,13 @@ public class Controller implements EventListener, GameRequest {
             game.add(username, gameListener);
         } catch (InvalidUsernameException e) {
             try {
-                gameListener.resultOfLogin(false, username);
+                gameListener.resultOfLogin(false, username, e.getMessage());
                 return false;
             } catch (RemoteException remoteException) {
                 System.err.println("Connection error");
                 return false;
             }
         }
-
         listenerHandler.add(username, gameListener);
 
         turnCompletion.handleJoin(game);
@@ -155,8 +151,6 @@ public class Controller implements EventListener, GameRequest {
             return;
         }
 
-        listenerHandler.remove(username);
-
         if (!lobby.isGameReady()) {
             leaveLobby(username);
         } else {
@@ -171,7 +165,10 @@ public class Controller implements EventListener, GameRequest {
      */
     private void leaveLobby(String username) {
         try {
-            lobby.remove(username);
+            List<String> removedUsers = lobby.remove(username);
+            for (String user : removedUsers) {
+                listenerHandler.remove(user);
+            }
         } catch (InvalidUsernameException e) {
             reportError(username, e.getMessage());
         }
@@ -196,6 +193,7 @@ public class Controller implements EventListener, GameRequest {
                     }
                 }, Game.MAX_DELAY_FOR_SUSPENDED_GAME);
             }
+            listenerHandler.remove(username);
         } catch (InvalidUsernameException e) {
             reportError(username, e.getMessage());
         }
