@@ -6,7 +6,13 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 
+/**
+ * Test to check the correct differentiation between back and front faces
+ */
 public class FaceTest {
+    /**
+     * Test to check the differentiation between a back and a front card
+     */
     @Test
     void backDifferentFromFront() {
         Face f1 = new Front(
@@ -24,6 +30,9 @@ public class FaceTest {
         Assertions.assertNotEquals(f1, f2);
     }
 
+    /**
+     * Test to check the equality of two front cards if they have the same attributes
+     */
     @Test
     void frontsWithSameAttributes_equalFronts() {
 
@@ -42,6 +51,9 @@ public class FaceTest {
         Assertions.assertEquals(f1, f2);
     }
 
+    /**
+     * Test to check that two different front cards have different attributes
+     */
     @Test
     void frontsWithDifferentAttributes_differentFronts() {
 
@@ -60,7 +72,9 @@ public class FaceTest {
         Assertions.assertNotEquals(f1, f2);
     }
 
-
+    /**
+     * Test to check the equality of two back cards if they have the same attributes
+     */
     @Test
     void backsWithSameAttributes_equalBacks() {
         Face f1 = new Back(
@@ -78,6 +92,9 @@ public class FaceTest {
         Assertions.assertEquals(f1, f2);
     }
 
+    /**
+     * Test to check that two different back cards have different attributes
+     */
     @Test
     void backsWithDifferentAttributes_differentBacks() {
 
