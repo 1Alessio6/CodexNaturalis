@@ -105,13 +105,31 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
             loadScene(SceneType.CRASH);
             //todo set crash message
             currentScene = SceneType.CRASH;
-            ((CrashScene)currentSceneController).setLobbyFullMessage();
+            ((CrashScene)currentSceneController).setReason("LOBBY CRASHED");
         });
     }
 
     @Override
-    public void showInvalidLogin() {
-       reportError("Invalid username");
+    public void showUpdateFullLobby() {
+        Platform.runLater(() -> {
+            loadScene(SceneType.CRASH);
+            currentScene = SceneType.CRASH;
+            ((CrashScene)currentSceneController).setReason("FULL LOBBY");
+        });
+    }
+
+    @Override
+    public void showUpdateExceedingPlayer() {
+        Platform.runLater(() -> {
+            loadScene(SceneType.CRASH);
+            currentScene = SceneType.CRASH;
+            ((CrashScene)currentSceneController).setReason("EXCEEDING PLAYER");
+        });
+    }
+
+    @Override
+    public void showInvalidLogin(String details) {
+       reportError(details);
     }
 
     //todo fix bug after multiple cards in hand after a connection after a crash

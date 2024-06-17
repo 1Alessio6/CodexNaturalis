@@ -39,10 +39,13 @@ public class ClientTUI implements View {
         this.controller = controller;
         this.console = new Scanner(System.in);
 
+        setActionsForConnection();
+    }
+
+    private void setActionsForConnection() {
         availableActions.add(TUIActions.HELP);
         availableActions.add(TUIActions.QUIT);
         availableActions.add(TUIActions.CONNECT);
-        //availableActions.add(TUIActions.SELECTUSERNAME);
     }
 
     private void parseGameCommands() {
@@ -309,9 +312,7 @@ public class ClientTUI implements View {
     public void showServerCrash() {
         ClientUtil.printCommand("Server is crashed. To connect again you have to join the game");
         availableActions.clear();
-        availableActions.add(TUIActions.HELP);
-        availableActions.add(TUIActions.QUIT);
-        availableActions.add(TUIActions.CONNECT);
+        setActionsForConnection();
     }
 
     private void setAvailableActions() {
@@ -374,11 +375,25 @@ public class ClientTUI implements View {
     @Override
     public void showUpdateAfterLobbyCrash() {
         ClientUtil.printCommand("Lobby crashed! You will be disconnected. Please restart the client...");
+        setActionsForConnection();
     }
 
     @Override
-    public void showInvalidLogin() {
-        System.out.println("Invalid username! Please insert a new username with the command <selectusername> <your name>");
+    public void showUpdateFullLobby() {
+        ClientUtil.printCommand("Full lobby, sorry you have to connect somewhere else");
+        setActionsForConnection();
+    }
+
+    @Override
+    public void showUpdateExceedingPlayer() {
+        ClientUtil.printCommand("You're an exceeding player!");
+        setActionsForConnection();
+    }
+
+    @Override
+    public void showInvalidLogin(String details) {
+        System.out.println("Invalid username! Reason: " + details);
+        System.out.println("Please insert a new username with the command <selectusername> <your name>");
         availableActions.add(TUIActions.SELECTUSERNAME);
     }
 
