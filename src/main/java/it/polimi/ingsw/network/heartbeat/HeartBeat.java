@@ -5,10 +5,14 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * The HeartBeat class keeps track of the existence of the remote endpoint which can be the server for the client or the client for the server.
+ * The HeartBeat must always reflect the state of the connection, that is, it has to be terminated {@link #terminate()} whenever a connection ends.
+ */
 public class HeartBeat extends TimerTask {
     private String handlerName;
     private String listenerName;
-    private final HeartBeatHandler heartBeatHandler;
+    private HeartBeatHandler heartBeatHandler;
     private HeartBeatListener heartBeatListener;
     private static final int MAX_DELTA = 3;
     private static final int DEF_HEART_BEAT_PERIOD = 1000; // ms
@@ -17,9 +21,16 @@ public class HeartBeat extends TimerTask {
     private final Timer timer;
     private AtomicInteger mostRecentReceivedId;
     private Integer lastSentId;
-    private boolean isActive;
+    private AtomicBoolean isActive;
 
 
+    /**
+     * Constructs the heart beat.
+     * @param heartBeatHandler the local end point of the connection.
+     * @param handlerName the identifier for the handler.
+     * @param heartBeatListener the remote end point of the connection.
+     * @param listenerName the identifier for the listener.
+     */
     public HeartBeat(HeartBeatHandler heartBeatHandler, String handlerName, HeartBeatListener heartBeatListener, String listenerName) {
         this.heartBeatHandler = heartBeatHandler;
         this.handlerName = handlerName;
@@ -44,12 +55,19 @@ public class HeartBeat extends TimerTask {
         this.delay = delay;
     }
 
-    public synchronized void setHandlerName(String name){
+    /**
+     * Sets the name of the handler.
+     * @param name of the handler.
+     */
+    public synchronized void setHandlerName(String name) {
         this.handlerName = name;
     }
 
+    /**
+     * Starts sending the heart beat to the remote end point.
+     */
     public synchronized void startHeartBeat() {
-        isActive = true;
+      //  isActive = true;
         timer.scheduleAtFixedRate(this, delay, heartBeatPeriod);
     }
 
@@ -58,10 +76,17 @@ public class HeartBeat extends TimerTask {
  //       this.listenerName = listenerName;
  //   }
 
+    /**
+     * Registers the arrival of a message from the remote end point.
+     * @param pong the message notify the existence of the remote endpoint.
+     */
     public void registerMessage(HeartBeatMessage pong) {
         mostRecentReceivedId.set(pong.getId());
     }
 
+    /**
+     * Sends the heart beat to the remote reference notifying about the existence of the local end point.
+     */
     @Override
     public synchronized void run() {
         lastSentId += 1;
@@ -96,7 +121,12 @@ public class HeartBeat extends TimerTask {
         }
     }
 
-    public synchronized boolean isActive() {
-        return isActive;
+    /**
+     * Returns the state of the heartbeat.
+     * @return true if the heart beat is valid, false otherwise.
+     * The heart beat is valid if it's never terminated.
+     */
+    public boolean isActive() {
+        return isActive.get();
     }
 }
