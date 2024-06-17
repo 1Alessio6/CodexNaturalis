@@ -38,6 +38,9 @@ public class Controller implements EventListener, GameRequest {
 
     private ListenerHandler<VirtualView> listenerHandler;
 
+    /**
+     * Constructs a new <code>Controller</code> with no parameters provided.
+     */
     public Controller() {
         lobby = new Lobby();
         timerForSuspendedGame = new Timer();
