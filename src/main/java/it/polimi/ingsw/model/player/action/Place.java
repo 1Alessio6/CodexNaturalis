@@ -13,7 +13,7 @@ import it.polimi.ingsw.model.player.Player;
 public class Place extends PlayerAction {
 
     /**
-     * @inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public int placeCard(Player player, Card card, Side side, Position position)
