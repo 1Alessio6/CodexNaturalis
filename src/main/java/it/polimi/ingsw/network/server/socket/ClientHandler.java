@@ -110,7 +110,7 @@ public class ClientHandler implements VirtualView, HeartBeatHandler {
                 line = input.readLine();
             }
         } catch (IOException e) {
-            System.err.println("server stops hearing channel has been closed");
+            System.err.println("server stops hearing: channel has been closed");
         }
     }
 
@@ -128,6 +128,7 @@ public class ClientHandler implements VirtualView, HeartBeatHandler {
         String jsonMessage = gson.toJson(message);
         out.println(jsonMessage);
         out.flush();
+        closeResources();
     }
 
     @Override
@@ -273,10 +274,11 @@ public class ClientHandler implements VirtualView, HeartBeatHandler {
     private void closeResources() {
         try {
             input.close();
+            out.close();
+            clientSocket.close();
         } catch (IOException e) {
             System.out.println("input has already been closed");
         }
-        out.close();
     }
 
     private void terminate() {
