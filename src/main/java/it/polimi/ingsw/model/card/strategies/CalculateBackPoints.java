@@ -20,6 +20,12 @@ public class CalculateBackPoints implements CalculatePoints {
         return 0;
     }
 
+    /**
+     * Checks if two objects are equal.
+     *
+     * @param o the object to be compared
+     * @return true if this object is equal to <code>o</code>, otherwise false
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
