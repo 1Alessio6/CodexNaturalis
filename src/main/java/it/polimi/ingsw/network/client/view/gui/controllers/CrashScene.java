@@ -1,28 +1,15 @@
 package it.polimi.ingsw.network.client.view.gui.controllers;
 
-import it.polimi.ingsw.model.lobby.FullLobbyException;
-import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.network.client.view.gui.SceneType;
-import it.polimi.ingsw.network.client.view.gui.util.GUICards;
-import it.polimi.ingsw.network.client.view.gui.util.GUIUtil;
 import it.polimi.ingsw.network.client.view.gui.util.Icon;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
-
-import java.rmi.RemoteException;
-
-import static it.polimi.ingsw.network.client.view.gui.util.GUICards.pathToImage;
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.createMainBackground;
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.isClicked;
 
@@ -73,8 +60,8 @@ public class CrashScene extends SceneController {
 
     }
 
-    public void setLobbyFullMessage(){
-        message.setText("LOBBY ALREADY FULL");
+    public void setReason(String reason) {
+        message.setText(reason);
     }
 
 
