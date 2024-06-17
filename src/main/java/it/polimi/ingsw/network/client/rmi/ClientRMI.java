@@ -59,13 +59,20 @@ public class ClientRMI extends Client {
     }
 
     @Override
-    public void resultOfLogin(boolean accepted, String username) throws RemoteException {
+    protected void disconnect() {
+        heartBeat.terminate();
+    }
+
+
+
+    @Override
+    public void resultOfLogin(boolean accepted, String username, String details) throws RemoteException {
         if (accepted) {
             controller.setMainPlayerUsername(username);
             heartBeat.setHandlerName(username);
             heartBeat.startHeartBeat();
         } else {
-            clientView.showInvalidLogin();
+            clientView.showInvalidLogin(details);
         }
     }
 

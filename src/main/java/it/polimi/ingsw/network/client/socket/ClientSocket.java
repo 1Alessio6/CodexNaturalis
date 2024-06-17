@@ -198,13 +198,13 @@ public class ClientSocket extends Client implements VirtualView, HeartBeatHandle
     }
 
     @Override
-    public void resultOfLogin(boolean accepted, String username) throws RemoteException {
+    public void resultOfLogin(boolean accepted, String username, String details) throws RemoteException {
         if (accepted) {
             controller.setMainPlayerUsername(username);
             heartBeat.setHandlerName(username);
            // heartBeat.startHeartBeat();
         } else {
-            clientView.showInvalidLogin();
+            clientView.showInvalidLogin(details);
         }
     }
 

@@ -75,5 +75,5 @@ public interface VirtualView extends HeartBeatListener, Remote {
 
     void reportError(String details) throws RemoteException;
 
-    void resultOfLogin(boolean accepted, String username) throws RemoteException;
+    void resultOfLogin(boolean accepted, String username, String details) throws RemoteException;
 }

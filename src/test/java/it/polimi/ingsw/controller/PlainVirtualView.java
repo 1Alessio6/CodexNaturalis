@@ -40,6 +40,16 @@ public class PlainVirtualView implements VirtualView {
     }
 
     @Override
+    public void showUpdateFullLobby() throws RemoteException {
+
+    }
+
+    @Override
+    public void showUpdateExceedingPlayer() throws RemoteException {
+
+    }
+
+    @Override
     public void showUpdatePlayerStatus(boolean isConnected, String username) throws RemoteException {
 
     }
@@ -90,7 +100,7 @@ public class PlainVirtualView implements VirtualView {
     }
 
     @Override
-    public void resultOfLogin(boolean accepted, String username) throws RemoteException {
+    public void resultOfLogin(boolean accepted, String username, String details) throws RemoteException {
 
     }
 

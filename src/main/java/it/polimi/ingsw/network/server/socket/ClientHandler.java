@@ -226,11 +226,11 @@ public class ClientHandler implements VirtualView, HeartBeatHandler {
     }
 
     @Override
-    public void resultOfLogin(boolean accepted, String username) throws RemoteException {
+    public void resultOfLogin(boolean accepted, String username, String details) throws RemoteException {
         if (accepted) {
             this.username = username;
         }
-        ResultOfLogin message = new ResultOfLogin(accepted, username);
+        ResultOfLogin message = new ResultOfLogin(accepted, username, details);
         String jsonMessage = gson.toJson(message);
         out.println(jsonMessage);
         out.flush();
