@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Back is a class that extends Face and represents the back of the face
+ */
 public class Back extends Face {
 
     /**
@@ -14,13 +17,16 @@ public class Back extends Face {
      */
     private final Map<Symbol, Integer> resources;
 
+    /**
+     * Constructs a back card with no parameters provided
+     */
     public Back() {
         super();
         resources = new HashMap<>();
     }
 
     /**
-     * Constructs a front card with the color, corners and resources provided.
+     * Constructs a back card with the color, corners and resources provided.
      *
      * @param color     of the card.
      * @param corners   of the card.
@@ -107,6 +113,12 @@ public class Back extends Face {
         return "{ Color: " + this.getColor() + "| Symbol: ( " + symbolString + " ) " + "| Corners: [ " + cornerString + " ] ";
     }
 
+    /**
+     * Checks if two objects are equal, two backs in particular.
+     *
+     * @param o the object to be compared
+     * @return true if this object is equal to <code>o</code>, otherwise false
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -116,6 +128,13 @@ public class Back extends Face {
         return Objects.equals(resources, back.resources);
     }
 
+    /**
+     * Returns a hashcode depending on the attributes.
+     * Given two instance with the same attributes this method returns the same hashcode.
+     * Overrides the hashCode() method in the Object class.
+     *
+     * @return an int value representing the hashcode of the object.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), resources);
