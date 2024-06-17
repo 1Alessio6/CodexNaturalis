@@ -7,6 +7,9 @@ import it.polimi.ingsw.model.card.InvalidCardIdException;
  * the specified range
  */
 public class InvalidPlayersNumberException extends Exception {
+    /**
+     * Constructs an <code>InvalidPlayersNumberException</code> with no detail message.
+     */
     public InvalidPlayersNumberException() {
         super("Invalid players number. Set a number between 2 and 4");
     }
