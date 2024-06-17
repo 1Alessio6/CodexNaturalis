@@ -13,6 +13,11 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.*;
 
+/**
+ * Deck represents a <code>T</code> deck
+ *
+ * @param <T> the kind of the card
+ */
 public class Deck<T> {
 
     /**
@@ -93,6 +98,11 @@ public class Deck<T> {
         return deck.isEmpty() ? null : deck.peek();
     }
 
+    /**
+     * Checks whether a deck is empty or not.
+     *
+     * @return true if the deck is empty, false otherwise.
+     */
     public boolean isEmpty() {
         return deck.isEmpty();
     }
