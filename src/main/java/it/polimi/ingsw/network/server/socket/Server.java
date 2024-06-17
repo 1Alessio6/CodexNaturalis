@@ -27,7 +27,7 @@ public class Server {
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             System.out.println("Received connection");
-            ClientHandler handler = new ClientHandler(this, in, out);
+            ClientHandler handler = new ClientHandler(this, in, out, clientSocket);
             new Thread(handler::run).start();
         }
     }

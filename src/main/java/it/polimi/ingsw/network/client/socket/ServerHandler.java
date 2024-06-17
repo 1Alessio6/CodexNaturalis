@@ -47,7 +47,15 @@ public class ServerHandler implements VirtualServer {
                 switch (type) {
                     case RESULT_OF_LOGIN:
                         ResultOfLogin resultOfLogin = gson.fromJson(line, ResultOfLogin.class);
-                        clientSocket.resultOfLogin(resultOfLogin.getAccepted(), resultOfLogin.getSender());
+                        clientSocket.resultOfLogin(resultOfLogin.getAccepted(), resultOfLogin.getSelectedUsername(), resultOfLogin.getDetails());
+                        break;
+                    case FULL_LOBBY:
+                        FullLobbyMessage fullLobbyMessage = gson.fromJson(line, FullLobbyMessage.class);
+                        clientSocket.showUpdateFullLobby();
+                        break;
+                    case EXCEEDING_PLAYER:
+                        ExceedingPlayerMessage exceedingPlayerMessage = gson.fromJson(line, ExceedingPlayerMessage.class);
+                        clientSocket.showUpdateExceedingPlayer();
                         break;
                     case UPDATE_CREATOR:
                         clientSocket.updateCreator();
