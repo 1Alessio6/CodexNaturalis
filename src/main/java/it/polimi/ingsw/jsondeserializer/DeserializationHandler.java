@@ -11,6 +11,11 @@ import java.util.Scanner;
 
 import it.polimi.ingsw.model.card.strategies.CalculatePoints;
 
+/**
+ * Handles the deserialization of the object <code>T</code>
+ *
+ * @param <T> the object to deserialize
+ */
 public class DeserializationHandler<T> {
     GsonBuilder builder;
     Gson gson;
