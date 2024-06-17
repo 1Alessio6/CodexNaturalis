@@ -7,7 +7,13 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 
+/**
+ * Test to check whether two golden front cards match or not, depending on their attributes.
+ */
 public class GoldenFrontTest {
+    /**
+     * Test to check if two golden front card are the same depending on their attributes
+     */
     @Test
     void sameAttributes_equalGoldenFronts() {
         GoldenFront gf1 = new GoldenFront(
@@ -31,6 +37,10 @@ public class GoldenFrontTest {
         Assertions.assertEquals(gf1, gf2);
     }
 
+    /**
+     * Test to check if two golden front cards are the different depending on their attributes, including non-null
+     * corners
+     */
     @Test
     void differentBaseClassAttributes_differentGoldenFronts() {
         GoldenFront gf1 = new GoldenFront(
@@ -58,6 +68,9 @@ public class GoldenFrontTest {
         Assertions.assertNotEquals(gf1, gf2);
     }
 
+    /**
+     * Test to check if two golden front cards are different depending on their attributes, including non-null resources
+     */
     @Test
     void differentSuperClassAttributes_differentGoldenFronts() {
         GoldenFront gf1 = new GoldenFront(
