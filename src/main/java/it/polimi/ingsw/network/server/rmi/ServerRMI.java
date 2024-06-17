@@ -7,7 +7,6 @@ import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
-import it.polimi.ingsw.network.heartbeat.HeartBeat;
 import it.polimi.ingsw.network.heartbeat.HeartBeatHandler;
 import it.polimi.ingsw.network.heartbeat.HeartBeatMessage;
 
@@ -22,7 +21,7 @@ public class ServerRMI implements VirtualServer, HeartBeatHandler {
     private final Controller myController;
     private final static String SERVER_NAME = "ServerRmi";
     private final Object lockOnClientsNetworkStatus;
-    private final Map<String, HeartBeat> activeClients;
+    private final Map<String, ClientHandlerRMI> activeClients;
 
     public static String getServerName() {
         return SERVER_NAME;
@@ -67,27 +66,28 @@ public class ServerRMI implements VirtualServer, HeartBeatHandler {
     @Override
     public void connect(VirtualView client, String username) throws RemoteException {
         System.out.println("Received connection from " + username);
-        boolean accepted = myController.handleConnection(username, client);
+        ClientHandlerRMI clientHandlerRMI = new ClientHandlerRMI(this, client, username);
+        boolean accepted = myController.handleConnection(username, clientHandlerRMI);
         if (accepted) {
-            // System.err.println("User " + username + " has been accepted");
+            System.err.println("User " + username + " has been accepted");
             synchronized (lockOnClientsNetworkStatus) {
-                HeartBeat heartBeat = new HeartBeat(this, "server", client, username);
-                activeClients.put(username, heartBeat);
-                heartBeat.startHeartBeat();
+                clientHandlerRMI = new ClientHandlerRMI(this, client, username);
+                activeClients.put(username, clientHandlerRMI);
+                clientHandlerRMI.startHeartBeat();
             }
         } else {
-            System.err.println("User " + username + " has not been accepted");
+            System.err.println("User " + username + " has not been accepted ");
         }
     }
 
     private void handleDisconnection(String disconnectedUser) {
-        if (!myController.isRegisteredUsername(disconnectedUser)) {
-            return;
-        }
+        System.out.println("handle disconnection of " + disconnectedUser);
         myController.handleDisconnection(disconnectedUser);
         synchronized (lockOnClientsNetworkStatus) {
-            HeartBeat heartBeat = activeClients.get(disconnectedUser);
-            heartBeat.terminate();
+            ClientHandlerRMI client = activeClients.get(disconnectedUser);
+            if (client != null) {
+                client.terminate();
+            }
             activeClients.remove(disconnectedUser);
         }
         System.out.println("User " + disconnectedUser + " left the server :(");
@@ -143,13 +143,13 @@ public class ServerRMI implements VirtualServer, HeartBeatHandler {
 
     @Override
     public void receivePing(HeartBeatMessage ping) throws RemoteException {
+        System.err.println("Received ping from " + ping.getSender());
         synchronized (lockOnClientsNetworkStatus) {
-            HeartBeat heartBeat = activeClients.get(ping.getSender());
-            //System.out.println("Received ping from " + ping.getSender());
-            if (heartBeat==null) {
+            ClientHandlerRMI client = activeClients.get(ping.getSender());
+            if (client == null) {
                 System.err.println("received ping from " + ping.getSender() + " which is unknown user: never connected or crashed");
             } else {
-                heartBeat.registerMessage(ping);
+                client.registerMessage(ping);
             }
         }
     }
