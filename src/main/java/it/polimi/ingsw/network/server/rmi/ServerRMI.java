@@ -102,7 +102,9 @@ public class ServerRMI implements VirtualServer, HeartBeatHandler {
 
     @Override
     public void disconnect(String username) throws RemoteException {
-        handleDisconnection(username);
+        if (myController.isRegisteredUsername(username)) {
+            handleDisconnection(username);
+        }
     }
 
     @Override
