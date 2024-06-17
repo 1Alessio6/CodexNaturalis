@@ -7,6 +7,9 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * ListenerHandler adds, removes and notifies players
+ */
 public class ListenerHandler<ListenerType> {
     private final Map<String, ListenerType> idToListener;
     private final Map<String, ExecutorService> idToExecutors;
