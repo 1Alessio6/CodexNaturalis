@@ -149,8 +149,8 @@ public class Game {
 
     // methods
 
-    private boolean isValidIdx(int idx) {
-        return 0 <= idx && idx < players.size();
+    private boolean isValidFaceUpCardsIdx(int idx) {
+        return 0 <= idx && idx < faceUpCards.size();
     }
 
     // find the next valid current player idx, that is, the first player still connected.
@@ -234,22 +234,21 @@ public class Game {
         return availableColors;
     }
 
-    public void add(String username, VirtualView client) throws InvalidUsernameException {
+    public void add(String username, VirtualView client) throws InvalidUsernameException{
         // only previously connected users can join the game
         if (!validUsernames.contains(username)) {
-            throw new InvalidUsernameException("Game has already started, but you were not there from the beginning");
+            throw new InvalidUsernameException("The game is already started and there are no players registered with the username " + username);
         }
 
         if (fromUsernameToPlayer(username).isConnected()) {
             throw new InvalidUsernameException("It seems you're already connected");
         }
-
         System.out.println("Username " + username + " has joined the game");
         listenerHandler.add(username, client);
 
         setNetworkStatus(username, true);
 
-        listenerHandler.notify(username, receiver -> receiver.resultOfLogin(true, username));
+        listenerHandler.notify(username, receiver -> receiver.resultOfLogin(true, username, ""));
 
         //   System.out.println("Notify the game representation.\tIsActive = " + isActive);
         ClientGame clientRepresentationOfTheGame = new ClientGame(this);
@@ -567,7 +566,7 @@ public class Game {
             throw new InvalidPlayerActionException();
         }
 
-        assert (isValidIdx(faceUpCardIdx));
+        assert (isValidFaceUpCardsIdx(faceUpCardIdx));
 
         if (faceUpCards.get(faceUpCardIdx) == null) {
             throw new InvalidFaceUpCardException("No face up card there");
