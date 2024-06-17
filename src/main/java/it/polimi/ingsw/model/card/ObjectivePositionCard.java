@@ -14,6 +14,9 @@ import java.util.List;
 public class ObjectivePositionCard extends ObjectiveCard {
     private final Map<Position, CardColor> condition;
 
+    /**
+     * Constructs an objective position card with no parameter provided
+     */
     public ObjectivePositionCard() {
         super();
         condition = new HashMap<>();
@@ -106,6 +109,12 @@ public class ObjectivePositionCard extends ObjectiveCard {
         return count;
     }
 
+    /**
+     * Checks if two objects are equal, two objective position cards in particular
+     *
+     * @param o the object to be compared
+     * @return true if this object is equal to <code>o</code>, otherwise false
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -115,6 +124,9 @@ public class ObjectivePositionCard extends ObjectiveCard {
         return Objects.equals(condition, that.condition);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), condition);
