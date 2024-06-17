@@ -118,6 +118,18 @@ public class ClientSocket extends Client implements VirtualView, HeartBeatHandle
         clientView.showUpdatePlayersInLobby();
     }
 
+    @Override
+    public void showUpdateFullLobby() {
+        clientView.showUpdateFullLobby();
+        disconnect();
+    }
+
+    @Override
+    public void showUpdateExceedingPlayer() {
+        clientView.showUpdateExceedingPlayer();
+        disconnect();
+    }
+
     //   @Override
     //   public void showUpdateJoinedPlayers(List<String> usernames) throws RemoteException {
 

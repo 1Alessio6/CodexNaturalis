@@ -28,23 +28,9 @@ public interface VirtualView extends HeartBeatListener, Remote {
 
     void showUpdatePlayersInLobby(List<String> usernames) throws RemoteException;
 
-    // game related updates
+    void showUpdateFullLobby() throws RemoteException;
 
-    // game status: beginning of any connection
-
-    // selected Starter
-
-    // selected color
-
-    // place objective card
-
-    // result of normal place
-
-    // result of draw
-
-    // message sent
-
-    // ping from server
+    void showUpdateExceedingPlayer() throws RemoteException;
 
     //method to show players base information
     // notify about the player disconnection

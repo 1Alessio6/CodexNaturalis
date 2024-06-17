@@ -81,10 +81,6 @@ public class ClientRMI extends Client {
         clientView.showUpdateCreator();
     }
 
-    @Override
-    public void updateAfterLobbyCrash() throws RemoteException {
-        clientView.showUpdateAfterLobbyCrash();
-    }
 
     @Override
     public void updateAfterConnection(ClientGame clientGame) {
@@ -96,6 +92,24 @@ public class ClientRMI extends Client {
     public void showUpdatePlayersInLobby(List<String> usernames) throws RemoteException {
         controller.updatePlayersInLobby(usernames);
         clientView.showUpdatePlayersInLobby();
+    }
+
+    @Override
+    public void showUpdateFullLobby() throws RemoteException {
+        clientView.showUpdateFullLobby();
+        disconnect();
+    }
+
+    @Override
+    public void updateAfterLobbyCrash() throws RemoteException {
+        clientView.showUpdateAfterLobbyCrash();
+        disconnect();
+    }
+
+    @Override
+    public void showUpdateExceedingPlayer() throws RemoteException {
+        clientView.showUpdateExceedingPlayer();
+        disconnect();
     }
 
     @Override

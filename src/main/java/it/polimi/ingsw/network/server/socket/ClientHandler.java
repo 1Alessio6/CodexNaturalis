@@ -146,6 +146,24 @@ public class ClientHandler implements VirtualView, HeartBeatHandler {
     }
 
     @Override
+    public void showUpdateFullLobby() {
+        FullLobbyMessage message = new FullLobbyMessage();
+        String jsonMessage = gson.toJson(message);
+        out.println(jsonMessage);
+        out.flush();
+        closeResources();
+    }
+
+    @Override
+    public void showUpdateExceedingPlayer() {
+        ExceedingPlayerMessage message = new ExceedingPlayerMessage();
+        String jsonMessage = gson.toJson(message);
+        out.println(jsonMessage);
+        out.flush();
+        closeResources();
+    }
+
+    @Override
     public void showUpdatePlayerStatus(boolean isConnected, String username) {
         UpdatePlayerStatusMessage message = new UpdatePlayerStatusMessage(isConnected, username);
         String jsonMessage = gson.toJson(message);
