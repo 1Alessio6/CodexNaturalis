@@ -27,6 +27,9 @@ import it.polimi.ingsw.network.client.view.tui.drawplayground.*;
 import java.rmi.RemoteException;
 import java.util.*;
 
+/**
+ * Client TUI represents the client that used a Text-based user interface
+ */
 public class ClientTUI implements View {
     private final Scanner console;
     private Set<TUIActions> availableActions = new HashSet<>();
