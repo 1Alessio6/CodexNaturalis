@@ -63,6 +63,9 @@ enum GameScreenArea {
     }
 }
 
+/**
+ * ClientUtil is the class that facilitates TUIs printing
+ */
 public class ClientUtil {
     public final static int cardWidth = 9;
     public final static int cardHeight = 3;
