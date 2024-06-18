@@ -19,6 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Test to check the correct operation of the deserialization handler
+ */
 class DeserializationHandlerTest {
     private final String expectedResPath = "src/test/java/it/polimi/ingsw/jsondeserializer/expected.json";
     private final String backCardsPath = "src/main/resources/cards/backCards.json";
@@ -29,6 +32,9 @@ class DeserializationHandlerTest {
     private final String objectivePositionFrontCardsPath = "src/main/resources/cards/objectivePositionFrontCards.json";
     private final String objectiveResourceCardsPath = "src/main/resources/cards/objectiveResourceFrontCards.json";
 
+    /**
+     * Test to check that an invalid path throws a FileNotFoundException
+     */
     @Test
     void invalidPath_throwsException() {
         DeserializationHandler deserializationHandler = new DeserializationHandler();
@@ -36,6 +42,9 @@ class DeserializationHandlerTest {
         }));
     }
 
+    /**
+     * Test to check that a valid path doesn't throw any exception
+     */
     @Test
     void validPath_doesNotThrowsException() {
         DeserializationHandler deserializationHandler = new DeserializationHandler();
@@ -43,6 +52,14 @@ class DeserializationHandlerTest {
         }));
     }
 
+    /**
+     * Method used to create a list of <code>T</code> items
+     *
+     * @param numItems the number of items of the list
+     * @param item     the item
+     * @param <T>      the kind of the item
+     * @return a list of <code>T</code> items
+     */
     private <T> List<T> createList(int numItems, T item) {
         List<T> list = new ArrayList<>();
 
@@ -53,6 +70,11 @@ class DeserializationHandlerTest {
         return list;
     }
 
+    /**
+     * Test to check if the deserialization handler deserializes the golden front cards correctly
+     *
+     * @throws FileNotFoundException if an error occurs during the opening of the file
+     */
     @Test
     void generateGoldenFrontCards() throws FileNotFoundException {
         DeserializationHandler<GoldenFront> deserializationHandler = new DeserializationHandler<GoldenFront>();
@@ -69,6 +91,11 @@ class DeserializationHandlerTest {
         Assertions.assertEquals(40, goldenFronts.size());
     }
 
+    /**
+     * Test to check if the deserialization handler deserializes the resource front cards correctly
+     *
+     * @throws FileNotFoundException if an error occurs during the opening of the file
+     */
     @Test
     void generateResourceFrontCards() throws FileNotFoundException {
         DeserializationHandler<Front> deserializationHandler = new DeserializationHandler<Front>();
@@ -85,6 +112,11 @@ class DeserializationHandlerTest {
         Assertions.assertEquals(40, l.size());
     }
 
+    /**
+     * Test to check if the deserialization handler deserializes the starting front cards correctly
+     *
+     * @throws FileNotFoundException if an error occurs during the opening of the file
+     */
     @Test
     void generateStartingFrontCards() throws FileNotFoundException {
         DeserializationHandler<Front> deserializationHandler = new DeserializationHandler<Front>();
@@ -101,6 +133,11 @@ class DeserializationHandlerTest {
         Assertions.assertEquals(6, l.size());
     }
 
+    /**
+     * Test to check if the deserialization handler deserializes the objective position front cards correctly
+     *
+     * @throws FileNotFoundException if an error occurs during the opening of the file
+     */
     @Test
     void generateObjectivePositionFrontCards() throws FileNotFoundException {
         DeserializationHandler<ObjectivePositionCard> deserializationHandler = new DeserializationHandler<ObjectivePositionCard>();
@@ -117,6 +154,11 @@ class DeserializationHandlerTest {
         Assertions.assertEquals(8, l.size());
     }
 
+    /**
+     * Test to check if the deserialization handler deserializes the objectives resources front cards correctly
+     *
+     * @throws FileNotFoundException if an error occurs during the opening of the file
+     */
     @Test
     void generateObjectiveResourceFrontCards() throws FileNotFoundException {
         DeserializationHandler<ObjectiveResourceCard> deserializationHandler = new DeserializationHandler<ObjectiveResourceCard>();
@@ -133,6 +175,11 @@ class DeserializationHandlerTest {
         Assertions.assertEquals(8, l.size());
     }
 
+    /**
+     * Test to check if the deserialization handler deserializes the back of the cards correctly
+     *
+     * @throws FileNotFoundException if an error occurs during the opening the file
+     */
     @Test
     void generateBackCards() throws FileNotFoundException {
         DeserializationHandler<Back> deserializationHandler = new DeserializationHandler<Back>();
@@ -149,6 +196,11 @@ class DeserializationHandlerTest {
         Assertions.assertEquals(40, l.size());
     }
 
+    /**
+     * Test to check if the deserialization handler deserializes the starting back cards correctly
+     *
+     * @throws FileNotFoundException if an error occurs during the opening of the file
+     */
     @Test
     void generateStartingBackCards() throws FileNotFoundException {
         DeserializationHandler<Back> deserializationHandler = new DeserializationHandler<Back>();
@@ -165,6 +217,11 @@ class DeserializationHandlerTest {
         Assertions.assertEquals(6, l.size());
     }
 
+    /**
+     * Tests that every face has a different ID
+     *
+     * @param faces the faces to test
+     */
     private void testUniqueIdsForFaces(List<Face> faces) {
         for (int i = 0; i < faces.size(); ++i) {
             for (int j = 0; j < faces.size(); ++j) {
@@ -174,6 +231,11 @@ class DeserializationHandlerTest {
         }
     }
 
+    /**
+     * Tests that every front has a different ID
+     *
+     * @throws FileNotFoundException if an error occurs during the opening of the file
+     */
     @Test
     void testUniqueFrontId() throws FileNotFoundException {
         DeserializationHandler<Front> frontDeserializationHandler = new DeserializationHandler<>();
@@ -185,6 +247,11 @@ class DeserializationHandlerTest {
         testUniqueIdsForFaces(new ArrayList<>(fronts));
     }
 
+    /**
+     * Tests that every golden front has a different ID
+     *
+     * @throws FileNotFoundException if an error occurs during the opening of the file
+     */
     @Test
     void testUniqueGoldenFrontId() throws FileNotFoundException {
         DeserializationHandler<GoldenFront> goldenFronts = new DeserializationHandler<>();
@@ -196,6 +263,11 @@ class DeserializationHandlerTest {
         testUniqueIdsForFaces(new ArrayList<>(fronts));
     }
 
+    /**
+     * Tests that every back has a different ID
+     *
+     * @throws FileNotFoundException if an error occurs during the opening of the file
+     */
     @Test
     void testUniqueBackId() throws FileNotFoundException {
         DeserializationHandler<Back> backDeserializationHandler = new DeserializationHandler<>();
@@ -207,7 +279,11 @@ class DeserializationHandlerTest {
         testUniqueIdsForFaces(new ArrayList<>(fronts));
     }
 
-
+    /**
+     * Tests that every objective card has a different ID
+     *
+     * @throws FileNotFoundException if an error occurs during the opening of the file
+     */
     @Test
     void testUniqueObjectiveCardId() throws FileNotFoundException {
         DeserializationHandler<ObjectivePositionCard> objectivePositionDeserializer = new DeserializationHandler<ObjectivePositionCard>();
