@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test to check the correct functioning of the <code>Playground</code>
+ */
 class PlaygroundTest {
 
     @Test
@@ -21,9 +24,12 @@ class PlaygroundTest {
     void getAvailablePositions() {
     }
 
-    /*
-    A simple test which simulate the situation where 3 red back are placed
-    */
+    /**
+     * A simple test which simulate the situation where 3 red back are placed
+     *
+     * @throws Playground.UnavailablePositionException if the position is unavailable
+     * @throws Playground.NotEnoughResourcesException  if the player's resource are not enough to place a card
+     */
     @Test
     void placeCardTest1() throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
 
@@ -116,6 +122,12 @@ class PlaygroundTest {
 
     }
 
+    /**
+     * A test to check the correct placement of 3 different front cards
+     *
+     * @throws Playground.UnavailablePositionException if the position is unavailable
+     * @throws Playground.NotEnoughResourcesException  if the player's resource are not enough to place a card
+     */
     @Test
     void placeCardTest2() throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
         //second test
@@ -197,6 +209,12 @@ class PlaygroundTest {
         checkPoints(test, 1);
     }
 
+    /**
+     * Test to check the correct placement of 7 different front cards
+     *
+     * @throws Playground.UnavailablePositionException if the position is unavailable
+     * @throws Playground.NotEnoughResourcesException  if the player's resource are not enough to place a card
+     */
     @Test
     void placeCardTest3() throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException {
 
@@ -408,6 +426,12 @@ class PlaygroundTest {
         checkFaceStatus(test, pos, front7);
     }
 
+    /**
+     * Test to check the correct placement of 6 different fronts and 4 golden fronts
+     *
+     * @throws Playground.UnavailablePositionException if the position is unavailable
+     * @throws Playground.NotEnoughResourcesException  if the player's resource are not enough to place a card
+     */
     @Test
     void placeCardTest4() throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException{
         HashMap<Symbol, Integer> resources = new HashMap<>();
@@ -684,8 +708,15 @@ class PlaygroundTest {
         checkFaceStatus(test, pos, goldenfront4);
     }
 
-    /*
-    Status is true when the corner is covered otherwise is false
+    /**
+     * Method used to check if a corner is covered or not.
+     * <p>
+     * Status is true when the corner is covered otherwise is false
+     *
+     * @param test           the playground on which the check is made
+     * @param position       the position of the card
+     * @param cornerPosition the position of the corner
+     * @param status         the status of the corner
      */
     private void checkCoveredCorner(Playground test, Position position, CornerPosition cornerPosition, boolean status) {
         if (test.getTile(position).getFace().getCorners().containsKey(cornerPosition)) {
@@ -695,11 +726,25 @@ class PlaygroundTest {
         }
     }
 
+    /**
+     * Method used to check if the color of the <B>card</B> <code>c</code> is correct
+     *
+     * @param test     the playground on which the check is made
+     * @param position the position of the card
+     * @param c        the card whose color is to be checked
+     */
     private void checkFaceColor(Playground test, Position position, CardColor c) {
         assertSame(test.getTile(position).getFace().getColor(), c);
     }
 
-    private void checkFaceStatus(Playground test, Position position, Face previousFace) { //previous face represent the face before its placing
+    /**
+     * Method used to check if the color of <code>previousFace</code> is correct
+     *
+     * @param test         the playground on which the check is made
+     * @param position     the position of the card
+     * @param previousFace previous face represents the face before its placement
+     */
+    private void checkFaceStatus(Playground test, Position position, Face previousFace) {
         checkFaceColor(test, position, previousFace.getColor());
         for (CornerPosition c : previousFace.getCorners().keySet()) {
             assertEquals(previousFace.getCorners().get(c).getSymbol(), test.getTile(position).getFace().getCorners().get(c).getSymbol());
@@ -710,32 +755,80 @@ class PlaygroundTest {
 
     }
 
+    /**
+     * Method used to check the availability of a tile
+     *
+     * @param test         the playground on which the check is made
+     * @param position     the position of the card
+     * @param availability the availability of the tile
+     */
     private void checkTileAvailability(Playground test, Position position, Availability availability) {
         assertTrue(test.getTile(position).sameAvailability(availability));
     }
 
+    /**
+     * Method used to check the points present in the <code>test</code>
+     *
+     * @param test   the playground on which the check is made
+     * @param points the points to be checked
+     */
     private void checkPoints(Playground test, int points) {
         assertEquals(test.getPoints(), points);
     }
 
+    /**
+     * Method used to check the resources present in the <code>test</code>
+     *
+     * @param test           the playground on which the check is made
+     * @param resource       the resource to be checked
+     * @param expectedAmount the amount of resources expected
+     */
     private void checkResource(Playground test, Symbol resource, int expectedAmount) {
         assertEquals(test.getResources().get(resource), expectedAmount);
     }
 
+    /**
+     * Method used to check the availability of the <code>correctList</code> provided
+     *
+     * @param correctList the list of positions to check
+     * @param Test        the playground on which the check is made
+     */
     private void checkAvailableList(List<Position> correctList, Playground Test) {
         assertEquals(correctList.size(), Test.getAvailablePositions().size());
         assertTrue(Test.getAvailablePositions().containsAll(correctList) && correctList.containsAll(Test.getAvailablePositions()));
     }
 
+    /**
+     * Method used to check if a placement throws an <code>UnavailablePositionException</code>
+     *
+     * @param test                the playground on which the check is made
+     * @param face                the face to be placed
+     * @param unavailablePosition if the position isn't available
+     */
     private void checkThrowsUnavailablePositionException(Playground test, Face face, Position unavailablePosition){
         assertThrows(Playground.UnavailablePositionException.class, () -> test.placeCard(face, unavailablePosition));
     }
 
+    /**
+     * Method used to check if a placement throws a <code>NotEnoughResourcesException</code>
+     *
+     * @param test the playground on which the check is made
+     * @param face the face to be placed
+     */
     private void checkThrowsNotEnoughResourcesException(Playground test, Face face){
         Position pos = test.getAvailablePositions().getFirst();
         assertThrows(Playground.NotEnoughResourcesException.class, () -> test.placeCard(face, pos));
     }
 
+    /**
+     * Method used to create corners
+     *
+     * @param pos1 the corner on the TOP_LEFT corner
+     * @param pos2 the corner on the TOP_RIGHT corner
+     * @param pos3 the corner on the LOWER_RIGHT corner
+     * @param pos4 the corner on the LOWER_LEFT corner
+     * @return a map containing the corners and the Corner Positions
+     */
     private Map<CornerPosition, Corner> createCorners(Corner pos1, Corner pos2, Corner pos3, Corner pos4) {
         Map<CornerPosition, Corner> corners = new HashMap<>();
 
@@ -747,12 +840,24 @@ class PlaygroundTest {
         return corners;
     }
 
+    /**
+     * Method used to place a corner <code>c</code> and a corner position <code>pos</code> in the <code>map</code>
+     *
+     * @param map the CornerPosition-Corner map
+     * @param pos the corner position to add
+     * @param c   the corner to add
+     */
     private void placeCorner(Map<CornerPosition, Corner> map, CornerPosition pos, Corner c) {
         if (c != null) {
             map.put(pos, c);
         }
     }
 
+    /**
+     * Method used to create the corners of a back card
+     *
+     * @return a CornerPosition-Corner map with the back corners
+     */
     private Map<CornerPosition, Corner> createBackCorners() {
         Map<CornerPosition, Corner> corners = new HashMap<>();
 
