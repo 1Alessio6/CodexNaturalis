@@ -208,10 +208,7 @@ public class Controller implements EventListener, GameRequest {
 
 
     /**
-     * Places the starter card of the player in the chosen side.
-     *
-     * @param username the player's username.
-     * @param side     the side of the starter card.
+     * {@inheritDoc}
      */
     @Override
     public synchronized void placeStarter(String username, Side side) {
@@ -225,10 +222,7 @@ public class Controller implements EventListener, GameRequest {
     }
 
     /**
-     * Assigns color to the player with <code>username</code>.
-     *
-     * @param username of the player who have chosen the color.
-     * @param color    chosen by the player.
+     * {@inheritDoc}
      */
     @Override
     public synchronized void chooseColor(String username, PlayerColor color) {
@@ -243,10 +237,7 @@ public class Controller implements EventListener, GameRequest {
     }
 
     /**
-     * Places the secret objective from one of the two available.
-     *
-     * @param username        of the player.
-     * @param chosenObjective the chosen objective.
+     * {@inheritDoc}
      */
     @Override
     public synchronized void placeObjectiveCard(String username, int chosenObjective) {
@@ -264,13 +255,7 @@ public class Controller implements EventListener, GameRequest {
     }
 
     /**
-     * Places the card on the side and position specified.
-     *
-     * @param username of the player.
-     * @param frontId  of the card's front to place.
-     * @param backId   of the card's back to place.
-     * @param side     of the card.
-     * @param position in the playground.
+     * {@inheritDoc}
      */
     @Override
     public synchronized void placeCard(String username, int frontId, int backId, Side side, Position position) {
@@ -293,10 +278,7 @@ public class Controller implements EventListener, GameRequest {
     }
 
     /**
-     * Draws a card from the selected place.
-     *
-     * @param username the username of the player.
-     * @param idToDraw the id representing the deck or any of the face up card positions.
+     * {@inheritDoc}
      */
     @Override
     public synchronized void draw(String username, int idToDraw) {
@@ -328,9 +310,7 @@ public class Controller implements EventListener, GameRequest {
     }
 
     /**
-     * Sends message from the author.
-     *
-     * @param message sent by the author.
+     * {@inheritDoc}
      */
     @Override
     public synchronized void sendMessage(Message message) {
@@ -344,12 +324,7 @@ public class Controller implements EventListener, GameRequest {
     }
 
     /**
-     * Sets the number of players required to start the game,
-     * and if the game has not yet started and the number of players has been reached, it starts the game and remove
-     * the excess players.
-     *
-     * @param username      of the first player.
-     * @param playersNumber the number of players established by the first player.
+     * {@inheritDoc}
      */
     @Override
     public synchronized void setPlayersNumber(String username, int playersNumber) {
