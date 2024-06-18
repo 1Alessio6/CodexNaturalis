@@ -12,7 +12,16 @@ import java.util.List;
 
 import org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test to check the correct draw and addition of cards to the deck
+ */
 class DeckTest {
+    /**
+     * Method used to create a card list
+     *
+     * @param numCards the number of card od the card list
+     * @return a list of cards
+     */
     private List<Card> createCardList(int numCards) {
         Card genericCard = new Card(new Front(), new Back());
         List<Card> genericCards = new ArrayList<>();
@@ -23,6 +32,9 @@ class DeckTest {
         return genericCards;
     }
 
+    /**
+     * Test to check that cards can be drawn without the catch of any exception until the deck is empty
+     */
     @Test
     void draw() {
         int numCards = 1;
@@ -39,6 +51,9 @@ class DeckTest {
         Assertions.assertThrows(EmptyDeckException.class, deck::draw);
     }
 
+    /**
+     * Test to check if a card is correctly added to the deck
+     */
     @Test
     void add() {
         int numCards = 1;
