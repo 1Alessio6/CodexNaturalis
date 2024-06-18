@@ -459,7 +459,7 @@ public class ClientTUI implements View {
      * @param playerIdx the index of the player to spy.
      * @throws TUIException if the player attempts to spy himself.
      */
-    private void spy(int playerIdx) throws TUIException,UndrawablePlaygroundException {
+    private void spy(int playerIdx) throws TUIException, UndrawablePlaygroundException {
         ClientPlayer player = this.controller.getPlayers().get(playerIdx);
         ClientPlayground playground = player.getPlayground();
 

@@ -27,7 +27,7 @@ import static it.polimi.ingsw.network.client.view.tui.ClientUtil.cardWidth;
  * This enum represents the space and position of each area in the screen
  */
 enum GameScreenArea {
-    // Matrix 12 * 20 cards (considering last not overlapping)
+    // Matrix (12-1) * (20-1) cards (considering last not overlapping)
     PLAYGROUND(97, 41, new Position(28, 2)),
     FACE_UP_CARDS(24, 14, new Position(146, 2)),
     HAND_CARDS(2* ClientUtil.areaPadding + 3* cardWidth, cardHeight, new Position(62 ,44)),
@@ -1004,45 +1004,62 @@ public class ClientUtil {
         moveCursor(37, 127);
     }
 
-    public static String[][] buildPlayground(ClientPlayground clientPlayground, Position currentOffset, Position requestedOffset)
+    /**
+     * Method used to build the drawable playground.
+     * @param clientPlayground of reference
+     * @param currentOffset respect to the centered start print (is the position that will leave exactly half tiles out)
+     *                      in both directions
+     * @param requestedOffset to add to the current offset
+     * @return
+     */
+    public static DrawablePlayground buildPlayground(ClientPlayground clientPlayground, Position currentOffset, Position requestedOffset)
             throws InvalidCardRepresentationException, UnInitializedPlaygroundException, InvalidCardDimensionException, FittablePlaygroundException {
         DrawablePlayground dp = new DrawablePlayground(7, cardHeight); // 7 array cells for each matrix line of the card
-        int[] numOfOverflowingTiles = dp.allocateMatrix(clientPlayground);
-        int[] entirePlaygroundSizes = new int[]{DrawablePlayground.calculateSizes(dp.getXs()),
-                DrawablePlayground.calculateSizes(dp.getYs())};
+
+        Position[] realLimitPositions = clientPlayground.retrieveTopLeftAndBottomRightPosition();
+
+        // could be retrieved with the sum of numofoverflowingtiles
+        int[] entirePlaygroundSizes = DrawablePlayground.calculateSizes(realLimitPositions);
         int[] maxPrintablePlaygroundSizes = ClientUtil.maxPlaygroundScreenPositions();
 
         // make the playground fit
         // considering only overlapping cards (the last not overlapping is counted in the integer division)
         int finalPlaygroundWidth =  Math.min(maxPrintablePlaygroundSizes[0], entirePlaygroundSizes[0]);
         int finalPlaygroundHeight =  Math.min(maxPrintablePlaygroundSizes[1], entirePlaygroundSizes[1]);
+        int[] finalPlaygroundSizes = new int[]{finalPlaygroundWidth, finalPlaygroundHeight};
+
+        dp.allocateMatrix(finalPlaygroundSizes);
+
+        // calculate num of overflowing tiles (0 if it fits)
+        int[] numOfOverflowingTiles = new int[] {Math.max(entirePlaygroundSizes[0] - maxPrintablePlaygroundSizes[0], 0),
+                Math.max(entirePlaygroundSizes[1] - maxPrintablePlaygroundSizes[1], 0)};
 
         boolean isOverflowing = Arrays.stream(numOfOverflowingTiles).anyMatch(i -> i != 0);
 
-        // consider upper left and current offset
-        Position curStartPrintNoOffsets = Position.sum(dp.centeredStartPrintPos(numOfOverflowingTiles), currentOffset);
+        // set the temporary upper left printable (before adding the requested offset)
+        dp.setStartPrintPos(numOfOverflowingTiles, realLimitPositions[0], finalPlaygroundSizes, currentOffset);
 
         if (!requestedOffset.equals(new Position(0,0)) && !isOverflowing)
             throw new FittablePlaygroundException();
-        else if (isOverflowing) { // if there is overflowing
+        else if (isOverflowing) {
             // there is at least a coordinate that overflows
             // normalize offset if the given one is exaggerated (will overwrite it)
-            // overwrite the value of the reference, os it can be updated in ClientTUI
-            requestedOffset = normalizeRequestedOffset(requestedOffset, dp, curStartPrintNoOffsets, entirePlaygroundSizes);
+            // overwrite the value of the reference, so it can be updated in ClientTUI
+            requestedOffset = normalizeRequestedOffset(requestedOffset, dp, realLimitPositions);
         }
         // no need of final else: if position is 0,0 this isn't a problem
 
-        // check if normalized requested offset won't change the displayed area
+        // check if normalized requested offset won't change the displayed area (i.e. 0,0)
         // and check if current offset is 0,0 because real playground fits the screen
-        // requested offset = 0,0 is the case when the system is autoupdating the screen
+        // requested offset = 0,0 is also the case when the system is autoupdating the screen
         if (!currentOffset.equals(new Position(0,0)) && requestedOffset.equals(new Position(0,0)) && isOverflowing)
             throw new FittablePlaygroundException();
 
-        Position newOffset = Position.sum(!isOverflowing ? new Position(0,0) : requestedOffset, curStartPrintNoOffsets);
-        Predicate<Position> noOverflowingPosition = p -> !(p.getX() < newOffset.getX() ||
-                        p.getX() > newOffset.getX() + finalPlaygroundWidth ||
-                        p.getY() > newOffset.getY() ||
-                        p.getY() < newOffset.getY() - finalPlaygroundHeight);
+        //this will be the playground position to start printing
+        dp.setStartPrintPos(numOfOverflowingTiles, realLimitPositions[0], finalPlaygroundSizes,
+                Position.sum(currentOffset, !isOverflowing ? new Position(0,0) : requestedOffset));
+
+        Predicate<Position> noOverflowingPosition = isOverflowingPos(dp, finalPlaygroundWidth, finalPlaygroundHeight);
 
         List<Position> positioningOrderNoOverflow = clientPlayground.getPositioningOrder().stream()
                 .filter(noOverflowingPosition).toList();
@@ -1062,49 +1079,75 @@ public class ClientUtil {
             dp.drawCard(pos, designCard(clientPlayground.getTile(pos).getFace()));
         }
 
-        return dp.getPlaygroundRepresentation();
+        return dp;
+    }
+
+    private static Predicate<Position> isOverflowingPos(DrawablePlayground dp, int finalPlaygroundWidth, int finalPlaygroundHeight) {
+        Position newStartPrint = dp.getLimitPositions()[0];
+        // minus one: so the last card ends exactly on the end of the matrix
+        return p -> !(
+                p.getX() < newStartPrint.getX() ||
+                        // with = because one card is already considered in the newOffset card
+                p.getX() >= newStartPrint.getX() + finalPlaygroundWidth ||
+                p.getY() > newStartPrint.getY() ||
+                        // with = because one card is already considered in the newOffset card
+                p.getY() <= newStartPrint.getY() - finalPlaygroundHeight);
     }
 
     /**
      * This method will adapt the requested offset, in order to maximize the use of the available space.
-     * Offsets are relative to centered offset
-     * @param dp drawable playground (to take the max and min of the playground)
-     * @param entirePlaygroundSizes consider the real playground, not the one that will fit the screen
+     * Offsets are relative to centered offset. P.S: this method will only be called if playground overflows
+     * @param dp drawable playground (to take the max and min of the printable playground)
+     * @param realLimitPositions of the real playground
      * @return the requested offset, normalized
      */
-    private static Position normalizeRequestedOffset(Position requestedOffset, DrawablePlayground dp, Position currentOffset, int[] entirePlaygroundSizes) {
+    // todo: permit requested offset only along overflowing sizes
+    private static Position normalizeRequestedOffset(Position requestedOffset, DrawablePlayground dp,
+                                                     Position[] realLimitPositions) {
         //Position offsetPos = Position.sum(currentOffset, requestedOffset);
         int[] normalizedPosArr = new int[2];
 
+        // this is the temporary position where printable playground starts
+        Position curStartPrint = dp.getLimitPositions()[0];
+
+        // don't consider case equal zero: it's already normalized
+
         if (requestedOffset.getX() < 0)
-            normalizedPosArr[0] = Math.max(dp.getXs()[1] - currentOffset.getX(), requestedOffset.getX());
-        else
-            normalizedPosArr[0] = Math.min(dp.getXs()[0] - currentOffset.getX() - entirePlaygroundSizes[0],
+            normalizedPosArr[0] = Math.max(realLimitPositions[0].getX() - curStartPrint.getX(), requestedOffset.getX());
+        else if (requestedOffset.getX() > 0)
+            // maxSize - 1 because one is the card already considered in the current offset
+            normalizedPosArr[0] = Math.min(realLimitPositions[1].getX() - curStartPrint.getX() - (maxPrintablePlaygroundSize[0] - 1),
                     requestedOffset.getX());
 
         if (requestedOffset.getY() > 0)
-            normalizedPosArr[1] = Math.min(dp.getYs()[0] - currentOffset.getY(), requestedOffset.getY());
-        else
-            normalizedPosArr[1] = Math.max(dp.getYs()[1] - currentOffset.getY() + entirePlaygroundSizes[1],
+            normalizedPosArr[1] = Math.min(realLimitPositions[0].getY() - curStartPrint.getY(), requestedOffset.getY());
+        else if (requestedOffset.getY() < 0)
+            // maxSize - 1 because one is the card already considered in the current offset
+            normalizedPosArr[1] = Math.max(realLimitPositions[1].getY() - curStartPrint.getY() + (maxPrintablePlaygroundSize[1] - 1),
                     requestedOffset.getY());
 
         return new Position(normalizedPosArr[0], normalizedPosArr[1]);
     }
 
+    /**
+     * Number of cards that will fit the screen
+     */
     public static int[] maxPlaygroundScreenPositions() {
+        // consider one card less: just to leave the space
         return new int[]{GameScreenArea.PLAYGROUND.getWidth() / (cardWidth - 1),
                 GameScreenArea.PLAYGROUND.getHeight() / (cardHeight - 1)};
     }
 
     /**
-     * Method used to print the playground
+     * Method used to print the playground. In addition, returns the new offset
      * @param clientPlayground of reference
      * @param currentOffset of the playground
      * @param requestedOffset related to current playground position
      */
     public static Position printPlayground(ClientPlayground clientPlayground, Position currentOffset, Position requestedOffset)
             throws UndrawablePlaygroundException {
-        String[][]playgroundToPrint = buildPlayground(clientPlayground, currentOffset, requestedOffset);
+        DrawablePlayground drawablePlayground = buildPlayground(clientPlayground, currentOffset, requestedOffset);
+        String[][] playgroundToPrint = drawablePlayground.getPlaygroundRepresentation();
         int playgroundHeight = playgroundToPrint.length;
         int playgroundWidth = playgroundToPrint[0].length;
 
@@ -1116,7 +1159,7 @@ public class ClientUtil {
                 printX,
                 playgroundToPrint);
 
-        return requestedOffset;
+        return drawablePlayground.getCurrentOffset();
     }
 
     // todo: please update card representation

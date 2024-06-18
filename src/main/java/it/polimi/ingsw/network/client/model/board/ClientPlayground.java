@@ -213,26 +213,30 @@ public class ClientPlayground implements Serializable {
         return new int[]{xMax, yMax};
     }
 
-    public int[] getXMaxAndMin() {
+    /**
+     * Method used to retrieve the upperLeft and the lowerRight corner, to measure the sizes
+     */
+    public Position[] retrieveTopLeftAndBottomRightPosition() {
         int xMax = 0;
-        int xMin = 0;
-        for (Integer currX : area.keySet().stream().map(Position::getX).collect(Collectors.toSet())) {
-            xMax = Math.max(currX, xMax);
-            xMin = Math.min(currX, xMin);
-        }
-
-        return new int[]{xMax, xMin};
-    }
-
-    public int[] getYMaxAndMin() {
         int yMax = 0;
+        int xMin = 0;
         int yMin = 0;
-        for (Integer currY : area.keySet().stream().map(Position::getY).collect(Collectors.toSet())) {
-            yMax = Math.max(currY, yMax);
-            yMin = Math.min(currY, yMin);
+
+        for (Position pos : area.keySet()) {
+            if (xMax < pos.getX()) {
+                xMax = pos.getX();
+            } else if (xMin > pos.getX()) {
+                xMin = pos.getX();
+            }
+
+            if (yMax < pos.getY()) {
+                yMax = pos.getY();
+            } else if (yMin > pos.getY()) {
+                yMin = pos.getY();
+            }
         }
 
-        return new int[]{yMax, yMin};
+        return new Position[]{new Position(xMin, yMax), new Position(xMax, yMin)};
     }
 
     public List<Position> getPositioningOrder() {
