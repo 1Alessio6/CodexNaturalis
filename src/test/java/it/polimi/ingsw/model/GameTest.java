@@ -10,9 +10,18 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Test to check the correct functioning of the <code>Game</code> and its phases
+ */
 public class GameTest {
     private Game game;
 
+    /**
+     * Method used to create <code>numUsername</code> usernames
+     *
+     * @param numUsername the number of the usernames to create
+     * @return a list of usernames
+     */
     private List<String> createUsernames(int numUsername) {
         List<String> usernames = new ArrayList<>();
         for (int i = 0; i < numUsername; ++i) {
@@ -22,6 +31,9 @@ public class GameTest {
         return usernames;
     }
 
+    /**
+     * Test to check that the correct instance of a game doesn't throw any kind of exception
+     */
     @Test
     void constructGame_noExceptions() {
         Assertions.assertDoesNotThrow(() -> {
@@ -29,6 +41,9 @@ public class GameTest {
         });
     }
 
+    /**
+     * Test to check if the initial phase coincides with the <code>Setup</code> game phase
+     */
     @Test
     void testInitialPhase() {
         game = new Game(createUsernames(4));
@@ -38,6 +53,9 @@ public class GameTest {
         );
     }
 
+    /**
+     * Test to check if the phase after finishing the <code>Setup</code> is the <code>PlaceNormal</code>
+     */
     @Test
     void finishSetup_phaseIsPlaceNormal() {
         List<String> usernames = createUsernames(2);
@@ -62,6 +80,9 @@ public class GameTest {
         Assertions.assertEquals(GamePhase.PlaceNormal, game.getPhase());
     }
 
+    /**
+     * Test to check that a game phase is correctly skipped
+     */
     @Test
     void testSkipTurn() {
         Assertions.assertDoesNotThrow(this::finishSetup_phaseIsPlaceNormal);
