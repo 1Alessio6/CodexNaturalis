@@ -26,6 +26,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Test to check the correct operation of the deserializer
+ */
 public class JsonDeserializerTest {
     private Gson gson;
     private final static String goldenCardsPath = "/cards/goldenCards.json";
@@ -34,6 +37,9 @@ public class JsonDeserializerTest {
     private final static String objectivePositionCardsPath = "/cards/objectivePositionCards.json";
     private final static String objectiveResourceCardsPath = "/cards/objectiveResourceCards.json";
 
+    /**
+     * Creates a new Gson instance and registers the custom type adapter before each test
+     */
     @BeforeEach
     public void setUp() {
         GsonBuilder builder = new GsonBuilder().enableComplexMapKeySerialization();
@@ -41,7 +47,9 @@ public class JsonDeserializerTest {
         gson = builder.create();
     }
 
-
+    /**
+     * Test to check if fronts are deserialized correctly
+     */
     @Test
     void deserializeFront() {
 
@@ -71,7 +79,9 @@ public class JsonDeserializerTest {
 
     }
 
-
+    /**
+     * Test to check if backs are deserialized correctly
+     */
     @Test
     void deserializeBack() {
 
@@ -107,6 +117,9 @@ public class JsonDeserializerTest {
         Assertions.assertEquals(back, backDes);
     }
 
+    /**
+     * Test to check if golden fronts are deserialized correctly
+     */
     @Test
     void deserializeGoldenFront() {
         Map<CornerPosition, Corner> corners = new HashMap<>();
@@ -138,6 +151,9 @@ public class JsonDeserializerTest {
         Assertions.assertEquals(f, goldenFront);
     }
 
+    /**
+     * Test to check if positions are deserialized correctly
+     */
     @Test
     void deserializePosition() {
         Position pos = new Position(1, 1);
@@ -155,6 +171,9 @@ public class JsonDeserializerTest {
         Assertions.assertEquals(pos, desPosition);
     }
 
+    /**
+     * Test to check if objective position cards are deserialized correctly
+     */
     @Test
     void deserializeObjectivePositionCard() {
         Map<Position, CardColor> conditions = new HashMap<>();
@@ -180,6 +199,9 @@ public class JsonDeserializerTest {
         Assertions.assertEquals(objectiveCard, desObjCard);
     }
 
+    /**
+     * Test to check if objective resource cards are deserialized correctly
+     */
     @Test
     void deserializeObjectiveResourceCard() {
         HashMap<Symbol, Integer> conditions = new HashMap<>();
@@ -201,6 +223,14 @@ public class JsonDeserializerTest {
         Assertions.assertEquals(objectiveCard, desObjCard);
     }
 
+    /**
+     * Method used to create a list of <code>T</code> items
+     *
+     * @param numItems the number of items of the list
+     * @param item     the item
+     * @param <T>      the kind of the item
+     * @return a list of <code>T</code> items
+     */
     private <T> List<T> createList(int numItems, T item) {
         List<T> list = new ArrayList<>();
 
@@ -211,6 +241,9 @@ public class JsonDeserializerTest {
         return list;
     }
 
+    /**
+     * Test to check if a list of golden fronts maintains the same attributes after its serialization and deserialization
+     */
     @Test
     void createListOfGoldenFront_maintainsAttributes() {
         List<GoldenFront> goldenFrontList = createList(2, new GoldenFront(
@@ -236,6 +269,9 @@ public class JsonDeserializerTest {
         Assertions.assertTrue(goldenFrontList.equals(gotGoldenFrontList));
     }
 
+    /**
+     * Test to check if a list of fronts is deserialized correctly
+     */
     @Test
     void deserializeListOfFront() {
 
@@ -264,6 +300,9 @@ public class JsonDeserializerTest {
         Assertions.assertTrue(frontList.equals(gotFrontList));
     }
 
+    /**
+     * Test to check if a list of backs is deserialized correctly
+     */
     @Test
     void deserializeListOfBack() {
 
@@ -287,6 +326,9 @@ public class JsonDeserializerTest {
         Assertions.assertTrue(backList.equals(gotBackList));
     }
 
+    /**
+     * Test to check if a list of objective positions is deserialized correctly
+     */
     @Test
     void deserializeListOfObjectivePosition() {
 
@@ -309,6 +351,9 @@ public class JsonDeserializerTest {
         Assertions.assertTrue(objectivePositionList.equals(gotObjectivePositionList));
     }
 
+    /**
+     * Test to check if a list of objective resources is deserialized correctly
+     */
     @Test
     void deserializeListOfObjectiveResource() {
         List<ObjectiveResourceCard> objectiveResourceList = createList(2, new ObjectiveResourceCard(
@@ -330,6 +375,9 @@ public class JsonDeserializerTest {
         Assertions.assertTrue(objectiveResourceList.equals(gotObjectiveResourceList));
     }
 
+    /**
+     * Test to check if a serialized message is deserialized correctly
+     */
     @Test
     void serializeMessage_deserializeCorrectly() {
         int idToDraw = 100;
@@ -343,6 +391,9 @@ public class JsonDeserializerTest {
         Assertions.assertEquals(received.getIdDraw(), idToDraw);
     }
 
+    /**
+     * Test to check if an empty client game is deserialized correctly
+     */
     @Test
     void testDeserializedEmptyClientGame() {
         ClientGame clientGame = new ClientGame(new Game(createList(3, "user")));
@@ -350,6 +401,9 @@ public class JsonDeserializerTest {
         System.out.println(json);
     }
 
+    /**
+     * Test to check if a non-empty client game is deserialized correctly
+     */
     @Test
     void testDeserializedNonEmptyGame() {
         Game game = new Game(createList(2, "User"));
@@ -367,6 +421,9 @@ public class JsonDeserializerTest {
         UpdateAfterConnectionMessage desMessageFromServer = gson.fromJson(messageJson, UpdateAfterConnectionMessage.class);
     }
 
+    /**
+     * Test to check if a deserialized heart beat message keeps the ID
+     */
     @Test
     void deserializeHeartBeatMessage_keepId() {
         int id = 2;
@@ -377,6 +434,9 @@ public class JsonDeserializerTest {
         Assertions.assertEquals(id, heartBeatMessageFromJson.getId());
     }
 
+    /**
+     * Test to check if a network message deserialization works correctly
+     */
     @Test
     void testDeserialization() {
         String json = """
