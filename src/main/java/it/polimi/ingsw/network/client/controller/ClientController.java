@@ -40,18 +40,17 @@ public class ClientController implements ClientActions {
 
     private String mainPlayerUsername = ""; // todo. set by the view after user's input
 
+    /**
+     * Constructs a <code>ClientController</code> with the <code>server</code> provided
+     *
+     * @param server the representation of the server
+     */
     public ClientController(VirtualServer server) {
         this.server = server;
     }
 
     /**
-     * Handles the connection of the <code>client</code>.
-     *
-     * @param client   the representation of the client.
-     * @param username the client's name.
-     * @throws InvalidUsernameException if the username in question has already been taken.
-     * @throws RemoteException          in the event of an error occurring during the execution of a remote method.
-     * @throws FullLobbyException       if the lobby is full.
+     *{@inheritDoc}
      */
     @Override
     public void connect(VirtualView client, String username) throws InvalidUsernameException, RemoteException, FullLobbyException {
@@ -60,16 +59,7 @@ public class ClientController implements ClientActions {
     }
 
     /**
-     * Places the <code>cardHandPosition</code> on the <code>selectedSide</code> and <code>position</code> specified.
-     *
-     * @param cardHandPosition the position of the card in the player's hand.
-     * @param selectedSide     of the card.
-     * @param position         in the playground at which it will be placed.
-     * @throws Playground.UnavailablePositionException if the position isn't empty or isn't contained in the player's playground.
-     * @throws Playground.NotEnoughResourcesException  if the resources needed to place the card aren't enough.
-     * @throws InvalidGamePhaseException               if the game phase doesn't allow placing cards.
-     * @throws SuspendedGameException                  if the game is suspended.
-     * @throws RemoteException                         in the event of an error occurring during the execution of a remote method.
+     * {@inheritDoc}
      */
     @Override
     public void placeCard(int cardHandPosition, Side selectedSide, Position position) throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException, RemoteException {
@@ -100,15 +90,7 @@ public class ClientController implements ClientActions {
     }
 
     /**
-     * Draws a card from the <code>IdToDraw</code>.
-     *
-     * @param IdToDraw the id representing the deck or any of the face up cards positions.
-     * @throws InvalidGamePhaseException    if the game doesn't allow to draw cards.
-     * @throws EmptyDeckException           in the event that the selected deck is empty.
-     * @throws NotExistingFaceUp            if the face up slot is empty.
-     * @throws SuspendedGameException       if the game is suspended.
-     * @throws RemoteException              in the event of an error occurring during the execution of a remote method.
-     * @throws InvalidIdForDrawingException if the id of the card isn't valid.
+     * {@inheritDoc}
      */
     @Override
     public void draw(int IdToDraw) throws InvalidGamePhaseException, EmptyDeckException, NotExistingFaceUp, SuspendedGameException, RemoteException, InvalidIdForDrawingException {
@@ -169,12 +151,7 @@ public class ClientController implements ClientActions {
     }
 
     /**
-     * Places the starter card of the player in the chosen <code>side</code>.
-     *
-     * @param side the side of the starter card.
-     * @throws SuspendedGameException    if the game is suspended.
-     * @throws RemoteException           in the event of an error occurring during the execution of a remote method.
-     * @throws InvalidGamePhaseException if the game phase doesn't allow placing cards.
+     * {@inheritDoc}
      */
     @Override
     public void placeStarter(Side side) throws SuspendedGameException, RemoteException, InvalidGamePhaseException {
@@ -191,13 +168,7 @@ public class ClientController implements ClientActions {
     }
 
     /**
-     * Assigns <code>color</code> to the <code>mainPlayerUsername</code>.
-     *
-     * @param color chosen by the <code>mainPlayerUsername</code>.
-     * @throws InvalidColorException     if the color has already been selected.
-     * @throws SuspendedGameException    if the game is suspended.
-     * @throws RemoteException           in the event of an error occurring during the execution of a remote method.
-     * @throws InvalidGamePhaseException if the game phase doesn't allow to choose the <code>color</code>.
+     * {@inheritDoc}
      */
     @Override
     public void chooseColor(PlayerColor color) throws InvalidColorException, SuspendedGameException, RemoteException, InvalidGamePhaseException {
@@ -219,12 +190,7 @@ public class ClientController implements ClientActions {
     }
 
     /**
-     * Places the <code>chosenObjective</code> from one of the two available.
-     *
-     * @param chosenObjective the chosen objective.
-     * @throws SuspendedGameException    if the game is suspended.
-     * @throws RemoteException           in the event of an error occurring during the execution of a remote method.
-     * @throws InvalidGamePhaseException if the game phase doesn't allow to place the objective card.
+     * {@inheritDoc}
      */
     @Override
     public void placeObjectiveCard(int chosenObjective) throws SuspendedGameException, RemoteException, InvalidGamePhaseException {
@@ -240,11 +206,7 @@ public class ClientController implements ClientActions {
     }
 
     /**
-     * Sends message from the <code>mainPlayerUsername</code>.
-     *
-     * @param message sent by the <code>mainPlayerUsername</code>.
-     * @throws InvalidMessageException if the author doesn't match the author or the recipient doesn't exist
-     * @throws RemoteException         in the event of an error occurring during the execution of a remote method.
+     * {@inheritDoc}
      */
     @Override
     public void sendMessage(Message message) throws InvalidMessageException, RemoteException {
@@ -259,6 +221,9 @@ public class ClientController implements ClientActions {
         server.sendMessage(message);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setPlayersNumber(int playersNumber) throws RemoteException, InvalidPlayersNumberException {
         if (playersNumber > 4 || playersNumber < 2) {
@@ -268,10 +233,7 @@ public class ClientController implements ClientActions {
     }
 
     /**
-     * Disconnects the <code>username</code> from the game.
-     *
-     * @param username of the player.
-     * @throws RemoteException in the event of an error occurring during the execution of a remote method.
+     * {@inheritDoc}
      */
     @Override
     public void disconnect(String username) throws RemoteException {
