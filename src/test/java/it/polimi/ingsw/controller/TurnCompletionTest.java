@@ -14,10 +14,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Test to check the correct turn completion
+ */
 class TurnCompletionTest {
     private Game game;
     private TurnCompletion turnCompletion;
 
+    /**
+     * Creates a new turnCompletion and game instance along with a list of users before each test
+     */
     @BeforeEach
     void setUp() {
         List<String> users = Arrays.asList("user1", "user2", "user3", "user4");
@@ -30,6 +36,10 @@ class TurnCompletionTest {
         turnCompletion = new TurnCompletion();
     }
 
+    /**
+     * Tests turnCompletion in set up phase, distinguishing between the case in which the game is suspended and the case
+     * in which the game isn't suspended
+     */
     @Test
     void disconnectsPlayersInSetup_CompleteSetup() {
         List<String> users = game.getPlayers().stream().map(Player::getUsername).toList();
@@ -70,6 +80,12 @@ class TurnCompletionTest {
         Assertions.assertEquals(GamePhase.PlaceNormal, game.getPhase());
     }
 
+    /**
+     * Method used to complete the set-up phase
+     *
+     * @param game the representation of the game
+     * @param user the username of the player
+     */
     private void completeSetup(Game game, String user) {
         Assertions.assertDoesNotThrow(() -> {
             game.placeStarter(user, Side.FRONT);
@@ -78,12 +94,23 @@ class TurnCompletionTest {
         });
     }
 
+    /**
+     * Method used to place a card
+     *
+     * @param game          the representation of the game
+     * @param currentPlayer the username of the player who performs the placement
+     */
     private void place(Game game, Player currentPlayer) {
         Assertions.assertDoesNotThrow(() -> {
             game.placeCard(currentPlayer.getUsername(), currentPlayer.getCards().getFirst(), Side.FRONT, currentPlayer.getAvailablePositions().getFirst());
         });
     }
 
+    /**
+     * Corrects the evolution of the current player
+     *
+     * @param oldCurrentPlayerName the username of the old current player
+     */
     void correctEvolutionOfTheCurrentPlayer(String oldCurrentPlayerName) {
         List<String> users = game.getPlayers().stream().map(Player::getUsername).toList();
         // correct evolution of the current player
@@ -100,6 +127,10 @@ class TurnCompletionTest {
         Assertions.assertNotEquals(currPlayerName, oldCurrentPlayerName);
     }
 
+    /**
+     * Tests if the disconnection of the current player immediately after the completion of the set-up leads to the
+     * correctly completed place player action
+     */
     @Test
     void disconnectsCurrentPlayer_completePlace() {
         List<String> users = game.getPlayers().stream().map(Player::getUsername).toList();
@@ -115,6 +146,10 @@ class TurnCompletionTest {
         Assertions.assertEquals(game.getPlayerByUsername(oldCurrentPlayerName).getPlayerAction().getPlayerState(), PlayerState.Place);
     }
 
+    /**
+     * Tests if the disconnection of the current player immediately after a place leads to the correctly completed draw
+     * player action
+     */
     @Test
     void disconnectsCurrentPlayer_completeDraw() {
         List<String> users = game.getPlayers().stream().map(Player::getUsername).toList();
@@ -132,6 +167,10 @@ class TurnCompletionTest {
         Assertions.assertFalse(inHandBefore.equals(inHandAfter));
     }
 
+    /**
+     * Tests if the disconnection of the current player when the game is suspended does not lead to the completion of
+     * any action
+     */
     @Test
     void disconnectsCurrentPlayerInSuspendedGame_doNothing() {
         List<String> users = game.getPlayers().stream().map(Player::getUsername).toList();
@@ -157,6 +196,11 @@ class TurnCompletionTest {
         Assertions.assertEquals(inHandBefore, inHandAfter);
     }
 
+    /**
+     * Method used to complete the set-up phase for all players in the game
+     *
+     * @param game the representation of the game
+     */
     private void completeSetup(Game game) {
         for (Player player : game.getPlayers()) {
             Assertions.assertDoesNotThrow(() -> {
@@ -168,6 +212,9 @@ class TurnCompletionTest {
         }
     }
 
+    /**
+     * Tests if after the disconnection of the current and the next players, the current player is updated correctly
+     */
     @Test
     void disconnectCurrenPlayerAndNextPlayers_currentPlayerIsUpdatedCorrectly() {
         int numPlayers = 4;
