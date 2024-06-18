@@ -5,15 +5,23 @@ import org.junit.jupiter.api.*;
 
 import java.util.List;
 
+/**
+ * Test to check the correct passage of the parameters in order to add a message in the <code>ChatDatabase</code>
+ */
 class ChatDatabaseTest {
     private ChatDatabase chatDataBase;
 
-
+    /**
+     * Creates a new <code>ChatDatabase</code> before each test
+     */
     @BeforeEach
     public void setUp() {
         chatDataBase = new ChatDatabase();
     }
 
+    /**
+     * Test to check that adding a null message throws an <code>IllegalArgumentException</code>
+     */
     @Test
     public void addNullMessage_throwsException() {
         Assertions.assertThrows(IllegalArgumentException.class,
@@ -22,6 +30,9 @@ class ChatDatabaseTest {
         });
     }
 
+    /**
+     * Test to check that adding a valid message doesn't throw any kind of exception
+     */
     @Test
     public void addValidMessage_doesNotThrow() {
         Assertions.assertDoesNotThrow(() ->  {
@@ -29,6 +40,9 @@ class ChatDatabaseTest {
         });
     }
 
+    /**
+     * Test to check that by adding a valid message it is correctly added to the <code>ChatDatabase</code>
+     */
     @Test
     public void addValidMessage_addsToMessageList() {
         String senderUsername = "a";
