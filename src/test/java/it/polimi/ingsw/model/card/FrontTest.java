@@ -11,11 +11,17 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Test to check the correct passage of the parameters in order to instance a front and whether two fronts match or not
+ */
 class FrontTest {
     private Map<CornerPosition, Corner> corners;
 
     private CalculatePoints calculator;
 
+    /**
+     * Instances a new corner with a resource and a <code>CalculateResource</code> calculator
+     */
     @BeforeEach
     void setUp() {
         Corner generic_corner = new Corner(Symbol.ANIMAL);
@@ -27,6 +33,9 @@ class FrontTest {
         calculator = new CalculateResources();
     }
 
+    /**
+     * Test to check that passing null corners throws an <code>IllegalArgumentException</code>
+     */
     @Test
     public void passNullCorners_throwsException() {
         Assertions.assertThrows(IllegalArgumentException.class,
@@ -34,6 +43,9 @@ class FrontTest {
         );
     }
 
+    /**
+     * Test to check that passing null corner positions throws an <code>IllegalArgumentException</code>
+     */
     @Test
     public void nullCornerPosition_throwsException() {
         corners.put(null, new Corner(Symbol.ANIMAL));
@@ -45,6 +57,9 @@ class FrontTest {
         corners.remove(null);
     }
 
+    /**
+     * Test to check that passing a null corner inside the corners passed throws an <code>IllegalArgumentException</code>
+     */
     @Test
     public void nullCornerInCorners_throwsException() {
         corners.put(CornerPosition.LOWER_LEFT, null);
@@ -54,7 +69,9 @@ class FrontTest {
         );
     }
 
-
+    /**
+     * Test to check that passing a negative score throws an <code>IllegalArgumentException</code>
+     */
     @Test
     public void passNegativeScore_throwsException() {
         Assertions.assertThrows(IllegalArgumentException.class,
@@ -62,6 +79,9 @@ class FrontTest {
         );
     }
 
+    /**
+     * Test to check that passing a null calculator throws an <code>IllegalArgumentException</code>
+     */
     @Test
     public void passNullCalculator_throwsException() {
         Assertions.assertThrows(IllegalArgumentException.class,
@@ -69,6 +89,9 @@ class FrontTest {
         );
     }
 
+    /**
+     * Test to check that passing correct parameters doesn't throw any kind of exception
+     */
     @Test
     public void passCorrectParameters_doesNotThrow() {
         Assertions.assertDoesNotThrow(
@@ -78,6 +101,9 @@ class FrontTest {
         );
     }
 
+    /**
+     * Test to check if two fronts are the same depending on their attributes
+     */
     @Test
     public void sameAttributes_equalsFronts() {
         Front f1 = new Front(
@@ -97,6 +123,9 @@ class FrontTest {
         Assertions.assertEquals(f1, f2);
     }
 
+    /**
+     * Test to check if two fronts are different depending on their <code>calculator</code>
+     */
     @Test
     public void differentCalculators_differentFronts() {
         Front f1 = new Front(
@@ -116,6 +145,9 @@ class FrontTest {
         Assertions.assertNotEquals(f1, f2);
     }
 
+    /**
+     * Test to check if two fronts are different depending on the constructor used
+     */
     @Test
     public void differentDynamicType_differentFronts() {
         Front f1 = new Front(
