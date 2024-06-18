@@ -16,9 +16,15 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test to check the correct functioning of the <code>PlayerAction</code>
+ */
 class PlayerActionTest {
     Player player;
 
+    /**
+     * Instances a new player before each test
+     */
     @BeforeEach
     void setUp() {
         CardColor color = CardColor.BLUE;
@@ -46,6 +52,12 @@ class PlayerActionTest {
         player = new Player("pippo", myCard, cards, objectiveCards);
     }
 
+    /**
+     * Test to check that a placement can occur only in the <code>Place</code> and the <code>ChooseStarter</code> player
+     * actions
+     *
+     * @param playerAction the current player action of the player
+     */
     @ParameterizedTest
     @ArgumentsSource(PlayerActionProvider.class)
     void placeCard(PlayerAction playerAction) {
@@ -69,6 +81,12 @@ class PlayerActionTest {
         }
     }
 
+    /**
+     * Test to check that the placement of the objective card can occur only in the <code>ChooseObjective</code> player
+     * action
+     *
+     * @param playerAction the current player action of the player
+     */
     @ParameterizedTest
     @ArgumentsSource(PlayerActionProvider.class)
     void placeObjectiveCardTest(PlayerAction playerAction) {
@@ -85,6 +103,11 @@ class PlayerActionTest {
         }
     }
 
+    /**
+     * Test to check that a draw can occur only in the <code>Draw</code> player action
+     *
+     * @param playerAction the current player action of the player
+     */
     @ParameterizedTest
     @ArgumentsSource(PlayerActionProvider.class)
     void addCard(PlayerAction playerAction) {
@@ -105,7 +128,16 @@ class PlayerActionTest {
     }
 }
 
+/**
+ * PlayerActionProvider represents the class that provides Player Actions
+ */
 class PlayerActionProvider implements ArgumentsProvider {
+    /**
+     * Provides a stream of Player actions
+     *
+     * @param context the extension context
+     * @return the stream of Player actions
+     */
     @Override
     public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
         return Stream.of(new ChooseObjective(), new ChooseStarter(), new Draw(), new Place()).map(Arguments::of);
