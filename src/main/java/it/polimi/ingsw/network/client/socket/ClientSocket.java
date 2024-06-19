@@ -78,7 +78,7 @@ public class ClientSocket extends Client implements VirtualView, HeartBeatHandle
      */
     @Override
     public VirtualServer bindServer(String ip, Integer port) throws UnReachableServerException {
-        System.out.println("Trying to connect to ip " + ip + " at port " + port);
+        //System.out.println("Trying to connect to ip " + ip + " at port " + port);
         try {
             this.socket = new Socket(ip, port);
             this.out = new PrintWriter(this.socket.getOutputStream(), true);

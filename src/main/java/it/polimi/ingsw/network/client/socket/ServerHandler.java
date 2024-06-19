@@ -42,7 +42,7 @@ public class ServerHandler implements VirtualServer {
      * {@inheritDoc}
      */
     public void hear() {
-        System.out.println("I'm hearing");
+        //System.out.println("I'm hearing");
         try {
             String line = in.readLine();
             while (line != null) {

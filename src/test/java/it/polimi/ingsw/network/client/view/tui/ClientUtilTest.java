@@ -31,7 +31,7 @@ class ClientUtilTest {
         });
         ClientPlayground clientPlayground = new ClientPlayground(playground);
         Assertions.assertDoesNotThrow(() -> {
-            ClientUtil.printPlayground(clientPlayground);
+            ClientUtil.printPlayground(clientPlayground, new Position(0,0));
         });
     }
 

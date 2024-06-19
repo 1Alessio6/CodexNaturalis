@@ -101,14 +101,6 @@ public class ClientRMI extends Client {
      * {@inheritDoc}
      */
     @Override
-    public void updateAfterLobbyCrash() throws RemoteException {
-        clientView.showUpdateAfterLobbyCrash();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void updateAfterConnection(ClientGame clientGame) {
         controller.updateAfterConnection(clientGame);
         clientView.showUpdateAfterConnection();
@@ -129,6 +121,9 @@ public class ClientRMI extends Client {
         disconnect();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateAfterLobbyCrash() throws RemoteException {
         clientView.showUpdateAfterLobbyCrash();

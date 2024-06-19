@@ -41,7 +41,7 @@ public class Message implements Serializable {
      * @param content  the content of the message.
      * @throws IllegalArgumentException if sender, receiver or content is null
      */
-    private static void checkMessageInfo(String sender, String receiver, String content) throws IllegalArgumentException {
+    private static void checkMessageInfo(String sender, String receiver, String content) throws InvalidMessageException {
         if (sender == null) {
             throw new InvalidMessageException("sender" + " has not been specified");
         }

@@ -7,7 +7,7 @@ public enum TUIActions {
     /**
      * CONNECT refers to the action of connecting to the server
      */
-    CONNECT("enter the server ip and port in the format <ip> <port>"),
+    CONNECT("enter the server ip and port"),
     /**
      * SELECTUSERNAME refers to the action of inserting the username
      */
