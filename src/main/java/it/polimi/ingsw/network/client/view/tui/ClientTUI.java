@@ -65,6 +65,9 @@ public class ClientTUI implements View {
 
             try {
                 if (availableActions.contains(TUIActions.valueOf(nextCommand[0].toUpperCase()))) {
+                    // before running command
+                    ClientUtil.clearExceptionSpace();
+
                     switch (TUIActions.valueOf(nextCommand[0].toUpperCase())) {
                         case BACK -> goBack();
                         case COLOR -> chooseColor();
@@ -111,28 +114,35 @@ public class ClientTUI implements View {
         }
     }
 
+    private Position stringToPos(String string) {
+        String[] myPos = string.split(",",2);
+        int x = Integer.parseInt(myPos[0].trim());
+        int y = Integer.parseInt(myPos[1].trim());
+
+        return new Position(x,y);
+    }
+
     /**
      * Method used to move the playground to a position (classic cartesian system)
      * @param requestedOffsetString is the argument of the move command
      */
     private void movePlayground(String requestedOffsetString)
             throws UndrawablePlaygroundException {
-        String[] requestedOffsetsString = requestedOffsetString.split(",", 2);
-        int[] requestedOffsetsInt = new int[2];
-        requestedOffsetsInt[0] = Integer.parseInt(requestedOffsetsString[0].trim());
-        requestedOffsetsInt[1] = Integer.parseInt(requestedOffsetsString[1].trim());
-
-        Position requestedOffset = new Position(requestedOffsetsInt[0],requestedOffsetsInt[1]);
+        Position requestedOffset = stringToPos(requestedOffsetString);
 
         // todo: move playground of every player
         currOffset = ClientUtil.printPlayground(controller.getPlaygroundByUsername(controller.getMainPlayerUsername()),
                 currOffset, requestedOffset);
+
+        // clear input area
+        ClientUtil.printCommandSquare();
     }
 
     /**
      * Restores the current playing area of the player.
      */
-    private void goBack() throws UnInitializedPlaygroundException, FittablePlaygroundException, InvalidCardRepresentationException, InvalidCardDimensionException {
+    private void goBack() throws UnInitializedPlaygroundException, FittablePlaygroundException,
+            InvalidCardRepresentationException, InvalidCardDimensionException {
         // add back commands
         setAvailableActions();
         // print main player stuff again
@@ -165,6 +175,7 @@ public class ClientTUI implements View {
     private void quit() throws RemoteException {
         controller.disconnect(controller.getMainPlayerUsername());
 
+        ClientUtil.clearScreen();
         System.exit(0);
     }
 
@@ -291,12 +302,15 @@ public class ClientTUI implements View {
      * @throws SuspendedGameException       if the game is suspended.
      * @throws TUIException                 if the player inserts an inappropriate argument.
      */
-    private void draw() throws InvalidIdForDrawingException, EmptyDeckException, NotExistingFaceUp, RemoteException, InvalidGamePhaseException, SuspendedGameException, TUIException {
+    private void draw() throws InvalidIdForDrawingException, EmptyDeckException,
+            NotExistingFaceUp, RemoteException, InvalidGamePhaseException, SuspendedGameException, TUIException {
         try{
             ClientUtil.printCommand("Insert the position of the card you want to draw: ");
             int drawFromId = Integer.parseInt(console.nextLine()) - 1;
             controller.draw(drawFromId);
 
+            // clear input area
+            ClientUtil.printCommandSquare();
             //ClientUtil.putCursorToInputArea();
         }catch (IllegalArgumentException e){
             throw new TUIException(ExceptionsTUI.INVALID_CARD_POSITION);
@@ -359,14 +373,13 @@ public class ClientTUI implements View {
      * @throws TUIException if the player enters an invalid card position.
      */
     private int receivePlayerCardPosition() throws TUIException {
-        ClientUtil.printCommand("Enter card position in your hand: ");
+        ClientUtil.printCommand("Enter card position in your hand");
         try {
             int cardPosition = Integer.parseInt(console.nextLine());
 
             // ClientUtil.putCursorToInputArea();
 
             if (cardPosition >= 1 && cardPosition <= 3) return cardPosition - 1;
-                // todo: change exception
             else throw new TUIException(ExceptionsTUI.INVALID_CARD_POSITION);
         } catch (InputMismatchException | IllegalArgumentException e) {
 
@@ -383,13 +396,13 @@ public class ClientTUI implements View {
      */
     private Position receivePosition() throws TUIException {
         try{
-            ClientUtil.printCommand("Insert position, with x and y space separated (e.g.: 1 2): ");
-            // todo: handle wrong input
-            int x = console.nextInt();
-            int y = console.nextInt();
-            //ClientUtil.putCursorToInputArea();
-            console.nextLine();
-            return new Position(x, y);
+            ClientUtil.printCommand("Insert position, with x and y, comma separated: ");
+            Position requestedPos = stringToPos(console.nextLine());
+
+            // clear input area
+            ClientUtil.printCommandSquare();
+
+            return requestedPos;
         }catch (InputMismatchException e){
             throw new TUIException(ExceptionsTUI.INVALID_CARD_POSITION);
         }
@@ -440,12 +453,18 @@ public class ClientTUI implements View {
         // connection logic
         while(true) {
             try {
-                System.out.print("Insert username: ");
+                System.out.print("Insert username (max 15 characters): ");
                 String username = console.nextLine();
+                if (username.length() > 15) {
+                    throw new IndexOutOfBoundsException("Username too long");
+                }
+
                 controller.connect(client, username);
                 client.setName(username);
+                // print welcome screen
+                ClientUtil.clearScreen();
                 break;
-            } catch(InvalidUsernameException | FullLobbyException | RemoteException e){
+            } catch(InvalidUsernameException | FullLobbyException | RemoteException | IndexOutOfBoundsException e){
                 System.err.println(e.getMessage());
             }
         }
@@ -549,8 +568,10 @@ public class ClientTUI implements View {
      */
     @Override
     public void showUpdatePlayersInLobby() {
-        List<String> usernames = controller.getUsernames();
-        System.out.println("Users waiting: <" + String.join(",", usernames) + ">");
+        // print scoreboard (even though there are no points)
+        ClientUtil.printWaitingList(controller.getUsernames());
+
+        ClientUtil.putCursorToInputArea();
     }
 
     /**
@@ -558,9 +579,10 @@ public class ClientTUI implements View {
      */
     @Override
     public void showUpdateCreator() {
-        System.out.println("Welcome to the new lobby!");
-        System.out.println("Please set the lobby size (2 to 4 players allowed)");
-        System.out.println("Type 'lobbysize <number>' to set the lobby size");
+        ClientUtil.printCommand("""
+                Welcome to the new lobby!
+                Please set the lobby size (2 to 4 players allowed)
+                Type 'lobbysize <number>' to set the lobby size""");
 
         // add manually: only creator has this command
         availableActions.add(TUIActions.LOBBYSIZE);
@@ -590,7 +612,7 @@ public class ClientTUI implements View {
         ClientUtil.printCommandSquare();
         ClientUtil.printChatSquare();
         // print decks
-        ClientUtil.printDecks(controller.getResourceDeckTopBack(), controller.getGoldenDeckTopBack());
+        ClientUtil.printDecks(controller.getGoldenDeckTopBack(), controller.getResourceDeckTopBack());
 
         // print objective(s)
         showUpdateObjectiveCard();
@@ -720,7 +742,7 @@ public class ClientTUI implements View {
         // faceUpCards
         ClientUtil.printFaceUpCards(this.controller.getFaceUpCards());
         // print decks
-        ClientUtil.printDecks(controller.getResourceDeckTopBack(), controller.getGoldenDeckTopBack());
+        ClientUtil.printDecks(controller.getGoldenDeckTopBack(), controller.getResourceDeckTopBack());
         // print hand
         ClientUtil.printPlayerHand(this.controller.getMainPlayerCards(), cardSide);
 
@@ -777,7 +799,5 @@ public class ClientTUI implements View {
         for (String i : winners) {
             ClientUtil.printCommand(i + "\n");
         }
-
     }
-
 }

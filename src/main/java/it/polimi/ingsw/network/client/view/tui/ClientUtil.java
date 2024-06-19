@@ -156,6 +156,9 @@ public class ClientUtil {
         writeLine(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+2,
                 GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1,
                 GameScreenArea.INPUT_AREA.getWidth()-2,string);
+
+        // reposition cursor to input area, in order to write in the correct place
+        ClientUtil.putCursorToInputArea();
     }
 
     /**
@@ -892,7 +895,7 @@ public class ClientUtil {
      */
     private static String[] createResourcesTable (Map<Symbol, Integer> resources) {
         int rows = resources.size();
-        List<String> setupTable = createEmptyTable(rows);
+        List<String> setupTable = createEmptyTable(rows, 2, Collections.nCopies(2, resourceBoardColumnSpace));
 
         String separator = "║";
         Iterator<Map.Entry<Symbol, Integer>> mapIterator = resources.entrySet().iterator();
@@ -928,25 +931,46 @@ public class ClientUtil {
         return setupTable.toArray(new String[0]);
     }
 
+    private static String[] createWaitingList(List<String> usernames) {
+        int rows = usernames.size() + 1;
+        List<String> setupTable = createEmptyTable(rows, 1, Collections.singletonList(maxUsernameLength));
+        String separator = "║";
+
+        String tableLine = separator +
+                centeredString(maxUsernameLength, "USERS CONNECTED") +
+                separator;
+
+        setupTable.add(1, tableLine);
+
+        int i = 3;
+        for (String username : usernames) {
+            tableLine = separator +
+                    centeredString(maxUsernameLength, username) +
+                    separator;
+
+            setupTable.add(i, tableLine);
+            i += 2;
+        }
+
+        return setupTable.toArray(new String[0]);
+    }
+
     /**
      * Creates an empty table.
      *
      * @param rows the number of rows in the table.
      * @return an empty table seen as a list of strings.
      */
-    private static List<String> createEmptyTable(int rows) {
-        String inBetween = "═".repeat(resourceBoardColumnSpace); // space - icon - space
+    private static List<String> createEmptyTable(int rows, int columns, List<Integer> sizes) {
         String beginning;
         String end;
         String separator;
 
-        List<String> mytable = new LinkedList<>();
+        List<String> myTable = new LinkedList<>();
 
         int tableIdx = rows + 1; // create table without entries
 
         for(int i = 1; i <= tableIdx; i++) {
-            StringBuilder tableLine = new StringBuilder();
-
             if (i == 1){
                 beginning = "╔";
                 separator = "╦";
@@ -961,11 +985,18 @@ public class ClientUtil {
                 separator = "╬";
             }
 
-            tableLine.append(beginning).append(inBetween).append(separator).append(inBetween).append(end);
-            mytable.add(tableLine.toString());
+            String inBetween = "═".repeat(sizes.getFirst());
+            StringBuilder a = new StringBuilder(beginning + inBetween);
+            for(int j = 1; j < columns; j++){
+                inBetween = "═".repeat(sizes.get(j));
+                a.append(separator).append(inBetween);
+            }
+            a.append(end);
+
+            myTable.add(a.toString());
         }
 
-        return mytable;
+        return myTable;
     }
 
     /**
@@ -979,6 +1010,12 @@ public class ClientUtil {
                 createScoreBoard(players));
     }
 
+    public static void printWaitingList(List<String> usernames) {
+        printToLineColumn(GameScreenArea.SCOREBOARD.screenPosition.getX(),
+                GameScreenArea.SCOREBOARD.screenPosition.getY(),
+                createWaitingList(usernames));
+    }
+
     /**
      * Clears the screen completely.
      */
@@ -989,11 +1026,10 @@ public class ClientUtil {
     /**
      * Moves the cursor to the specified <code>line</code> and <code>column</code>.
      *
-     * @param line   the line on which the cursor is to be positioned.
-     * @param column the column on which the cursor is to be positioned.
+     * @param screenPos is screen position, relative to upper left corner
      */
-    public static void moveCursor(int line, int column) {
-        System.out.print("\033[" + line + ";" + column + "H");
+    public static void moveCursor(Position screenPos) {
+        System.out.print("\033[" + screenPos.getY() + ";" + screenPos.getX() + "H");
     }
 
     /**
@@ -1001,7 +1037,8 @@ public class ClientUtil {
      */
     public static void putCursorToInputArea() {
         // todo: put correct values
-        moveCursor(37, 127);
+        moveCursor(Position.sum(new Position(1,1),
+                new Position(GameScreenArea.INPUT_AREA.screenPosition.getY(), GameScreenArea.INPUT_AREA.screenPosition.getX())));
     }
 
     /**
@@ -1313,17 +1350,33 @@ public class ClientUtil {
      * @param string         the string to be written.
      */
     public static void writeLine(int line, int column, int availableSpace, String string) {
-        int cnt = 0;
-        int onGoingLine = line;
-
-        for (int i = 0; i < string.length(); i++) {
-            if (cnt == availableSpace) {
-                onGoingLine++;
-                cnt = 0;
+        List<String> split = Arrays.stream(string.split("\n")).map(sub -> {
+            List<String> tmp = new ArrayList<>();
+            int len = sub.length();
+            for (int i = 0; i < len; i += availableSpace) {
+                tmp.add(sub.substring(i, i + Math.min(len - i, availableSpace)));
             }
-            System.out.print("\033[" + onGoingLine + ";" + (column + cnt) + "H" + string.charAt(i));
-            cnt++;
+
+            return tmp;
+        }).flatMap(Collection::stream).toList();
+
+        int onGoingLine = line;
+        for (String s : split) {
+            System.out.print("\033[" + onGoingLine + ";" + column + "H" + s);
+            ++onGoingLine;
         }
+
+        //for (int i = 0; i < string.length(); i++) {
+        //    char currChar = string.charAt(i);
+        //    if (cnt == availableSpace || currChar == '\n') {
+        //        onGoingLine++;
+        //        cnt = 0;
+        //    }
+
+        //    System.out.print("\033[" + onGoingLine + ";" + (column + cnt) + "H" + string.charAt(i));
+
+        //    cnt++;
+        //}
     }
     public static void eraseLine(int line, int initialColumn, int finalColumn, int numberOfLinesToDelete) {
         if (finalColumn < initialColumn) {
