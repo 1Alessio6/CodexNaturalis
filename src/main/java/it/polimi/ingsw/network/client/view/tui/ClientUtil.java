@@ -33,7 +33,7 @@ enum GameScreenArea {
     HAND_CARDS(2* ClientUtil.areaPadding + 3* cardWidth, cardHeight, new Position(62 ,44)),
     DECKS(24, 5, new Position(18, 149)),
     CHAT(62, 11, new Position(23, 126)),
-    INPUT_AREA(62,11,new Position(36,126)),
+    INPUT_AREA(62,12,new Position(35,126)),
     TITLE(80,5,new Position(2,55)),
     SCOREBOARD(10, 26, new Position(2, 2)),
     PRIVATE_OBJECTIVE(ClientUtil.objectiveCardWidth, ClientUtil.objectiveCardHeight, new Position(35, 2)),
@@ -137,12 +137,13 @@ public class ClientUtil {
      *
      * @param string the message to be printed.
      */
-    public static void printExceptions(String string){
+    public static void printExceptions(String string) {
         ClientUtil.clearExceptionSpace();
 
-        ClientUtil.writeLine(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+11,
+        ClientUtil.writeLine(GameScreenArea.INPUT_AREA.getScreenPosition().getX() +
+                        GameScreenArea.INPUT_AREA.getHeight(),
                 GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1,
-                GameScreenArea.INPUT_AREA.getWidth()-2,
+                GameScreenArea.INPUT_AREA.getWidth() - 2,
                 string);
     }
 
