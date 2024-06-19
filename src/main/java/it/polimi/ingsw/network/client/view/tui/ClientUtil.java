@@ -40,9 +40,9 @@ enum GameScreenArea {
     COMMON_OBJECTIVE(2 + 2 * ClientUtil.objectiveCardWidth, ClientUtil.objectiveCardHeight, new Position(42, 2)),
     RESOURCES(26, 15, new Position(14, 2));
 
-    final int width;
-    final int height;
-    final Position screenPosition;
+    private final int width;
+    private final int height;
+    private final Position screenPosition;
 
     GameScreenArea(int width, int height, Position screenPosition) {
         this.width = width;
@@ -887,7 +887,8 @@ public class ClientUtil {
      * @param filler the resources of the player.
      */
     public static void printResourcesArea(Map<Symbol, Integer> filler) {
-        printToLineColumn(GameScreenArea.RESOURCES.screenPosition.getX(), GameScreenArea.RESOURCES.screenPosition.getY(), createResourcesTable(filler));
+        printToLineColumn(GameScreenArea.RESOURCES.getScreenPosition().getX(),
+                GameScreenArea.RESOURCES.getScreenPosition().getY(), createResourcesTable(filler));
     }
 
     /**
@@ -1006,14 +1007,14 @@ public class ClientUtil {
      * @param players the players.
      */
     public static void printScoreboard(List<ClientPlayer> players) {
-        printToLineColumn(GameScreenArea.SCOREBOARD.screenPosition.getX(),
-                GameScreenArea.SCOREBOARD.screenPosition.getY(),
+        printToLineColumn(GameScreenArea.SCOREBOARD.getScreenPosition().getX(),
+                GameScreenArea.SCOREBOARD.getScreenPosition().getY(),
                 createScoreBoard(players));
     }
 
     public static void printWaitingList(List<String> usernames) {
-        printToLineColumn(GameScreenArea.SCOREBOARD.screenPosition.getX(),
-                GameScreenArea.SCOREBOARD.screenPosition.getY(),
+        printToLineColumn(GameScreenArea.SCOREBOARD.getScreenPosition().getX(),
+                GameScreenArea.SCOREBOARD.getScreenPosition().getY(),
                 createWaitingList(usernames));
     }
 
@@ -1039,7 +1040,8 @@ public class ClientUtil {
     public static void putCursorToInputArea() {
         // todo: put correct values
         moveCursor(Position.sum(new Position(1,1),
-                new Position(GameScreenArea.INPUT_AREA.screenPosition.getY(), GameScreenArea.INPUT_AREA.screenPosition.getX())));
+                new Position(GameScreenArea.INPUT_AREA.getScreenPosition().getY(),
+                        GameScreenArea.INPUT_AREA.getScreenPosition().getX())));
     }
 
     /**
@@ -1048,10 +1050,9 @@ public class ClientUtil {
      * @param currentOffset respect to the centered start print (is the position that will leave exactly half tiles out)
      *                      in both directions
      * @param requestedOffset to add to the current offset
-     * @return
      */
     public static DrawablePlayground buildPlayground(ClientPlayground clientPlayground, Position currentOffset, Position requestedOffset)
-            throws InvalidCardRepresentationException, UnInitializedPlaygroundException, InvalidCardDimensionException, FittablePlaygroundException {
+            throws InvalidCardRepresentationException, InvalidCardDimensionException, FittablePlaygroundException {
         DrawablePlayground dp = new DrawablePlayground(7, cardHeight); // 7 array cells for each matrix line of the card
 
         Position[] realLimitPositions = clientPlayground.retrieveTopLeftAndBottomRightPosition();
@@ -1184,15 +1185,22 @@ public class ClientUtil {
      */
     public static Position printPlayground(ClientPlayground clientPlayground, Position currentOffset, Position requestedOffset)
             throws UndrawablePlaygroundException {
+
         DrawablePlayground drawablePlayground = buildPlayground(clientPlayground, currentOffset, requestedOffset);
         String[][] playgroundToPrint = drawablePlayground.getPlaygroundRepresentation();
         int playgroundHeight = playgroundToPrint.length;
         int playgroundWidth = playgroundToPrint[0].length;
 
         // center playground
-        int printX = GameScreenArea.PLAYGROUND.screenPosition.getX() + ((GameScreenArea.PLAYGROUND.getWidth() - playgroundWidth) / 2);
-        int printY = GameScreenArea.PLAYGROUND.screenPosition.getY() + ((GameScreenArea.PLAYGROUND.getHeight() - playgroundHeight) / 2);
+        int printX = GameScreenArea.PLAYGROUND.getScreenPosition().getX() + ((GameScreenArea.PLAYGROUND.getWidth() - playgroundWidth) / 2);
+        int printY = GameScreenArea.PLAYGROUND.getScreenPosition().getY() + ((GameScreenArea.PLAYGROUND.getHeight() - playgroundHeight) / 2);
 
+        // clear playground area
+        printToLineColumn(GameScreenArea.PLAYGROUND.getScreenPosition().getY(),
+                GameScreenArea.PLAYGROUND.getScreenPosition().getX(),
+                createEmptyArea(GameScreenArea.PLAYGROUND.getHeight(), GameScreenArea.PLAYGROUND.getWidth()));
+
+        // then print playground
         printToLineColumn(printY,
                 printX,
                 playgroundToPrint);
@@ -1248,14 +1256,14 @@ public class ClientUtil {
         int relativeX = areaPadding;
         for (int i = 0; i < 4; i++) {
             // if new card will go over the faceUpCard area
-            if (relativeX + cardWidth > GameScreenArea.FACE_UP_CARDS.width){
+            if (relativeX + cardWidth > GameScreenArea.FACE_UP_CARDS.getWidth()){
                 relativeY += cardHeight + areaPadding;
                 relativeX = areaPadding;
             }
 
             ClientFace face = i < faces.size() ? faces.get(i) : null;
-            printCardOutsidePlayground(GameScreenArea.FACE_UP_CARDS.screenPosition.getX() + relativeX,
-                    GameScreenArea.FACE_UP_CARDS.screenPosition.getY() + relativeY,
+            printCardOutsidePlayground(GameScreenArea.FACE_UP_CARDS.getScreenPosition().getX() + relativeX,
+                    GameScreenArea.FACE_UP_CARDS.getScreenPosition().getY() + relativeY,
                     face);
 
             relativeX += cardWidth + areaPadding;
