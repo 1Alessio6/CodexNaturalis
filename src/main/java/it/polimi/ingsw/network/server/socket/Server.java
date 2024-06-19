@@ -32,13 +32,13 @@ public class Server {
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             System.out.println("Received connection");
-            ClientHandler handler = new ClientHandler(this, in, out);
+            ClientHandler handler = new ClientHandler(this, in, out, clientSocket);
             new Thread(handler::run).start();
         }
     }
 
     public static void main(String[] args) throws IOException {
-        int port = Integer.parseInt(args[0]);
+        int port = Integer.parseInt("1234");
         System.out.println("Server is ready on port " + port);
         ServerSocket listenSocket = new ServerSocket(port);
         new Server(listenSocket).runServer();
@@ -49,14 +49,9 @@ public class Server {
      *
      * @param client   the representation of the client.
      * @param username the username of the player to connect.
-     * @return true if the player is connected correctly, false otherwise.
      */
-    public boolean connect(ClientHandler client, String username) {
-        boolean status = controller.handleConnection(username, client);
-        if (status) {
-            client.setName(username);
-        }
-        return status;
+    public void connect(ClientHandler client, String username) {
+        controller.handleConnection(username, client);
     }
 
     /**

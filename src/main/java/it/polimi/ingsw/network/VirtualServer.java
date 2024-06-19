@@ -4,16 +4,16 @@ import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.chat.message.Message;
-import it.polimi.ingsw.network.heartbeat.HeartBeatHandler;
 import it.polimi.ingsw.network.heartbeat.HeartBeatListener;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+
 /**
  * This class defines a "virtual server" and represents the means by which the server interacts with the client.
  */
-public interface VirtualServer extends Remote, HeartBeatHandler, HeartBeatListener {
+public interface VirtualServer extends Remote, HeartBeatListener {
     /**
      * Connects to server.
      *

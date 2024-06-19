@@ -11,13 +11,12 @@ import javafx.scene.text.Text;
 import java.rmi.RemoteException;
 import java.util.List;
 
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.createMainBackground;
+
 public class LobbyScene extends SceneController {
 
     @FXML
-    private Pane connectedPlayersPane;
-
-    @FXML
-    private AnchorPane anchorPane;
+    private Pane mainPane;
 
     @FXML
     private TextArea connectedPlayers;
@@ -40,8 +39,7 @@ public class LobbyScene extends SceneController {
         //connectedPlayers.setText("1 - " + gui.getController().getMainPlayerUsername());
         numberPlayerCatcher.setVisible(false);
         setNumberRequest.setVisible(false);
-
-
+        mainPane.setBackground(createMainBackground());
 
         //todo fix when fullScreen
     }
@@ -76,11 +74,6 @@ public class LobbyScene extends SceneController {
         try{
             gui.getController().setPlayersNumber(numberPlayerCatcher.getValue());
         }catch (InvalidPlayersNumberException ignored) {
-        } catch (RemoteException e) {
-            Alert remoteException = new Alert(Alert.AlertType.ERROR);
-            remoteException.setTitle("Server Crashed");
-            remoteException.setContentText("Remote Exception");
-            remoteException.show();
         }
 
         numberPlayerCatcher.setVisible(false);

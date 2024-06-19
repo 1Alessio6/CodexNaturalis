@@ -145,14 +145,28 @@ public class Playground {
         for (CornerPosition cornerPosition : CornerPosition.values()) {
             Position adjacentPos = getAdjacentPosition(position, cornerPosition);
             Tile adjacentTile = area.get(adjacentPos);
-            if (adjacentTile.sameAvailability(Availability.OCCUPIED)
-            ) {
+            if (adjacentTile.sameAvailability(Availability.OCCUPIED)) {
                 Position diff = Position.diff(position, adjacentPos);
                 assert (CornerPosition.fromPositionToCornerPosition.get(diff) != null);
                 positionToCornerCovered.put(adjacentPos, CornerPosition.fromPositionToCornerPosition.get(diff));
             }
         }
         return positionToCornerCovered;
+    }
+
+    public List<Position> getAdjacentOccupiedPositions(Position position){
+
+        List<Position> adjacentOccupiedPositions = new ArrayList<>();
+
+        for(CornerPosition cornerPosition : CornerPosition.values()){
+            Position adjacentPos = getAdjacentPosition(position, cornerPosition);
+            Tile adjacentTile = area.get(adjacentPos);
+            if (adjacentTile.sameAvailability(Availability.OCCUPIED)) {
+                adjacentOccupiedPositions.add(adjacentPos);
+            }
+        }
+
+        return adjacentOccupiedPositions;
     }
 
     /**

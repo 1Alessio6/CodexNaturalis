@@ -15,6 +15,7 @@ import it.polimi.ingsw.network.client.model.card.*;
 import it.polimi.ingsw.network.heartbeat.HeartBeat;
 import it.polimi.ingsw.network.heartbeat.HeartBeatMessage;
 import it.polimi.ingsw.network.server.rmi.ServerRMI;
+
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -29,30 +30,33 @@ import java.util.Map;
  */
 public class ClientRMI extends Client {
     private HeartBeat heartBeat;
+    private VirtualView stub;
 
-    /**
-     * Constructs the ClientRMI using the <code>host</code> and the <code>port</code> provided.
-     *
-     * @param host the name of the host to connect to.
-     * @param port the port number.
-     * @throws UnReachableServerException if the server isn't reachable.
-     */
-    public ClientRMI(String host, Integer port) throws UnReachableServerException {
-        super(host, port);
+    public ClientRMI() {
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void connect(String ip, Integer port) throws UnReachableServerException {
+    public VirtualServer bindServer(String ip, Integer port) throws UnReachableServerException {
         String serverName = ServerRMI.getServerName();
         try {
             Registry registry = LocateRegistry.getRegistry(ip, port);
-            server = (VirtualServer) registry.lookup(serverName);
+            VirtualServer server = (VirtualServer) registry.lookup(serverName);
+            heartBeat = new HeartBeat(this, "unknown", server, "server");
+            return server;
         } catch (RemoteException | NotBoundException e) {
-            throw new UnReachableServerException();
+            throw new UnReachableServerException(e.getMessage());
         }
+    }
+
+    @Override
+    public VirtualView getInstanceForTheServer() throws RemoteException {
+        if (stub == null) {
+            stub = (VirtualView) UnicastRemoteObject.exportObject(this, 0);
+        }
+        return stub;
     }
 
     /**
@@ -61,20 +65,28 @@ public class ClientRMI extends Client {
     @Override
     public void runView() throws RemoteException {
         // register stub
-        VirtualView stub =
-                (VirtualView) UnicastRemoteObject.exportObject(this, 0);
-        heartBeat = new HeartBeat(this, name, server, "server");
-        clientView.runView(stub);
+        clientView.runView();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setName(String name) {
-        this.name = name;
-        heartBeat.setHandlerName(name);
-        heartBeat.startHeartBeat();
+    protected void disconnect() {
+        heartBeat.terminate();
+    }
+
+
+
+    @Override
+    public void resultOfLogin(boolean accepted, String username, String details) throws RemoteException {
+        if (accepted) {
+            controller.setMainPlayerUsername(username);
+            heartBeat.setHandlerName(username);
+            heartBeat.startHeartBeat();
+        } else {
+            clientView.showInvalidLogin(details);
+        }
     }
 
     /**
@@ -111,6 +123,24 @@ public class ClientRMI extends Client {
         clientView.showUpdatePlayersInLobby();
     }
 
+    @Override
+    public void showUpdateFullLobby() throws RemoteException {
+        clientView.showUpdateFullLobby();
+        disconnect();
+    }
+
+    @Override
+    public void updateAfterLobbyCrash() throws RemoteException {
+        clientView.showUpdateAfterLobbyCrash();
+        disconnect();
+    }
+
+    @Override
+    public void showUpdateExceedingPlayer() throws RemoteException {
+        clientView.showUpdateExceedingPlayer();
+        disconnect();
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -136,7 +166,7 @@ public class ClientRMI extends Client {
     public void showUpdateObjectiveCard(ClientObjectiveCard chosenObjective, String username) {
         controller.updateObjectiveCard(chosenObjective, username);
         //todo: if the objective card isn't of the main player the view should not show the card
-        if(controller.getMainPlayerUsername().equals(username)){
+        if (controller.getMainPlayerUsername().equals(username)) {
             clientView.showUpdateObjectiveCard();
         }
     }
@@ -148,7 +178,7 @@ public class ClientRMI extends Client {
     public void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide, Position position) throws RemoteException {
         controller.updateAfterPlace(positionToCornerCovered, newAvailablePositions, newResources, points, username, placedCard, placedSide, position);
 
-        if (controller.getGamePhase().equals(GamePhase.Setup)){
+        if (controller.getGamePhase().equals(GamePhase.Setup)) {
             clientView.showStarterPlacement(username);
         } else {
             clientView.showUpdateAfterPlace(username);
@@ -160,8 +190,8 @@ public class ClientRMI extends Client {
      */
     @Override
     public void showUpdateAfterDraw(ClientCard drawnCard, ClientFace newTopDeck, ClientCard newFaceUpCard, String username, int boardPosition) throws RemoteException {
-        controller.updateAfterDraw(drawnCard,newTopDeck,newFaceUpCard,username,boardPosition);
-        clientView.showUpdateAfterDraw();
+        controller.updateAfterDraw(drawnCard, newTopDeck, newFaceUpCard, username, boardPosition);
+        clientView.showUpdateAfterDraw(username);
     }
 
     /**
@@ -183,7 +213,7 @@ public class ClientRMI extends Client {
      */
     @Override
     public void showUpdateCurrentPlayer(int currentPlayerIdx, GamePhase phase) throws RemoteException {
-        controller.updateCurrentPlayer(currentPlayerIdx,phase);
+        controller.updateCurrentPlayer(currentPlayerIdx, phase);
         clientView.showUpdateCurrentPlayer();
     }
 
@@ -209,16 +239,19 @@ public class ClientRMI extends Client {
      */
     @Override
     public void reportError(String details) throws RemoteException {
-        System.err.println(details);
+        clientView.reportError(details);
     }
 
     /**
      * {@inheritDoc}
      */
+    // synchronized because two threads may invoke the method: the client controller and the heartbeat
     @Override
-    public void handleUnresponsiveness(String unresponsiveListener) {
-        clientView.showServerCrash();
-        System.exit(1);
+    public synchronized void handleUnresponsiveness(String unresponsiveListener) {
+        if (heartBeat.isActive()) {
+            clientView.showServerCrash();
+            disconnect();
+        }
     }
 
     /**

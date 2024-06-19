@@ -26,13 +26,12 @@ public interface ClientActions {
     /**
      * Handles the connection of the <code>client</code>.
      *
-     * @param client   the representation of the client.
      * @param username the client's name.
      * @throws InvalidUsernameException if the username in question has already been taken.
      * @throws RemoteException          in the event of an error occurring during the execution of a remote method.
      * @throws FullLobbyException       if the lobby is full.
      */
-    void connect(VirtualView client, String username) throws InvalidUsernameException, RemoteException, FullLobbyException;
+    void connect(String username) throws InvalidUsernameException, RemoteException, FullLobbyException;
 
     /**
      * Places the <code>cardHandPosition</code> on the <code>selectedSide</code> and <code>position</code> specified.

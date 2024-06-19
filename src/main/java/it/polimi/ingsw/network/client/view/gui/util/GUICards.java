@@ -17,6 +17,11 @@ public class GUICards {
 
     public static final int boardCardsHeight = 81;
 
+    public static final int playerCardsWidth = 126;
+
+    public static final int playerCardsHeight = 81;
+
+
 
     //todo modify with usernames
     public static void initializePlayerCards(Pane playerPane, List<ClientCard> cards, int cardWidth, int cardHeight, int distanceBetweenCards, MouseButton flipButton) {

@@ -74,7 +74,7 @@ public class ClientFace implements Serializable {
     }
 
     public String getPath(){
-        return "";
+        return "gui/png/cards/" + faceID + ".png";
     }
 
     public Map<Symbol, Integer> getBackCenterResources() {

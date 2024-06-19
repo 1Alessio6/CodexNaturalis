@@ -2,12 +2,17 @@ package it.polimi.ingsw.network.heartbeat;
 
 import java.rmi.RemoteException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * The HeartBeat class keeps track of the existence of the remote endpoint which can be the server for the client or the client for the server.
+ * The HeartBeat must always reflect the state of the connection, that is, it has to be terminated {@link #terminate()} whenever a connection ends.
+ */
 public class HeartBeat extends TimerTask {
     private String handlerName;
     private String listenerName;
-    private final HeartBeatHandler heartBeatHandler;
+    private HeartBeatHandler heartBeatHandler;
     private HeartBeatListener heartBeatListener;
     private static final int MAX_DELTA = 3;
     private static final int DEF_HEART_BEAT_PERIOD = 1000; // ms
@@ -16,8 +21,16 @@ public class HeartBeat extends TimerTask {
     private final Timer timer;
     private AtomicInteger mostRecentReceivedId;
     private Integer lastSentId;
+    private AtomicBoolean isActive;
 
 
+    /**
+     * Constructs the heart beat.
+     * @param heartBeatHandler the local end point of the connection.
+     * @param handlerName the identifier for the handler.
+     * @param heartBeatListener the remote end point of the connection.
+     * @param listenerName the identifier for the listener.
+     */
     public HeartBeat(HeartBeatHandler heartBeatHandler, String handlerName, HeartBeatListener heartBeatListener, String listenerName) {
         this.heartBeatHandler = heartBeatHandler;
         this.handlerName = handlerName;
@@ -28,6 +41,7 @@ public class HeartBeat extends TimerTask {
         this.delay = 0;
         this.lastSentId = 0;
         timer = new Timer();
+        isActive = new AtomicBoolean(true);
     }
 
     public synchronized void setHeartBeatPeriod(int heartBeatPeriod) {
@@ -41,11 +55,19 @@ public class HeartBeat extends TimerTask {
         this.delay = delay;
     }
 
-    public synchronized void setHandlerName(String name){
+    /**
+     * Sets the name of the handler.
+     * @param name of the handler.
+     */
+    public synchronized void setHandlerName(String name) {
         this.handlerName = name;
     }
 
+    /**
+     * Starts sending the heart beat to the remote end point.
+     */
     public synchronized void startHeartBeat() {
+      //  isActive = true;
         timer.scheduleAtFixedRate(this, delay, heartBeatPeriod);
     }
 
@@ -54,38 +76,57 @@ public class HeartBeat extends TimerTask {
  //       this.listenerName = listenerName;
  //   }
 
+    /**
+     * Registers the arrival of a message from the remote end point.
+     * @param pong the message notify the existence of the remote endpoint.
+     */
     public void registerMessage(HeartBeatMessage pong) {
         mostRecentReceivedId.set(pong.getId());
-        //System.out.println("Most recent ping id is " + mostRecentReceivedId);
     }
 
+    /**
+     * Sends the heart beat to the remote reference notifying about the existence of the local end point.
+     */
     @Override
     public synchronized void run() {
         lastSentId += 1;
         HeartBeatMessage ping = new HeartBeatMessage(handlerName, lastSentId);
         int delta = ping.getId() - mostRecentReceivedId.get();
-        //System.out.println("Delta is " + delta);
+
+        if (!isActive.get()) {
+            return;
+        }
+
         if (delta <= MAX_DELTA) {
             try {
                 heartBeatListener.receivePing(ping);
             } catch (RemoteException e) {
                 System.err.println("Remote exception in Heartbeat: the listener has disconnected for this reason: " + e.getMessage());
-                try {
-                    heartBeatHandler.handleUnresponsiveness(listenerName);
-                } catch (RemoteException ignored) {
-                    System.err.println("Exception should not be thrown: heart beat handler is local");
-                }
+                heartBeatHandler.handleUnresponsiveness(listenerName);
             }
         } else {
-            try {
-                heartBeatHandler.handleUnresponsiveness(listenerName);
-            } catch (RemoteException ignored) {
-                System.err.println("Exception should not be thrown: heart beat handler is local");
-            }
+            heartBeatHandler.handleUnresponsiveness(listenerName);
         }
     }
 
-    public synchronized void terminate() {
-        timer.cancel();
+    /**
+     * Terminates the heartbeat.
+     * The method is invoked whenever a disconnection occurs.
+     * All references to external objects become invalid to avoid running task to interfere with the state of such objects.
+     */
+    public void terminate() {
+        isActive.set(false);
+        synchronized (this) {
+            timer.cancel();
+        }
+    }
+
+    /**
+     * Returns the state of the heartbeat.
+     * @return true if the heart beat is valid, false otherwise.
+     * The heart beat is valid if it's never terminated.
+     */
+    public boolean isActive() {
+        return isActive.get();
     }
 }

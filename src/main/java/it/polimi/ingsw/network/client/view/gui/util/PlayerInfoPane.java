@@ -1,25 +1,26 @@
 package it.polimi.ingsw.network.client.view.gui.util;
 
-import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
-import javafx.scene.control.Button;
+import javafx.geometry.Insets;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
+import javafx.scene.text.Font;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
 
 public class PlayerInfoPane {
 
     private Pane playerMainPane;
 
-    private static final int mainPaneWidth = 436;
+    private static final int mainPaneWidth = 361;
 
     private static final int mainPaneHeight = 162;
 
@@ -29,19 +30,21 @@ public class PlayerInfoPane {
 
     private static final int cardsPaneHeight = 48;
 
-    private Pane resourcesPane;
+    private final ResourcePane resourcesPane;
 
-    private static final int resourcesPaneWidth = 406;
+    private final RankPane rank;
+
+    private static final int resourcesPaneWidth = 347;
 
     private static final int resourcesPaneHeight = 37;
 
-    private Text username;
+    private final Label username;
 
-    private Button switchPlayground;
+    private ImageView switchPlayground;
 
-    private static final int switchPlaygroundWidth = 111;
+    private static final int switchPlaygroundWidth = 30;
 
-    private static final int switchPlaygroundHeight = 48;
+    private static final int switchPlaygroundHeight = 30;
 
     private static final int distance = 25;
 
@@ -52,8 +55,18 @@ public class PlayerInfoPane {
 
     public PlayerInfoPane(ClientPlayer player) {
         playerMainPane = new Pane();
-        playerMainPane.setBackground(new Background(new BackgroundFill(Color.SADDLEBROWN, CornerRadii.EMPTY, null)));
+        playerMainPane.setBackground(setBackgroundColor("#EEE5BC"));
+        //playerMainPane.setBackground(setBackgroundColor(convertPlayerColorIntoHexCode(player.getColor())));
         playerMainPane.setPrefSize(mainPaneWidth, mainPaneHeight);
+
+        rank = new RankPane(55,40,30);
+        Pane rankMainPane = rank.getMainPane();
+        rankMainPane.setBackground(setBackgroundColor("#EEE5BC"));
+        rankMainPane.setLayoutX(275);
+        rankMainPane.setLayoutY(10);
+
+        playerMainPane.getChildren().add(rankMainPane);
+
 
         //initialize card pane
         playerCardsPane = new Pane();
@@ -61,13 +74,8 @@ public class PlayerInfoPane {
 
         //todo remove this line and pass player cards
 
-        List<ClientCard> cards = new ArrayList<>();
-        cards.add(new ClientCard());
-        cards.add(new ClientCard());
-        cards.add(new ClientCard());
+        List<ClientCard> cards = player.getPlayerCards();
 
-
-        //List<ClientCard> cards = player.getPlayerCards();
 
         GUICards.initializePlayerCards(playerCardsPane, cards, cardWidth, cardHeight, distance, MouseButton.PRIMARY);
         playerCardsPane.setLayoutX(15);
@@ -75,59 +83,61 @@ public class PlayerInfoPane {
         playerMainPane.getChildren().add(playerCardsPane);
 
         //initialize player text
-        username = new Text(player.getUsername());
-        //username.setFill(convertPlayerColor(player.getColor()));
-        username.setLayoutX(15);
-        username.setLayoutY(26);
+        username = new Label(player.getUsername());
+        username.setStyle("-fx-text-fill: " + convertPlayerColorIntoHexCode(player.getColor()) + ";");
+        username.setFont(new Font("Cambria Math", 12));
+        username.setPrefHeight(15);
+        username.setBackground(GUIUtil.setBackgroundColor("#FFFFFF"));
+        username.setPadding(new Insets(7));
+        username.setLayoutX(7);
+        username.setLayoutY(15);
         playerMainPane.getChildren().add(username);
 
 
-        resourcesPane = new Pane();
-        resourcesPane.setPrefSize(resourcesPaneWidth, resourcesPaneHeight);
-        //todo add resources
-        resourcesPane.setBackground(new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, null)));
-        resourcesPane.setLayoutX(15);
-        resourcesPane.setLayoutY(51);
-        playerMainPane.getChildren().add(resourcesPane);
+        resourcesPane = new ResourcePane(resourcesPaneWidth, resourcesPaneHeight);
+        resourcesPane.setBackground("#FFFFFF");
+        resourcesPane.initialize(30.45, 33.6, 19.5);
+        updateResources(player.getPlayground().getResources());
+        resourcesPane.getResourcesPane().setLayoutX(7);
+        resourcesPane.getResourcesPane().setLayoutY(51);
+        playerMainPane.getChildren().add(resourcesPane.getResourcesPane());
 
 
-        switchPlayground = new Button("PLAYGROUND");
-        switchPlayground.setLayoutX(317);
-        switchPlayground.setLayoutY(99);
-        switchPlayground.setPrefSize(switchPlaygroundWidth, switchPlaygroundHeight);
+        switchPlayground = new ImageView(Icon.OBSERVE_PLAYGROUND.getPath());
+        switchPlayground.setLayoutX(310);
+        switchPlayground.setLayoutY(108);
+        switchPlayground.setFitWidth(switchPlaygroundWidth);
+        switchPlayground.setFitHeight(switchPlaygroundHeight);
         playerMainPane.getChildren().add(switchPlayground);
 
-
     }
 
-    public void setPlayerCardsPane(Pane playerCardsPane) {
-        this.playerCardsPane = playerCardsPane;
+    public void updateResources(Map<Symbol, Integer> playgroundResources){
+        resourcesPane.updateResources(playgroundResources);
     }
 
-    private Color convertPlayerColor(PlayerColor color) {
-        switch (color) {
-            case RED -> {
-                return Color.RED;
-            }
-            case BLACK -> {
-                return Color.BLACK;
-            }
-            case BLUE -> {
-                return Color.BLUE;
-            }
-            case GREEN -> {
-                return Color.GREEN;
-            }
-            case YELLOW -> {
-                return Color.YELLOW;
-            }
-        }
-        return null;
+    public void updatePlayerCards(List<ClientCard> cards) {
+        playerCardsPane.getChildren().clear();
+        GUICards.initializePlayerCards(playerCardsPane, cards, cardWidth, cardHeight, distance, MouseButton.PRIMARY);
+    }
+
+    public void updateRank(int rank){
+        this.rank.updateRank(rank);
+    }
+
+    public void updateScore(int score){
+        this.rank.updateScore(score);
+    }
+
+    public ImageView getSwitchPlayground() {
+        return switchPlayground;
     }
 
     public Pane getPlayerMainPane() {
         return playerMainPane;
     }
 
-
+    public String getPlayerUsername() {
+        return username.getText();
+    }
 }

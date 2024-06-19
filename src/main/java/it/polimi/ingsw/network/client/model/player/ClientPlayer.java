@@ -125,6 +125,10 @@ public class ClientPlayer implements Serializable {
 
     public List<ClientCard> getPlayerCards(){return playerCards;}
 
+    public int getScore(){
+        return playground.getPoints();
+    }
+
     //setter methods
 
     public void setNetworkStatus(boolean networkStatus) {

@@ -11,20 +11,17 @@ import java.util.List;
  * ClientGame after being updated
  */
 public interface View {
-
     /**
-     * Method used to read client input.
-     *
-     * @param client the representation of the client.
+     * Runs the view.
      */
-    void runView(VirtualView client);
+    void runView();
 
     //method used to update after a controller update, invoked by the client class
 
     /**
      * Method used to show the crash of the server through a message in output.
      */
-    public void showServerCrash();
+    void showServerCrash();
 
     /**
      * Method used to show the update of the current players in the lobby.
@@ -40,6 +37,12 @@ public interface View {
      * Method used to show the crash of the lobby through a message in output.
      */
     void showUpdateAfterLobbyCrash();
+
+    void showUpdateFullLobby();
+
+    void showUpdateExceedingPlayer();
+
+    void showInvalidLogin(String details);
 
     /**
      * Method used to show the playing area of the player after the connection. //review
@@ -85,7 +88,7 @@ public interface View {
     /**
      * Method used to show the update of the player's hand, face up cards and decks.
      */
-    void showUpdateAfterDraw();
+    void showUpdateAfterDraw(String username);
 
     /**
      * Method used to show the updated chat.
@@ -109,6 +112,6 @@ public interface View {
      */
     void showWinners(List<String> winners);
 
-    //void beginCommandAcquisition();
+    void reportError(String details);
 
 }

@@ -49,5 +49,9 @@ public class ClientObjectiveCard implements Serializable {
         return positionCondition;
     }
 
+    public String getPath(){
+        return "gui/png/objective_cards/" + frontID + ".png";
+    }
+
     public int getScore(){return score;}
 }

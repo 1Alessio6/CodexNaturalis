@@ -4,13 +4,11 @@ import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface HeartBeatHandler extends Remote {
-
+public interface HeartBeatHandler {
     /**
-     * Handles the unresponsiveness of clients.
+     * Handles the unresponsiveness of the end point being tracked.
      *
      * @param unresponsiveListener the unresponsiveness client.
-     * @throws RemoteException in the event of an error occurring during the execution of a remote method.
      */
-    void handleUnresponsiveness(String unresponsiveListener) throws RemoteException;
+    void handleUnresponsiveness(String unresponsiveListener) ;
 }

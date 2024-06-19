@@ -202,7 +202,8 @@ public class Player {
      * @param card to be discarded.
      */
     public void discard(Card card) {
-        assert (cards.remove(card)); // the card must exist
+        boolean cardIsRemoved = cards.remove(card);
+        assert cardIsRemoved; // the card must exist
     }
 
 
@@ -335,11 +336,11 @@ public class Player {
      * @return the extra points reached.
      */
     public int calculateExtraPoints(List<ObjectiveCard> commonObjectives) {
-        List<ObjectiveCard> objectives = new ArrayList<>(Stream.concat(commonObjectives.stream(), objectiveCards.stream()).toList());
-        assert objectives.size() == 3;
+        List<ObjectiveCard> totalObjectivesInGame = new ArrayList<>(Stream.concat(commonObjectives.stream(), objectiveCards.stream()).toList());
+        assert totalObjectivesInGame.size() == 3;
 
         int extraPoints = 0;
-        for (ObjectiveCard objective : objectives) {
+        for (ObjectiveCard objective : totalObjectivesInGame) {
             extraPoints = objective.calculatePoints(playground);
             if (extraPoints > 0) {
                 ++numSatisfiedObjectives;

@@ -1,7 +1,5 @@
 package it.polimi.ingsw.model;
 
-import com.google.gson.reflect.TypeToken;
-import it.polimi.ingsw.jsondeserializer.DeserializationHandler;
 import it.polimi.ingsw.model.Deck.Deck;
 import it.polimi.ingsw.model.Deck.DeckType;
 import it.polimi.ingsw.model.board.*;
@@ -11,6 +9,7 @@ import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.ChatDatabase;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.model.listenerhandler.ListenerHandler;
+import it.polimi.ingsw.model.loader.CardsLoader;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.player.Player;
@@ -23,7 +22,6 @@ import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 
-import java.io.FileNotFoundException;
 import java.util.*;
 
 import static java.lang.Math.min;
@@ -69,13 +67,6 @@ public class Game {
     // chat database containing the history of all sent messages
     private ChatDatabase chatDatabase;
 
-    /**
-     * Creates a list of cards with the <code>fronts</code> and <code>backs</code> provided.
-     *
-     * @param fronts of the cards.
-     * @param backs  of the cards.
-     * @return list of cards.
-     */
     private List<Card> createCardList(List<Front> fronts, List<Back> backs) {
         assert fronts.size() == backs.size();
 
@@ -88,13 +79,6 @@ public class Game {
         return cards;
     }
 
-    /**
-     * Creates a list of objective cards, which includes <code>objectivePositions</code> cards and <code>objectiveResources</code> cards.
-     *
-     * @param objectivePositions objective cards with position conditions.
-     * @param objectiveResources objective cards with resource conditions.
-     * @return a list with objective position/resource cards
-     */
     private List<ObjectiveCard> createObjectiveCardList(List<ObjectivePositionCard> objectivePositions, List<ObjectiveResourceCard> objectiveResources) {
         List<ObjectiveCard> objectiveCards = new ArrayList<>();
 
@@ -105,12 +89,6 @@ public class Game {
         return objectiveCards;
     }
 
-    /**
-     * A list with the front side of the golden cards found in the <code>goldenFrontCardsPath</code>.
-     * @param goldenFrontCardsPath the path of golden front cards.
-     * @return a list with golden front cards.
-     * @throws FileNotFoundException if an error occurs during the opening of the file.
-     */
     private List<Front> frontFromGoldenList(String goldenFrontCardsPath) throws FileNotFoundException {
         List<GoldenFront> gFronts =
                 new DeserializationHandler<GoldenFront>().jsonToList(goldenFrontCardsPath, new TypeToken<>() {
@@ -118,9 +96,6 @@ public class Game {
         return new ArrayList<>(gFronts);
     }
 
-    /**
-     * Load the available colors in the game.
-     */
     private void loadAvailableColors() {
         this.availableColors = new HashSet<>(
                 Arrays.asList(
@@ -136,50 +111,13 @@ public class Game {
      * Load all kind of cards to the game.
      */
     private void loadCards() {
-        String backCardsPath = "src/main/resources/cards/backCards.json";
-        String goldenFrontCardsPath = "src/main/resources/cards/goldenFrontCards.json";
-        String resourceFrontCardsPath = "src/main/resources/cards/resourceFrontCards.json";
-        String startingFrontCardsPath = "src/main/resources/cards/startingFrontCards.json";
-        String startingBackCardsPath = "src/main/resources/cards/startingBackCards.json";
-        String objectivePositionFrontCardsPath = "src/main/resources/cards/objectivePositionFrontCards.json";
-        String objectiveResourceCardsPath = "src/main/resources/cards/objectiveResourceFrontCards.json";
+        this.resourceCards = new Deck<>(CardsLoader.getResourceCards());
 
-        try {
-            this.resourceCards = new Deck<>(createCardList(
-                    new DeserializationHandler<Front>().jsonToList(resourceFrontCardsPath, new TypeToken<>() {
-                    }),
-                    new DeserializationHandler<Back>().jsonToList(backCardsPath, new TypeToken<>() {
-                    })
-            ));
+        this.goldenCards = new Deck<>(CardsLoader.getGoldenCards());
 
-            this.goldenCards = new Deck<>(
-                    createCardList(
-                            frontFromGoldenList(goldenFrontCardsPath),
-                            new DeserializationHandler<Back>().jsonToList(backCardsPath, new TypeToken<>() {
-                            })
-                    )
-            );
+        this.starterCards = new Deck<>(CardsLoader.getStarterCards());
 
-            this.starterCards = new Deck<>(createCardList(
-                    new DeserializationHandler<Front>().jsonToList(startingFrontCardsPath, new TypeToken<>() {
-                    }),
-                    new DeserializationHandler<Back>().jsonToList(startingBackCardsPath, new TypeToken<>() {
-                    })
-            ));
-
-            this.objectiveCards = new Deck<>(
-                    createObjectiveCardList(
-                            new DeserializationHandler<ObjectivePositionCard>().jsonToList(objectivePositionFrontCardsPath, new TypeToken<>() {
-                            }),
-                            new DeserializationHandler<ObjectiveResourceCard>().jsonToList(objectiveResourceCardsPath, new TypeToken<>() {
-                            })
-                    )
-            );
-
-        } catch (FileNotFoundException e) {
-            System.err.println("File not found");
-            e.printStackTrace();
-        }
+        this.objectiveCards = new Deck<>(CardsLoader.getObjectiveCards());
     }
 
     /**
@@ -256,8 +194,8 @@ public class Game {
      * @param idx index of the player to be verified.
      * @return true if the <code>idx</code> is valid, false otherwise.
      */
-    private boolean isValidIdx(int idx) {
-        return 0 <= idx && idx < players.size();
+    private boolean isValidFaceUpCardsIdx(int idx) {
+        return 0 <= idx && idx < faceUpCards.size();
     }
 
     /**
@@ -354,24 +292,25 @@ public class Game {
     public void add(String username, VirtualView client) throws InvalidUsernameException {
         // only previously connected users can join the game
         if (!validUsernames.contains(username)) {
-            throw new InvalidUsernameException("Game has already started, but you were not there from the beginning");
+            throw new InvalidUsernameException("The game is already started and there are no players registered with the username " + username);
         }
 
         if (fromUsernameToPlayer(username).isConnected()) {
             throw new InvalidUsernameException("It seems you're already connected");
         }
-
         System.out.println("Username " + username + " has joined the game");
         listenerHandler.add(username, client);
 
         setNetworkStatus(username, true);
 
-     //   System.out.println("Notify the game representation.\tIsActive = " + isActive);
+        listenerHandler.notify(username, receiver -> receiver.resultOfLogin(true, username, ""));
+
+        //   System.out.println("Notify the game representation.\tIsActive = " + isActive);
         ClientGame clientRepresentationOfTheGame = new ClientGame(this);
         listenerHandler.notify(username, receiver -> receiver.updateAfterConnection(clientRepresentationOfTheGame));
 
         if (!isActive && getListOfActivePlayers().size() > 1) {
-        //    System.out.println("Game is active after being suspended");
+            //    System.out.println("Game is active after being suspended");
             listenerHandler.notifyBroadcast(VirtualView::showUpdateGameState);
             isActive = true;
         }
@@ -392,7 +331,7 @@ public class Game {
         System.out.println("User " + username + " has left the game");
         listenerHandler.remove(username);
         setNetworkStatus(username, false);
-       // System.out.println("Set the player " + username + "'s network status to false");
+        // System.out.println("Set the player " + username + "'s network status to false");
         listenerHandler.notifyBroadcast(receiver -> receiver.showUpdatePlayerStatus(false, username));
         if (getListOfActivePlayers().size() < 2) {
             System.err.println("Game is suspended");
@@ -440,7 +379,7 @@ public class Game {
      */
     public void placeStarter(String username, Side side)
             throws InvalidPlayerActionException,
-            InvalidGamePhaseException {
+                   InvalidGamePhaseException {
         if (phase != GamePhase.Setup) {
             throw new InvalidGamePhaseException();
         }
@@ -545,9 +484,9 @@ public class Game {
      */
     public void placeCard(String username, Card card, Side side, Position position)
             throws InvalidPlayerActionException,
-            Playground.UnavailablePositionException,
-            Playground.NotEnoughResourcesException,
-            InvalidGamePhaseException, SuspendedGameException {
+                   Playground.UnavailablePositionException,
+                   Playground.NotEnoughResourcesException,
+                   InvalidGamePhaseException, SuspendedGameException {
         if (!isActive) {
             throw new SuspendedGameException();
         }
@@ -694,7 +633,7 @@ public class Game {
             throw new InvalidPlayerActionException();
         }
 
-        assert (isValidIdx(faceUpCardIdx));
+        assert (isValidFaceUpCardsIdx(faceUpCardIdx));
 
         if (faceUpCards.get(faceUpCardIdx) == null) {
             throw new InvalidFaceUpCardException("No face up card there");
@@ -854,6 +793,7 @@ public class Game {
     public void terminateForInactivity() {
         try {
             String lastConnectedPlayer = getListOfActivePlayers().getFirst().getUsername();
+            phase = GamePhase.End;
             listenerHandler.notifyBroadcast(receiver -> receiver.showWinners(Collections.singletonList(lastConnectedPlayer)));
         } catch (NoSuchElementException noSuchElementException) {
             // empty list: there's no player to notify

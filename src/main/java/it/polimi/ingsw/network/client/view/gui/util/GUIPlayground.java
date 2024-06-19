@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.client.view.gui;
+package it.polimi.ingsw.network.client.view.gui.util;
 
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
@@ -10,6 +10,8 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
+
+import static it.polimi.ingsw.network.client.view.gui.util.GUICards.pathToImage;
 
 public class GUIPlayground {
     private final int cardWidth;
@@ -51,12 +53,12 @@ public class GUIPlayground {
         return paneHeight;
     }
 
-    public Rectangle getRectangle(Position posRelativeToStarter, Image image) {
+    public Rectangle getRectangle(Position posRelativeToStarter, ImagePattern image) {
         double x = xUpperStarter + posRelativeToStarter.getX() * xOffset;
         double y = yUpperStarter - posRelativeToStarter.getY() * yOffset;
 
         Rectangle rectangle = new Rectangle(x, y, cardWidth, cardHeight);
-        rectangle.setFill(new ImagePattern(image));
+        rectangle.setFill(image);
         return rectangle;
     }
 
@@ -67,5 +69,10 @@ public class GUIPlayground {
         Rectangle rectangle = new Rectangle(x, y, cardWidth, cardHeight);
         rectangle.setFill(Color.LIGHTBLUE);
         return rectangle;
+    }
+
+    public void setUpperStarterPosition(Position pos) {
+        xUpperStarter = pos.getX();
+        yUpperStarter = pos.getY();
     }
 }

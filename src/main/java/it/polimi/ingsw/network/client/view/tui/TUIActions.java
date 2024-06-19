@@ -5,6 +5,14 @@ package it.polimi.ingsw.network.client.view.tui;
  */
 public enum TUIActions {
     /**
+     * CONNECT refers to the action of connecting to the server
+     */
+    CONNECT("enter the server ip and port in the format <ip> <port>"),
+    /**
+     * SELECTUSERNAME refers to the action of inserting the username
+     */
+    SELECTUSERNAME("select your username"),
+    /**
      * BACK refers to the action of returning to the playground
      */
     BACK("go back at your playground"),

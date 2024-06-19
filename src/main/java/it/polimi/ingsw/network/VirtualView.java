@@ -9,7 +9,6 @@ import it.polimi.ingsw.network.client.model.ClientGame;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
-import it.polimi.ingsw.network.heartbeat.HeartBeatHandler;
 import it.polimi.ingsw.network.heartbeat.HeartBeatListener;
 
 import java.rmi.Remote;
@@ -20,7 +19,7 @@ import java.util.*;
  * This class defines a "virtual client" and represents the means by which the client interacts with the server.
  * Follows the observer design pattern.
  */
-public interface VirtualView extends HeartBeatListener, HeartBeatHandler, Remote {
+public interface VirtualView extends HeartBeatListener, Remote {
     /**
      * Method used to show a welcome message to the creator and allow him/her to set the lobby size.
      *
@@ -51,23 +50,9 @@ public interface VirtualView extends HeartBeatListener, HeartBeatHandler, Remote
      */
     void showUpdatePlayersInLobby(List<String> usernames) throws RemoteException;
 
-    // game related updates
+    void showUpdateFullLobby() throws RemoteException;
 
-    // game status: beginning of any connection
-
-    // selected Starter
-
-    // selected color
-
-    // place objective card
-
-    // result of normal place
-
-    // result of draw
-
-    // message sent
-
-    // ping from server
+    void showUpdateExceedingPlayer() throws RemoteException;
 
     /**
      * Method used to show basic player information.
@@ -170,12 +155,5 @@ public interface VirtualView extends HeartBeatListener, HeartBeatHandler, Remote
      */
     void reportError(String details) throws RemoteException;
 
-    /**
-     * Method used to set the player's username.
-     *
-     * @param name the username of the player.
-     * @throws RemoteException in the event of an error occurring during the execution of a remote method.
-     */
-    void setName(String name) throws RemoteException;
-
+    void resultOfLogin(boolean accepted, String username, String details) throws RemoteException;
 }

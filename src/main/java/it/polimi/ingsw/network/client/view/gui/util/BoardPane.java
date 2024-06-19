@@ -4,77 +4,102 @@ import it.polimi.ingsw.model.Deck.DeckType;
 import it.polimi.ingsw.network.client.model.board.ClientBoard;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
+import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
+import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static it.polimi.ingsw.network.client.view.gui.util.GUICards.*;
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.setBackgroundColor;
 
 public class BoardPane {
 
     private Pane boardMainPane;
     private Rectangle goldenDeckTopCard;
     private Rectangle resourceDeckTopCard;
+    private final List<Rectangle> goldenFaceUp;
 
-    private List<Rectangle> goldenFaceUp;
-
-    private List<Rectangle> resourceFaceUp;
+    private final Pane commonObjectivePane;
+    private final List<Rectangle> resourceFaceUp;
 
     public BoardPane(ClientBoard clientBoard) {
-        Pane BoardMainPane = new Pane();
-        BoardMainPane.setPrefSize(413, 310);
-        BoardMainPane.setLayoutX(24);
-        BoardMainPane.setLayoutY(268);
+
+        commonObjectivePane = new Pane();
+        commonObjectivePane.setPrefSize(295,120);
+
+        goldenFaceUp = new ArrayList<>();
+        resourceFaceUp = new ArrayList<>();
+        boardMainPane = new Pane();
+        boardMainPane.setPrefSize(295, 500);
+        boardMainPane.setLayoutX(24);
+        boardMainPane.setLayoutY(217);
 
         createFaceUpCards(clientBoard.getFaceUpCards());
         createDeck(DeckType.GOLDEN, clientBoard.getGoldenDeckTopBack());
         createDeck(DeckType.RESOURCE, clientBoard.getResourceDeckTopBack());
 
-        initializeBoardCardsPosition(34,11);
+        boardMainPane.getChildren().addAll(goldenFaceUp);
+        boardMainPane.getChildren().addAll(resourceFaceUp);
+        boardMainPane.getChildren().add(goldenDeckTopCard);
+        boardMainPane.getChildren().add(resourceDeckTopCard);
+        boardMainPane.setBackground(setBackgroundColor("#EEE5BC"));
+        initializeBoardCardsPosition(34, 11);
+        initializeCommonObjective(clientBoard.getCommonObjectives());
+        boardMainPane.getChildren().add(commonObjectivePane);
 
     }
 
 
     public void initializeBoardCardsPosition(int verticalDistance, int horizontalDistance) {
 
-        double layoutX = 20.0;
-        double layoutY = 82.0;
+        double layoutX;
+        double layoutY = 30.0;
 
-        for(int i = 0; i < 6; i++) {
+        for (int i = 0; i < 6; i++) {
 
             layoutX = 20.0;
 
-            switch (i){
+            switch (i) {
                 case 0:
-                    resourceFaceUp.get(i).setLayoutX(layoutX);
-                    resourceFaceUp.get(i).setLayoutY(layoutY);
-
+                    resourceFaceUp.getFirst().setLayoutX(layoutX);
+                    resourceFaceUp.getFirst().setLayoutY(layoutY);
+                    break;
                 case 2:
-                    goldenFaceUp.get(i).setLayoutX(layoutX);
-                    goldenFaceUp.get(i).setLayoutY(layoutY);
-
+                    goldenFaceUp.getFirst().setLayoutX(layoutX);
+                    goldenFaceUp.getFirst().setLayoutY(layoutY);
+                    break;
                 case 4:
                     goldenDeckTopCard.setLayoutX(layoutX);
-                    goldenDeckTopCard.setLayoutX(layoutY);
+                    goldenDeckTopCard.setLayoutY(layoutY);
+                    break;
             }
 
             i++;
             layoutX = updateLayoutX(layoutX, horizontalDistance);
 
-            switch (i){
+            switch (i) {
                 case 1:
-                    resourceFaceUp.get(i).setLayoutX(layoutX);
-                    resourceFaceUp.get(i).setLayoutY(layoutY);
+                    resourceFaceUp.getLast().setLayoutX(layoutX);
+                    resourceFaceUp.getLast().setLayoutY(layoutY);
+                    break;
 
                 case 3:
-                    goldenFaceUp.get(i).setLayoutX(layoutX);
-                    goldenFaceUp.get(i).setLayoutY(layoutY);
+                    goldenFaceUp.getLast().setLayoutX(layoutX);
+                    goldenFaceUp.getLast().setLayoutY(layoutY);
+                    break;
 
                 case 5:
                     resourceDeckTopCard.setLayoutX(layoutX);
-                    resourceDeckTopCard.setLayoutX(layoutY);
+                    resourceDeckTopCard.setLayoutY(layoutY);
+                    break;
             }
 
             layoutY = updateLayoutY(layoutY, verticalDistance);
@@ -92,18 +117,39 @@ public class BoardPane {
         }
     }
 
-    private Rectangle createBoardRectangle() {
-        return new Rectangle(GUICards.boardCardsWidth, GUICards.boardCardsHeight);
+    private void initializeCommonObjective(List<ClientObjectiveCard> commonObjectives){
+        commonObjectivePane.setLayoutY(383.5);
+
+        Text commonObjectiveTitle = new Text();
+        commonObjectiveTitle.setFont(new Font(GUIUtil.Font,15));
+        commonObjectiveTitle.setLayoutY(2);
+        commonObjectiveTitle.setLayoutX(70);
+        commonObjectiveTitle.setText("COMMON OBJECTIVE");
+        commonObjectivePane.getChildren().add(commonObjectiveTitle);
+
+        double layoutX = 20;
+
+        for(ClientObjectiveCard clientObjectiveCard : commonObjectives){
+            Rectangle card = createBoardRectangle();
+            card.setFill(pathToImage(clientObjectiveCard.getPath()));
+            card.setLayoutX(layoutX);
+            card.setLayoutY(29.5);
+            layoutX = updateLayoutX(layoutX,11);
+            commonObjectivePane.getChildren().add(card);
+        }
     }
 
-    private void createFaceUpCards(List<ClientCard> faceUp){
-        for(int i = 0; i < 4; i++) {
+    private Rectangle createBoardRectangle() {
+        return new Rectangle(boardCardsWidth, boardCardsHeight);
+    }
+
+    private void createFaceUpCards(List<ClientCard> faceUp) {
+        for (int i = 0; i < 4; i++) {
             Rectangle rectangle = createBoardRectangle();
-            rectangle.setFill(GUICards.pathToImage(faceUp.get(i).getFrontPath()));
-            if(i <= 1 ){
+            rectangle.setFill(pathToImage(faceUp.get(i).getFrontPath()));
+            if (i <= 1) {
                 resourceFaceUp.add(rectangle);
-            }
-            else{
+            } else {
                 goldenFaceUp.add(rectangle);
             }
         }
@@ -138,27 +184,48 @@ public class BoardPane {
     }
 
     public void setNewFace(int boardPosition, ClientFace face) {
+
+
         switch (boardPosition) {
             case 0:
-                resourceFaceUp.get(0).setFill(GUICards.pathToImage(face.getPath()));
+                resourceFaceUp.getFirst().setFill(pathToImage(face.getPath()));
+                break;
             case 1:
-                resourceFaceUp.get(1).setFill(GUICards.pathToImage(face.getPath()));
+                resourceFaceUp.getLast().setFill(pathToImage(face.getPath()));
+                break;
             case 2:
-                goldenFaceUp.get(0).setFill(GUICards.pathToImage(face.getPath()));
+                goldenFaceUp.getFirst().setFill(pathToImage(face.getPath()));
+                break;
             case 3:
-                goldenFaceUp.get(1).setFill(GUICards.pathToImage(face.getPath()));
+                goldenFaceUp.getLast().setFill(pathToImage(face.getPath()));
+                break;
             case 4:
-                goldenDeckTopCard.setFill(GUICards.pathToImage(face.getPath()));
+                goldenDeckTopCard.setFill(pathToImage(face.getPath()));
+                break;
             case 5:
-                resourceDeckTopCard.setFill(GUICards.pathToImage(face.getPath()));
+                resourceDeckTopCard.setFill(pathToImage(face.getPath()));
+                break;
+            default:
+                System.err.println("not valid id");
+                break;
         }
     }
 
+    public void boardUpdate(ClientBoard board) {
+
+        setNewFace(4, board.getGoldenDeckTopBack());
+        setNewFace(5, board.getResourceDeckTopBack());
+        setNewFace(0, board.getFaceUpCards().get(0).getFront());
+        setNewFace(1, board.getFaceUpCards().get(1).getFront());
+        setNewFace(2, board.getFaceUpCards().get(2).getFront());
+        setNewFace(3, board.getFaceUpCards().get(3).getFront());
+    }
+
     private double updateLayoutX(double layoutX, int distance) {
-        return layoutX + GUICards.boardCardsWidth + distance;
+        return layoutX + boardCardsWidth + distance;
     }
 
     private double updateLayoutY(double layoutY, int distance) {
-        return layoutY + GUICards.boardCardsHeight + distance;
+        return layoutY + boardCardsHeight + distance;
     }
 }

@@ -16,16 +16,20 @@ import it.polimi.ingsw.model.lobby.FullLobbyException;
 import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.network.VirtualServer;
-import it.polimi.ingsw.network.VirtualView;
+import it.polimi.ingsw.network.client.Client;
+import it.polimi.ingsw.network.client.UnReachableServerException;
 import it.polimi.ingsw.network.client.model.ClientGame;
+import it.polimi.ingsw.network.client.model.board.ClientBoard;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.board.ClientTile;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
+import it.polimi.ingsw.network.client.view.View;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,34 +39,47 @@ import java.util.Map;
  */
 public class ClientController implements ClientActions {
 
-    private final VirtualServer server;
+    private VirtualServer server;
     private ClientGame game;
+    private Client client;
 
     private String mainPlayerUsername = ""; // todo. set by the view after user's input
 
-    /**
-     * Constructs a <code>ClientController</code> with the <code>server</code> provided
-     *
-     * @param server the representation of the server
-     */
-    public ClientController(VirtualServer server) {
-        this.server = server;
+    //public ClientController(VirtualServer server) {
+    //    this.server = server;
+    //}
+
+    public ClientController(Client client) {
+        this.client = client;
     }
+
+    public void configureClient(View view, String ip, Integer port) throws UnReachableServerException {
+        client.configure(this, view);
+        server = client.bindServer(ip, port);
+    }
+
+    //public void bindServer(String ip, String port) {
+    //    server = client.bindServer(ip, port);
+    //}
 
     /**
      *{@inheritDoc}
      */
     @Override
-    public void connect(VirtualView client, String username) throws InvalidUsernameException, RemoteException, FullLobbyException {
-        server.connect(client, username);
-        this.mainPlayerUsername = username;
+    public void connect(String username)  {
+        try {
+            server.connect(client.getInstanceForTheServer(), username);
+        } catch (RemoteException e) {
+            System.err.println(e.getMessage());
+            client.handleUnresponsiveness("server");
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void placeCard(int cardHandPosition, Side selectedSide, Position position) throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException, RemoteException {
+    public void placeCard(int cardHandPosition, Side selectedSide, Position position) throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException {
 
         if (!game.isGameActive()) {
             throw new SuspendedGameException("The game is suspended, you can only text messages");
@@ -86,14 +103,18 @@ public class ClientController implements ClientActions {
             throw new Playground.UnavailablePositionException("The position selected isn't available");
         }
 
-        server.placeCard(getMainPlayerUsername(), getMainPlayerCard(cardHandPosition).getFrontId(), getMainPlayerCard(cardHandPosition).getBackId(), selectedSide, position);
+        try {
+            server.placeCard(getMainPlayerUsername(), getMainPlayerCard(cardHandPosition).getFrontId(), getMainPlayerCard(cardHandPosition).getBackId(), selectedSide, position);
+        } catch (RemoteException e) {
+            client.handleUnresponsiveness("server");
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void draw(int IdToDraw) throws InvalidGamePhaseException, EmptyDeckException, NotExistingFaceUp, SuspendedGameException, RemoteException, InvalidIdForDrawingException {
+    public void draw(int IdToDraw) throws InvalidGamePhaseException, EmptyDeckException, NotExistingFaceUp, SuspendedGameException, InvalidIdForDrawingException {
 
         if (IdToDraw > 5 || IdToDraw < 0) {
             throw new InvalidIdForDrawingException();
@@ -147,14 +168,18 @@ public class ClientController implements ClientActions {
                 break;
         }
 
-        server.draw(getMainPlayerUsername(), IdToDraw);
+        try {
+            server.draw(getMainPlayerUsername(), IdToDraw);
+        } catch (RemoteException e) {
+            client.handleUnresponsiveness("server");
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void placeStarter(Side side) throws SuspendedGameException, RemoteException, InvalidGamePhaseException {
+    public void placeStarter(Side side) throws SuspendedGameException, InvalidGamePhaseException {
 
         if (!game.isGameActive()) {
             throw new SuspendedGameException("The game is suspended, you can only text messages");
@@ -164,14 +189,18 @@ public class ClientController implements ClientActions {
             throw new InvalidGamePhaseException("You can only place your starter card during the setup phase");
         }
 
-        server.placeStarter(getMainPlayerUsername(), side);
+        try {
+            server.placeStarter(getMainPlayerUsername(), side);
+        } catch (RemoteException e) {
+            client.handleUnresponsiveness("server");
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void chooseColor(PlayerColor color) throws InvalidColorException, SuspendedGameException, RemoteException, InvalidGamePhaseException {
+    public void chooseColor(PlayerColor color) throws InvalidColorException, SuspendedGameException, InvalidGamePhaseException {
 
         if (!game.isGameActive()) {
             throw new SuspendedGameException("The game is suspended, you can only text messages");
@@ -185,7 +214,11 @@ public class ClientController implements ClientActions {
             throw new InvalidColorException("The color selected is already taken");
         }
 
-        server.chooseColor(getMainPlayerUsername(), color);
+        try {
+            server.chooseColor(getMainPlayerUsername(), color);
+        } catch (RemoteException e) {
+            client.handleUnresponsiveness("server");
+        }
 
     }
 
@@ -193,7 +226,7 @@ public class ClientController implements ClientActions {
      * {@inheritDoc}
      */
     @Override
-    public void placeObjectiveCard(int chosenObjective) throws SuspendedGameException, RemoteException, InvalidGamePhaseException {
+    public void placeObjectiveCard(int chosenObjective) throws SuspendedGameException, InvalidGamePhaseException {
         if (!game.isGameActive()) {
             throw new SuspendedGameException("The game is suspended, you can only text messages");
         }
@@ -202,14 +235,18 @@ public class ClientController implements ClientActions {
             throw new InvalidGamePhaseException("You can only choose your private objective during the setup phase");
         }
 
-        server.placeObjectiveCard(getMainPlayerUsername(), chosenObjective);
+        try {
+            server.placeObjectiveCard(getMainPlayerUsername(), chosenObjective);
+        } catch (RemoteException e) {
+            client.handleUnresponsiveness("server");
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void sendMessage(Message message) throws InvalidMessageException, RemoteException {
+    public void sendMessage(Message message) throws InvalidMessageException{
 
         if (!message.getSender().equals(getMainPlayerUsername())) {
             throw new InvalidMessageException("sender doesn't match the author's username");
@@ -218,26 +255,40 @@ public class ClientController implements ClientActions {
             throw new InvalidMessageException("recipient doesn't exists");
         }
 
-        server.sendMessage(message);
+        try {
+            server.sendMessage(message);
+        } catch (RemoteException e) {
+            client.handleUnresponsiveness("server");
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setPlayersNumber(int playersNumber) throws RemoteException, InvalidPlayersNumberException {
+    public void setPlayersNumber(int playersNumber) throws InvalidPlayersNumberException {
         if (playersNumber > 4 || playersNumber < 2) {
             throw new InvalidPlayersNumberException();
         }
-        server.setPlayersNumber(mainPlayerUsername, playersNumber);
+        try {
+            server.setPlayersNumber(mainPlayerUsername, playersNumber);
+        } catch (RemoteException e) {
+            client.handleUnresponsiveness("server");
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void disconnect(String username) throws RemoteException {
-        server.disconnect(username);
+    public void disconnect(String username) {
+        if (server != null) {
+            try {
+                server.disconnect(username);
+            } catch (RemoteException ignored) {
+
+            }
+        }
     }
 
     /**
@@ -315,7 +366,7 @@ public class ClientController implements ClientActions {
 
         game.getPlayer(username).removePlayerCard(placedCard);
 
-        if (!getGamePhase().equals(GamePhase.Setup) && this.getMainPlayerUsername().equals(username)) {
+        if (!getGamePhase().equals(GamePhase.PlaceAdditional) && !getGamePhase().equals(GamePhase.Setup) && this.getMainPlayerUsername().equals(username)) {
             this.game.setCurrentPhase(GamePhase.DrawNormal);
         }
     }
@@ -347,6 +398,26 @@ public class ClientController implements ClientActions {
             game.getClientBoard().setResourceDeckTopBack(newTopBackDeck);
         }
 
+    }
+
+    public List<PlayerColor> getAvailableColors() {
+        List<PlayerColor> availableColors = new ArrayList<>();
+        List<ClientPlayer> players = game.getPlayers();
+        for (PlayerColor color : PlayerColor.values()) {
+            if (color == PlayerColor.BLACK) continue;
+
+            boolean isAvailable = true;
+            for (ClientPlayer p : players) {
+                if (p.getColor() == color) {
+                    isAvailable = false;
+                    break;
+                }
+            }
+            if (isAvailable) {
+                availableColors.add(color);
+            }
+        }
+        return availableColors;
     }
 
     /**
@@ -439,7 +510,7 @@ public class ClientController implements ClientActions {
         return lastMessage.getSender() + " -> " + lastMessage.getRecipient() + ": " + lastMessage.getContent();
     }
 
-    public List<Message> getMessage() {
+    public List<Message> getMessages() {
         return game.getMessages();
     }
 
@@ -483,8 +554,16 @@ public class ClientController implements ClientActions {
         return this.game.getClientBoard().getCommonObjectives();
     }
 
-    public ClientPlayground getPlaygroundByUsername(String username){
+    public ClientPlayground getPlaygroundByUsername(String username) {
         return game.getPlaygroundByUsername(username);
+    }
+
+    public synchronized ClientObjectiveCard getMainPlayerObjectiveCard() {
+        return getMainPlayer().getObjectiveCards().getFirst();
+    }
+
+    public ClientBoard getBoard() {
+        return game.getClientBoard();
     }
 
     public ClientPlayer getPlayer(String username) {
@@ -493,6 +572,26 @@ public class ClientController implements ClientActions {
 
     public boolean isGameActive() {
         return game.isGameActive();
+    }
+
+    public int getPlayerRank(String playerUsername) {
+
+        int rank = 1;
+        int playerScore = getPlayer(playerUsername).getScore();
+
+
+        for (ClientPlayer player : getPlayers()) {
+            if (player.getScore() > playerScore) {
+                rank++;
+            }
+        }
+
+
+        return rank;
+    }
+
+    public synchronized void setMainPlayerUsername(String name) {
+        mainPlayerUsername = name;
     }
 
     public boolean isMainPlaygroundEmpty() {

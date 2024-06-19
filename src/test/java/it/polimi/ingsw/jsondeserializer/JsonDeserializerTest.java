@@ -381,7 +381,7 @@ public class JsonDeserializerTest {
     @Test
     void serializeMessage_deserializeCorrectly() {
         int idToDraw = 100;
-        NetworkMessage message = new DrawMessage("gino", idToDraw);
+        NetworkMessage message = new DrawMessage("player", idToDraw);
         gson = new Gson();
         String json = gson.toJson(message);
         System.out.println(json);

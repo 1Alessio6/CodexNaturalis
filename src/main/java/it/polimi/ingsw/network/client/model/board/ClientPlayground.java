@@ -18,7 +18,6 @@ public class ClientPlayground implements Serializable {
     private final Map<Position, ClientTile> area;
     private int points;
     private final Map<Symbol, Integer> resources;
-
     List<Position> positioningOrder;
 
     /**
@@ -35,6 +34,25 @@ public class ClientPlayground implements Serializable {
      *
      */
     public ClientPlayground() {
+        this.area = new HashMap<>();
+        Position origin = new Position(0, 0);
+        Availability s = Availability.EMPTY;
+        area.put(origin, new ClientTile(s));
+        positioningOrder = new ArrayList<>();
+        this.points = 0;
+        this.resources = new HashMap<>();
+        resources.put(Symbol.ANIMAL, 0);
+        resources.put(Symbol.FUNGI, 0);
+        resources.put(Symbol.INKWELL, 0);
+        resources.put(Symbol.INSECT, 0);
+        resources.put(Symbol.PLANT, 0);
+        resources.put(Symbol.MANUSCRIPT, 0);
+        resources.put(Symbol.QUILL, 0);
+    }
+
+
+
+    public ClientPlayground(Map<Position, ClientTile> area, Map<Symbol, Integer> resources) {
         this.area = new HashMap<>();
         Position origin = new Position(0, 0);
         Availability s = Availability.EMPTY;
@@ -69,12 +87,12 @@ public class ClientPlayground implements Serializable {
      * @param areaToCopy area to be copied.
      * @return the copied area.
      */
-    private Map<Position, ClientTile> createClientArea(Map<Position, Tile> areaToCopy){
+    private Map<Position, ClientTile> createClientArea(Map<Position, Tile> areaToCopy) {
 
         Map<Position, ClientTile> area = new HashMap<>();
 
-        for(Position position : areaToCopy.keySet()){
-            if(areaToCopy.get(position).getAvailability() != Availability.NOTAVAILABLE){
+        for (Position position : areaToCopy.keySet()) {
+            if (areaToCopy.get(position).getAvailability() != Availability.NOTAVAILABLE) {
                 area.put(position, new ClientTile(areaToCopy.get(position)));
             }
 
@@ -108,13 +126,13 @@ public class ClientPlayground implements Serializable {
     public void placeTile(Position position, ClientTile tile) {
 
         this.area.put(position, tile);
-        if(tile.sameAvailability(Availability.OCCUPIED)){
+        if (tile.sameAvailability(Availability.OCCUPIED)) {
             this.positioningOrder.add(position);
         }
     }
 
-    public Set<Position> getAvailablePositions() {
-        return this.area.keySet().stream().filter(x -> this.area.get(x).sameAvailability(Availability.EMPTY)).collect(Collectors.toSet());
+    public List<Position> getAvailablePositions() {
+        return this.area.keySet().stream().filter(x -> this.area.get(x).sameAvailability(Availability.EMPTY)).collect(Collectors.toList());
     }
 
     public String toString() {
@@ -149,21 +167,32 @@ public class ClientPlayground implements Serializable {
      *
      * @param newAvailablePosition list of new available positions to be added.
      */
-    public void addNewAvailablePositions(List <Position> newAvailablePosition){
-        for(Position position : newAvailablePosition){
+    public void addNewAvailablePositions(List<Position> newAvailablePosition) {
+        List<Position> emptyTiles = new ArrayList<>();
+        for (Position position : area.keySet()) {
+            if (getTile(position).sameAvailability(Availability.EMPTY)) {
+                emptyTiles.add(position);
+            }
+        }
+
+        for (Position p : emptyTiles) {
+            area.remove(p);
+        }
+
+        for (Position position : newAvailablePosition) {
             placeTile(position, new ClientTile(Availability.EMPTY));
         }
     }
 
-    public ClientTile getTile(Position position){
-        if(area.containsKey(position)){
+    public ClientTile getTile(Position position) {
+        if (area.containsKey(position)) {
             return area.get(position);
         }
         return null;
     }
 
-    public void setCoveredCorner(Map<Position, CornerPosition> coveredCorner){
-        for(Position position : coveredCorner.keySet()){
+    public void setCoveredCorner(Map<Position, CornerPosition> coveredCorner) {
+        for (Position position : coveredCorner.keySet()) {
             getTile(position).getFace().setCornerCovered(coveredCorner.get(position));
         }
     }
@@ -190,6 +219,7 @@ public class ClientPlayground implements Serializable {
 
     /**
      * Returns the maximum x and the maximum y in absolute value of the tiles' position in the playground.
+     *
      * @return an array where the first index is the maximum x and the second one is the maximum y.
      */
     public int[] getRange() {

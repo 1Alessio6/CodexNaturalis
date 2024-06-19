@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
+import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.UnReachableServerException;
@@ -15,6 +16,7 @@ import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 import it.polimi.ingsw.network.heartbeat.HeartBeat;
+import it.polimi.ingsw.network.heartbeat.HeartBeatHandler;
 import it.polimi.ingsw.network.heartbeat.HeartBeatMessage;
 
 import java.io.BufferedReader;
@@ -31,29 +33,31 @@ import java.util.Map;
  * The ClientSocket updates the view content and the information present in the ClientController when Socket
  * communication is used.
  */
-public class ClientSocket extends Client implements VirtualView {
+public class ClientSocket extends Client implements VirtualView, HeartBeatHandler {
     private Socket socket;
     private PrintWriter out;
     private BufferedReader in;
     private HeartBeat heartBeat;
 
-    /**
-     * Constructs the ClientSocket using the <code>host</code> and the <code>port</code> provided.
-     *
-     * @param host the name of the host to connect to.
-     * @param port the port number.
-     * @throws UnReachableServerException if the server isn't reachable.
-     */
-    public ClientSocket(String host, Integer port) throws UnReachableServerException{
-        super(host, port);
-    }
+    public ClientSocket() {}
 
     /**
      * {@inheritDoc}
      */
     @Override
     public void runView() {
-        clientView.runView(this);
+        clientView.runView();
+    }
+
+    @Override
+    protected void disconnect() {
+        heartBeat.terminate();
+        closeResources();
+    }
+
+    @Override
+    public VirtualView getInstanceForTheServer() {
+        return this;
     }
 
     /**
@@ -73,15 +77,15 @@ public class ClientSocket extends Client implements VirtualView {
      * {@inheritDoc}
      */
     @Override
-    protected void connect(String ip, Integer port) throws UnReachableServerException {
-        System.out.println("Connect to ip " + ip + " at port " + port);
+    public VirtualServer bindServer(String ip, Integer port) throws UnReachableServerException {
+        System.out.println("Trying to connect to ip " + ip + " at port " + port);
         try {
             this.socket = new Socket(ip, port);
             this.out = new PrintWriter(this.socket.getOutputStream(), true);
             this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            server = new ServerHandler(this, in, out);
+            VirtualServer server = new ServerHandler(this, in, out);
 
-            heartBeat = new HeartBeat(this, "unkown", server, "server");
+            heartBeat = new HeartBeat(this, "unknown", server, "server");
             heartBeat.startHeartBeat();
             new Thread(() -> {
                 try {
@@ -90,15 +94,16 @@ public class ClientSocket extends Client implements VirtualView {
                     // impossible from a socket server
                 }
             }).start();
-            return;
+            return server;
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + ip);
             closeResources();
+            throw new UnReachableServerException(e.getMessage());
         } catch (IOException e) {
             System.err.println("Couldn't get I/O for the connection to " + ip);
             closeResources();
+            throw new UnReachableServerException(e.getMessage());
         }
-        throw new UnReachableServerException();
     }
 
     //   public void terminateConnection() {
@@ -124,6 +129,7 @@ public class ClientSocket extends Client implements VirtualView {
     @Override
     public void updateAfterLobbyCrash() {
         clientView.showUpdateAfterLobbyCrash();
+        disconnect();
     }
 
     /**
@@ -142,6 +148,18 @@ public class ClientSocket extends Client implements VirtualView {
     public void showUpdatePlayersInLobby(List<String> usernames) {
         controller.updatePlayersInLobby(usernames);
         clientView.showUpdatePlayersInLobby();
+    }
+
+    @Override
+    public void showUpdateFullLobby() {
+        clientView.showUpdateFullLobby();
+        disconnect();
+    }
+
+    @Override
+    public void showUpdateExceedingPlayer() {
+        clientView.showUpdateExceedingPlayer();
+        disconnect();
     }
 
     //   @Override
@@ -202,7 +220,7 @@ public class ClientSocket extends Client implements VirtualView {
     @Override
     public void showUpdateAfterDraw(ClientCard drawnCard, ClientFace newTopDeck, ClientCard newFaceUpCard, String username, int boardPosition) {
         controller.updateAfterDraw(drawnCard, newTopDeck, newFaceUpCard, username, boardPosition);
-        clientView.showUpdateAfterDraw();
+        clientView.showUpdateAfterDraw(username);
     }
 
     /**
@@ -250,15 +268,21 @@ public class ClientSocket extends Client implements VirtualView {
      */
     @Override
     public void reportError(String details) {
-        System.err.println(details);
+        clientView.reportError(details);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setName(String name) throws RemoteException {
-        super.name = name;
+    public void resultOfLogin(boolean accepted, String username, String details) throws RemoteException {
+        if (accepted) {
+            controller.setMainPlayerUsername(username);
+            heartBeat.setHandlerName(username);
+           // heartBeat.startHeartBeat();
+        } else {
+            clientView.showInvalidLogin(details);
+        }
     }
 
     /**
@@ -266,13 +290,10 @@ public class ClientSocket extends Client implements VirtualView {
      */
     @Override
     public void handleUnresponsiveness(String unresponsiveListener) {
-        System.err.println("Server doesn't respond to ping, I'll assume is inactive");
-        if (clientView != null) {
+        if (heartBeat.isActive()) {
             clientView.showServerCrash();
+            disconnect();
         }
-        closeResources();
-        heartBeat.terminate();
-        System.exit(1);
     }
 
     /**
