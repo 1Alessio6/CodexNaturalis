@@ -51,7 +51,7 @@ public enum TUIActions {
     /**
      * SPY refers to the action that allows the player to look the n-player playground
      */
-    SPY("<n>: look at n-index player"),
+    SPY("<user>: look at user's playground"),
     /**
      * PM refers to the action that allows the player to write a private message
      */

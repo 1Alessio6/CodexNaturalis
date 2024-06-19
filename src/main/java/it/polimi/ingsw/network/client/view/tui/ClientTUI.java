@@ -13,9 +13,7 @@ import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
-import it.polimi.ingsw.model.lobby.FullLobbyException;
 import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
-import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.network.client.UnReachableServerException;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
@@ -32,7 +30,7 @@ import java.util.*;
  */
 public class ClientTUI implements View {
     private final Scanner console;
-    private Set<TUIActions> availableActions = new HashSet<>();
+    private final Set<TUIActions> availableActions = new HashSet<>();
 
     private Side cardSide = Side.FRONT;
 
@@ -40,6 +38,9 @@ public class ClientTUI implements View {
 
     /* saves the coordinate to start print */
     private Position currOffset = new Position(0, 0);
+
+    /* saves the current watching player, so updates are correctly applied */
+    private String currentWatchingPlayer;
 
     /**
      * Constructs clientTUI with the <code>controller</code> provided.
@@ -80,7 +81,7 @@ public class ClientTUI implements View {
                         case COLOR -> chooseColor();
                         case FLIP -> flip();
                         case HELP -> ClientUtil.printHelpCommands(availableActions);
-                        case SPY -> spy(Integer.parseInt(nextCommand[1]) - 1);
+                        case SPY -> spy(nextCommand[1]);
                         case M, PM -> sendMessage(nextCommand);
                         case DRAW -> draw();
                         case PLACE -> place();
@@ -95,7 +96,9 @@ public class ClientTUI implements View {
                 } else {
                     ClientUtil.printExceptions(ExceptionsTUI.INVALID_GAME_COMMAND.getMessage());
                     // print help for consented commands
-                    ClientUtil.printHelpCommands(availableActions);
+                    synchronized (availableActions){
+                        ClientUtil.printHelpCommands(availableActions);
+                    }
                 }
             } catch (UndrawablePlaygroundException |
                      InvalidPlayersNumberException |
@@ -104,12 +107,16 @@ public class ClientTUI implements View {
                      Playground.NotEnoughResourcesException | InvalidGamePhaseException | SuspendedGameException | TUIException e) {
                 ClientUtil.printExceptions(e.getMessage());
                 // print help for consented commands
-                ClientUtil.printHelpCommands(availableActions);
+                synchronized (availableActions){
+                    ClientUtil.printHelpCommands(availableActions);
+                }
             } catch (IllegalArgumentException e) {
 
                 ClientUtil.printExceptions(ExceptionsTUI.INVALID_GAME_COMMAND.getMessage());
                 // print help for consented commands
-                ClientUtil.printHelpCommands(availableActions);
+                synchronized (availableActions){
+                    ClientUtil.printHelpCommands(availableActions);
+                }
             } catch (IndexOutOfBoundsException e) {
                 ClientUtil.printExceptions("few arguments");
                 //ClientUtil.printExceptions(ExceptionsTUI.INVALID_SPY_INPUT.getMessage());
@@ -118,29 +125,12 @@ public class ClientTUI implements View {
             } catch (UnReachableServerException e) {
                 ClientUtil.printExceptions("Server is down, please connect to another server");
                 availableActions.clear();
-                availableActions.add(TUIActions.HELP);
-                availableActions.add(TUIActions.QUIT);
-                availableActions.add(TUIActions.CONNECT);
+                setActionsForConnection();
             } finally {
                 ClientUtil.putCursorToInputArea();
             }
         }
     }
-
-//    private void goBack() {
-//        // add back commands
-//        setAvailableActions();
-//        // clear screen
-//        ClientUtil.clearScreen();
-//        // print main player stuff again
-//        showUpdateAfterConnection();
-//        ClientUtil.printPlayground(this.controller.getMainPlayerPlayground());
-//        ClientUtil.printPlayerHand(this.controller.getMainPlayerCards(), cardSide);
-//        if(controller.getGamePhase()!=GamePhase.Setup ){
-//            showUpdateObjectiveCard();
-//        }
-//
-//    }
 
     private Position stringToPos(String string) {
         String[] myPos = string.split(",", 2);
@@ -159,8 +149,7 @@ public class ClientTUI implements View {
             throws UndrawablePlaygroundException {
         Position requestedOffset = stringToPos(requestedOffsetString);
 
-        // todo: move playground of every player
-        currOffset = ClientUtil.printPlayground(controller.getPlaygroundByUsername(controller.getMainPlayerUsername()),
+        currOffset = ClientUtil.printPlayground(controller.getPlaygroundByUsername(currentWatchingPlayer),
                 currOffset, requestedOffset);
 
         // clear input area
@@ -209,7 +198,6 @@ public class ClientTUI implements View {
     /**
      * Receives the index of the secret objective card chosen by the player.
      *
-     * @throws RemoteException           in the event of an error occurring during the execution of a remote method.
      * @throws InvalidGamePhaseException if the game phase doesn't allow choosing objective cards.
      * @throws SuspendedGameException    if the game is suspended.
      * @throws TUIException              if the player enters an invalid objective index.
@@ -250,7 +238,6 @@ public class ClientTUI implements View {
      * Receives the color chosen by the player.
      *
      * @throws InvalidColorException     if the color has already been selected by others.
-     * @throws RemoteException           in the event of an error occurring during the execution of a remote method.
      * @throws InvalidGamePhaseException if the game phase doesn't allow choosing colors.
      * @throws SuspendedGameException    if the game is suspended.
      * @throws TUIException              if the player enters an invalid color.
@@ -275,7 +262,6 @@ public class ClientTUI implements View {
      *
      * @param command an array of strings containing the message and the form in which the message is to be transmitted.
      * @throws InvalidMessageException if the author doesn't match the author or the recipient doesn't exist.
-     * @throws RemoteException         in the event of an error occurring during the execution of a remote method.
      * @throws TUIException            if the player attempts to send a message incorrectly, that means, not following
      *                                 the sending message structure.
      */
@@ -323,7 +309,6 @@ public class ClientTUI implements View {
      * @throws InvalidIdForDrawingException if the id isn't valid for drawing.
      * @throws EmptyDeckException           in the event that the deck is empty.
      * @throws NotExistingFaceUp            if the face up slot is empty.
-     * @throws RemoteException              in the event of an error occurring during the execution of a remote method.
      * @throws InvalidGamePhaseException    if the game doesn't allow to draw cards.
      * @throws SuspendedGameException       if the game is suspended.
      * @throws TUIException                 if the player inserts an inappropriate argument.
@@ -350,7 +335,6 @@ public class ClientTUI implements View {
      *
      * @throws Playground.UnavailablePositionException if the position isn't available or if it is already occupied.
      * @throws Playground.NotEnoughResourcesException  if the needed resources to place the card aren't enough.
-     * @throws RemoteException                         in the event of an error occurring during the execution of a remote method.
      * @throws InvalidGamePhaseException               if the game phase doesn't allow placing cards.
      * @throws SuspendedGameException                  if the game is suspended.
      * @throws TUIException                            if the player enters an invalid side or position to place in.
@@ -472,11 +456,15 @@ public class ClientTUI implements View {
     private void connect(String ip, Integer port) throws UnReachableServerException {
         controller.configureClient(this, ip, port);
         availableActions.remove(TUIActions.CONNECT);
-        ClientUtil.printCommand("Insert your username: type <selectusername> <your username>");
+        ClientUtil.printCommand("Insert your username: type <selectusername> <your username> (max 15 characters):");
         availableActions.add(TUIActions.SELECTUSERNAME);
     }
 
     private void selectUsername(String username) {
+        if (username.length() > 15) {
+            throw new IndexOutOfBoundsException("Username too long");
+        }
+        this.currentWatchingPlayer = username;
         availableActions.remove(TUIActions.SELECTUSERNAME);
         controller.connect(username);
     }
@@ -496,16 +484,20 @@ public class ClientTUI implements View {
     /**
      * Displays the playground of the <code>playerIdx</code> player.
      *
-     * @param playerIdx the index of the player to spy.
      * @throws TUIException if the player attempts to spy himself.
      */
-    private void spy(int playerIdx) throws TUIException, UndrawablePlaygroundException {
-        ClientPlayer player = this.controller.getPlayers().get(playerIdx);
+    private void spy(String username) throws TUIException, UndrawablePlaygroundException {
+        ClientPlayer player = this.controller.getPlayer(username);
+        if (player == null)
+            throw new TUIException(ExceptionsTUI.INVALID_SPY_INPUT);
+
         ClientPlayground playground = player.getPlayground();
 
         if (this.controller.getMainPlayer().equals(player)) {
             throw new TUIException(ExceptionsTUI.INVALID_SPY_COMMAND);
         } else {
+            // make showUpdate work on this player
+            this.currentWatchingPlayer = username;
             // update commands when you are looking at other players
             availableActions.remove(TUIActions.DRAW);
             availableActions.remove(TUIActions.PLACE);
@@ -515,7 +507,7 @@ public class ClientTUI implements View {
             // update only playground, hand and resources
             ClientUtil.printResourcesArea(playground.getResources());
             currOffset = ClientUtil.printPlayground(playground, currOffset);
-            ClientUtil.printPlayerHand(this.controller.getMainPlayerCards(), cardSide);
+            ClientUtil.printPlayerHand(controller.getPlayer(username).getPlayerCards(), cardSide);
 
             //clear input area
             ClientUtil.printCommandSquare();
@@ -538,52 +530,50 @@ public class ClientTUI implements View {
     private void setAvailableActions() {
         GamePhase currentPhase = controller.getGamePhase();
 
-        Set<TUIActions> availableActions = new HashSet<>();
-        availableActions.add(TUIActions.HELP);
-        availableActions.add(TUIActions.QUIT);
+        synchronized (availableActions) {
+            this.availableActions.clear();
+            availableActions.add(TUIActions.HELP);
+            availableActions.add(TUIActions.QUIT);
 
-        // add actions only if game is active
-        if (controller.isGameActive()) {
-            if (currentPhase != null) { // if not in lobby
-                availableActions.add(TUIActions.M);
-                availableActions.add(TUIActions.PM);
-                availableActions.add(TUIActions.FLIP);
-                availableActions.add(TUIActions.RULEBOOK);
-                availableActions.add(TUIActions.MVPG);
-            }
+            // add actions only if game is active
+            if (controller.isGameActive()) {
+                if (currentPhase != null) { // if not in lobby
+                    availableActions.add(TUIActions.M);
+                    availableActions.add(TUIActions.PM);
+                    availableActions.add(TUIActions.FLIP);
+                    availableActions.add(TUIActions.RULEBOOK);
+                    availableActions.add(TUIActions.MVPG);
+                }
 
-            switch (currentPhase) {
-                case Setup -> {
-                    // starter command available only if user have to do starter stuff
-                    if (controller.isMainPlaygroundEmpty()) {
-                        availableActions.add(TUIActions.STARTER);
-                    } else if (controller.getMainColor() == null) {
-                        availableActions.add(TUIActions.COLOR);
-                    } else if (controller.getMainPlayer().getObjectiveCards().size() != 1) {
-                        availableActions.add(TUIActions.OBJECTIVE);
+                switch (currentPhase) {
+                    case Setup -> {
+                        // starter command available only if user have to do starter stuff
+                        if (controller.isMainPlaygroundEmpty()) {
+                            availableActions.add(TUIActions.STARTER);
+                        } else if (controller.getMainColor() == null) {
+                            availableActions.add(TUIActions.COLOR);
+                        } else if (controller.getMainPlayer().getObjectiveCards().size() != 1) {
+                            availableActions.add(TUIActions.OBJECTIVE);
+                        }
                     }
-                }
-                // don't let user use unneeded commands when it's not their turn
-                case DrawNormal -> {
-                    if (this.controller.getCurrentPlayerUsername().equals(this.controller.getMainPlayerUsername()))
-                        availableActions.add(TUIActions.DRAW);
+                    // don't let user use unneeded commands when it's not their turn
+                    case DrawNormal -> {
+                        if (this.controller.getCurrentPlayerUsername().equals(this.controller.getMainPlayerUsername()))
+                            availableActions.add(TUIActions.DRAW);
 
-                    availableActions.add(TUIActions.SPY);
-                }
-                case PlaceNormal, PlaceAdditional -> {
-                    if (this.controller.getCurrentPlayerUsername().equals(this.controller.getMainPlayerUsername()))
-                        availableActions.add(TUIActions.PLACE);
+                        availableActions.add(TUIActions.SPY);
+                    }
+                    case PlaceNormal, PlaceAdditional -> {
+                        if (this.controller.getCurrentPlayerUsername().equals(this.controller.getMainPlayerUsername()))
+                            availableActions.add(TUIActions.PLACE);
 
-                    availableActions.add(TUIActions.SPY);
-                }
-                case null -> {
-                }
-                case End -> {
+                        availableActions.add(TUIActions.SPY);
+                    }
+                    case null -> {}
+                    case End -> {}
                 }
             }
         }
-
-        this.availableActions = availableActions;
     }
 
     // SHOW UPDATE
@@ -647,7 +637,6 @@ public class ClientTUI implements View {
     @Override
     public void showUpdateAfterConnection() {
         ClientUtil.clearScreen();
-        setAvailableActions();
 
         ClientPlayground playerPlayground = this.controller.getMainPlayerPlayground();
 
@@ -679,6 +668,9 @@ public class ClientTUI implements View {
                 cardSide);
 
         ClientUtil.putCursorToInputArea();
+
+
+        setAvailableActions();
     }
 
     /**
@@ -760,11 +752,11 @@ public class ClientTUI implements View {
         // points may have changed: show to everyone
         ClientUtil.printScoreboard(this.controller.getPlayers());
 
-        if (this.controller.getMainPlayerUsername().equals(username)) {
-            ClientUtil.printPlayerHand(this.controller.getMainPlayerCards(), cardSide);
+        if (this.currentWatchingPlayer.equals(username)) {
+            ClientUtil.printPlayerHand(controller.getPlayer(username).getPlayerCards(), cardSide);
             // print playground
             try {
-                currOffset = ClientUtil.printPlayground(this.controller.getMainPlayerPlayground(), currOffset);
+                currOffset = ClientUtil.printPlayground(controller.getPlaygroundByUsername(username), currOffset);
             } catch (UndrawablePlaygroundException e) {
                 ClientUtil.writeLine(GameScreenArea.INPUT_AREA.getScreenPosition().getX() + 11,
                         GameScreenArea.INPUT_AREA.getScreenPosition().getY() + 1,
@@ -772,7 +764,7 @@ public class ClientTUI implements View {
                         e.getMessage());
             }
             // resources may have changed
-            ClientUtil.printResourcesArea(this.controller.getMainPlayer().getPlayground().getResources());
+            ClientUtil.printResourcesArea(controller.getPlaygroundByUsername(username).getResources());
             ClientUtil.putCursorToInputArea();
 
             setAvailableActions();
@@ -785,11 +777,11 @@ public class ClientTUI implements View {
     @Override
     public void showUpdateAfterDraw(String username) {
         // faceUpCards
-        ClientUtil.printFaceUpCards(this.controller.getFaceUpCards());
+        ClientUtil.printFaceUpCards(controller.getFaceUpCards());
         // print decks
         ClientUtil.printDecks(controller.getGoldenDeckTopBack(), controller.getResourceDeckTopBack());
         // print hand
-        ClientUtil.printPlayerHand(this.controller.getMainPlayerCards(), cardSide);
+        ClientUtil.printPlayerHand(controller.getPlayer(currentWatchingPlayer).getPlayerCards(), cardSide);
 
         setAvailableActions();
 
@@ -811,8 +803,17 @@ public class ClientTUI implements View {
      */
     @Override
     public void showUpdateCurrentPlayer() {
-        String currentPlayerPrint = controller.getCurrentPlayerUsername().equals(controller.getMainPlayerUsername()) ?
-                "your" : controller.getCurrentPlayerUsername() + "'s";
+        String currentUsername = controller.getCurrentPlayerUsername();
+        String myUsername = controller.getMainPlayerUsername();
+        // return to my playground if it's my turn, and I'm spying someone
+        if (myUsername.equals(currentUsername) && !myUsername.equals(currentWatchingPlayer)) {
+            currentWatchingPlayer = myUsername;
+
+            showUpdateAfterPlace(currentUsername);
+        }
+
+        String currentPlayerPrint = myUsername.equals(currentUsername) ?
+                "your" : currentUsername + "'s";
         ClientUtil.printCommand("It's " + currentPlayerPrint + " turn");
         setAvailableActions();
         ClientUtil.putCursorToInputArea();
