@@ -43,6 +43,12 @@ public enum Symbol {
     final String icon;
     final String pngPath;
 
+    /**
+     * Constructs a <code>Symbol</code> with the <code>icon</code> and the <code>pngPath</code> provided
+     *
+     * @param icon    the icon encoding
+     * @param pngPath the icon path
+     */
     Symbol(String icon, String pngPath) {
         this.icon = icon;
         this.pngPath = pngPath;
