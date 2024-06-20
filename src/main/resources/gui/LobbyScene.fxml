@@ -14,11 +14,6 @@
     <Text layoutX="580.0" layoutY="226.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Players connected to the lobby:" />
     <TextArea fx:id="setNumberRequest" editable="false" layoutX="531.0" layoutY="495.0" prefHeight="66.0" prefWidth="299.0" text="                   Welcome to the new lobby!&#10;Please set the lobby size (2 to 4 players allowed)&#10;               Write below the chosen number!"  />
     <ComboBox fx:id="numberPlayerCatcher" layoutX="533.0" layoutY="583.0" onAction="#setPlayersNumber" prefHeight="25.0" prefWidth="291.0" />
-   <Text layoutX="580.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="       LOBBY" wrappingWidth="186.13671875" >
-      <font>
-         <Font name="Gabriola" size="64.0" />
-      </font>
-   </Text>
     <Text fx:id="requiredPlayer" layoutX="466.0" layoutY="478.0" strokeType="OUTSIDE" strokeWidth="0.0" visible="false" wrappingWidth="145.0" />
     </children>
 </Pane>

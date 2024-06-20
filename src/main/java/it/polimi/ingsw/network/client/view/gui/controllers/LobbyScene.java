@@ -1,17 +1,20 @@
 package it.polimi.ingsw.network.client.view.gui.controllers;
 
 import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
+import it.polimi.ingsw.network.client.view.gui.util.GUIUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 import java.rmi.RemoteException;
 import java.util.List;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.createMainBackground;
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.loadTitleFont;
 
 /**
  * LobbyScene is the controller concerning lobby scene
@@ -42,6 +45,12 @@ public class LobbyScene extends SceneController {
     @Override
     public void initialize() {
         numberPlayerCatcher.getItems().addAll(2, 3, 4);
+        Text title = new Text("Lobby");
+        title.setFont(loadTitleFont(60));
+        title.setLayoutY(180);
+        title.setLayoutX(580);
+        title.setStrokeType(StrokeType.OUTSIDE);
+        mainPane.getChildren().add(title);
         //connectedPlayers.setText("1 - " + gui.getController().getMainPlayerUsername());
         numberPlayerCatcher.setVisible(false);
         setNumberRequest.setVisible(false);
