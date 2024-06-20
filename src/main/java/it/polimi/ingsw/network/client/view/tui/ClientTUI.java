@@ -640,7 +640,10 @@ public class ClientTUI implements View {
     public void showUpdateAfterConnection() {
         ClientUtil.clearScreen();
 
-        ClientPlayground playerPlayground = this.controller.getMainPlayerPlayground();
+        // set currentWatchingUsername for the first time
+        currentWatchingPlayer = controller.getCurrentPlayerUsername();
+
+        ClientPlayground playerPlayground = controller.getMainPlayerPlayground();
 
         ClientUtil.printScoreboard(this.controller.getPlayers());
         ClientUtil.printResourcesArea(playerPlayground.getResources());
