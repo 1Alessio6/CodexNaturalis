@@ -2,17 +2,19 @@ package it.polimi.ingsw.network.client.view.gui.util;
 
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 /**
  * GUIUtil is the class that facilitates GUIs realization
  */
 public class GUIUtil {
 
-    public static final String  Font = "Cambria Math";
+    public static final String CAMBRIA_MATH = "Cambria Math";
 
     /**
      * Checks whether the <code>mouseButton</code> has been clicked or not
@@ -23,6 +25,18 @@ public class GUIUtil {
      */
     public static boolean isClicked(MouseEvent mouseEvent, MouseButton mouseButton) {
         return mouseEvent.getEventType() == MouseEvent.MOUSE_CLICKED && mouseEvent.getButton() == mouseButton;
+    }
+
+    public static Font loadTitleFont(double size){
+        return Font.loadFont(GUIUtil.class.getResourceAsStream("/gui/fonts/FetteKanzlei.ttf"), size);
+    }
+
+    public static ImageView initializeIconImageView(String path, double fitSize){
+        ImageView image = new ImageView(path);
+        image.setFitWidth(fitSize);
+        image.setFitHeight(fitSize);
+
+        return image;
     }
 
     /**

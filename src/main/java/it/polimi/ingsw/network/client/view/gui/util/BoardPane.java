@@ -5,7 +5,6 @@ import it.polimi.ingsw.network.client.model.board.ClientBoard;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
-import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.ImagePattern;
@@ -135,7 +134,7 @@ public class BoardPane {
         commonObjectivePane.setLayoutY(383.5);
 
         Text commonObjectiveTitle = new Text();
-        commonObjectiveTitle.setFont(new Font(GUIUtil.Font,15));
+        commonObjectiveTitle.setFont(new Font(GUIUtil.CAMBRIA_MATH,15));
         commonObjectiveTitle.setLayoutY(2);
         commonObjectiveTitle.setLayoutX(70);
         commonObjectiveTitle.setText("COMMON OBJECTIVE");
