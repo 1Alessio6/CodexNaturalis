@@ -19,10 +19,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
+/**
+ * Test to check the correct functioning of the <code>DrawablePlayground</code> class
+ */
 class DrawablePlaygroundTest {
     Playground playground;
     Front sampleCard;
 
+    /**
+     * Creates a new playground and placed a starter card on it, in addition, it creates a sample card before each test
+     */
     @BeforeEach
     void setup(){
         playground = new Playground();
@@ -46,6 +52,12 @@ class DrawablePlaygroundTest {
     //void teardown() throws UndrawablePlaygroundException {
     //}
 
+    /**
+     * Test to check that an <code>UndrawablePlaygroundException</code> is correctly thrown when the player attempts to
+     * move into a specific offset but the playground is fully represented
+     *
+     * @throws UndrawablePlaygroundException if the playground is fully displayed
+     */
     @Test
     void assert_offsetWithoutOverflowThrows() throws UndrawablePlaygroundException {
         Assertions.assertDoesNotThrow(
@@ -58,6 +70,12 @@ class DrawablePlaygroundTest {
                 () -> ClientUtil.printPlayground(clientPlayground, new Position(0,0), new Position(-1, 1)));
     }
 
+    /**
+     * Test to check that the positions returned by the <code>printPlayground</code> are correct
+     *
+     * @param inputAndResult the incoming and expected positions
+     * @throws UndrawablePlaygroundException if an error occurs during the playground representation design
+     */
     @ParameterizedTest
     @MethodSource("inputsAndResults")
     void testOverflowingPlayground_withSaneOffset(Map.Entry<Position, Position> inputAndResult) throws UndrawablePlaygroundException {
