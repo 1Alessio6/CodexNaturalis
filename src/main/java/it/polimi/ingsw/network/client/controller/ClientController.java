@@ -49,10 +49,23 @@ public class ClientController implements ClientActions {
     //    this.server = server;
     //}
 
+    /**
+     * Constructs the <code>ClientController</code> with the <code>client</code> provided.
+     *
+     * @param client the representation of the client
+     */
     public ClientController(Client client) {
         this.client = client;
     }
 
+    /**
+     * Configures the client binding it to the <code>ip</code> and <code>port</code> provided.
+     *
+     * @param view the representation of the view
+     * @param ip   the ip address
+     * @param port the port number
+     * @throws UnReachableServerException if the server isn't reachable
+     */
     public void configureClient(View view, String ip, Integer port) throws UnReachableServerException {
         client.configure(this, view);
         server = client.bindServer(ip, port);

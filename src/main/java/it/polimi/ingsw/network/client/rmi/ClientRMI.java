@@ -51,6 +51,9 @@ public class ClientRMI extends Client {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public VirtualView getInstanceForTheServer() throws RemoteException {
         if (stub == null) {
@@ -77,7 +80,9 @@ public class ClientRMI extends Client {
     }
 
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void resultOfLogin(boolean accepted, String username, String details) throws RemoteException {
         if (accepted) {
@@ -115,6 +120,9 @@ public class ClientRMI extends Client {
         clientView.showUpdatePlayersInLobby();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateFullLobby() throws RemoteException {
         clientView.showUpdateFullLobby();
@@ -130,6 +138,9 @@ public class ClientRMI extends Client {
         disconnect();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateExceedingPlayer() throws RemoteException {
         clientView.showUpdateExceedingPlayer();

@@ -24,6 +24,9 @@ public abstract class Client implements VirtualView, HeartBeatHandler {
     //    this.controller = controller;
     //}
 
+    /**
+     * Constructs a <code>Client</code> with no parameters provided.
+     */
     public Client() {}
 
 //    public void addView(View view) {
@@ -39,6 +42,12 @@ public abstract class Client implements VirtualView, HeartBeatHandler {
         this.clientView = view;
     }
 
+    /**
+     * Supplies the instance for the server.
+     *
+     * @return the instance of the server.
+     * @throws RemoteException in the event of an error occurring during the execution of a remote method.
+     */
     public abstract VirtualView getInstanceForTheServer() throws RemoteException;
 
     /**
@@ -61,5 +70,8 @@ public abstract class Client implements VirtualView, HeartBeatHandler {
      */
     public abstract void runView() throws RemoteException;
 
+    /**
+     * Closes any resource related to networking
+     */
     protected abstract void disconnect();
 }

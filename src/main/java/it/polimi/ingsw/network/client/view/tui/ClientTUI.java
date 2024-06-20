@@ -26,7 +26,7 @@ import java.rmi.RemoteException;
 import java.util.*;
 
 /**
- * Client TUI represents the client that used a Text-based user interface
+ * Client TUI represents the client that uses a Text-based user interface
  */
 public class ClientTUI implements View {
     private final Scanner console;
@@ -614,18 +614,27 @@ public class ClientTUI implements View {
         setActionsForConnection();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateFullLobby() {
         ClientUtil.printCommand("Full lobby, sorry you have to connect somewhere else");
         setActionsForConnection();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateExceedingPlayer() {
         ClientUtil.printCommand("You're an exceeding player!");
         setActionsForConnection();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showInvalidLogin(String details) {
         ClientUtil.printExceptions("Invalid username! Reason: " + details);
@@ -852,6 +861,9 @@ public class ClientTUI implements View {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void reportError(String details) {
         ClientUtil.printCommand("Error: " + details);

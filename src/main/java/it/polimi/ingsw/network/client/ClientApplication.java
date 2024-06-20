@@ -2,6 +2,9 @@ package it.polimi.ingsw.network.client;
 
 import java.rmi.RemoteException;
 
+/**
+ * ClientApplication is an interface that allows applications to run in the client.
+ */
 public interface ClientApplication {
     /**
      * Method used to run the client in a certain <code>typeConnection</code>, <code>host</code> and <code>port</code>

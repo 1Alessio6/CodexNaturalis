@@ -49,12 +49,18 @@ public class ClientSocket extends Client implements VirtualView, HeartBeatHandle
         clientView.runView();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void disconnect() {
         heartBeat.terminate();
         closeResources();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public VirtualView getInstanceForTheServer() {
         return this;
@@ -150,12 +156,18 @@ public class ClientSocket extends Client implements VirtualView, HeartBeatHandle
         clientView.showUpdatePlayersInLobby();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateFullLobby() {
         clientView.showUpdateFullLobby();
         disconnect();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateExceedingPlayer() {
         clientView.showUpdateExceedingPlayer();

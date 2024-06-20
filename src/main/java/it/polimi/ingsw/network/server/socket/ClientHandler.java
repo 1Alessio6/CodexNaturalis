@@ -40,6 +40,15 @@ public class ClientHandler implements VirtualView, HeartBeatHandler {
     private String username;
     private final HeartBeat heartBeat;
 
+    /**
+     * Constructs a <code>ClientHandler</code> with the <code>server</code>, <code>input</code>, <code>out</code> and
+     * the <code>clientSocket</code> provided
+     *
+     * @param server       the server
+     * @param input        the reader
+     * @param out          the printer
+     * @param clientSocket the representation of the clientSocket
+     */
     public ClientHandler(Server server, BufferedReader input, PrintWriter out, Socket clientSocket) {
         this.server = server;
         this.out = out;
@@ -176,6 +185,9 @@ public class ClientHandler implements VirtualView, HeartBeatHandler {
         closeResources();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateExceedingPlayer() {
         ExceedingPlayerMessage message = new ExceedingPlayerMessage();
@@ -185,6 +197,9 @@ public class ClientHandler implements VirtualView, HeartBeatHandler {
         closeResources();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdatePlayerStatus(boolean isConnected, String username) {
         UpdatePlayerStatusMessage message = new UpdatePlayerStatusMessage(isConnected, username);

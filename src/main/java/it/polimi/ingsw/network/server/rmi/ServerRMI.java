@@ -39,6 +39,11 @@ public class ServerRMI implements VirtualServer, HeartBeatHandler {
         lockOnClientsNetworkStatus = new Object();
     }
 
+    /**
+     * Removes a <code>name</code> from the game
+     *
+     * @param name the username of the player to remove
+     */
     public void remove(String name) {
         synchronized (lockOnClientsNetworkStatus) {
             System.out.println("remove client" + name);

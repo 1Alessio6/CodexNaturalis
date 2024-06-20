@@ -11,6 +11,11 @@ public class UnReachableServerException extends Exception {
         super("Unreachable server");
     }
 
+    /**
+     * Constructs an <code>UnReachableServerException</code> with the <code>message</code> provided
+     *
+     * @param message the detail message
+     */
     public UnReachableServerException(String message) {
         super(message);
     }

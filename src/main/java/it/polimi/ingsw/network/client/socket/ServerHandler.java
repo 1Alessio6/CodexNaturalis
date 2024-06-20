@@ -30,6 +30,14 @@ public class ServerHandler implements VirtualServer {
     private final ClientSocket clientSocket;
     private final Gson gson;
 
+    /**
+     * Constructs a <code>ServerHandler</code> with the <code>clientSocket</code>, <code>in</code> and <code>out</code>
+     * provided
+     *
+     * @param clientSocket the representation of the clientSocket
+     * @param in           the reader
+     * @param out          the printer
+     */
     public ServerHandler(ClientSocket clientSocket, BufferedReader in, PrintWriter out) {
         this.in = in;
         this.out = out;
