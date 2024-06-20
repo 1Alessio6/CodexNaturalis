@@ -372,6 +372,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
         primaryStage.setResizable(false);
 
+        currentSceneController.initializeRulebook();
 
         //todo maybe could be removed currentRoot
         currentRoot = root;
@@ -380,6 +381,10 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     private void initializeCurrentSceneController() {
         currentSceneController.setGui(this);
+    }
+
+    public Stage getPrimaryStage() {
+        return primaryStage;
     }
 
     private void setCurrentScene(SceneType scene) {
