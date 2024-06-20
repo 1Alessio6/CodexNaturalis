@@ -15,7 +15,9 @@ public enum Icon {
      */
     HOME("/gui/png/icons/home.png"),
 
-    SETTINGS("/gui/icons/.png"),
+    SETTINGS("gui/png/icons/settings.png"),
+
+    RULEBOOK("/gui/png/icons/book.png"),
     /**
      * FIRST is the icon representing the player is occupying the first rank
      */
