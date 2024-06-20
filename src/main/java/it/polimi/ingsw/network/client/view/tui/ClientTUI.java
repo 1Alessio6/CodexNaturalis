@@ -161,6 +161,8 @@ public class ClientTUI implements View {
      */
     private void goBack() throws UnInitializedPlaygroundException, FittablePlaygroundException,
                                  InvalidCardRepresentationException, InvalidCardDimensionException {
+        // so updates arrive correctly to main player
+        currentWatchingPlayer = controller.getMainPlayerUsername();
         // add back commands
         setAvailableActions();
         // print main player stuff again
