@@ -143,7 +143,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
             loadScene(SceneType.CRASH);
             //todo set crash message
             currentScene = SceneType.CRASH;
-            ((CrashScene)currentSceneController).setReason("LOBBY CRASHED");
+            ((CrashScene) currentSceneController).setReason("LOBBY CRASHED");
         });
     }
 
@@ -155,7 +155,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         Platform.runLater(() -> {
             loadScene(SceneType.CRASH);
             currentScene = SceneType.CRASH;
-            ((CrashScene)currentSceneController).setReason("FULL LOBBY");
+            ((CrashScene) currentSceneController).setReason("FULL LOBBY");
         });
     }
 
@@ -167,7 +167,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         Platform.runLater(() -> {
             loadScene(SceneType.CRASH);
             currentScene = SceneType.CRASH;
-            ((CrashScene)currentSceneController).setReason("EXCEEDING PLAYER");
+            ((CrashScene) currentSceneController).setReason("EXCEEDING PLAYER");
         });
     }
 
@@ -176,7 +176,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
      */
     @Override
     public void showInvalidLogin(String details) {
-       reportError(details);
+        reportError(details);
     }
 
     /**
@@ -378,20 +378,34 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         primaryStage.setResizable(false);
 
         currentSceneController.initializeRulebook();
+        currentSceneController.initializeSettings();
 
         //todo maybe could be removed currentRoot
         currentRoot = root;
     }
 
-    public void setFullScreenMode(){
+    public void setFullScreenMode() {
         Dimension resolution = Toolkit.getDefaultToolkit().getScreenSize();
         double width = resolution.getWidth();
         double height = resolution.getHeight();
-        double newWidth = width/ currentSceneController.getSceneWindowWidth();
-        double newHeight = height/currentSceneController.getSceneWindowHeight();
+        double newWidth = width / currentSceneController.getSceneWindowWidth();
+        double newHeight = height / currentSceneController.getSceneWindowHeight();
         Scale scale = new Scale(newWidth, newHeight, 0, 0);
         currentRoot.getTransforms().add(scale);
+        primaryStage.setFullScreen(true);
         isFullScreen = true;
+    }
+
+    public void setWindowScreenMode(){
+        Dimension resolution = Toolkit.getDefaultToolkit().getScreenSize();
+        double width = resolution.getWidth();
+        double height = resolution.getHeight();
+        double newWidth = currentSceneController.getSceneWindowWidth() / width;
+        double newHeight = currentSceneController.getSceneWindowHeight() / height;
+        Scale scale = new Scale(newWidth, newHeight, 0, 0);
+        currentRoot.getTransforms().add(scale);
+        primaryStage.setFullScreen(false);
+        isFullScreen = false;
     }
 
 
@@ -403,7 +417,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         return primaryStage;
     }
 
-    public boolean getIsFullScreen(){
+    public boolean getIsFullScreen() {
         return isFullScreen;
     }
 
