@@ -32,6 +32,8 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
     private ClientController controller;
     private SceneType currentScene;
 
+    private boolean isFullScreen;
+
     private Parent currentRoot;
 
     /**
@@ -385,6 +387,10 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     public Stage getPrimaryStage() {
         return primaryStage;
+    }
+
+    public void setIsFullScreen(boolean value){
+        isFullScreen = value;
     }
 
     private void setCurrentScene(SceneType scene) {
