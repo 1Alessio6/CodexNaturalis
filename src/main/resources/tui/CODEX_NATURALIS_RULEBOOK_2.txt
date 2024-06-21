@@ -23,7 +23,7 @@ otherwise.
                ║  <1>  ║    ║  <2>  ║                        otherwise, digit the number <6>.
                ╚ ═════ ╝    ╚ ═════ ╝
                                                                             ╔ ═════ ╗    ╔ ═════ ╗
-                                                                            ║  <6>  ║    ║  <5>  ║
+                                                                            ║  <5>  ║    ║  <6>  ║
                                                                             ╚ ═════ ╝    ╚ ═════ ╝
 
              ~ DRAWING A CARD LEGEND ~
