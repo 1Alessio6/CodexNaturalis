@@ -54,6 +54,8 @@ public abstract class SceneController {
 
         Pane mainPane = new Pane();
         mainPane.setPrefSize(500, 500);
+        Button fullscreen = new Button();
+        mainPane.getChildren().add(fullscreen);
         Scene settingsScene = new Scene(mainPane);
         Stage settingsStage = new Stage();
         initializePopUpScene(settingsStage, settingsScene, Icon.SETTINGS);
@@ -106,10 +108,9 @@ public abstract class SceneController {
         popUpStage.setScene(popUpScene);
         popUpStage.setResizable(false);
 
-        if(typeOfPopUp == Icon.SETTINGS){
+        if (typeOfPopUp == Icon.SETTINGS) {
             popUpStage.setTitle("Settings");
-        }
-        else{
+        } else {
             popUpStage.setTitle("Rulebook");
         }
 
@@ -145,6 +146,32 @@ public abstract class SceneController {
         page.setFitHeight(rulebookPageHeight);
 
         return page;
+    }
+
+    private Button initializeFullScreenButton() {
+        Button fullscreenButton = new Button("FullScreen");
+
+        fullscreenButton.setPrefSize(70, 20);
+        fullscreenButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if (gui.getIsFullScreen()) {
+                    gui.setWindowScreenMode();
+                } else {
+                    gui.setFullScreenMode();
+                }
+            }
+        });
+
+        return fullscreenButton;
+    }
+
+    public double getSceneWindowWidth() {
+        return 1080;
+    }
+
+    public double getSceneWindowHeight() {
+        return 720;
     }
 
     /**
