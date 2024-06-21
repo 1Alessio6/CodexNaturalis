@@ -11,10 +11,14 @@ import it.polimi.ingsw.network.client.view.View;
 import it.polimi.ingsw.network.client.view.gui.controllers.*;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 
@@ -376,6 +380,8 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         });
 
         primaryStage.setResizable(false);
+        primaryStage.setFullScreenExitHint("");
+        primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 
         currentSceneController.initializeRulebook();
         currentSceneController.initializeSettings();
