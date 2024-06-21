@@ -14,8 +14,6 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 
-import java.io.File;
-
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.initializeIconImageView;
 
 /**
@@ -28,11 +26,13 @@ public abstract class SceneController {
 
     protected Button rulebook;
 
-    private boolean rulebookOpen;
+    private boolean rulebookOpened;
+
+    private boolean settingsOpened;
 
     private static final double rulebookPageWidth = 561.6;
 
-    private static final double rulebookPageHeight= 562.8;
+    private static final double rulebookPageHeight = 562.8;
 
 
     public void setGui(ApplicationGUI gui) {
@@ -44,55 +44,82 @@ public abstract class SceneController {
      */
     public void initialize() {
 
+    }
+
+    public void initializeSettings() {
         settings = new Button();
         settings.setPrefSize(40, 40);
         settings.setGraphic(initializeIconImageView(Icon.SETTINGS.getPath(), 30));
 
+
+        Pane mainPane = new Pane();
+        mainPane.setPrefSize(500, 500);
+        Scene settingsScene = new Scene(mainPane);
+        Stage settingsStage = new Stage();
+        initializePopUpScene(settingsStage, settingsScene, Icon.SETTINGS);
+
         settings.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-
+                if (!rulebookOpened) {
+                    settingsStage.show();
+                    settingsOpened = true;
+                } else {
+                    settingsStage.close();
+                    settingsOpened = false;
+                }
             }
         });
-
-
-    }
-
-    public void initializeSettings() {
-
     }
 
     public void initializeRulebook() {
 
         rulebook = new Button();
-        rulebookOpen = false;
+        rulebookOpened = false;
         rulebook.setPrefSize(40, 40);
         rulebook.setGraphic(initializeIconImageView(Icon.RULEBOOK.getPath(), 30));
 
         Pagination rulebookPagination = initializeRulebookPagination();
         Scene rulebookScene = new Scene(rulebookPagination, rulebookPageWidth, rulebookPageHeight);
         Stage rulebookStage = new Stage();
-        rulebookStage.initOwner(gui.getPrimaryStage());
-        rulebookStage.setTitle("Rulebook");
-        rulebookStage.setScene(rulebookScene);
-        rulebookStage.setResizable(true);
-
-        rulebookStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent windowEvent) {
-                rulebookOpen = false;
-            }
-        });
+        initializePopUpScene(rulebookStage, rulebookScene, Icon.RULEBOOK);
 
         rulebook.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                if (!rulebookOpen) {
+                if (!rulebookOpened) {
                     rulebookStage.show();
-                    rulebookOpen = true;
+                    rulebookOpened = true;
                 } else {
                     rulebookStage.close();
-                    rulebookOpen = false;
+                    rulebookOpened = false;
+                }
+            }
+        });
+    }
+
+    private void initializePopUpScene(Stage popUpStage, Scene popUpScene, Icon typeOfPopUp) {
+
+        assert (typeOfPopUp == Icon.SETTINGS || typeOfPopUp == Icon.RULEBOOK);
+
+        popUpStage.initOwner(gui.getPrimaryStage());
+        popUpStage.setScene(popUpScene);
+        popUpStage.setResizable(false);
+
+        if(typeOfPopUp == Icon.SETTINGS){
+            popUpStage.setTitle("Settings");
+        }
+        else{
+            popUpStage.setTitle("Rulebook");
+        }
+
+        popUpStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+                if (typeOfPopUp == Icon.SETTINGS) {
+                    settingsOpened = false;
+                } else {
+                    rulebookOpened = false;
                 }
             }
         });
