@@ -14,6 +14,9 @@ import java.awt.event.MouseEvent;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.createMainBackground;
 
+/**
+ * ConnectionScene is the controller concerning connection scene
+ */
 public class ConnectionScene extends SceneController{
 
     @FXML
@@ -40,7 +43,9 @@ public class ConnectionScene extends SceneController{
     //@FXML
     //private void enterThePort()
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initialize() {
         mainPane.setBackground(createMainBackground());

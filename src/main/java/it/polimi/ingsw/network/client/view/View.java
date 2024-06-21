@@ -49,7 +49,7 @@ public interface View {
     void showUpdateExceedingPlayer();
 
     /**
-     * Method used to show a player that he/she has digitized an invalid username and to allow him/her to set a new one
+     * Method used to show a player that he/she has digitized an invalid username
      *
      * @param details the reasons
      */

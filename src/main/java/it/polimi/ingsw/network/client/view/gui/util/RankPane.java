@@ -8,6 +8,9 @@ import javafx.scene.text.Text;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.convertRankIntoIcon;
 
+/**
+ * RankPane represents the pane containing the player's rank and score
+ */
 public class RankPane {
 
     private final ImageView rank;
@@ -16,7 +19,14 @@ public class RankPane {
 
     private final Pane mainPane;
 
-
+    /**
+     * Constructs a <code>RankPane</code> with the <code>width</code>, <code>height</code> and <code>iconSize</code>
+     * provided
+     *
+     * @param width    the total width of the <code>RankPane</code> to construct
+     * @param height   the total height of the <code>RankPane</code> to construct
+     * @param iconSize the size of the icon
+     */
     public RankPane(double width, double height, double iconSize){
 
         mainPane = new Pane();
@@ -40,10 +50,20 @@ public class RankPane {
         return mainPane;
     }
 
+    /**
+     * Updates the rank of the player
+     *
+     * @param rank the new rank of the player
+     */
     public void updateRank(int rank){
         this.rank.setImage(new Image(convertRankIntoIcon(rank).getPath()));
     }
 
+    /**
+     * Updates the score of the player
+     *
+     * @param score the new score of the player
+     */
     public void updateScore(int score){
         this.score.setText("SCORE \n     " + score);
     }

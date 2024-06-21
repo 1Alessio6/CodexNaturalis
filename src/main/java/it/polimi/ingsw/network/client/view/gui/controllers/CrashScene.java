@@ -13,6 +13,9 @@ import javafx.scene.text.Text;
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.createMainBackground;
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.isClicked;
 
+/**
+ * CrashScene is the controller concerning crash scene
+ */
 public class CrashScene extends SceneController {
 
     @FXML
@@ -29,6 +32,9 @@ public class CrashScene extends SceneController {
     public CrashScene() {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void initialize() {
         mainPane.setBackground(createMainBackground());
         ImageView returnImage = (new ImageView(Icon.RETURN.getPath()));
@@ -60,6 +66,11 @@ public class CrashScene extends SceneController {
 
     }
 
+    /**
+     * Sets the reason of the crash
+     *
+     * @param reason the detail reason
+     */
     public void setReason(String reason) {
         message.setText(reason);
     }

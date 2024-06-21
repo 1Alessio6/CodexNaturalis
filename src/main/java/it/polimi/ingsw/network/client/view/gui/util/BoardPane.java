@@ -20,6 +20,10 @@ import java.util.List;
 import static it.polimi.ingsw.network.client.view.gui.util.GUICards.*;
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.setBackgroundColor;
 
+/**
+ * BoardPane represents the pane in which golden/resource decks and face up cards resides, along with common objective
+ * cards
+ */
 public class BoardPane {
 
     private Pane boardMainPane;
@@ -30,6 +34,11 @@ public class BoardPane {
     private final Pane commonObjectivePane;
     private final List<Rectangle> resourceFaceUp;
 
+    /**
+     * Constructs a <code>BoardPane</code> with the <code>clientBoard</code> provided
+     *
+     * @param clientBoard the playing area to construct
+     */
     public BoardPane(ClientBoard clientBoard) {
 
         commonObjectivePane = new Pane();
@@ -57,7 +66,12 @@ public class BoardPane {
 
     }
 
-
+    /**
+     * Initializes the positions in which the face up cards and the golden/resource deck are
+     *
+     * @param verticalDistance   the vertical distance between the cards
+     * @param horizontalDistance the horizontal distance between the cards
+     */
     public void initializeBoardCardsPosition(int verticalDistance, int horizontalDistance) {
 
         double layoutX;
@@ -183,6 +197,12 @@ public class BoardPane {
         }
     }
 
+    /**
+     * Sets a new <code>face</code> in accordance with the <code>boardPosition</code> provided
+     *
+     * @param boardPosition the position of the <code>face</code> to update
+     * @param face          the new face with which to update
+     */
     public void setNewFace(int boardPosition, ClientFace face) {
 
 
@@ -211,6 +231,11 @@ public class BoardPane {
         }
     }
 
+    /**
+     * Updates the <code>ClientBoard</code> with board provided
+     *
+     * @param board the <code>ClientBoard</code> with the new cards with which to update
+     */
     public void boardUpdate(ClientBoard board) {
 
         setNewFace(4, board.getGoldenDeckTopBack());

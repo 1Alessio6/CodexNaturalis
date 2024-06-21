@@ -7,14 +7,30 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
+/**
+ * GUIUtil is the class that facilitates GUIs realization
+ */
 public class GUIUtil {
 
     public static final String  Font = "Cambria Math";
 
+    /**
+     * Checks whether the <code>mouseButton</code> has been clicked or not
+     *
+     * @param mouseEvent  the event that has taken place on the mouse
+     * @param mouseButton the mouse button in which check
+     * @return true if the mouse has been clicked, false otherwise
+     */
     public static boolean isClicked(MouseEvent mouseEvent, MouseButton mouseButton) {
         return mouseEvent.getEventType() == MouseEvent.MOUSE_CLICKED && mouseEvent.getButton() == mouseButton;
     }
 
+    /**
+     * Converts the <code>PlayerColor color</code> into <code>Color</code>
+     *
+     * @param color the <code>PlayerColor</code> to be converted
+     * @return the <code>Color color</code> corresponding to the <code>PlayerColor color</code>
+     */
     public static Color convertPlayerColor(PlayerColor color) {
         switch (color) {
             case RED -> {
@@ -36,6 +52,12 @@ public class GUIUtil {
         return null;
     }
 
+    /**
+     * Converts the <code>PlayerColor color</code> into hexadecimal code
+     *
+     * @param color the <code>PlayerColor</code> to be converted
+     * @return the hexadecimal code corresponding to the <code>PlayerColo color</code>
+     */
     public static String convertPlayerColorIntoHexCode(PlayerColor color) {
         switch (color) {
             case RED -> {
@@ -57,10 +79,22 @@ public class GUIUtil {
         return null;
     }
 
+    /**
+     * Provides a Background with the <code>backgroundColor</code> provided
+     *
+     * @param backgroundColor the color of the background
+     * @return the Background with the <code>backgroundColor</code> indicated
+     */
     public static Background setBackgroundColor(String backgroundColor) {
         return new Background(new BackgroundFill(Color.web(backgroundColor), CornerRadii.EMPTY, null));
     }
 
+    /**
+     * Converts the <code>rank</code> into <code>Icon</code>
+     *
+     * @param rank the integer corresponding player's rank
+     * @return the <code>Icon</code> correlated to the <code>rank</code>
+     */
     public static Icon convertRankIntoIcon(int rank){
         return switch (rank) {
             case 1 -> Icon.FIRST;
@@ -71,6 +105,11 @@ public class GUIUtil {
         };
     }
 
+    /**
+     * Creates the main background
+     *
+     * @return the <code>Background</code> created
+     */
     public static Background createMainBackground(){
         BackgroundImage backgroundImage = new BackgroundImage(new Image("/gui/png/background_tile.png"), BackgroundRepeat.REPEAT,
                 BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);

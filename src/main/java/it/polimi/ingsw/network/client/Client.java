@@ -37,6 +37,12 @@ public abstract class Client implements VirtualView, HeartBeatHandler {
 //        this.controller = controller;
 //    }
 
+    /**
+     * Configures the Client with the <code>controller</code> and the <code>view</code> provided
+     *
+     * @param controller the representation of the controller
+     * @param view       the representation of the view
+     */
     public void configure(ClientController controller, View view) {
         this.controller = controller;
         this.clientView = view;

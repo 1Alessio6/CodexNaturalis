@@ -20,6 +20,9 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * ApplicationGUI runs and represents the client in a Graphical User interface
+ */
 public class ApplicationGUI extends Application implements View, ClientApplication {
 
     private Stage primaryStage;
@@ -31,16 +34,30 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     private Parent currentRoot;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void run(String typeConnection) {
         launch(typeConnection);
     }
 
-
+    /**
+     * Runs the <code>ApplicationGUI</code>
+     *
+     * @param args the necessary arguments for the running
+     */
     public static void main(String[] args) {
         launch(args);
     }
 
+    /**
+     * Starts the GUI
+     * Overrides the <code>start(Stage primaryStage)</code> method in the Application class
+     *
+     * @param primaryStage the primary stage
+     * @throws Exception if an exception occurs during the start
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
         System.out.println("Start the gui");
@@ -50,6 +67,9 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         runView();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void runView() {
         // todo. change scene to the one that requires ip/port
@@ -57,6 +77,9 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         this.primaryStage.setTitle("Codex Naturalis");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showServerCrash() {
         Platform.runLater(() -> {
@@ -66,6 +89,9 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         });
     }
 
+    /**
+     * Method used to allow the player to select a username
+     */
     public void showSelectUsername() {
         Platform.runLater(() -> {
             loadScene(SceneType.SELECT_USERNAME);
@@ -73,7 +99,9 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         });
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdatePlayersInLobby() {
         Platform.runLater(() -> {
@@ -86,6 +114,9 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateCreator() {
         System.out.println("Arrived notification from the server to the creator");
@@ -97,7 +128,9 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         });
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateAfterLobbyCrash() {
 
@@ -109,6 +142,9 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateFullLobby() {
         Platform.runLater(() -> {
@@ -118,6 +154,9 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateExceedingPlayer() {
         Platform.runLater(() -> {
@@ -127,11 +166,17 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showInvalidLogin(String details) {
        reportError(details);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     //todo fix bug after multiple cards in hand after a connection after a crash
     @Override
     public void showUpdateAfterConnection() {
@@ -146,6 +191,9 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdatePlayerStatus() {
 
@@ -159,7 +207,9 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showStarterPlacement(String username) {
         Platform.runLater(() -> {
@@ -168,6 +218,9 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateColor(String username) {
         System.out.println(username + " has chosen a color");
@@ -176,6 +229,9 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateObjectiveCard() {
         System.out.println("objective has been chosen");
@@ -184,6 +240,9 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateAfterPlace(String username) {
         Platform.runLater(() -> {
@@ -192,6 +251,9 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateAfterDraw(String username) {
         Platform.runLater(() -> {
@@ -200,6 +262,9 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateChat() {
         Platform.runLater(() -> {
@@ -209,6 +274,9 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateCurrentPlayer() {
         Platform.runLater(() -> {
@@ -226,11 +294,17 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showUpdateSuspendedGame() {
         //todo show a message of suspended game and disable all other command
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showWinners(List<String> winners) {
         Platform.runLater(() -> {
@@ -242,6 +316,9 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void reportError(String details) {
         Platform.runLater(() -> {
@@ -260,6 +337,11 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         return client;
     }
 
+    /**
+     * Loads the <code>sceneType</code> scene
+     *
+     * @param sceneType the <code>sceneType</code> to load
+     */
     public void loadScene(SceneType sceneType) {
 
         String fxmlPath = sceneType.getPath();

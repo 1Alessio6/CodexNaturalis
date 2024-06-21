@@ -14,6 +14,10 @@ import java.util.Map;
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.setBackgroundColor;
 import static javax.swing.text.StyleConstants.setBackground;
 
+/**
+ * PlaygroundInfoPane represents the pane in which player's playground resides.
+ * PlaygroundInfoPane includes a <code>ResourcePane</code> and a <code>RankPane</code>
+ */
 public class PlaygroundInfoPane {
 
     Pane mainPane;
@@ -25,6 +29,9 @@ public class PlaygroundInfoPane {
     ImageView returnToMainPlayground;
     ResourcePane resourcePane;
 
+    /**
+     * Constructs a new <code>PlaygroundInfoPane</code>
+     */
     public PlaygroundInfoPane() {
         returnToMainPlayground = new ImageView(Icon.HOME.getPath());
         returnToMainPlayground.setFitWidth(30);
@@ -60,6 +67,12 @@ public class PlaygroundInfoPane {
         mainPane.getChildren().add(returnToMainPlayground);
     }
 
+    /**
+     * Adds playground information
+     *
+     * @param player       the representation of the player
+     * @param isMainPlayer boolean representing whether the <code>player</code> is the main player or not
+     */
     public void setPlaygroundInfo(ClientPlayer player, boolean isMainPlayer) {
 
 
@@ -77,10 +90,20 @@ public class PlaygroundInfoPane {
         resourcePane.updateResources(player.getPlayground().getResources());
     }
 
+    /**
+     * Updates the rank of the player
+     *
+     * @param rank the new rank of the player
+     */
     public void updateRank(int rank){
         this.rank.updateRank(rank);
     }
 
+    /**
+     * Updates the score of the player
+     *
+     * @param score the new score of the player
+     */
     public void updateScore(int score){
         this.rank.updateScore(score);
     }
@@ -89,7 +112,11 @@ public class PlaygroundInfoPane {
         return mainPane;
     }
 
-
+    /**
+     * Provides the home's <code>ImageView</code>
+     *
+     * @return home's <code>ImageView</code>
+     */
     public ImageView getReturnToMainPlayground(){
         return returnToMainPlayground;
     }

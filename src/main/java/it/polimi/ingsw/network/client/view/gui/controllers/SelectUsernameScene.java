@@ -7,6 +7,9 @@ import javafx.scene.layout.*;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.createMainBackground;
 
+/**
+ * SelectUsernameScene is the controller concerning selectUsername scene
+ */
 public class SelectUsernameScene extends SceneController{
 
     @FXML
@@ -17,6 +20,9 @@ public class SelectUsernameScene extends SceneController{
 
     public SelectUsernameScene(){}
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initialize() {
        mainPane.setBackground(createMainBackground());

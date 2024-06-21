@@ -13,6 +13,9 @@ import java.util.List;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.createMainBackground;
 
+/**
+ * LobbyScene is the controller concerning lobby scene
+ */
 public class LobbyScene extends SceneController {
 
     @FXML
@@ -33,6 +36,9 @@ public class LobbyScene extends SceneController {
 
     public LobbyScene() {}
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initialize() {
         numberPlayerCatcher.getItems().addAll(2, 3, 4);
@@ -44,17 +50,27 @@ public class LobbyScene extends SceneController {
         //todo fix when fullScreen
     }
 
-
+    /**
+     * Method used to show the players required to start the game
+     */
     public void showRequiredPlayers(){
         //todo requiredPlayer.setText("Player required to play: " + gui.getController().getRequiredPlayer);
         requiredPlayer.setVisible(true);
     }
 
+    /**
+     * Initializes the creator scene, makes <code>numberPlayerCatcher</code> and <code>setNumberRequest</code> visible
+     */
     public void initializeCreatorScene() {
         numberPlayerCatcher.setVisible(true);
         setNumberRequest.setVisible(true);
     }
 
+    /**
+     * Sets the player connected
+     *
+     * @param usernames the usernames of the connected players
+     */
     public void setPlayerConnected(List<String> usernames){
         connectedPlayers.clear();
         for(int i = 0; i < usernames.size(); i++){

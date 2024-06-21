@@ -13,6 +13,9 @@ import javafx.scene.shape.Rectangle;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUICards.pathToImage;
 
+/**
+ * GUIPlayground represents the playground in the Graphical User Interface
+ */
 public class GUIPlayground {
     private final int cardWidth;
     private final int cardHeight;
@@ -28,6 +31,13 @@ public class GUIPlayground {
     private double xUpperStarter;
     private double yUpperStarter;
 
+    /**
+     * Constructs a <code>GUIPlayground</code> with the <code>cardWidth</code> and the <code>cardHeight</code>
+     * provided
+     *
+     * @param cardWidth  the card width
+     * @param cardHeight the card height
+     */
     public GUIPlayground(int cardWidth, int cardHeight) {
         this.cardWidth = cardWidth;
         this.cardHeight = cardHeight;

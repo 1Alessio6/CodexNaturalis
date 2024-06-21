@@ -16,6 +16,9 @@ import java.util.Map;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
 
+/**
+ * PlayerInfoPane represents the pane in which player's cards, rank, resources and switchPlayground resides
+ */
 public class PlayerInfoPane {
 
     private Pane playerMainPane;
@@ -52,7 +55,11 @@ public class PlayerInfoPane {
 
     private static final int cardHeight = 48;
 
-
+    /**
+     * Constructs a new <code>PlayerInfoPane</code> with the <code>player</code> provided
+     *
+     * @param player the representation of the player
+     */
     public PlayerInfoPane(ClientPlayer player) {
         playerMainPane = new Pane();
         playerMainPane.setBackground(setBackgroundColor("#EEE5BC"));
@@ -112,19 +119,39 @@ public class PlayerInfoPane {
 
     }
 
+    /**
+     * Updates the amount of resources for each resource in <code>playgroundResources</code>
+     *
+     * @param playgroundResources a map containing the updated resources
+     */
     public void updateResources(Map<Symbol, Integer> playgroundResources){
         resourcesPane.updateResources(playgroundResources);
     }
 
+    /**
+     * Updates the cards of the player
+     *
+     * @param cards the players' cards to update
+     */
     public void updatePlayerCards(List<ClientCard> cards) {
         playerCardsPane.getChildren().clear();
         GUICards.initializePlayerCards(playerCardsPane, cards, cardWidth, cardHeight, distance, MouseButton.PRIMARY);
     }
 
+    /**
+     * Updates the rank of the player
+     *
+     * @param rank the new rank of the player
+     */
     public void updateRank(int rank){
         this.rank.updateRank(rank);
     }
 
+    /**
+     * Updates the score of the player
+     *
+     * @param score the new score of the player
+     */
     public void updateScore(int score){
         this.rank.updateScore(score);
     }

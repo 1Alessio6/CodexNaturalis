@@ -4,10 +4,19 @@ import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.network.client.view.gui.util.GUIUtil;
 import javafx.scene.shape.Circle;
 
+/**
+ * GUICircle creates the circles containing the colors of the player tokens
+ */
 public class GUICircle {
     private Circle circle;
     private PlayerColor color;
 
+    /**
+     * Constructs a <code>GUICircle</code> with the <code>radius</code> and the <code>color</code>
+     *
+     * @param radius the circle radius
+     * @param color  the color of the player's token
+     */
     public GUICircle(double radius, PlayerColor color) {
         this.circle = new Circle(radius);
         this.circle.setVisible(false);

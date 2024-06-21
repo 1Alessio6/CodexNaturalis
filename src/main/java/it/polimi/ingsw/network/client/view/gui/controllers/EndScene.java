@@ -17,6 +17,9 @@ import java.util.List;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
 
+/**
+ * EndScene is the controller concerning the end scene
+ */
 public class EndScene extends SceneController {
 
     @FXML
@@ -31,11 +34,19 @@ public class EndScene extends SceneController {
     public EndScene() {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void initialize() {
         mainPane.setBackground(createMainBackground());
         winnersPane.setAlignment(Pos.TOP_CENTER);
     }
 
+    /**
+     * Method used to show the winners of the game
+     *
+     * @param winners the winners' list
+     */
     public void showWinners(List<String> winners) {
         for (String w : winners) {
             Label winnerLabel = new Label();

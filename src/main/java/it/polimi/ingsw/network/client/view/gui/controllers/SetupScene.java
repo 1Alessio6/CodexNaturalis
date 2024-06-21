@@ -27,6 +27,9 @@ import java.util.List;
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.createMainBackground;
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.isClicked;
 
+/**
+ * SetupScene is the controller concerning set-up scene
+ */
 public class SetupScene extends SceneController {
 
     @FXML
@@ -76,6 +79,9 @@ public class SetupScene extends SceneController {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initialize() {
         isStarterSelected = false;
@@ -83,6 +89,9 @@ public class SetupScene extends SceneController {
         mainPane.setBackground(createMainBackground());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initializeUsingGameInformation() {
         initializeStarterCards();
@@ -119,10 +128,18 @@ public class SetupScene extends SceneController {
         setStarterPlaceCommand(secondRectangle, Side.BACK);
     }
 
+    /**
+     * Constructs a new <code>SetupScene</code> with no parameter provided
+     */
     public SetupScene() {
         System.out.println("Constructing the setup scene");
     }
 
+    /**
+     * Method used to show the scene after placing the starter card
+     *
+     * @param username the username of the player who placed the card
+     */
     public void updateAfterStarterPlace(String username) {
         if (gui.getController().getMainPlayer().getUsername().equals(username)) {
             isStarterSelected = true;
@@ -190,6 +207,11 @@ public class SetupScene extends SceneController {
         centerColors();
     }
 
+    /**
+     * Method used to show the scene after choosing the token color
+     *
+     * @param username the username of the player chose the color
+     */
     public void updateAfterColor(String username) {
         ClientController controller = gui.getController();
         ClientPlayer player = controller.getPlayer(username);
@@ -200,6 +222,9 @@ public class SetupScene extends SceneController {
         }
     }
 
+    /**
+     * Method used to show the scene after choosing the secret objective card
+     */
     public void updateObjectiveCard() {
         firstRectangle.setVisible(false);
         secondRectangle.setVisible(false);

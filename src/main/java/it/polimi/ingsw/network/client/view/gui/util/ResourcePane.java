@@ -11,12 +11,21 @@ import java.util.Map;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.setBackgroundColor;
 
+/**
+ * ResourcePane represents the pane containing the player's current resources
+ */
 public class ResourcePane {
 
     private final double paneHeight;
     private Map<Symbol, Text> resources;
     private final Pane resourcesPane;
 
+    /**
+     * Constructs a <code>ResourcePane</code> with the <code>paneWidth</code> and the <code>paneHeight</code> provided
+     *
+     * @param paneWidth  the total width of the resource pane to construct
+     * @param paneHeight the total height of the resource pane to construct
+     */
     public ResourcePane(double paneWidth, double paneHeight) {
         resourcesPane = new Pane();
         resourcesPane.setPrefSize(paneWidth, paneHeight);
@@ -24,6 +33,14 @@ public class ResourcePane {
         this.paneHeight = paneHeight;
     }
 
+    /**
+     * Initializes the resources panes with the <code>resourceWidth</code>, <code>resourceHeight</code> and
+     * <code>distance</code> provided
+     *
+     * @param resourceWidth  the width of the individual resource
+     * @param resourceHeight the height of the individual resource
+     * @param distance       the distance between resources
+     */
     public void initialize(double resourceWidth, double resourceHeight, double distance) {
 
         double layoutX = 2.0;
@@ -51,6 +68,11 @@ public class ResourcePane {
         resourcesPane.setBackground(setBackgroundColor(color));
     }
 
+    /**
+     * Updates the amount of resources for each resource in <code>playgroundResources</code>
+     *
+     * @param playgroundResources a map containing the updated resources
+     */
     public void updateResources(Map<Symbol, Integer> playgroundResources) {
         for (Symbol symbol : playgroundResources.keySet()) {
             resources.get(symbol).setText(playgroundResources.get(symbol).toString());

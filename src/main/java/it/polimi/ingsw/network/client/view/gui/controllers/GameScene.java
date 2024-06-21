@@ -43,6 +43,9 @@ import java.util.List;
 import static it.polimi.ingsw.network.client.view.gui.util.GUICards.*;
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
 
+/**
+ * GameScene is the controller concerning game scene
+ */
 public class GameScene extends SceneController {
 
     @FXML
@@ -86,6 +89,9 @@ public class GameScene extends SceneController {
     public GameScene() {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void initialize() {
 
         mainPane.setBackground(createMainBackground());
@@ -146,6 +152,9 @@ public class GameScene extends SceneController {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initializeUsingGameInformation() {
         currentVisiblePlaygroundOwner = gui.getController().getMainPlayerUsername();
@@ -330,6 +339,11 @@ public class GameScene extends SceneController {
 
     }
 
+    /**
+     * Method used to draw the playground
+     *
+     * @param clientPlayground the representation of the playground
+     */
     public void drawPlayground(ClientPlayground clientPlayground) {
 
         //do not remove
@@ -422,6 +436,11 @@ public class GameScene extends SceneController {
         });
     }
 
+    /**
+     * Method used to update the screen after a draw
+     *
+     * @param username the username of the player
+     */
     //todo add Images/ empty rectangles for deck and faceUp empty
     public void updateAfterDraw(String username) {
         if (username.equals(gui.getController().getMainPlayerUsername())) {
@@ -449,7 +468,11 @@ public class GameScene extends SceneController {
         playgroundInfoPane.setPlaygroundInfo(gui.getController().getPlayer(username), username.equals(gui.getController().getMainPlayerUsername()));
     }
 
-
+    /**
+     * Method used to update the screen after a placement
+     *
+     * @param username the username of the player
+     */
     public void updateAfterPlace(String username) {
         if (username.equals(currentVisiblePlaygroundOwner)) {
             updatePlayground(username);
@@ -517,6 +540,11 @@ public class GameScene extends SceneController {
         }
     }
 
+    /**
+     * Method used to receive a message
+     *
+     * @param message the incoming message
+     */
     public void receiveMessage(Message message) {
         if (isReferringToMe(message)) {
             appendMessage(message);
