@@ -24,8 +24,8 @@ import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.createMainBackground;
-import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.isClicked;
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.connectionSceneHeight;
 
 /**
  * SetupScene is the controller concerning set-up scene
@@ -230,4 +230,13 @@ public class SetupScene extends SceneController {
         secondRectangle.setVisible(false);
         text.setText("Wait for the other players to complete their setup");
     }
+
+    public double getSceneWindowWidth() {
+        return startedGameSceneWidth;
+    }
+
+    public double getSceneWindowHeight() {
+        return startedGameSceneHeight;
+    }
+
 }

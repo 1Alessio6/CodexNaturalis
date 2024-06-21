@@ -10,8 +10,9 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
-import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.createMainBackground;
-import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.isClicked;
+
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.connectionSceneHeight;
 
 /**
  * CrashScene is the controller concerning crash scene
@@ -64,6 +65,14 @@ public class CrashScene extends SceneController {
             }
         });
 
+    }
+
+    public double getSceneWindowWidth() {
+        return connectionSceneWidth;
+    }
+
+    public double getSceneWindowHeight() {
+        return connectionSceneHeight;
     }
 
     /**

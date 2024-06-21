@@ -51,11 +51,10 @@ public abstract class SceneController {
         settings.setPrefSize(40, 40);
         settings.setGraphic(initializeIconImageView(Icon.SETTINGS.getPath(), 30));
 
-
+        Button fullscreenButton = initializeFullScreenButton();
         Pane mainPane = new Pane();
         mainPane.setPrefSize(500, 500);
-        Button fullscreen = new Button();
-        mainPane.getChildren().add(fullscreen);
+        mainPane.getChildren().add(fullscreenButton);
         Scene settingsScene = new Scene(mainPane);
         Stage settingsStage = new Stage();
         initializePopUpScene(settingsStage, settingsScene, Icon.SETTINGS);
@@ -63,7 +62,7 @@ public abstract class SceneController {
         settings.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                if (!rulebookOpened) {
+                if (!settingsOpened) {
                     settingsStage.show();
                     settingsOpened = true;
                 } else {
@@ -122,6 +121,7 @@ public abstract class SceneController {
                 } else {
                     rulebookOpened = false;
                 }
+                popUpStage.close();
             }
         });
     }
@@ -166,13 +166,9 @@ public abstract class SceneController {
         return fullscreenButton;
     }
 
-    public double getSceneWindowWidth() {
-        return 1080;
-    }
+    public abstract double getSceneWindowWidth();
 
-    public double getSceneWindowHeight() {
-        return 720;
-    }
+    public abstract double getSceneWindowHeight();
 
     /**
      * Method used to initialize game information

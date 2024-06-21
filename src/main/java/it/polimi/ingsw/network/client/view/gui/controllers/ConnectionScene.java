@@ -12,12 +12,12 @@ import javafx.scene.layout.Pane;
 
 import java.awt.event.MouseEvent;
 
-import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.createMainBackground;
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
 
 /**
  * ConnectionScene is the controller concerning connection scene
  */
-public class ConnectionScene extends SceneController{
+public class ConnectionScene extends SceneController {
 
     @FXML
     private Pane mainPane;
@@ -33,7 +33,8 @@ public class ConnectionScene extends SceneController{
     //@FXML
     //private Button connect;
 
-    public ConnectionScene(){}
+    public ConnectionScene() {
+    }
 
     //@FXML
     //private void enterTheIp() {
@@ -48,6 +49,7 @@ public class ConnectionScene extends SceneController{
      */
     @Override
     public void initialize() {
+        super.initialize();
         mainPane.setBackground(createMainBackground());
     }
 
@@ -55,6 +57,22 @@ public class ConnectionScene extends SceneController{
     private void exitTheGame() {
         System.err.println("Exit from the gui");
         System.exit(0);
+    }
+
+    @Override
+    public void initializeRulebook() {
+        super.initializeRulebook();
+        rulebook.setLayoutX(500);
+        rulebook.setLayoutY(500);
+        mainPane.getChildren().add(rulebook);
+    }
+
+    @Override
+    public void initializeSettings() {
+        super.initializeSettings();
+        settings.setLayoutX(400);
+        settings.setLayoutY(500);
+        mainPane.getChildren().add(settings);
     }
 
     @FXML
@@ -65,7 +83,7 @@ public class ConnectionScene extends SceneController{
         try {
             controller.configureClient(gui, ip, Integer.parseInt(port));
             gui.showSelectUsername();
-        } catch(UnReachableServerException e) {
+        } catch (UnReachableServerException e) {
             Alert serverAlert = new Alert(Alert.AlertType.ERROR);
             serverAlert.setTitle("Unable to connect to the server");
             serverAlert.setContentText("Exception: " + e.getMessage());
@@ -80,6 +98,14 @@ public class ConnectionScene extends SceneController{
             ipField.setText("");
             portField.setText("");
         }
+    }
+
+    public double getSceneWindowWidth() {
+        return connectionSceneWidth;
+    }
+
+    public double getSceneWindowHeight() {
+        return connectionSceneHeight;
     }
 
 }

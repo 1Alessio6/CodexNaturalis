@@ -551,4 +551,13 @@ public class GameScene extends SceneController {
         }
     }
 
+    public double getSceneWindowWidth() {
+        return startedGameSceneWidth;
+    }
+
+    public double getSceneWindowHeight() {
+        return startedGameSceneHeight;
+    }
+
+
 }

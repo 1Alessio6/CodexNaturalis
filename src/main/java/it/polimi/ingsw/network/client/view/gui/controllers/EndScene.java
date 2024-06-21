@@ -66,4 +66,12 @@ public class EndScene extends SceneController {
             gui.loadScene(SceneType.SELECT_USERNAME);
         }
     }
+
+    public double getSceneWindowWidth() {
+        return startedGameSceneWidth;
+    }
+
+    public double getSceneWindowHeight() {
+        return startedGameSceneHeight;
+    }
 }

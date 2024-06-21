@@ -13,8 +13,8 @@ import javafx.scene.text.Text;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.createMainBackground;
-import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.loadTitleFont;
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.connectionSceneHeight;
 
 /**
  * LobbyScene is the controller concerning lobby scene
@@ -62,7 +62,7 @@ public class LobbyScene extends SceneController {
     /**
      * Method used to show the players required to start the game
      */
-    public void showRequiredPlayers(){
+    public void showRequiredPlayers() {
         //todo requiredPlayer.setText("Player required to play: " + gui.getController().getRequiredPlayer);
         requiredPlayer.setVisible(true);
     }
@@ -80,12 +80,12 @@ public class LobbyScene extends SceneController {
      *
      * @param usernames the usernames of the connected players
      */
-    public void setPlayerConnected(List<String> usernames){
+    public void setPlayerConnected(List<String> usernames) {
         connectedPlayers.clear();
-        for(int i = 0; i < usernames.size(); i++){
+        for (int i = 0; i < usernames.size(); i++) {
             connectedPlayers.setText(i + " - " + usernames.get(i));
 
-            if(usernames.get(i).equals(gui.getController().getMainPlayerUsername())){
+            if (usernames.get(i).equals(gui.getController().getMainPlayerUsername())) {
                 connectedPlayers.setText(" LEADER");
             }
 
@@ -96,9 +96,9 @@ public class LobbyScene extends SceneController {
     @FXML
     private void setPlayersNumber() {
 
-        try{
+        try {
             gui.getController().setPlayersNumber(numberPlayerCatcher.getValue());
-        }catch (InvalidPlayersNumberException ignored) {
+        } catch (InvalidPlayersNumberException ignored) {
         }
 
         numberPlayerCatcher.setVisible(false);
@@ -107,5 +107,14 @@ public class LobbyScene extends SceneController {
         requiredPlayer.setVisible(true);
 
     }
+
+    public double getSceneWindowWidth() {
+        return startedGameSceneWidth;
+    }
+
+    public double getSceneWindowHeight() {
+        return startedGameSceneHeight;
+    }
+
 
 }
