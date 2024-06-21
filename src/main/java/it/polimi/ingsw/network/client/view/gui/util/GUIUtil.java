@@ -16,6 +16,14 @@ public class GUIUtil {
 
     public static final String CAMBRIA_MATH = "Cambria Math";
 
+    public static final double startedGameSceneHeight = 755.0;
+
+    public static final double startedGameSceneWidth = 1325.0;
+
+    public static final double connectionSceneHeight = 720.0;
+
+    public static final double connectionSceneWidth = 1080.0;
+
     /**
      * Checks whether the <code>mouseButton</code> has been clicked or not
      *
