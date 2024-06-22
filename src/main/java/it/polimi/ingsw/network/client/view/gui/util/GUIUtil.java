@@ -138,6 +138,12 @@ public class GUIUtil {
         return new Background(backgroundImage);
     }
 
+    public static void addButtonPane(Pane mainPane, Pane buttonPane, double layoutX, double layoutY){
+        buttonPane.setLayoutX(layoutX);
+        buttonPane.setLayoutY(layoutY);
+        mainPane.getChildren().add(buttonPane);
+    }
+
 
 
 
