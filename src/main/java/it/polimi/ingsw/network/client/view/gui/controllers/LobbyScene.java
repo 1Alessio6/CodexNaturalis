@@ -16,9 +16,6 @@ import java.util.List;
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.connectionSceneHeight;
 
-/**
- * LobbyScene is the controller concerning lobby scene
- */
 public class LobbyScene extends SceneController {
 
     @FXML
@@ -58,6 +55,13 @@ public class LobbyScene extends SceneController {
 
         //todo fix when fullScreen
     }
+
+    public void initializeUsingGameInformation() {
+        super.initializeUsingGameInformation();
+        addButtonPane(mainPane, buttonPane, 1028, 637);
+    }
+
+
 
     /**
      * Method used to show the players required to start the game

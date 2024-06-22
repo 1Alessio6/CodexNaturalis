@@ -15,16 +15,16 @@
             <Pane fx:id="playgroundPane" layoutX="476.0" layoutY="208.0" prefHeight="1000" prefWidth="1000" />
         </ScrollPane>
         <Label layoutX="1050.0" layoutY="232" text="Chat" />
-        <ScrollPane fx:id="chatPane" hbarPolicy="NEVER" layoutX="1028.0" layoutY="255.0" prefHeight="270.0" prefWidth="254.0">
+        <ScrollPane fx:id="chatPane" hbarPolicy="NEVER" layoutX="1028.0" layoutY="255.0" prefHeight="325.0" prefWidth="254.0">
             <content>
                 <TextFlow fx:id="sentMessages" prefHeight="200.0" prefWidth="198.0" />
             </content>
         </ScrollPane>
-        <HBox layoutX="1028.0" layoutY="535.0" prefHeight="23.0" prefWidth="254.0">
+        <Pane layoutX="1028.0" layoutY="580.0" prefHeight="23.0" prefWidth="254.0">
             <children>
                 <ComboBox fx:id="recipients" onAction="#selectRecipient" prefHeight="24.0" prefWidth="100.0" />
-                <TextField fx:id="text" onKeyReleased="#sendMessage" prefHeight="24.0" prefWidth="154.0" />
+                <TextField fx:id="text" layoutX="100.0" onKeyReleased="#sendMessage" prefHeight="24.0" prefWidth="154.0" />
             </children>
-        </HBox>
+        </Pane>
     </children>
 </Pane>

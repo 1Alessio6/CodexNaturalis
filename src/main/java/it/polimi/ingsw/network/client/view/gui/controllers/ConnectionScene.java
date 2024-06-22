@@ -3,12 +3,14 @@ package it.polimi.ingsw.network.client.view.gui.controllers;
 
 import it.polimi.ingsw.network.client.UnReachableServerException;
 import it.polimi.ingsw.network.client.controller.ClientController;
+import it.polimi.ingsw.network.client.view.gui.util.GUIUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 
 import java.awt.event.MouseEvent;
 
@@ -48,8 +50,18 @@ public class ConnectionScene extends SceneController {
      * {@inheritDoc}
      */
     @Override
+    public void initializeUsingGameInformation() {
+        super.initializeUsingGameInformation();
+        addButtonPane(mainPane, buttonPane, 352, 500);
+    }
+
+    @Override
     public void initialize() {
-        super.initialize();
+        Text welcomeMessage = new Text("Welcome");
+        welcomeMessage.setFont(loadTitleFont(50));
+        welcomeMessage.setLayoutX(414.0);
+        welcomeMessage.setLayoutY(167.0);
+        mainPane.getChildren().add(welcomeMessage);
         mainPane.setBackground(createMainBackground());
     }
 
@@ -57,22 +69,6 @@ public class ConnectionScene extends SceneController {
     private void exitTheGame() {
         System.err.println("Exit from the gui");
         System.exit(0);
-    }
-
-    @Override
-    public void initializeRulebook() {
-        super.initializeRulebook();
-        rulebook.setLayoutX(500);
-        rulebook.setLayoutY(500);
-        mainPane.getChildren().add(rulebook);
-    }
-
-    @Override
-    public void initializeSettings() {
-        super.initializeSettings();
-        settings.setLayoutX(400);
-        settings.setLayoutY(500);
-        mainPane.getChildren().add(settings);
     }
 
     @FXML

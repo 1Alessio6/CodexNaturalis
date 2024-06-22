@@ -94,8 +94,10 @@ public class SetupScene extends SceneController {
      */
     @Override
     public void initializeUsingGameInformation() {
+        super.initializeUsingGameInformation();
         initializeStarterCards();
         initializeColors();
+        addButtonPane(mainPane, buttonPane, 1028, 637);
     }
 
     private void setStarterPlaceCommand(Rectangle face, Side starterSide) {

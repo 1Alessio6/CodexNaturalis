@@ -42,6 +42,11 @@ public class EndScene extends SceneController {
         winnersPane.setAlignment(Pos.TOP_CENTER);
     }
 
+    public void initializeUsingGameInformation() {
+        super.initializeUsingGameInformation();
+        addButtonPane(mainPane, buttonPane, 1028, 637);
+    }
+
     /**
      * Method used to show the winners of the game
      *

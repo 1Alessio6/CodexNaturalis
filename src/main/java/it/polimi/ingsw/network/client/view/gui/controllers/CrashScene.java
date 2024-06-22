@@ -67,6 +67,12 @@ public class CrashScene extends SceneController {
 
     }
 
+    @Override
+    public void initializeUsingGameInformation() {
+        super.initializeUsingGameInformation();
+        addButtonPane(mainPane, buttonPane, 860, 650);
+    }
+
     public double getSceneWindowWidth() {
         return connectionSceneWidth;
     }
