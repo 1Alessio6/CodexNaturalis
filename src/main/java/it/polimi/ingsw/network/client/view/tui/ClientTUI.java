@@ -269,7 +269,7 @@ public class ClientTUI implements View {
      */
     private void sendMessage(String[] command) throws InvalidMessageException, TUIException {
         try {
-            String commandContent = command[1];
+            String commandContent = command[0].equals("pm")?command[1].concat(" "+command[2]):command[1];
             Message myMessage = command[0].equals("pm") ? createPrivateMessage(commandContent) : createBroadcastMessage(commandContent);
             controller.sendMessage(myMessage);
 
