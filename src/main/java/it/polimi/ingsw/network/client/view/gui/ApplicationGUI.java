@@ -382,12 +382,10 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         primaryStage.setResizable(false);
         primaryStage.setFullScreenExitHint("");
         primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
-
-        currentSceneController.initializeRulebook();
-        currentSceneController.initializeSettings();
-
-        //todo maybe could be removed currentRoot
         currentRoot = root;
+        if(isFullScreen){
+            setFullScreenMode();
+        }
     }
 
     public void setFullScreenMode() {
