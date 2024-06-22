@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUICards.*;
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.loadTitleFont;
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.setBackgroundColor;
 
 /**
@@ -58,7 +59,7 @@ public class BoardPane {
         boardMainPane.getChildren().addAll(resourceFaceUp);
         boardMainPane.getChildren().add(goldenDeckTopCard);
         boardMainPane.getChildren().add(resourceDeckTopCard);
-        boardMainPane.setBackground(setBackgroundColor("#EEE5BC"));
+        //boardMainPane.setBackground(setBackgroundColor("#EEE5BC"));
         initializeBoardCardsPosition(34, 11);
         initializeCommonObjective(clientBoard.getCommonObjectives());
         boardMainPane.getChildren().add(commonObjectivePane);
@@ -90,6 +91,13 @@ public class BoardPane {
                     goldenFaceUp.getFirst().setLayoutY(layoutY);
                     break;
                 case 4:
+                    Text DeckTitle = new Text();
+                    DeckTitle.setFont(new Font(GUIUtil.CAMBRIA_MATH,15));
+                    DeckTitle.setLayoutY(layoutY);
+                    DeckTitle.setLayoutX(20);
+                    DeckTitle.setText("Decks");
+                    layoutY = layoutY + 14.5;
+                    boardMainPane.getChildren().add(DeckTitle);
                     goldenDeckTopCard.setLayoutX(layoutX);
                     goldenDeckTopCard.setLayoutY(layoutY);
                     break;
@@ -135,9 +143,9 @@ public class BoardPane {
 
         Text commonObjectiveTitle = new Text();
         commonObjectiveTitle.setFont(new Font(GUIUtil.CAMBRIA_MATH,15));
-        commonObjectiveTitle.setLayoutY(2);
-        commonObjectiveTitle.setLayoutX(70);
-        commonObjectiveTitle.setText("COMMON OBJECTIVE");
+        commonObjectiveTitle.setLayoutY(15);
+        commonObjectiveTitle.setLayoutX(20);
+        commonObjectiveTitle.setText("Common Objectives");
         commonObjectivePane.getChildren().add(commonObjectiveTitle);
 
         double layoutX = 20;
