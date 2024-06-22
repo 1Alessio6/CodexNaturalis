@@ -22,9 +22,7 @@ import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.initializeIco
 public abstract class SceneController {
     protected ApplicationGUI gui;
 
-    protected Button settings;
-
-    protected Button rulebook;
+    protected Pane buttonPane;
 
     private boolean rulebookOpened;
 
@@ -46,9 +44,10 @@ public abstract class SceneController {
 
     }
 
-    public void initializeSettings() {
-        settings = new Button();
-        settings.setPrefSize(40, 40);
+    private Button initializeSettings() {
+
+        Button settings = new Button();
+        settings.setPrefSize(50, 50);
         settings.setGraphic(initializeIconImageView(Icon.SETTINGS.getPath(), 30));
 
         Button fullscreenButton = initializeFullScreenButton();
@@ -71,13 +70,18 @@ public abstract class SceneController {
                 }
             }
         });
+
+        settings.setLayoutY(17.5);
+        settings.setLayoutX(72);
+
+        return settings;
     }
 
-    public void initializeRulebook() {
+    private Button initializeRulebook() {
 
-        rulebook = new Button();
+        Button rulebook = new Button();
         rulebookOpened = false;
-        rulebook.setPrefSize(40, 40);
+        rulebook.setPrefSize(50, 50);
         rulebook.setGraphic(initializeIconImageView(Icon.RULEBOOK.getPath(), 30));
 
         Pagination rulebookPagination = initializeRulebookPagination();
@@ -97,6 +101,11 @@ public abstract class SceneController {
                 }
             }
         });
+
+        rulebook.setLayoutY(17.5);
+        rulebook.setLayoutX(152);
+
+        return rulebook;
     }
 
     private void initializePopUpScene(Stage popUpStage, Scene popUpScene, Icon typeOfPopUp) {
@@ -174,6 +183,10 @@ public abstract class SceneController {
      * Method used to initialize game information
      */
     public void initializeUsingGameInformation() {
+        buttonPane = new Pane();
+        buttonPane.setPrefSize(202, 85);
+        buttonPane.getChildren().add(initializeSettings());
+        buttonPane.getChildren().add(initializeRulebook());
     }
 
 }
