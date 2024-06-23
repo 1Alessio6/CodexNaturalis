@@ -233,6 +233,13 @@ public class SetupScene extends SceneController {
         text.setText("Wait for the other players to complete their setup");
     }
 
+    public void initializeCompletedSetup(){
+        for (GUICircle circle : colors) {
+            circle.setVisibility(false);
+        }
+        updateObjectiveCard();
+    }
+
     public double getSceneWindowWidth() {
         return startedGameSceneWidth;
     }
