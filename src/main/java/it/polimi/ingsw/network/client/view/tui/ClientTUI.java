@@ -461,12 +461,12 @@ public class ClientTUI implements View {
     private void connect(String ip, Integer port) throws UnReachableServerException {
         controller.configureClient(this, ip, port);
         availableActions.remove(TUIActions.CONNECT);
-        ClientUtil.printCommand("Insert your username: type <selectusername> <your username> (max 15 characters):");
+        ClientUtil.printCommand("Insert your username: type <selectusername> <your username> (max 12 characters):");
         availableActions.add(TUIActions.SELECTUSERNAME);
     }
 
     private void selectUsername(String username) throws TUIException {
-        if (username.length() > 15) {
+        if (username.length() > 12) {
             throw new TUIException(ExceptionsTUI.INVALID_USERNAME);
         }
         this.currentWatchingPlayer = username;
