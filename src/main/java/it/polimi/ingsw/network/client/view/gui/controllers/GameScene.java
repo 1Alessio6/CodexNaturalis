@@ -138,6 +138,10 @@ public class GameScene extends SceneController {
     }
 
     private void initializeChat() {
+        Text chatTitle = new Text("Chat");
+        chatTitle.setFont(loadTitleFont(25));
+        chatTitle.setLayoutX(1028);
+        chatTitle.setLayoutY(214);
         ClientController controller = gui.getController();
         List<String> usernames = new ArrayList<>(controller.getUsernames());
         String myName = controller.getMainPlayerUsername();
@@ -150,6 +154,7 @@ public class GameScene extends SceneController {
                 appendMessage(m);
             }
         }
+        mainPane.getChildren().add(chatTitle);
     }
 
     /**
