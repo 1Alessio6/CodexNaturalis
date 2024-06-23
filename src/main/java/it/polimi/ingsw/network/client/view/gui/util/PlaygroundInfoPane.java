@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.client.view.gui.util;
 
+import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 import javafx.scene.control.Label;
@@ -11,7 +12,7 @@ import javafx.scene.text.Text;
 
 import java.util.Map;
 
-import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.setBackgroundColor;
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
 import static javax.swing.text.StyleConstants.setBackground;
 
 /**
@@ -20,14 +21,15 @@ import static javax.swing.text.StyleConstants.setBackground;
  */
 public class PlaygroundInfoPane {
 
-    Pane mainPane;
-    Label playGroundOwner;
+    private final Pane mainPane;
+
+    private final Label playGroundOwner;
 
     private final RankPane rank;
 
+    private final ImageView returnToMainPlayground;
 
-    ImageView returnToMainPlayground;
-    ResourcePane resourcePane;
+    private final ResourcePane resourcePane;
 
     /**
      * Constructs a new <code>PlaygroundInfoPane</code>
@@ -39,7 +41,7 @@ public class PlaygroundInfoPane {
         returnToMainPlayground.setLayoutX(600);
         returnToMainPlayground.setLayoutY(5);
 
-        rank = new RankPane(55,40,30);
+        rank = new RankPane(55, 40, 30);
         Pane rankMainPane = rank.getMainPane();
         rankMainPane.setLayoutX(560);
         rankMainPane.setLayoutY(5);
@@ -53,8 +55,12 @@ public class PlaygroundInfoPane {
         mainPane.setBackground(setBackgroundColor("#EEE5BC"));
         mainPane.getChildren().add(rankMainPane);
 
-        playGroundOwner.setLayoutY(15);
+        playGroundOwner.setLayoutY(9);
         playGroundOwner.setLayoutX(5);
+        playGroundOwner.setFont(new Font(CAMBRIA_MATH, 12));
+        playGroundOwner.setPrefWidth(143);
+        playGroundOwner.setWrapText(true);
+
 
         resourcePane = new ResourcePane(400, 40);
         resourcePane.initialize(36.25, 40, 20);
@@ -85,7 +91,7 @@ public class PlaygroundInfoPane {
             rank.getMainPane().setVisible(true);
             returnToMainPlayground.setVisible(false);
         }
-        playGroundOwner.setFont(new Font("Arial", 11));
+        playGroundOwner.setFont(new Font(CAMBRIA_MATH, 12));
 
         resourcePane.updateResources(player.getPlayground().getResources());
     }
@@ -95,7 +101,7 @@ public class PlaygroundInfoPane {
      *
      * @param rank the new rank of the player
      */
-    public void updateRank(int rank){
+    public void updateRank(int rank) {
         this.rank.updateRank(rank);
     }
 
@@ -104,7 +110,7 @@ public class PlaygroundInfoPane {
      *
      * @param score the new score of the player
      */
-    public void updateScore(int score){
+    public void updateScore(int score) {
         this.rank.updateScore(score);
     }
 
@@ -117,7 +123,7 @@ public class PlaygroundInfoPane {
      *
      * @return home's <code>ImageView</code>
      */
-    public ImageView getReturnToMainPlayground(){
+    public ImageView getReturnToMainPlayground() {
         return returnToMainPlayground;
     }
 
