@@ -69,19 +69,19 @@ public class GUIUtil {
     public static Color convertPlayerColor(PlayerColor color) {
         switch (color) {
             case RED -> {
-                return Color.RED;
+                return Color.web("#FF0000");
             }
             case BLACK -> {
-                return Color.BLACK;
+                return Color.web("#000000");
             }
             case BLUE -> {
-                return Color.BLUE;
+                return Color.web("#0000FF");
             }
-            case GREEN -> {
-                return Color.GREEN;
+            case GREEN -> { //todo replace with a darker green
+                return Color.web("#00FF00");
             }
             case YELLOW -> {
-                return Color.YELLOW;
+                return Color.web("#FCBA03");
             }
         }
         return null;
