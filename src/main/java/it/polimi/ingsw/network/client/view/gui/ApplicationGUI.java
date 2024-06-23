@@ -187,6 +187,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
      * {@inheritDoc}
      */
     //todo fix bug after multiple cards in hand after a connection after a crash
+    //todo check behaviour in case the game phase is end
     @Override
     public void showUpdateAfterConnection() {
         Platform.runLater(() -> {
@@ -194,8 +195,17 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
                 currentScene = SceneType.SETUP;
                 loadScene(SceneType.SETUP);
             } else {
-                loadScene(SceneType.GAME);
-                currentScene = SceneType.GAME;
+                //connection after a crash during setup phase with some players still in setup
+                if (controller.getGamePhase() == GamePhase.Setup) {
+                    loadScene(SceneType.SETUP);
+                    currentScene = SceneType.SETUP;
+                    ((SetupScene)currentSceneController).initializeCompletedSetup();
+                }
+                else{
+                    //connection after a crash with game started case
+                    loadScene(SceneType.GAME);
+                    currentScene = SceneType.GAME;
+                }
             }
         });
     }
@@ -383,7 +393,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         primaryStage.setFullScreenExitHint("");
         primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
         currentRoot = root;
-        if(isFullScreen){
+        if (isFullScreen) {
             setFullScreenMode();
         }
     }
@@ -406,7 +416,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
     /**
      * Switches the screen to window screen mode
      */
-    public void setWindowScreenMode(){
+    public void setWindowScreenMode() {
         Dimension resolution = Toolkit.getDefaultToolkit().getScreenSize();
         double width = resolution.getWidth();
         double height = resolution.getHeight();
