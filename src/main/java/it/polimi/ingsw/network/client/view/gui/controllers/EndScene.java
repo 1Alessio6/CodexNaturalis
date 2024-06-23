@@ -42,6 +42,9 @@ public class EndScene extends SceneController {
         winnersPane.setAlignment(Pos.TOP_CENTER);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void initializeUsingGameInformation() {
         super.initializeUsingGameInformation();
         addButtonPane(mainPane, buttonPane, 1028, 637);

@@ -60,7 +60,9 @@ public class ClientHandler implements VirtualView, HeartBeatHandler {
         heartBeat.startHeartBeat();
     }
 
-
+    /**
+     * Runs the <code>ClientHandler</code>
+     */
     public void run() {
         System.out.println("ClientHandler has started");
         try {

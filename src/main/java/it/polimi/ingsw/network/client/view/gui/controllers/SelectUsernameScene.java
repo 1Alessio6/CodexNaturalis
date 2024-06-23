@@ -38,6 +38,9 @@ public class SelectUsernameScene extends SceneController {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initializeUsingGameInformation() {
         super.initializeUsingGameInformation();

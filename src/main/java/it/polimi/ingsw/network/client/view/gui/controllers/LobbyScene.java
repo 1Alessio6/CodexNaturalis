@@ -56,6 +56,9 @@ public class LobbyScene extends SceneController {
         //todo fix when fullScreen
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void initializeUsingGameInformation() {
         super.initializeUsingGameInformation();
         addButtonPane(mainPane, buttonPane, 1028, 637);

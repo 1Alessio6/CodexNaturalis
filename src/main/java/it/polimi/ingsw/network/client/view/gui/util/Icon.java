@@ -14,9 +14,13 @@ public enum Icon {
      * HOME is the icon that allows the player to return to his/her own playground
      */
     HOME("/gui/png/icons/home.png"),
-
+    /**
+     * SETTINGS is the icon that allows the player to resize his/her screen
+     */
     SETTINGS("gui/png/icons/settings.png"),
-
+    /**
+     * RULEBOOK is the icon that allows the player to consult the rulebook
+     */
     RULEBOOK("/gui/png/icons/book.png"),
     /**
      * FIRST is the icon representing the player is occupying the first rank

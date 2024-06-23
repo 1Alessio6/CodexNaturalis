@@ -35,10 +35,23 @@ public class GUIUtil {
         return mouseEvent.getEventType() == MouseEvent.MOUSE_CLICKED && mouseEvent.getButton() == mouseButton;
     }
 
+    /**
+     * Loads the font used for the title in the given <code>size</code>
+     *
+     * @param size the size of the font
+     * @return the required font
+     */
     public static Font loadTitleFont(double size){
         return Font.loadFont(GUIUtil.class.getResourceAsStream("/gui/fonts/FetteKanzlei.ttf"), size);
     }
 
+    /**
+     * Initializes the icon found in the given <code>path</code> and adjusts it to the given <code>fitSize</code>
+     *
+     * @param path    the icon path
+     * @param fitSize the size to which the icon is to be adjusted
+     * @return the initialized icon
+     */
     public static ImageView initializeIconImageView(String path, double fitSize){
         ImageView image = new ImageView(path);
         image.setFitWidth(fitSize);
@@ -138,6 +151,14 @@ public class GUIUtil {
         return new Background(backgroundImage);
     }
 
+    /**
+     * Adds the <code>buttonPane</code> to the <code>mainPain</code>, adjusting it to the given coordinates
+     *
+     * @param mainPane   the <code>Pane</code> in which the button is to be added
+     * @param buttonPane the buttonPane to be added
+     * @param layoutX    the abscissa of the buttonPane
+     * @param layoutY    the ordinate of the buttonPane
+     */
     public static void addButtonPane(Pane mainPane, Pane buttonPane, double layoutX, double layoutY){
         buttonPane.setLayoutX(layoutX);
         buttonPane.setLayoutY(layoutY);

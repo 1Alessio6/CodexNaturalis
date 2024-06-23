@@ -67,6 +67,9 @@ public class CrashScene extends SceneController {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initializeUsingGameInformation() {
         super.initializeUsingGameInformation();

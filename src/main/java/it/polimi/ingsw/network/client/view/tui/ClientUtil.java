@@ -423,30 +423,6 @@ public class ClientUtil {
     }
 
     /**
-     * Converts a <code>color</code> from CardColor to ANSIColor, seen as a background color.
-     *
-     * @param color the color to convert.
-     * @return the ANSIColor background color corresponding to the CardColor <code>color</code>.
-     */
-    public static ANSIColor cardColorToBGConversion(CardColor color) {
-        return switch (color) {
-            case RED -> RED_BACKGROUND_BRIGHT;
-            case BLUE -> BLUE_BACKGROUND_BRIGHT;
-            case GREEN -> GREEN_BACKGROUND_BRIGHT;
-            case PURPLE -> PURPLE_BACKGROUND_HIGH_INTENSITY;
-            case YELLOW -> null;
-        };
-    }
-
-    private static void searchForRelevantInformation(Map<Symbol, Integer> requirements) {
-        if (!requirements.isEmpty()) {
-            for (Map.Entry<Symbol, Integer> entry : requirements.entrySet()) {
-                System.out.println(ITALIC + "Req.: " + entry.getKey().toString() + printResources(entry.getKey()) + " " + entry.getValue());
-            }
-        }
-    }
-
-    /**
      * Appends the outer edges to the <code>cardMatrix</code>. It adds the bottom, top and side edges.
      *
      * @param resources  a map containing the resources of the card and their quantities.
@@ -851,6 +827,12 @@ public class ClientUtil {
         return str.toString();
     }
 
+    /**
+     * Prints the cards in the player's hand
+     *
+     * @param hand the player's hand
+     * @param side the side of the cards to be printed
+     */
     public static void printPlayerHand(List<ClientCard> hand, Side side) {
         int x = GameScreenArea.HAND_CARDS.getScreenPosition().getX();
         int y = GameScreenArea.HAND_CARDS.getScreenPosition().getY();
@@ -1013,6 +995,11 @@ public class ClientUtil {
                 createScoreBoard(players));
     }
 
+    /**
+     * Prints the list of the players waiting in the lobby
+     *
+     * @param usernames the usernames of the waiting players
+     */
     public static void printWaitingList(List<String> usernames) {
         printToLineColumn(GameScreenArea.SCOREBOARD.getScreenPosition().getX(),
                 GameScreenArea.SCOREBOARD.getScreenPosition().getY(),
@@ -1209,6 +1196,13 @@ public class ClientUtil {
         return drawablePlayground.getCurrentOffset();
     }
 
+    /**
+     * Draws the card located in <code>pos</code>
+     * The passed position must be an available position
+     *
+     * @param pos available position
+     * @return a card containing of the position
+     */
     // todo: please update card representation
     public static String[][] drawAvailablePosition(Position pos) {
         int matrixCardLength = cardWidth - 2;
@@ -1388,20 +1382,6 @@ public class ClientUtil {
         //    cnt++;
         //}
     }
-    public static void eraseLine(int line, int initialColumn, int finalColumn, int numberOfLinesToDelete) {
-        if (finalColumn < initialColumn) {
-            System.err.println("Final column is less than initial column");
-        } else {
-            for (int i = 0; i < numberOfLinesToDelete; i++) {
-                int currentLine = line + i;
-                System.out.print("\033[" + currentLine + ";" + initialColumn + "H");
-                for (int j = initialColumn; j < finalColumn + 1; j++) {
-                    System.out.print(" ");
-                }
-            }
-            System.out.print("\033[" + (line + numberOfLinesToDelete) + ";0H");
-        }
-    }
 
     /**
      * Prints the rulebook on the screen.
@@ -1495,6 +1475,15 @@ public class ClientUtil {
         return requirementsArea;
     }
 
+    /**
+     * Decides whether the <code>currOffset</code> is exaggerated or not and if it is, corrects it and returns the
+     * upper left position from where the printing will start
+     *
+     * @param playground of reference
+     * @param currOffset of the playground
+     * @return the adjusted position
+     * @throws UndrawablePlaygroundException if an error occurs during the playground representation design
+     */
     public static Position printPlayground(ClientPlayground playground, Position currOffset)
             throws UndrawablePlaygroundException {
         return printPlayground(playground, currOffset, new Position(0,0));

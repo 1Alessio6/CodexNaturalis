@@ -388,6 +388,9 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         }
     }
 
+    /**
+     * Switches the screen to full screen mode
+     */
     public void setFullScreenMode() {
         Dimension resolution = Toolkit.getDefaultToolkit().getScreenSize();
         double width = resolution.getWidth();
@@ -400,6 +403,9 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         isFullScreen = true;
     }
 
+    /**
+     * Switches the screen to window screen mode
+     */
     public void setWindowScreenMode(){
         Dimension resolution = Toolkit.getDefaultToolkit().getScreenSize();
         double width = resolution.getWidth();

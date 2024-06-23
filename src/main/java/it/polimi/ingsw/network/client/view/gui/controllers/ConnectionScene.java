@@ -55,6 +55,9 @@ public class ConnectionScene extends SceneController {
         addButtonPane(mainPane, buttonPane, 352, 500);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initialize() {
         Text welcomeMessage = new Text("Welcome");
