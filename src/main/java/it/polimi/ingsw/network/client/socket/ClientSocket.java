@@ -102,13 +102,13 @@ public class ClientSocket extends Client implements VirtualView, HeartBeatHandle
             }).start();
             return server;
         } catch (UnknownHostException e) {
-            System.err.println("Don't know about host " + ip);
+            // System.err.println("Don't know about host " + ip);
             closeResources();
-            throw new UnReachableServerException(e.getMessage());
+            throw new UnReachableServerException(e.getMessage()+" Don't know about host " + ip);
         } catch (IOException e) {
-            System.err.println("Couldn't get I/O for the connection to " + ip);
+            //System.err.println("Couldn't get I/O for the connection to " + ip);
             closeResources();
-            throw new UnReachableServerException(e.getMessage());
+            throw new UnReachableServerException(e.getMessage()+" Couldn't get I/O for the connection to " + ip);
         }
     }
 

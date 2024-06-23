@@ -324,7 +324,8 @@ public class ClientUtil {
      * Clears the area where exceptions are displayed.
      */
     public static void clearExceptionSpace(){
-        writeLine(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+11,
+        writeLine(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+
+                        GameScreenArea.INPUT_AREA.getHeight(),
                 GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1,
                 GameScreenArea.INPUT_AREA.getWidth() -2,
                 " ".repeat(120));

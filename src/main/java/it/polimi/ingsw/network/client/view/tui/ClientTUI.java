@@ -126,6 +126,9 @@ public class ClientTUI implements View {
                 ClientUtil.printExceptions("Server is down, please connect to another server");
                 availableActions.clear();
                 setActionsForConnection();
+                synchronized (availableActions){
+                    ClientUtil.printHelpCommands(availableActions);
+                }
             } finally {
                 ClientUtil.putCursorToInputArea();
             }
@@ -462,9 +465,9 @@ public class ClientTUI implements View {
         availableActions.add(TUIActions.SELECTUSERNAME);
     }
 
-    private void selectUsername(String username) {
+    private void selectUsername(String username) throws TUIException {
         if (username.length() > 15) {
-            throw new IndexOutOfBoundsException("Username too long");
+            throw new TUIException(ExceptionsTUI.INVALID_USERNAME);
         }
         this.currentWatchingPlayer = username;
         availableActions.remove(TUIActions.SELECTUSERNAME);
