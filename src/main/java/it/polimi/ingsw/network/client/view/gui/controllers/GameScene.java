@@ -68,6 +68,9 @@ public class GameScene extends SceneController {
     @FXML
     private ScrollPane chatPane;
 
+    @FXML
+    private Pane currentPlayerPane;
+
     private Pane mainPlayerCardsPane;
 
     private PlaygroundInfoPane playgroundInfoPane;
@@ -95,6 +98,8 @@ public class GameScene extends SceneController {
      * {@inheritDoc}
      */
     public void initialize() {
+
+
 
         mainPane.setBackground(createMainBackground());
         playerCardsVisibleSide = new ArrayList<>();
@@ -173,7 +178,16 @@ public class GameScene extends SceneController {
         initializeChat();
         initializePlaygroundInfoPane();
         addButtonPane(mainPane, buttonPane, 1028, 637);
+        initializeCurrentPlayerUsername();
 
+    }
+
+    private void initializeCurrentPlayerUsername(){
+        Text currentPlayerText = new Text("Current Player:\n" + gui.getController().getCurrentPlayerUsername());
+        currentPlayerText.setFont(new Font(CAMBRIA_MATH, 15));
+        currentPlayerText.setLayoutX(10);
+        currentPlayerText.setLayoutY(20);
+        currentPlayerPane.getChildren().add(currentPlayerText);
     }
 
     private void initializePlaygroundInfoPane() {
@@ -201,11 +215,11 @@ public class GameScene extends SceneController {
 
     private void initializePlayerInfoBox() {
 
-        playerInfoPanes = new ArrayList<PlayerInfoPane>();
+        playerInfoPanes = new ArrayList<>();
 
 
         int distance = 20;
-        int layoutX = 30;
+        int layoutX = 44;
         int layoutY = 14;
 
         for (ClientPlayer player : gui.getController().getPlayers()) {
@@ -262,8 +276,6 @@ public class GameScene extends SceneController {
         //mainPlayerCardsPane.setBackground(setBackgroundColor("EEE5BC"));
     }
 
-
-    //todo when a card is placed even if the player hasn't draw it should be not visible
 
     private void initializeBoard() {
         boardPane = new BoardPane(gui.getController().getBoard());
