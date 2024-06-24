@@ -323,7 +323,9 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
      */
     @Override
     public void showUpdateSuspendedGame() {
-        //todo show a message of suspended game and disable all other command
+        if(currentScene == SceneType.GAME){
+            ((GameScene)currentSceneController).updateSuspendedGame();
+        }
     }
 
     /**

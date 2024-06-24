@@ -12,6 +12,7 @@ import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.client.controller.ClientController;
+import it.polimi.ingsw.network.client.model.ClientGame;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
@@ -205,8 +206,7 @@ public class GameScene extends SceneController {
         currentPlayerPane.getChildren().add(currentPlayerUsername);
     }
 
-    private void initializeCurrentPhaseText(){
-        ClientController controller = gui.getController();
+    private void initializeCurrentPhaseText() {
 
         Text currentPhaseTitle = new Text("Current Phase: ");
         currentPhaseTitle.setFont(new Font(CAMBRIA_MATH, 15));
@@ -229,19 +229,29 @@ public class GameScene extends SceneController {
         currentPlayerUsername.setFont(new Font(CAMBRIA_MATH, 13));
     }
 
-    public void updateCurrentPhase(){
+    public void updateCurrentPhase() {
         GamePhase phase = gui.getController().getGamePhase();
 
         //todo check the behaviour if phase == end it should load another scene
-        if(phase == GamePhase.PlaceNormal || phase == GamePhase.DrawNormal){
+        if (phase == GamePhase.PlaceNormal || phase == GamePhase.DrawNormal) {
             currentPhase.setText("Normal Turn");
             currentPhase.setFill(Color.web("#3CB371"));
-        }
-        else{
+        } else {
             currentPhase.setText("Additional Turn");
             currentPhase.setFill(convertPlayerColor(PlayerColor.BLUE));
         }
         currentPhase.setFont(new Font(CAMBRIA_MATH, 13));
+    }
+
+    public void updateSuspendedGame() {
+        ClientController controller = gui.getController();
+
+        if (!controller.isGameActive()) {
+            currentPhase.setText("GAME SUSPENDED");
+            currentPhase.setFill(convertPlayerColor(PlayerColor.RED));
+        } else {
+            updateCurrentPhase();
+        }
     }
 
     private void initializePlaygroundInfoPane() {
