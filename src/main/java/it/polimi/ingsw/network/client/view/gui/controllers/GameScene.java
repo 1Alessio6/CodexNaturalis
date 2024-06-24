@@ -10,6 +10,7 @@ import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
@@ -325,6 +326,15 @@ public class GameScene extends SceneController {
             mainPlayerCards.add(rectangle);
         }
 
+    }
+
+    public void updatePlayersStatus(){
+        for(ClientPlayer player : gui.getController().getPlayers()){
+            if(!player.getUsername().equals(gui.getController().getMainPlayerUsername())){
+                Objects.requireNonNull(getPlayerInfoPane(player.getUsername())).updateStatus(player.isConnected());
+            }
+
+        }
     }
 
     private void initializeSwitchPlayground(PlayerInfoPane playerInfoPane) {

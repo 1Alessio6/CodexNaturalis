@@ -54,6 +54,8 @@ public class PlaygroundInfoPane {
         mainPane.setLayoutY(183);
         mainPane.setBackground(setBackgroundColor("#EEE5BC"));
         mainPane.getChildren().add(rankMainPane);
+        mainPane.setStyle("-fx-background-radius: 5px;" + "-fx-background-color: #EEE5BC;");
+
 
         playGroundOwner.setLayoutY(9);
         playGroundOwner.setLayoutX(5);
