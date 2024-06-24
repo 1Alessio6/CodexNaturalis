@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Corresponds to the card that gives points to the player when the player places them in accordance with the pattern.
  */
-public class ObjectivePositionCard extends ObjectiveCard {
+public final class ObjectivePositionCard extends ObjectiveCard {
     private final Map<Position, CardColor> condition;
 
     /**
