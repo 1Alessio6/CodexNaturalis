@@ -131,20 +131,25 @@ public class GameScene extends SceneController {
         String sender = m.getSender();
         String recipient = m.getRecipient();
         if (sender.equals(myName)) {
-            preposition = "to";
+            preposition = " to";
             user = recipient;
         } else {
-            preposition = "from";
+            if(m.getRecipient().equals("Everyone")){
+                preposition = " <Everyone> from";
+            }
+            else{
+                preposition = " <Private> from";
+            }
             user = sender;
         }
         Text userText = new Text(user);
         if (!user.equals(Message.getNameForGroup())) {
-            userText.setStyle("-fx-fill:"
+            userText.setStyle("-fx-font-weight: bold;" + "-fx-fill:"
                     +
-                    PlayerColor.conversionToCssStyle.get(controller.getPlayer(user).getColor())
+                    convertPlayerColorIntoHexCode(controller.getPlayer(user).getColor())
             );
         }
-        Text content = new Text(": " + m.getContent() + "\n\n");
+        Text content = new Text(": " + m.getContent() + "\n");
         sentMessages.getChildren().addAll(new Text(preposition + " "), userText, content);
     }
 
