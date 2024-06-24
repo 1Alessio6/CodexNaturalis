@@ -5,9 +5,14 @@ import it.polimi.ingsw.network.client.model.board.ClientBoard;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
+import javafx.event.EventHandler;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -30,6 +35,8 @@ public class BoardPane {
     private Rectangle resourceDeckTopCard;
     private final List<Rectangle> goldenFaceUp;
 
+    private final List<Text> emptySlots;
+
     private final Pane commonObjectivePane;
     private final List<Rectangle> resourceFaceUp;
 
@@ -40,6 +47,7 @@ public class BoardPane {
      */
     public BoardPane(ClientBoard clientBoard) {
 
+        emptySlots = new ArrayList<>();
         commonObjectivePane = new Pane();
         commonObjectivePane.setPrefSize(295, 120);
 
@@ -93,10 +101,12 @@ public class BoardPane {
                 case 0:
                     resourceFaceUp.getFirst().setLayoutX(layoutX);
                     resourceFaceUp.getFirst().setLayoutY(layoutY);
+                    setEmptyText(layoutX + 12, layoutY + 35, "Empty Face-up\n          Card", 0);
                     break;
                 case 2:
                     goldenFaceUp.getFirst().setLayoutX(layoutX);
                     goldenFaceUp.getFirst().setLayoutY(layoutY);
+                    setEmptyText(layoutX + 12, layoutY + 35, "Empty Face-up\n          Card", 2);
                     break;
                 case 4:
                     Text DeckTitle = new Text();
@@ -108,6 +118,7 @@ public class BoardPane {
                     boardMainPane.getChildren().add(DeckTitle);
                     goldenDeckTopCard.setLayoutX(layoutX);
                     goldenDeckTopCard.setLayoutY(layoutY);
+                    setEmptyText(layoutX + 15, layoutY + 35, "Empty Golden\n        Deck", 4);
                     break;
             }
 
@@ -118,22 +129,27 @@ public class BoardPane {
                 case 1:
                     resourceFaceUp.getLast().setLayoutX(layoutX);
                     resourceFaceUp.getLast().setLayoutY(layoutY);
+                    setEmptyText(layoutX + 12, layoutY + 35, "Empty Face-up\n          Card", 1);
                     break;
 
                 case 3:
                     goldenFaceUp.getLast().setLayoutX(layoutX);
                     goldenFaceUp.getLast().setLayoutY(layoutY);
+                    setEmptyText(layoutX + 12, layoutY + 35, "Empty Face-up\n          Card", 3);
                     break;
 
                 case 5:
                     resourceDeckTopCard.setLayoutX(layoutX);
                     resourceDeckTopCard.setLayoutY(layoutY);
+                    setEmptyText(layoutX + 10, layoutY + 35, "Empty Resource\n          Deck", 5);
                     break;
             }
 
             layoutY = updateLayoutY(layoutY, verticalDistance);
         }
     }
+
+
 
     private void createDeck(DeckType Type, ClientFace face) {
         if (Type == DeckType.GOLDEN) {
@@ -226,42 +242,48 @@ public class BoardPane {
                 if (face != null) {
                     resourceFaceUp.getFirst().setFill(pathToImage(face.getPath()));
                 } else {
-                    resourceFaceUp.set(0, createEmptySlotPlaceHolder());
+                    resourceFaceUp.set(0, createEmptySlotPlaceHolder(resourceFaceUp.getFirst()));
+                    emptySlots.get(boardPosition).setVisible(true);
                 }
                 break;
             case 1:
                 if (face != null) {
                     resourceFaceUp.getLast().setFill(pathToImage(face.getPath()));
                 } else {
-                    resourceFaceUp.set(1, createEmptySlotPlaceHolder());
+                    resourceFaceUp.set(1, createEmptySlotPlaceHolder(resourceFaceUp.getLast()));
+                    emptySlots.get(boardPosition).setVisible(true);
                 }
                 break;
             case 2:
                 if (face != null) {
                     goldenFaceUp.getFirst().setFill(pathToImage(face.getPath()));
                 } else {
-                    goldenFaceUp.set(0, createEmptySlotPlaceHolder());
+                    goldenFaceUp.set(0, createEmptySlotPlaceHolder(goldenFaceUp.getFirst()));
+                    emptySlots.get(boardPosition).setVisible(true);
                 }
                 break;
             case 3:
                 if (face != null) {
                     goldenFaceUp.getLast().setFill(pathToImage(face.getPath()));
                 } else {
-                    goldenFaceUp.set(1, createEmptySlotPlaceHolder());
+                    goldenFaceUp.set(1, createEmptySlotPlaceHolder(goldenFaceUp.getLast()));
+                    emptySlots.get(boardPosition).setVisible(true);
                 }
                 break;
             case 4:
                 if (face != null) {
                     goldenDeckTopCard.setFill(pathToImage(face.getPath()));
                 } else {
-                    goldenDeckTopCard = createEmptySlotPlaceHolder();
+                    goldenDeckTopCard = createEmptySlotPlaceHolder(goldenDeckTopCard);
+                    emptySlots.get(boardPosition).setVisible(true);
                 }
                 break;
             case 5:
                 if (face != null) {
                     resourceDeckTopCard.setFill(pathToImage(face.getPath()));
                 } else {
-                    resourceDeckTopCard = createEmptySlotPlaceHolder();
+                    resourceDeckTopCard = createEmptySlotPlaceHolder(resourceDeckTopCard);
+                    emptySlots.get(boardPosition).setVisible(true);
                 }
                 break;
             default:
@@ -301,10 +323,24 @@ public class BoardPane {
         }
     }
 
-    private Rectangle createEmptySlotPlaceHolder() {
+    private Rectangle createEmptySlotPlaceHolder(Rectangle oldFace) {
 
         Rectangle emptyFace = new Rectangle(boardCardsWidth, boardCardsHeight);
+        emptyFace.setOpacity(0.4);
+        emptyFace.setFill(Color.web("#B0E0E6"));
+        emptyFace.setLayoutX(oldFace.getLayoutX());
+        emptyFace.setLayoutY(oldFace.getLayoutY());
+        boardMainPane.getChildren().remove(oldFace);
+        boardMainPane.getChildren().add(emptyFace);
 
+        emptyFace.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if (isClicked(mouseEvent, MouseButton.PRIMARY)) {
+                    System.err.println("You can't draw from an empty slot, please try again");
+                }
+            }
+        });
 
         return emptyFace;
     }
