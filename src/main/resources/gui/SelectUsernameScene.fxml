@@ -10,30 +10,27 @@
 <?import javafx.scene.text.Text?>
 
 <?import javafx.scene.layout.Pane?>
-<Pane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0"  xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.network.client.view.gui.controllers.SelectUsernameScene">
-   <children>
-      <ImageView fitHeight="608.0" fitWidth="1080.0" layoutY="56.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@png/LoginScreenBackground.jpg" />
-         </image>
+<Pane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="it.polimi.ingsw.network.client.view.gui.controllers.SelectUsernameScene">
+   <ImageView fitHeight="608.0" fitWidth="1080.0" layoutY="56.0" pickOnBounds="true" preserveRatio="true">
 
-      </ImageView>
-      <VBox alignment="CENTER" layoutX="367.0" layoutY="211.0" opacity="0.9" prefHeight="298.0" prefWidth="346.0" style="-fx-background-color: EEE5BC;" >
-         <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Enter your username:">
-               <font>
-                  <Font name="Cambria Math" size="24.0" />
-               </font>
-               <VBox.margin>
-                  <Insets bottom="50.0" />
-               </VBox.margin>
-            </Text>
-            <TextField fx:id="usernameCatcher" onKeyReleased="#connect" style="-fx-background-color: White;">
-               <VBox.margin>
-                  <Insets left="30.0" right="30.0" />
-               </VBox.margin>
-            </TextField>
-         </children>
-      </VBox>
-   </children>
+      <Image url="@png/LoginScreenBackground.jpg"/>
+   </ImageView>
+   <VBox alignment="CENTER" layoutX="367.0" layoutY="211.0" opacity="0.9" prefHeight="298.0" prefWidth="346.0"
+         style="-fx-background-color: EEE5BC; -fx-background-radius: 10px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0.5, 0, 0);">
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Enter your username:">
+         <font>
+            <Font name="Cambria Math" size="24.0"/>
+         </font>
+         <VBox.margin>
+            <Insets bottom="50.0"/>
+         </VBox.margin>
+      </Text>
+      <TextField fx:id="usernameCatcher" onKeyReleased="#connect" style="-fx-background-color: White; ">
+         <VBox.margin>
+            <Insets left="30.0" right="30.0"/>
+         </VBox.margin>
+      </TextField>
+   </VBox>
 </Pane>
