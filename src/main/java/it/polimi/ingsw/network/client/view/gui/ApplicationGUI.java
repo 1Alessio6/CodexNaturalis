@@ -298,6 +298,8 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
     @Override
     public void showUpdateCurrentPlayer() {
         Platform.runLater(() -> {
+
+            //todo check if the first two if could be removed
             if (currentScene == SceneType.SETUP) {
                 currentScene = SceneType.GAME;
                 loadScene(SceneType.GAME);
@@ -306,9 +308,12 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
             if (controller.getGamePhase() == GamePhase.End) {
                 loadScene(SceneType.END);
                 currentScene = SceneType.END;
-            } else {
-                //todo update current player in normal game scene
             }
+
+            if(currentScene == SceneType.GAME){
+                ((GameScene)currentSceneController).updateCurrentPlayerUsername();
+            }
+
         });
     }
 

@@ -71,6 +71,8 @@ public class GameScene extends SceneController {
     @FXML
     private Pane currentPlayerPane;
 
+    private Text currentPlayerUsername;
+
     private Pane mainPlayerCardsPane;
 
     private PlaygroundInfoPane playgroundInfoPane;
@@ -98,8 +100,6 @@ public class GameScene extends SceneController {
      * {@inheritDoc}
      */
     public void initialize() {
-
-
 
         mainPane.setBackground(createMainBackground());
         playerCardsVisibleSide = new ArrayList<>();
@@ -182,12 +182,30 @@ public class GameScene extends SceneController {
 
     }
 
-    private void initializeCurrentPlayerUsername(){
-        Text currentPlayerText = new Text("Current Player:\n" + gui.getController().getCurrentPlayerUsername());
+    private void initializeCurrentPlayerUsername() {
+        //todo add synchronization on client controller for all initialize with gaming information method
+
+        ClientController controller = gui.getController();
+
+        Text currentPlayerText = new Text("Current Player: ");
         currentPlayerText.setFont(new Font(CAMBRIA_MATH, 15));
         currentPlayerText.setLayoutX(10);
         currentPlayerText.setLayoutY(20);
+
+        currentPlayerUsername = new Text();
+        updateCurrentPlayerUsername();
+        currentPlayerUsername.setLayoutX(115);
+        currentPlayerUsername.setLayoutY(20);
+
         currentPlayerPane.getChildren().add(currentPlayerText);
+        currentPlayerPane.getChildren().add(currentPlayerUsername);
+    }
+
+    public void updateCurrentPlayerUsername() {
+        ClientController controller = gui.getController();
+        currentPlayerUsername.setText(controller.getCurrentPlayerUsername());
+        currentPlayerUsername.setFill(convertPlayerColor(controller.getPlayer(controller.getCurrentPlayerUsername()).getColor()));
+        currentPlayerUsername.setFont(new Font(CAMBRIA_MATH, 13));
     }
 
     private void initializePlaygroundInfoPane() {
@@ -244,13 +262,13 @@ public class GameScene extends SceneController {
         mainPlayerCardsPane = new Pane();
 
         Text secretObjectiveTitle = new Text();
-        secretObjectiveTitle.setFont(new Font(CAMBRIA_MATH,15));
+        secretObjectiveTitle.setFont(new Font(CAMBRIA_MATH, 15));
         secretObjectiveTitle.setLayoutY(630.5);
         secretObjectiveTitle.setLayoutX(345);
         secretObjectiveTitle.setText("Secret Objective");
 
         Text playerCardsTitle = new Text();
-        playerCardsTitle.setFont(new Font(CAMBRIA_MATH,15));
+        playerCardsTitle.setFont(new Font(CAMBRIA_MATH, 15));
         playerCardsTitle.setLayoutY(630.5);
         playerCardsTitle.setLayoutX(545);
         playerCardsTitle.setText("Your Cards");
@@ -340,9 +358,9 @@ public class GameScene extends SceneController {
 
     }
 
-    public void updatePlayersStatus(){
-        for(ClientPlayer player : gui.getController().getPlayers()){
-            if(!player.getUsername().equals(gui.getController().getMainPlayerUsername())){
+    public void updatePlayersStatus() {
+        for (ClientPlayer player : gui.getController().getPlayers()) {
+            if (!player.getUsername().equals(gui.getController().getMainPlayerUsername())) {
                 Objects.requireNonNull(getPlayerInfoPane(player.getUsername())).updateStatus(player.isConnected());
             }
 
