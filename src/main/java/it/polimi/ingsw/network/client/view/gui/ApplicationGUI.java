@@ -199,9 +199,8 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
                 if (controller.getGamePhase() == GamePhase.Setup) {
                     loadScene(SceneType.SETUP);
                     currentScene = SceneType.SETUP;
-                    ((SetupScene)currentSceneController).initializeCompletedSetup();
-                }
-                else{
+                    ((SetupScene) currentSceneController).initializeCompletedSetup();
+                } else {
                     //connection after a crash with game started case
                     loadScene(SceneType.GAME);
                     currentScene = SceneType.GAME;
@@ -215,9 +214,9 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
      */
     @Override
     public void showUpdatePlayerStatus() {
-
-        //todo add update without loading a new scene
-
+        if (currentScene == SceneType.GAME) {
+            ((GameScene)currentSceneController).updatePlayersStatus();
+        }
     }
 
     //todo check if it can be removed
