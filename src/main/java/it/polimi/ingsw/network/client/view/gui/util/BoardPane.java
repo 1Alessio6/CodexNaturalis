@@ -17,8 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUICards.*;
-import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.loadTitleFont;
-import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.setBackgroundColor;
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
 
 /**
  * BoardPane represents the pane in which golden/resource decks and face up cards resides, along with common objective
@@ -26,7 +25,7 @@ import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.setBackground
  */
 public class BoardPane {
 
-    private Pane boardMainPane;
+    private final Pane boardMainPane;
     private Rectangle goldenDeckTopCard;
     private Rectangle resourceDeckTopCard;
     private final List<Rectangle> goldenFaceUp;
@@ -42,14 +41,14 @@ public class BoardPane {
     public BoardPane(ClientBoard clientBoard) {
 
         commonObjectivePane = new Pane();
-        commonObjectivePane.setPrefSize(295,120);
+        commonObjectivePane.setPrefSize(295, 120);
 
         goldenFaceUp = new ArrayList<>();
         resourceFaceUp = new ArrayList<>();
         boardMainPane = new Pane();
         boardMainPane.setPrefSize(295, 500);
         boardMainPane.setLayoutX(24);
-        boardMainPane.setLayoutY(217);
+        boardMainPane.setLayoutY(227);
 
         createFaceUpCards(clientBoard.getFaceUpCards());
         createDeck(DeckType.GOLDEN, clientBoard.getGoldenDeckTopBack());
@@ -60,7 +59,7 @@ public class BoardPane {
         boardMainPane.getChildren().add(goldenDeckTopCard);
         boardMainPane.getChildren().add(resourceDeckTopCard);
         //boardMainPane.setBackground(setBackgroundColor("#EEE5BC"));
-        initializeBoardCardsPosition(34, 11);
+        initializeBoardCardsPosition(20, 11);
         initializeCommonObjective(clientBoard.getCommonObjectives());
         boardMainPane.getChildren().add(commonObjectivePane);
 
@@ -75,7 +74,16 @@ public class BoardPane {
     public void initializeBoardCardsPosition(int verticalDistance, int horizontalDistance) {
 
         double layoutX;
-        double layoutY = 30.0;
+        double layoutY = 50.0;
+
+        Text FaceUpTitle = new Text();
+        FaceUpTitle.setFont(new Font(CAMBRIA_MATH, 15));
+        FaceUpTitle.setLayoutY(layoutY);
+        FaceUpTitle.setLayoutX(20);
+        FaceUpTitle.setText("Face-up Cards");
+        boardMainPane.getChildren().add(FaceUpTitle);
+
+        layoutY = layoutY + 10;
 
         for (int i = 0; i < 6; i++) {
 
@@ -92,11 +100,11 @@ public class BoardPane {
                     break;
                 case 4:
                     Text DeckTitle = new Text();
-                    DeckTitle.setFont(new Font(GUIUtil.CAMBRIA_MATH,15));
-                    DeckTitle.setLayoutY(layoutY);
+                    DeckTitle.setFont(new Font(CAMBRIA_MATH, 15));
+                    DeckTitle.setLayoutY(layoutY + 16);
                     DeckTitle.setLayoutX(20);
                     DeckTitle.setText("Decks");
-                    layoutY = layoutY + 14.5;
+                    layoutY = layoutY + 25.5;
                     boardMainPane.getChildren().add(DeckTitle);
                     goldenDeckTopCard.setLayoutX(layoutX);
                     goldenDeckTopCard.setLayoutY(layoutY);
@@ -138,24 +146,24 @@ public class BoardPane {
         }
     }
 
-    private void initializeCommonObjective(List<ClientObjectiveCard> commonObjectives){
+    private void initializeCommonObjective(List<ClientObjectiveCard> commonObjectives) {
         commonObjectivePane.setLayoutY(383.5);
 
         Text commonObjectiveTitle = new Text();
-        commonObjectiveTitle.setFont(new Font(GUIUtil.CAMBRIA_MATH,15));
-        commonObjectiveTitle.setLayoutY(15);
+        commonObjectiveTitle.setFont(new Font(CAMBRIA_MATH, 15));
+        commonObjectiveTitle.setLayoutY(20);
         commonObjectiveTitle.setLayoutX(20);
         commonObjectiveTitle.setText("Common Objectives");
         commonObjectivePane.getChildren().add(commonObjectiveTitle);
 
         double layoutX = 20;
 
-        for(ClientObjectiveCard clientObjectiveCard : commonObjectives){
+        for (ClientObjectiveCard clientObjectiveCard : commonObjectives) {
             Rectangle card = createBoardRectangle();
             card.setFill(pathToImage(clientObjectiveCard.getPath()));
             card.setLayoutX(layoutX);
             card.setLayoutY(29.5);
-            layoutX = updateLayoutX(layoutX,11);
+            layoutX = updateLayoutX(layoutX, 11);
             commonObjectivePane.getChildren().add(card);
         }
     }
