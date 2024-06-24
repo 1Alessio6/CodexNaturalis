@@ -73,6 +73,8 @@ public class GameScene extends SceneController {
 
     private Text currentPlayerUsername;
 
+    private Text currentPhase;
+
     private Pane mainPlayerCardsPane;
 
     private PlaygroundInfoPane playgroundInfoPane;
@@ -178,11 +180,12 @@ public class GameScene extends SceneController {
         initializeChat();
         initializePlaygroundInfoPane();
         addButtonPane(mainPane, buttonPane, 1028, 637);
-        initializeCurrentPlayerUsername();
+        initializeCurrentPlayerUsernameText();
+        initializeCurrentPhaseText();
 
     }
 
-    private void initializeCurrentPlayerUsername() {
+    private void initializeCurrentPlayerUsernameText() {
         //todo add synchronization on client controller for all initialize with gaming information method
 
         ClientController controller = gui.getController();
@@ -201,11 +204,32 @@ public class GameScene extends SceneController {
         currentPlayerPane.getChildren().add(currentPlayerUsername);
     }
 
+    private void initializeCurrentPhaseText(){
+        ClientController controller = gui.getController();
+
+        Text currentPhaseTitle = new Text("Current Phase: ");
+        currentPhaseTitle.setFont(new Font(CAMBRIA_MATH, 15));
+        currentPhaseTitle.setLayoutX(10);
+        currentPhaseTitle.setLayoutY(50);
+
+        currentPhase = new Text();
+        updateCurrentPhase();
+        currentPhase.setLayoutX(110);
+        currentPhase.setLayoutY(50);
+
+        currentPlayerPane.getChildren().add(currentPhase);
+        currentPlayerPane.getChildren().add(currentPhaseTitle);
+    }
+
     public void updateCurrentPlayerUsername() {
         ClientController controller = gui.getController();
         currentPlayerUsername.setText(controller.getCurrentPlayerUsername());
         currentPlayerUsername.setFill(convertPlayerColor(controller.getPlayer(controller.getCurrentPlayerUsername()).getColor()));
         currentPlayerUsername.setFont(new Font(CAMBRIA_MATH, 13));
+    }
+
+    public void updateCurrentPhase(){
+
     }
 
     private void initializePlaygroundInfoPane() {
