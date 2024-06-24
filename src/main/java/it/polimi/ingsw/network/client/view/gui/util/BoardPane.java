@@ -149,7 +149,15 @@ public class BoardPane {
         }
     }
 
-
+    private void setEmptyText(double layoutX, double layoutY, String text, int index){
+        Text emptySlot = new Text(text);
+        emptySlot.setFont(new Font(CAMBRIA_MATH,15));
+        emptySlot.setLayoutX(layoutX);
+        emptySlot.setLayoutY(layoutY);
+        boardMainPane.getChildren().add(emptySlot);
+        emptySlot.setVisible(false);
+        emptySlots.add(index,emptySlot);
+    }
 
     private void createDeck(DeckType Type, ClientFace face) {
         if (Type == DeckType.GOLDEN) {
