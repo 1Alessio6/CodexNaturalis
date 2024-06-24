@@ -223,22 +223,46 @@ public class BoardPane {
 
         switch (boardPosition) {
             case 0:
-                resourceFaceUp.getFirst().setFill(pathToImage(face.getPath()));
+                if (face != null) {
+                    resourceFaceUp.getFirst().setFill(pathToImage(face.getPath()));
+                } else {
+                    resourceFaceUp.set(0, createEmptySlotPlaceHolder());
+                }
                 break;
             case 1:
-                resourceFaceUp.getLast().setFill(pathToImage(face.getPath()));
+                if (face != null) {
+                    resourceFaceUp.getLast().setFill(pathToImage(face.getPath()));
+                } else {
+                    resourceFaceUp.set(1, createEmptySlotPlaceHolder());
+                }
                 break;
             case 2:
-                goldenFaceUp.getFirst().setFill(pathToImage(face.getPath()));
+                if (face != null) {
+                    goldenFaceUp.getFirst().setFill(pathToImage(face.getPath()));
+                } else {
+                    goldenFaceUp.set(0, createEmptySlotPlaceHolder());
+                }
                 break;
             case 3:
-                goldenFaceUp.getLast().setFill(pathToImage(face.getPath()));
+                if (face != null) {
+                    goldenFaceUp.getLast().setFill(pathToImage(face.getPath()));
+                } else {
+                    goldenFaceUp.set(1, createEmptySlotPlaceHolder());
+                }
                 break;
             case 4:
-                goldenDeckTopCard.setFill(pathToImage(face.getPath()));
+                if (face != null) {
+                    goldenDeckTopCard.setFill(pathToImage(face.getPath()));
+                } else {
+                    goldenDeckTopCard = createEmptySlotPlaceHolder();
+                }
                 break;
             case 5:
-                resourceDeckTopCard.setFill(pathToImage(face.getPath()));
+                if (face != null) {
+                    resourceDeckTopCard.setFill(pathToImage(face.getPath()));
+                } else {
+                    resourceDeckTopCard = createEmptySlotPlaceHolder();
+                }
                 break;
             default:
                 System.err.println("not valid id");
@@ -253,12 +277,36 @@ public class BoardPane {
      */
     public void boardUpdate(ClientBoard board) {
 
-        setNewFace(4, board.getGoldenDeckTopBack());
-        setNewFace(5, board.getResourceDeckTopBack());
-        setNewFace(0, board.getFaceUpCards().get(0).getFront());
-        setNewFace(1, board.getFaceUpCards().get(1).getFront());
-        setNewFace(2, board.getFaceUpCards().get(2).getFront());
-        setNewFace(3, board.getFaceUpCards().get(3).getFront());
+        for (int index = 0; index <= 5; index++) {
+            updateCardAtIndexPosition(board, index);
+        }
+
+    }
+
+    private void updateCardAtIndexPosition(ClientBoard board, int index) {
+        switch (index) {
+            case 4:
+                setNewFace(4, board.getGoldenDeckTopBack());
+                break;
+            case 5:
+                setNewFace(5, board.getResourceDeckTopBack());
+                break;
+            default:
+                if (board.getFaceUpCards().get(index) != null) {
+                    setNewFace(index, board.getFaceUpCards().get(index).getFront());
+                } else {
+                    setNewFace(index, null);
+                }
+                break;
+        }
+    }
+
+    private Rectangle createEmptySlotPlaceHolder() {
+
+        Rectangle emptyFace = new Rectangle(boardCardsWidth, boardCardsHeight);
+
+
+        return emptyFace;
     }
 
     private double updateLayoutX(double layoutX, int distance) {
