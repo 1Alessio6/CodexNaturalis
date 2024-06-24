@@ -312,6 +312,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
             if(currentScene == SceneType.GAME){
                 ((GameScene)currentSceneController).updateCurrentPlayerUsername();
+                ((GameScene)currentSceneController).updateCurrentPhase();
             }
 
         });

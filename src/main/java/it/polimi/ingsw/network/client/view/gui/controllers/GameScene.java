@@ -31,6 +31,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -193,12 +194,12 @@ public class GameScene extends SceneController {
         Text currentPlayerText = new Text("Current Player: ");
         currentPlayerText.setFont(new Font(CAMBRIA_MATH, 15));
         currentPlayerText.setLayoutX(10);
-        currentPlayerText.setLayoutY(20);
+        currentPlayerText.setLayoutY(25);
 
         currentPlayerUsername = new Text();
         updateCurrentPlayerUsername();
         currentPlayerUsername.setLayoutX(115);
-        currentPlayerUsername.setLayoutY(20);
+        currentPlayerUsername.setLayoutY(25);
 
         currentPlayerPane.getChildren().add(currentPlayerText);
         currentPlayerPane.getChildren().add(currentPlayerUsername);
@@ -224,12 +225,23 @@ public class GameScene extends SceneController {
     public void updateCurrentPlayerUsername() {
         ClientController controller = gui.getController();
         currentPlayerUsername.setText(controller.getCurrentPlayerUsername());
-        currentPlayerUsername.setFill(convertPlayerColor(controller.getPlayer(controller.getCurrentPlayerUsername()).getColor()));
+        //currentPlayerUsername.setFill(convertPlayerColor(controller.getPlayer(controller.getCurrentPlayerUsername()).getColor()));
         currentPlayerUsername.setFont(new Font(CAMBRIA_MATH, 13));
     }
 
     public void updateCurrentPhase(){
+        GamePhase phase = gui.getController().getGamePhase();
 
+        //todo check the behaviour if phase == end it should load another scene
+        if(phase == GamePhase.PlaceNormal || phase == GamePhase.DrawNormal){
+            currentPhase.setText("Normal Turn");
+            currentPhase.setFill(Color.web("#3CB371"));
+        }
+        else{
+            currentPhase.setText("Additional Turn");
+            currentPhase.setFill(convertPlayerColor(PlayerColor.BLUE));
+        }
+        currentPhase.setFont(new Font(CAMBRIA_MATH, 13));
     }
 
     private void initializePlaygroundInfoPane() {
