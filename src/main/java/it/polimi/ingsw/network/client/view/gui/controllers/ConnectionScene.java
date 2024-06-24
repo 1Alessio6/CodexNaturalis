@@ -5,14 +5,17 @@ import it.polimi.ingsw.network.client.UnReachableServerException;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.view.gui.util.GUIUtil;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
-
-import java.awt.event.MouseEvent;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
 
@@ -32,8 +35,8 @@ public class ConnectionScene extends SceneController {
     //@FXML
     //private Button exit;
 
-    //@FXML
-    //private Button connect;
+    @FXML
+    private Button connectButton;
 
     public ConnectionScene() {
     }
@@ -53,6 +56,23 @@ public class ConnectionScene extends SceneController {
     public void initializeUsingGameInformation() {
         super.initializeUsingGameInformation();
         addButtonPane(mainPane, buttonPane, 352, 500);
+        portField.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                if (keyEvent.getCode() == KeyCode.ENTER) {
+                    connect();
+                }
+            }
+        });
+
+        connectButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if(isClicked(mouseEvent, MouseButton.PRIMARY)){
+                    connect();
+                }
+            }
+        });
     }
 
     /**
@@ -74,7 +94,6 @@ public class ConnectionScene extends SceneController {
         System.exit(0);
     }
 
-    @FXML
     private void connect() {
         String ip = ipField.getText();
         String port = portField.getText();
