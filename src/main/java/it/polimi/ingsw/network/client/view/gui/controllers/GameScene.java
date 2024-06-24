@@ -32,6 +32,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
@@ -226,9 +227,25 @@ public class GameScene extends SceneController {
 
     private void initializeMainPlayerCardPane() {
         mainPlayerCardsPane = new Pane();
+
+        Text secretObjectiveTitle = new Text();
+        secretObjectiveTitle.setFont(new Font(CAMBRIA_MATH,15));
+        secretObjectiveTitle.setLayoutY(630.5);
+        secretObjectiveTitle.setLayoutX(345);
+        secretObjectiveTitle.setText("Secret Objective");
+
+        Text playerCardsTitle = new Text();
+        playerCardsTitle.setFont(new Font(CAMBRIA_MATH,15));
+        playerCardsTitle.setLayoutY(630.5);
+        playerCardsTitle.setLayoutX(545);
+        playerCardsTitle.setText("Your Cards");
+
+        mainPane.getChildren().add(playerCardsTitle);
+        mainPane.getChildren().add(secretObjectiveTitle);
+
         mainPlayerCardsPane.setPrefSize(700, 90);
         mainPlayerCardsPane.setLayoutX(345);
-        mainPlayerCardsPane.setLayoutY(630);
+        mainPlayerCardsPane.setLayoutY(640);
         initializeMainPlayerObjectiveCard();
         initializeMainPlayerCards();
         mainPane.getChildren().add(mainPlayerCardsPane);
@@ -241,7 +258,7 @@ public class GameScene extends SceneController {
         rectangle.setLayoutX(layoutX);
         rectangle.setFill(pathToImage(gui.getController().getMainPlayerObjectiveCard().getPath()));
         mainPlayerCardsPane.getChildren().add(rectangle);
-        mainPlayerCardsPane.setBackground(setBackgroundColor("EEE5BC"));
+        //mainPlayerCardsPane.setBackground(setBackgroundColor("EEE5BC"));
     }
 
 
@@ -251,7 +268,6 @@ public class GameScene extends SceneController {
         boardPane = new BoardPane(gui.getController().getBoard());
         initializeBoardCards(boardPane);
         mainPane.getChildren().add(boardPane.getBoardMainPane());
-
     }
 
     private ImagePattern getFacePath(String username, int cardHandPosition, Side side) {

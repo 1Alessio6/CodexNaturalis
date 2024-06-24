@@ -382,7 +382,7 @@ public class Game {
      */
     public void placeStarter(String username, Side side)
             throws InvalidPlayerActionException,
-                   InvalidGamePhaseException {
+            InvalidGamePhaseException {
         if (phase != GamePhase.Setup) {
             throw new InvalidGamePhaseException();
         }
@@ -487,9 +487,9 @@ public class Game {
      */
     public void placeCard(String username, Card card, Side side, Position position)
             throws InvalidPlayerActionException,
-                   Playground.UnavailablePositionException,
-                   Playground.NotEnoughResourcesException,
-                   InvalidGamePhaseException, SuspendedGameException {
+            Playground.UnavailablePositionException,
+            Playground.NotEnoughResourcesException,
+            InvalidGamePhaseException, SuspendedGameException {
         if (!isActive) {
             throw new SuspendedGameException();
         }
