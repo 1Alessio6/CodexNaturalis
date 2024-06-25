@@ -12,7 +12,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -35,6 +34,7 @@ public class BoardPane {
     private Rectangle resourceDeckTopCard;
     private final List<Rectangle> goldenFaceUp;
 
+    private List<Rectangle> emptySlotsToInitialize;
     private final List<Text> emptySlots;
 
     private final Pane commonObjectivePane;
@@ -48,6 +48,7 @@ public class BoardPane {
     public BoardPane(ClientBoard clientBoard) {
 
         emptySlots = new ArrayList<>();
+        emptySlotsToInitialize = new ArrayList<>();
         commonObjectivePane = new Pane();
         commonObjectivePane.setPrefSize(295, 120);
 
@@ -90,6 +91,7 @@ public class BoardPane {
         FaceUpTitle.setLayoutX(20);
         FaceUpTitle.setText("Face-up Cards");
         boardMainPane.getChildren().add(FaceUpTitle);
+
 
         layoutY = layoutY + 10;
 
@@ -251,6 +253,7 @@ public class BoardPane {
                     resourceFaceUp.getFirst().setFill(pathToImage(face.getPath()));
                 } else {
                     resourceFaceUp.set(0, createEmptySlotPlaceHolder(resourceFaceUp.getFirst()));
+                    emptySlotsToInitialize.add(resourceFaceUp.getFirst());
                     emptySlots.get(boardPosition).setVisible(true);
                 }
                 break;
@@ -259,6 +262,7 @@ public class BoardPane {
                     resourceFaceUp.getLast().setFill(pathToImage(face.getPath()));
                 } else {
                     resourceFaceUp.set(1, createEmptySlotPlaceHolder(resourceFaceUp.getLast()));
+                    emptySlotsToInitialize.add(resourceFaceUp.getLast());
                     emptySlots.get(boardPosition).setVisible(true);
                 }
                 break;
@@ -267,6 +271,7 @@ public class BoardPane {
                     goldenFaceUp.getFirst().setFill(pathToImage(face.getPath()));
                 } else {
                     goldenFaceUp.set(0, createEmptySlotPlaceHolder(goldenFaceUp.getFirst()));
+                    emptySlotsToInitialize.add(goldenFaceUp.getFirst());
                     emptySlots.get(boardPosition).setVisible(true);
                 }
                 break;
@@ -275,6 +280,7 @@ public class BoardPane {
                     goldenFaceUp.getLast().setFill(pathToImage(face.getPath()));
                 } else {
                     goldenFaceUp.set(1, createEmptySlotPlaceHolder(goldenFaceUp.getLast()));
+                    emptySlotsToInitialize.add(goldenFaceUp.getLast());
                     emptySlots.get(boardPosition).setVisible(true);
                 }
                 break;
@@ -283,6 +289,7 @@ public class BoardPane {
                     goldenDeckTopCard.setFill(pathToImage(face.getPath()));
                 } else {
                     goldenDeckTopCard = createEmptySlotPlaceHolder(goldenDeckTopCard);
+                    emptySlotsToInitialize.add(goldenDeckTopCard);
                     emptySlots.get(boardPosition).setVisible(true);
                 }
                 break;
@@ -291,6 +298,7 @@ public class BoardPane {
                     resourceDeckTopCard.setFill(pathToImage(face.getPath()));
                 } else {
                     resourceDeckTopCard = createEmptySlotPlaceHolder(resourceDeckTopCard);
+                    emptySlotsToInitialize.add(resourceDeckTopCard);
                     emptySlots.get(boardPosition).setVisible(true);
                 }
                 break;
@@ -341,16 +349,15 @@ public class BoardPane {
         boardMainPane.getChildren().remove(oldFace);
         boardMainPane.getChildren().add(emptyFace);
 
-        emptyFace.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                if (isClicked(mouseEvent, MouseButton.PRIMARY)) {
-                    System.err.println("You can't draw from an empty slot, please try again");
-                }
-            }
-        });
-
         return emptyFace;
+    }
+
+    public List<Rectangle> getEmptySlotsToInitialize() {
+        return emptySlotsToInitialize;
+    }
+
+    public void setEmptySlotsToInitialize(List<Rectangle> emptySlotsToInitialize){
+        this.emptySlotsToInitialize = emptySlotsToInitialize;
     }
 
     private double updateLayoutX(double layoutX, int distance) {
