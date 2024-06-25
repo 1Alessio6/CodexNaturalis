@@ -312,8 +312,8 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
             }
 
             if(currentScene == SceneType.GAME){
-                ((GameScene)currentSceneController).updateCurrentPlayerUsername();
                 ((GameScene)currentSceneController).updateCurrentPhase();
+                ((GameScene)currentSceneController).updateCurrentPlayerUsername();
             }
 
         });
@@ -324,10 +324,10 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
      */
     @Override
     public void showUpdateSuspendedGame() {
-        if(currentScene == SceneType.GAME){
+        Platform.runLater(() -> {
             System.err.println("suspend game");
             ((GameScene)currentSceneController).updateSuspendedGame();
-        }
+        });
     }
 
     /**

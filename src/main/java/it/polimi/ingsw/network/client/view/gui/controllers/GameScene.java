@@ -249,7 +249,9 @@ public class GameScene extends SceneController {
     public void updateCurrentPlayerUsername() {
         ClientController controller = gui.getController();
         currentPlayerUsername.setText(controller.getCurrentPlayerUsername());
-        showCurrentPlayerUpdatePane();
+        if(controller.isGameActive()){
+            showCurrentPlayerUpdatePane();
+        }
         currentPlayerUsername.setFont(new Font(CAMBRIA_MATH, 13));
     }
 
@@ -297,9 +299,13 @@ public class GameScene extends SceneController {
         ClientController controller = gui.getController();
 
         if (!controller.isGameActive()) {
+            StackPane phaseUpdatePane = generateUpdatePane("GAME IS SUSPENDED");
+            phaseUpdatePane.setStyle("-fx-background-color: #FF0000;" + "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0.2, 0, 0);" + " -fx-background-radius: 10px;");
+            mainPane.getChildren().add(phaseUpdatePane);
             currentPhase.setText("GAME SUSPENDED");
             currentPhase.setFill(convertPlayerColor(PlayerColor.RED));
         } else {
+            showCurrentPlayerUpdatePane();
             updateCurrentPhase();
         }
     }
@@ -636,6 +642,18 @@ public class GameScene extends SceneController {
         }
 
         boardPane.boardUpdate(gui.getController().getBoard());
+        for(Rectangle emptyFace : boardPane.getEmptySlotsToInitialize()){
+            emptyFace.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    if (isClicked(mouseEvent, MouseButton.PRIMARY)) {
+                        showError("You can't draw from an empty slot, please try again");
+                    }
+                }
+            });
+        }
+
+        boardPane.setEmptySlotsToInitialize(new ArrayList<>());
 
     }
 
