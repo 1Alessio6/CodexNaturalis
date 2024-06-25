@@ -210,22 +210,22 @@ public abstract class SceneController {
         errorMessage.setText(details);
         Timeline timeline = new Timeline(new KeyFrame(
                 Duration.seconds(2),
-                timerEndEvent -> fadeOutError(errorPane)
+                timerEndEvent -> fadeOutUpdatePane(errorPane)
         ));
         timeline.play();
 
         return errorPane;
     }
 
-    private void fadeOutError(StackPane errorPane){
-        FadeTransition transition = new FadeTransition(Duration.seconds(1),errorPane);
-        transition.setFromValue(errorPane.getOpacity());
+    protected void fadeOutUpdatePane(StackPane updatePane){
+        FadeTransition transition = new FadeTransition(Duration.seconds(1),updatePane);
+        transition.setFromValue(updatePane.getOpacity());
         transition.setToValue(0);
-        transition.setOnFinished(actionEvent -> removeErrorFromMainPane(errorPane));
+        transition.setOnFinished(actionEvent -> removeUpdatePaneFromMainPane(updatePane));
         transition.play();
     }
 
-    protected abstract void removeErrorFromMainPane(StackPane errorPane);
+    protected abstract void removeUpdatePaneFromMainPane(StackPane errorPane);
 
     public abstract void showError(String details);
 

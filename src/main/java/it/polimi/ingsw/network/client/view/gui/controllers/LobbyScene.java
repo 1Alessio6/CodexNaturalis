@@ -63,7 +63,7 @@ public class LobbyScene extends SceneController {
     }
 
     @Override
-    protected void removeErrorFromMainPane(StackPane errorPane) {
+    protected void removeUpdatePaneFromMainPane(StackPane errorPane) {
         mainPane.getChildren().remove(errorPane);
     }
 
