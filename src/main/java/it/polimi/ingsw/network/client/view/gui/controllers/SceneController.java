@@ -200,7 +200,25 @@ public abstract class SceneController {
     }
 
 
+    protected StackPane generateError(String details) {
+        StackPane errorPane = new StackPane();
+        errorPane.setPrefSize(488, 60);
+        errorPane.setStyle("-fx-background-color: #dd2d2a;" + "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0.2, 0, 0);" + " -fx-background-radius: 10px;");
+        errorPane.setOpacity(0.6);
+        Label errorMessage = new Label();
+        errorMessage.setStyle("-fx-text-fill: #ffffff;" + "-fx-font-weight: bold;");
+        errorMessage.setWrapText(true);
+        errorPane.getChildren().add(errorMessage);
+        StackPane.setAlignment(errorMessage, Pos.CENTER);
+        errorMessage.setText(details);
+        Timeline timeline = new Timeline(new KeyFrame(
+                Duration.seconds(2),
+                timerEndEvent -> fadeOutError(errorPane)
+        ));
+        timeline.play();
 
+        return errorPane;
+    }
 
     private void fadeOutError(StackPane errorPane){
         FadeTransition transition = new FadeTransition(Duration.seconds(1),errorPane);
