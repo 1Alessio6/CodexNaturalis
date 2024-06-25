@@ -28,6 +28,9 @@ public class GUIUtil {
 
     public static final double errorPaneHeight = 60;
 
+    public static final double updatePaneWidth = 261;
+    public static final double updatePaneHeight =  116;
+
     /**
      * Checks whether the <code>mouseButton</code> has been clicked or not
      *
@@ -45,7 +48,7 @@ public class GUIUtil {
      * @param size the size of the font
      * @return the required font
      */
-    public static Font loadTitleFont(double size){
+    public static Font loadTitleFont(double size) {
         return Font.loadFont(GUIUtil.class.getResourceAsStream("/gui/fonts/FetteKanzlei.ttf"), size);
     }
 
@@ -56,7 +59,7 @@ public class GUIUtil {
      * @param fitSize the size to which the icon is to be adjusted
      * @return the initialized icon
      */
-    public static ImageView initializeIconImageView(String path, double fitSize){
+    public static ImageView initializeIconImageView(String path, double fitSize) {
         ImageView image = new ImageView(path);
         image.setFitWidth(fitSize);
         image.setFitHeight(fitSize);
@@ -134,7 +137,7 @@ public class GUIUtil {
      * @param rank the integer corresponding player's rank
      * @return the <code>Icon</code> correlated to the <code>rank</code>
      */
-    public static Icon convertRankIntoIcon(int rank){
+    public static Icon convertRankIntoIcon(int rank) {
         return switch (rank) {
             case 1 -> Icon.FIRST;
             case 2 -> Icon.SECOND;
@@ -149,7 +152,7 @@ public class GUIUtil {
      *
      * @return the <code>Background</code> created
      */
-    public static Background createMainBackground(){
+    public static Background createMainBackground() {
         BackgroundImage backgroundImage = new BackgroundImage(new Image("/gui/png/background_tile.png"), BackgroundRepeat.REPEAT,
                 BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
         return new Background(backgroundImage);
@@ -163,13 +166,11 @@ public class GUIUtil {
      * @param layoutX    the abscissa of the buttonPane
      * @param layoutY    the ordinate of the buttonPane
      */
-    public static void addButtonPane(Pane mainPane, Pane buttonPane, double layoutX, double layoutY){
+    public static void addButtonPane(Pane mainPane, Pane buttonPane, double layoutX, double layoutY) {
         buttonPane.setLayoutX(layoutX);
         buttonPane.setLayoutY(layoutY);
         mainPane.getChildren().add(buttonPane);
     }
-
-
 
 
 }
