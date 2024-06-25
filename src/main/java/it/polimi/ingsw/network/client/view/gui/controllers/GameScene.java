@@ -257,17 +257,20 @@ public class GameScene extends SceneController {
      * Updates the current phase
      */
     public void updateCurrentPhase() {
-        GamePhase phase = gui.getController().getGamePhase();
+        ClientController controller = gui.getController();
+        GamePhase phase = controller.getGamePhase();
 
-        //todo check the behaviour if phase == end it should load another scene
-        if (phase == GamePhase.PlaceNormal || phase == GamePhase.DrawNormal) {
-            currentPhase.setText("Normal Turn");
-            currentPhase.setFill(Color.web("#3CB371"));
-        } else {
-            currentPhase.setText("Additional Turn");
-            currentPhase.setFill(convertPlayerColor(PlayerColor.BLUE));
+        //todo check the behaviour if phase == end it should load another scene\
+        if(controller.isGameActive()) {
+            if (phase == GamePhase.PlaceNormal || phase == GamePhase.DrawNormal) {
+                currentPhase.setText("Normal Turn");
+                currentPhase.setFill(Color.web("#3CB371"));
+            } else {
+                currentPhase.setText("Additional Turn");
+                currentPhase.setFill(convertPlayerColor(PlayerColor.BLUE));
+            }
+            currentPhase.setFont(new Font(CAMBRIA_MATH, 13));
         }
-        currentPhase.setFont(new Font(CAMBRIA_MATH, 13));
     }
 
     /**
