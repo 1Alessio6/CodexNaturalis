@@ -31,6 +31,7 @@ public class ClientObjectiveCard implements Serializable {
         backID = objectiveCard.getBackId();
         positionCondition = objectiveCard.getPositionCondition();
         resourceCondition = objectiveCard.getResourceCondition();
+        score=objectiveCard.getMultiplier();
     }
 
     public int getBackID() {
