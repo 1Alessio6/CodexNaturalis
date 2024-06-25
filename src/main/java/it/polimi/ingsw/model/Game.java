@@ -488,12 +488,15 @@ public class Game {
         if (!isActive) {
             throw new SuspendedGameException();
         }
-        if (phase != GamePhase.PlaceNormal && phase != GamePhase.PlaceAdditional) {
-            throw new InvalidGamePhaseException();
-        }
-        Player currentPlayer = getPlayerByUsername(username);
+
+        // first check if user is correct
+        Player currentPlayer = getCurrentPlayer();
         if (!currentPlayer.getUsername().equals(username)) {
             throw new InvalidPlayerActionException();
+        }
+
+        if (phase != GamePhase.PlaceNormal && phase != GamePhase.PlaceAdditional) {
+            throw new InvalidGamePhaseException();
         }
 
         int newScore = currentPlayer.placeCard(card, side, position);
