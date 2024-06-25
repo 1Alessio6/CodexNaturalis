@@ -100,6 +100,19 @@ public class SetupScene extends SceneController {
         addButtonPane(mainPane, buttonPane, 1028, 637);
     }
 
+    @Override
+    protected void removeErrorFromMainPane(StackPane errorPane) {
+        mainPane.getChildren().remove(errorPane);
+    }
+
+    @Override
+    protected void showError(String details) {
+        StackPane errorPane = generateError(details);
+        errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth)/2);
+        errorPane.setLayoutY(10);
+        mainPane.getChildren().add(errorPane);
+    }
+
     private void setStarterPlaceCommand(Rectangle face, Side starterSide) {
         face.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override

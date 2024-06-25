@@ -32,6 +32,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
@@ -123,6 +124,7 @@ public class GameScene extends SceneController {
                         m.isBroadcast();
     }
 
+    //todo check if font Cambria math is more readable for lighter color
     private void appendMessage(Message m) {
         ClientController controller = gui.getController();
         String myName = controller.getMainPlayerUsername();
@@ -190,6 +192,19 @@ public class GameScene extends SceneController {
         initializeCurrentPlayerUsernameText();
         initializeCurrentPhaseText();
 
+    }
+
+    @Override
+    protected void removeErrorFromMainPane(StackPane errorPane) {
+        mainPane.getChildren().remove(errorPane);
+    }
+
+    @Override
+    protected void showError(String details) {
+        StackPane errorPane = generateError(details);
+        errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth)/2);
+        errorPane.setLayoutY(10);
+        mainPane.getChildren().add(errorPane);
     }
 
     private void initializeCurrentPlayerUsernameText() {

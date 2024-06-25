@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -48,6 +49,19 @@ public class EndScene extends SceneController {
     public void initializeUsingGameInformation() {
         super.initializeUsingGameInformation();
         addButtonPane(mainPane, buttonPane, 1028, 637);
+    }
+
+    @Override
+    protected void removeErrorFromMainPane(StackPane errorPane) {
+        mainPane.getChildren().remove(errorPane);
+    }
+
+    @Override
+    protected void showError(String details) {
+        StackPane errorPane = generateError(details);
+        errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth)/2);
+        errorPane.setLayoutY(10);
+        mainPane.getChildren().add(errorPane);
     }
 
     /**

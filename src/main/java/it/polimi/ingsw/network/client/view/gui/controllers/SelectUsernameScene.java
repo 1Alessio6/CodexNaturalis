@@ -47,6 +47,19 @@ public class SelectUsernameScene extends SceneController {
         addButtonPane(mainPane, buttonPane, 860, 650);
     }
 
+    @Override
+    protected void removeErrorFromMainPane(StackPane errorPane) {
+        mainPane.getChildren().remove(errorPane);
+    }
+
+    @Override
+    protected void showError(String details) {
+        StackPane errorPane = generateError(details);
+        errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth)/2);
+        errorPane.setLayoutY(10);
+        mainPane.getChildren().add(errorPane);
+    }
+
     public double getSceneWindowWidth() {
         return connectionSceneWidth;
     }

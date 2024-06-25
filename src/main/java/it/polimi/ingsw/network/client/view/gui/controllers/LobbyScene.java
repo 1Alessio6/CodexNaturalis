@@ -8,8 +8,10 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
+
 import java.rmi.RemoteException;
 import java.util.List;
 
@@ -34,7 +36,8 @@ public class LobbyScene extends SceneController {
     private Text requiredPlayer;
 
 
-    public LobbyScene() {}
+    public LobbyScene() {
+    }
 
     /**
      * {@inheritDoc}
@@ -64,6 +67,18 @@ public class LobbyScene extends SceneController {
         addButtonPane(mainPane, buttonPane, 1028, 637);
     }
 
+    @Override
+    protected void removeErrorFromMainPane(StackPane errorPane) {
+        mainPane.getChildren().remove(errorPane);
+    }
+
+    @Override
+    protected void showError(String details) {
+        StackPane errorPane = generateError(details);
+        errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth)/2);
+        errorPane.setLayoutY(10);
+        mainPane.getChildren().add(errorPane);
+    }
 
 
     /**

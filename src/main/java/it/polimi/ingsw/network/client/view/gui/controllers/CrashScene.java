@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
@@ -74,6 +75,19 @@ public class CrashScene extends SceneController {
     public void initializeUsingGameInformation() {
         super.initializeUsingGameInformation();
         addButtonPane(mainPane, buttonPane, 860, 650);
+    }
+
+    @Override
+    protected void removeErrorFromMainPane(StackPane errorPane) {
+        mainPane.getChildren().remove(errorPane);
+    }
+
+    @Override
+    protected void showError(String details) {
+        StackPane errorPane = generateError(details);
+        errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth)/2);
+        errorPane.setLayoutY(10);
+        mainPane.getChildren().add(errorPane);
     }
 
     public double getSceneWindowWidth() {

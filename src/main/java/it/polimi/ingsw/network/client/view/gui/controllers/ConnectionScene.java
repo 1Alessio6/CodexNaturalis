@@ -15,6 +15,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
@@ -26,6 +27,7 @@ public class ConnectionScene extends SceneController {
 
     @FXML
     private Pane mainPane;
+
     @FXML
     private TextField ipField;
 
@@ -68,7 +70,7 @@ public class ConnectionScene extends SceneController {
         connectButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                if(isClicked(mouseEvent, MouseButton.PRIMARY)){
+                if (isClicked(mouseEvent, MouseButton.PRIMARY)) {
                     connect();
                 }
             }
@@ -86,6 +88,7 @@ public class ConnectionScene extends SceneController {
         welcomeMessage.setLayoutY(167.0);
         mainPane.getChildren().add(welcomeMessage);
         mainPane.setBackground(createMainBackground());
+
     }
 
     @FXML
@@ -116,6 +119,19 @@ public class ConnectionScene extends SceneController {
             ipField.setText("");
             portField.setText("");
         }
+    }
+
+    @Override
+    protected void showError(String details) {
+        StackPane errorPane = generateError(details);
+        errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth) / 2);
+        errorPane.setLayoutY(10);
+        mainPane.getChildren().add(errorPane);
+    }
+
+    @Override
+    protected void removeErrorFromMainPane(StackPane errorPane) {
+        mainPane.getChildren().remove(errorPane);
     }
 
     public double getSceneWindowWidth() {
