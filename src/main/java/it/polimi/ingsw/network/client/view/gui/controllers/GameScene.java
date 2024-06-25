@@ -249,8 +249,19 @@ public class GameScene extends SceneController {
     public void updateCurrentPlayerUsername() {
         ClientController controller = gui.getController();
         currentPlayerUsername.setText(controller.getCurrentPlayerUsername());
-        //currentPlayerUsername.setFill(convertPlayerColor(controller.getPlayer(controller.getCurrentPlayerUsername()).getColor()));
+        showCurrentPlayerUpdatePane();
         currentPlayerUsername.setFont(new Font(CAMBRIA_MATH, 13));
+    }
+
+    private void showCurrentPlayerUpdatePane(){
+        ClientController controller = gui.getController();
+
+        if(controller.getCurrentPlayerUsername().equals(controller.getMainPlayerUsername())) {
+            StackPane currentPlayerUpdatePane = generateUpdatePane("It's your\n    Turn");
+            currentPlayerUpdatePane.setStyle("-fx-background-color: #3CB371;" + "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0.2, 0, 0);" + " -fx-background-radius: 10px;");
+            currentPlayerUpdatePane.setLayoutY((getSceneWindowHeight() - updatePaneHeight - 10) / 2);
+            mainPane.getChildren().add(currentPlayerUpdatePane);
+        }
     }
 
     /**
@@ -261,12 +272,18 @@ public class GameScene extends SceneController {
         GamePhase phase = controller.getGamePhase();
 
         //todo check the behaviour if phase == end it should load another scene\
-        if(controller.isGameActive()) {
-            if (phase == GamePhase.PlaceNormal || phase == GamePhase.DrawNormal) {
+        if (controller.isGameActive()) {
+            if ((phase == GamePhase.PlaceNormal || phase == GamePhase.DrawNormal) && !currentPhase.getText().equals("Normal Turn")) {
+                StackPane phaseUpdatePane = generateUpdatePane("Normal Phase");
+                phaseUpdatePane.setStyle("-fx-background-color: #3CB371;" + "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0.2, 0, 0);" + " -fx-background-radius: 10px;");
+                mainPane.getChildren().add(phaseUpdatePane);
                 currentPhase.setText("Normal Turn");
                 currentPhase.setFill(Color.web("#3CB371"));
-            } else {
+            } else if (phase == GamePhase.PlaceAdditional && !currentPhase.getText().equals("Additional Turn")) {
                 currentPhase.setText("Additional Turn");
+                StackPane phaseUpdatePane = generateUpdatePane("Additional Phase");
+                phaseUpdatePane.setStyle("-fx-background-color: #0077B6;" + "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0.2, 0, 0);" + " -fx-background-radius: 10px;");
+                mainPane.getChildren().add(phaseUpdatePane);
                 currentPhase.setFill(convertPlayerColor(PlayerColor.BLUE));
             }
             currentPhase.setFont(new Font(CAMBRIA_MATH, 13));
@@ -289,13 +306,16 @@ public class GameScene extends SceneController {
 
     private StackPane generateUpdatePane(String updateMessage) {
         StackPane updatePane = new StackPane();
-        updatePane.setPrefSize(261, 116);
+        updatePane.setPrefSize(updatePaneWidth, updatePaneHeight);
         Label updateMessageLabel = new Label();
         updateMessageLabel.setStyle("-fx-text-fill: #000000;" + "-fx-font-weight: bold;");
+        updateMessageLabel.setFont(new Font(CAMBRIA_MATH,20));
         updateMessageLabel.setWrapText(true);
         updatePane.getChildren().add(updateMessageLabel);
         StackPane.setAlignment(updateMessageLabel, Pos.CENTER);
         updateMessageLabel.setText(updateMessage);
+        updatePane.setLayoutX((getSceneWindowWidth() - updatePaneWidth) / 2);
+        updatePane.setLayoutY((getSceneWindowHeight() + updatePaneHeight) / 2);
 
         Timeline timeline = new Timeline(new KeyFrame(
                 Duration.seconds(1),
