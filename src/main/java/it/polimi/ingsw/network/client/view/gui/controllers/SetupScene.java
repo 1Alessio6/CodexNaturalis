@@ -233,6 +233,9 @@ public class SetupScene extends SceneController {
         text.setText("Wait for the other players to complete their setup");
     }
 
+    /**
+     * Method used to complete the set-up
+     */
     public void initializeCompletedSetup() {
         for (GUICircle circle : colors) {
             circle.setVisibility(false);

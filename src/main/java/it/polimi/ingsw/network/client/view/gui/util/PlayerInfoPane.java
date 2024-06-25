@@ -165,6 +165,11 @@ public class PlayerInfoPane {
         this.rank.updateScore(score);
     }
 
+    /**
+     * Updates the status of the player according to the <code>isConnected</code> provided
+     *
+     * @param isConnected boolean representing whether the player is connected or not
+     */
     public void updateStatus(boolean isConnected){
         if(isConnected){
             status.setStyle("-fx-fill: #32CD32;");

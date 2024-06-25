@@ -227,6 +227,9 @@ public class GameScene extends SceneController {
         currentPlayerPane.getChildren().add(currentPhaseTitle);
     }
 
+    /**
+     * Updates the username of the current player
+     */
     public void updateCurrentPlayerUsername() {
         ClientController controller = gui.getController();
         currentPlayerUsername.setText(controller.getCurrentPlayerUsername());
@@ -234,6 +237,9 @@ public class GameScene extends SceneController {
         currentPlayerUsername.setFont(new Font(CAMBRIA_MATH, 13));
     }
 
+    /**
+     * Updates the current phase
+     */
     public void updateCurrentPhase() {
         GamePhase phase = gui.getController().getGamePhase();
 
@@ -248,6 +254,9 @@ public class GameScene extends SceneController {
         currentPhase.setFont(new Font(CAMBRIA_MATH, 13));
     }
 
+    /**
+     * Updates the phase to suspended if the game is not active
+     */
     public void updateSuspendedGame() {
         ClientController controller = gui.getController();
 
@@ -409,6 +418,9 @@ public class GameScene extends SceneController {
 
     }
 
+    /**
+     * Updates the current status of the players
+     */
     public void updatePlayersStatus() {
         for (ClientPlayer player : gui.getController().getPlayers()) {
             if (!player.getUsername().equals(gui.getController().getMainPlayerUsername())) {
