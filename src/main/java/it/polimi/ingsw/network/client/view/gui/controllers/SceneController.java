@@ -2,18 +2,28 @@ package it.polimi.ingsw.network.client.view.gui.controllers;
 
 import it.polimi.ingsw.network.client.view.gui.ApplicationGUI;
 import it.polimi.ingsw.network.client.view.gui.util.Icon;
+import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
+import javafx.util.Duration;
 
+import java.util.Stack;
+
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.convertPlayerColorIntoHexCode;
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.initializeIconImageView;
 
 /**
@@ -187,6 +197,23 @@ public abstract class SceneController {
         buttonPane.setPrefSize(202, 85);
         buttonPane.getChildren().add(initializeSettings());
         buttonPane.getChildren().add(initializeRulebook());
+    }
+
+
+
+
+    private void fadeOutError(StackPane errorPane){
+        FadeTransition transition = new FadeTransition(Duration.seconds(1),errorPane);
+        transition.setFromValue(errorPane.getOpacity());
+        transition.setToValue(0);
+        transition.setOnFinished(actionEvent -> removeErrorFromMainPane(errorPane));
+        transition.play();
+    }
+
+    protected abstract void removeErrorFromMainPane(StackPane errorPane);
+
+    public void showError(String details) {
+
     }
 
 }
