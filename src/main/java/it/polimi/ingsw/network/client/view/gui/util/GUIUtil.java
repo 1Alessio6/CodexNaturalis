@@ -24,6 +24,10 @@ public class GUIUtil {
 
     public static final double connectionSceneWidth = 1080.0;
 
+    public static final double errorPaneWidth = 488;
+
+    public static final double errorPaneHeight = 60;
+
     /**
      * Checks whether the <code>mouseButton</code> has been clicked or not
      *

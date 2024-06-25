@@ -23,8 +23,7 @@ import javafx.util.Duration;
 
 import java.util.Stack;
 
-import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.convertPlayerColorIntoHexCode;
-import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.initializeIconImageView;
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
 
 /**
  * SceneController is an interface for scene controllers
@@ -202,7 +201,7 @@ public abstract class SceneController {
 
     protected StackPane generateError(String details) {
         StackPane errorPane = new StackPane();
-        errorPane.setPrefSize(488, 60);
+        errorPane.setPrefSize(errorPaneWidth, errorPaneHeight);
         errorPane.setStyle("-fx-background-color: #dd2d2a;" + "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0.2, 0, 0);" + " -fx-background-radius: 10px;");
         errorPane.setOpacity(0.6);
         Label errorMessage = new Label();
@@ -230,8 +229,6 @@ public abstract class SceneController {
 
     protected abstract void removeErrorFromMainPane(StackPane errorPane);
 
-    public void showError(String details) {
-
-    }
+    protected abstract void showError(String details);
 
 }
