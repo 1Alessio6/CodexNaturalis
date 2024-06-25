@@ -21,8 +21,6 @@ import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javafx.util.Duration;
 
-import java.util.Stack;
-
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
 
 /**
@@ -229,6 +227,6 @@ public abstract class SceneController {
 
     protected abstract void removeErrorFromMainPane(StackPane errorPane);
 
-    protected abstract void showError(String details);
+    public abstract void showError(String details);
 
 }

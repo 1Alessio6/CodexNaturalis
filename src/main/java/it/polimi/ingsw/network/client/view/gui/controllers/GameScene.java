@@ -10,9 +10,7 @@ import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
-import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.client.controller.ClientController;
-import it.polimi.ingsw.network.client.model.ClientGame;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
@@ -23,7 +21,6 @@ import it.polimi.ingsw.network.client.view.gui.util.PlaygroundInfoPane;
 import it.polimi.ingsw.network.client.view.gui.util.chat.Chat;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -200,7 +197,7 @@ public class GameScene extends SceneController {
     }
 
     @Override
-    protected void showError(String details) {
+    public void showError(String details) {
         StackPane errorPane = generateError(details);
         errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth)/2);
         errorPane.setLayoutY(10);
@@ -529,10 +526,8 @@ public class GameScene extends SceneController {
                             gui.getController().placeCard(selectedCardHandPosition, playerCardsVisibleSide.get(selectedCardHandPosition), pos);
                         } catch (Playground.UnavailablePositionException | InvalidGamePhaseException |
                                  SuspendedGameException | Playground.NotEnoughResourcesException e) {
-                            Alert alert = new Alert(Alert.AlertType.ERROR);
-                            alert.setTitle(e.getMessage());
-                            alert.setContentText(e.getMessage());
-                            alert.show();
+
+                            showError(e.getMessage());
                             selectedCardHandPosition = -1;
                         }
 
@@ -668,12 +663,7 @@ public class GameScene extends SceneController {
                 chat.sendMessage(gui.getController());
 
             } catch (InvalidMessageException e) {
-                System.err.println("error: " + e.getMessage());
-                //could be changed with an error scene
-                Alert invalidMessage = new Alert(Alert.AlertType.ERROR);
-                invalidMessage.setTitle("Invalid message");
-                invalidMessage.setContentText("Exception: " + e.getMessage());
-                invalidMessage.show();
+                showError("Invalid message\n" + e.getMessage());
             } catch (RemoteException e) {
                 // todo. add notification for server crashed
             }

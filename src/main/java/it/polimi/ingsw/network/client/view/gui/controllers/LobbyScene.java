@@ -1,22 +1,17 @@
 package it.polimi.ingsw.network.client.view.gui.controllers;
 
 import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
-import it.polimi.ingsw.network.client.view.gui.util.GUIUtil;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 
-import java.rmi.RemoteException;
 import java.util.List;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
-import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.connectionSceneHeight;
 
 public class LobbyScene extends SceneController {
 
@@ -73,7 +68,7 @@ public class LobbyScene extends SceneController {
     }
 
     @Override
-    protected void showError(String details) {
+    public void showError(String details) {
         StackPane errorPane = generateError(details);
         errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth)/2);
         errorPane.setLayoutY(10);

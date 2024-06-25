@@ -3,11 +3,8 @@ package it.polimi.ingsw.network.client.view.gui.controllers;
 
 import it.polimi.ingsw.network.client.UnReachableServerException;
 import it.polimi.ingsw.network.client.controller.ClientController;
-import it.polimi.ingsw.network.client.view.gui.util.GUIUtil;
-import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -105,24 +102,18 @@ public class ConnectionScene extends SceneController {
             controller.configureClient(gui, ip, Integer.parseInt(port));
             gui.showSelectUsername();
         } catch (UnReachableServerException e) {
-            Alert serverAlert = new Alert(Alert.AlertType.ERROR);
-            serverAlert.setTitle("Unable to connect to the server");
-            serverAlert.setContentText("Exception: " + e.getMessage());
-            serverAlert.show();
+            showError("Unable to connect to the server\nException: " + e.getMessage());
             ipField.setText("");
             portField.setText("");
         } catch (NumberFormatException e) {
-            Alert serverAlert = new Alert(Alert.AlertType.ERROR);
-            serverAlert.setTitle("Invalid IP + Port");
-            serverAlert.setContentText("Exception: " + e.getMessage());
-            serverAlert.show();
+            showError("Invalid IP/Port\nException:  " + e.getMessage());
             ipField.setText("");
             portField.setText("");
         }
     }
 
     @Override
-    protected void showError(String details) {
+    public void showError(String details) {
         StackPane errorPane = generateError(details);
         errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth) / 2);
         errorPane.setLayoutY(10);

@@ -42,6 +42,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     private Parent currentRoot;
 
+
     /**
      * {@inheritDoc}
      */
@@ -324,6 +325,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
     @Override
     public void showUpdateSuspendedGame() {
         if(currentScene == SceneType.GAME){
+            System.err.println("suspend game");
             ((GameScene)currentSceneController).updateSuspendedGame();
         }
     }
@@ -348,10 +350,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
     @Override
     public void reportError(String details) {
         Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("ERROR");
-            alert.setContentText(details);
-            alert.show();
+            currentSceneController.showError(details);
         });
     }
 
@@ -447,10 +446,5 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
     public boolean getIsFullScreen() {
         return isFullScreen;
     }
-
-    private void setCurrentScene(SceneType scene) {
-        currentScene = scene;
-    }
-
 
 }

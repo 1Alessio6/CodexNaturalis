@@ -17,7 +17,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.control.Alert;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 
@@ -25,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
-import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.connectionSceneHeight;
 
 /**
  * SetupScene is the controller concerning set-up scene
@@ -106,7 +104,7 @@ public class SetupScene extends SceneController {
     }
 
     @Override
-    protected void showError(String details) {
+    public void showError(String details) {
         StackPane errorPane = generateError(details);
         errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth)/2);
         errorPane.setLayoutY(10);
@@ -121,10 +119,7 @@ public class SetupScene extends SceneController {
                     try {
                         gui.getController().placeStarter(starterSide);
                     } catch (SuspendedGameException | InvalidGamePhaseException e) {
-                        //todo update
-                        Alert error = new Alert(Alert.AlertType.ERROR);
-                        error.setTitle("place starter has generated an error");
-                        error.show();
+                        showError("Place starter has generated an error\n" + e.getMessage());
                     }
                 }
             }
@@ -188,9 +183,8 @@ public class SetupScene extends SceneController {
                     try {
                         gui.getController().placeObjectiveCard(objectiveCardId);
                     } catch (SuspendedGameException | InvalidGamePhaseException e) {
-                        Alert error = new Alert(Alert.AlertType.ERROR);
-                        error.setTitle("Error in placing the objective");
-                        error.show();
+                        showError("Error in placing the objective\n" + e.getMessage());
+
                     }
                 }
             }

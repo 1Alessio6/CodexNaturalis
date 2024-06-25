@@ -83,9 +83,9 @@ public class CrashScene extends SceneController {
     }
 
     @Override
-    protected void showError(String details) {
+    public void showError(String details) {
         StackPane errorPane = generateError(details);
-        errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth)/2);
+        errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth) / 2);
         errorPane.setLayoutY(10);
         mainPane.getChildren().add(errorPane);
     }
