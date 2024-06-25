@@ -19,8 +19,12 @@ import it.polimi.ingsw.network.client.view.gui.util.BoardPane;
 import it.polimi.ingsw.network.client.view.gui.util.PlayerInfoPane;
 import it.polimi.ingsw.network.client.view.gui.util.PlaygroundInfoPane;
 import it.polimi.ingsw.network.client.view.gui.util.chat.Chat;
+import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -36,6 +40,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.util.Duration;
 
 import java.rmi.RemoteException;
 import java.util.*;
@@ -133,10 +138,9 @@ public class GameScene extends SceneController {
             preposition = " to";
             user = recipient;
         } else {
-            if(m.getRecipient().equals("Everyone")){
+            if (m.getRecipient().equals("Everyone")) {
                 preposition = " <Everyone> from";
-            }
-            else{
+            } else {
                 preposition = " <Private> from";
             }
             user = sender;
@@ -192,14 +196,14 @@ public class GameScene extends SceneController {
     }
 
     @Override
-    protected void removeErrorFromMainPane(StackPane errorPane) {
+    protected void removeUpdatePaneFromMainPane(StackPane errorPane) {
         mainPane.getChildren().remove(errorPane);
     }
 
     @Override
     public void showError(String details) {
         StackPane errorPane = generateError(details);
-        errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth)/2);
+        errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth) / 2);
         errorPane.setLayoutY(10);
         mainPane.getChildren().add(errorPane);
     }
@@ -278,6 +282,27 @@ public class GameScene extends SceneController {
         } else {
             updateCurrentPhase();
         }
+    }
+
+    private StackPane generateUpdatePane(String updateMessage) {
+        StackPane updatePane = new StackPane();
+        updatePane.setPrefSize(261, 116);
+        Label updateMessageLabel = new Label();
+        updateMessageLabel.setStyle("-fx-text-fill: #000000;" + "-fx-font-weight: bold;");
+        updateMessageLabel.setWrapText(true);
+        updatePane.getChildren().add(updateMessageLabel);
+        StackPane.setAlignment(updateMessageLabel, Pos.CENTER);
+        updateMessageLabel.setText(updateMessage);
+
+        Timeline timeline = new Timeline(new KeyFrame(
+                Duration.seconds(1),
+                timerEndEvent -> fadeOutUpdatePane(updatePane)
+        ));
+
+        timeline.play();
+
+
+        return updatePane;
     }
 
     private void initializePlaygroundInfoPane() {
