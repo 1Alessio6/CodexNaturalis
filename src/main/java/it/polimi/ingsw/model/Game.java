@@ -759,7 +759,9 @@ public class Game {
         List<Player> winners = new ArrayList<>();
 
         for (Player player : players) {
-            int finalPoints = min(maxPointNormalTurns, player.getPoints()) + player.calculateExtraPoints(commonObjects);
+            int finalPoints = min(maxPointNormalTurns, player.getPoints()) +
+                    player.calculateExtraPoints(commonObjects) +
+                    player.calculateExtraPoints(player.getObjectives()); // private objective
             boolean win = false;
             boolean tie = false;
 
