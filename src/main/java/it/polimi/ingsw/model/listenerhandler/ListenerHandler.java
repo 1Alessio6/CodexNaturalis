@@ -2,24 +2,19 @@ package it.polimi.ingsw.model.listenerhandler;
 
 import it.polimi.ingsw.model.notifier.Notifier;
 
-import java.rmi.RemoteException;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
- * ListenerHandler adds, removes and notifies players
+ * ListenerHandler adds, removes and notifies listeners
  */
 public class ListenerHandler<ListenerType> {
     private final Map<String, ListenerType> idToListener;
-    private final Map<String, ExecutorService> idToExecutors;
 
     /**
      * Constructs a Listener Handler
      */
     public ListenerHandler() {
         idToListener = new HashMap<>();
-        idToExecutors = new HashMap<>();
     }
 
     /**
@@ -28,9 +23,8 @@ public class ListenerHandler<ListenerType> {
      * @param username of the player
      * @param listener type
      */
-    public synchronized void add(String username, ListenerType listener) {
+    public void add(String username, ListenerType listener) {
         idToListener.put(username, listener);
-        idToExecutors.put(username, Executors.newSingleThreadExecutor());
     }
 
     /**
@@ -40,28 +34,26 @@ public class ListenerHandler<ListenerType> {
      */
     private void removeUser(String username) {
         idToListener.remove(username);
-        ExecutorService executorService = idToExecutors.remove(username);
-        executorService.shutdown();
     }
 
     /**
-     * Removes a player synchronously
+     * Removes a listener
      *
      * @param username of the player
      */
-    public synchronized void remove(String username) {
+    public void remove(String username) {
         removeUser(username);
     }
 
-    public synchronized ListenerType get(String username) {
+    public ListenerType get(String username) {
         return idToListener.get(username);
     }
 
-    public synchronized List<String> getIds() {
+    public List<String> getIds() {
         return new ArrayList<>(idToListener.keySet());
     }
 
-    public synchronized int getNumListener() {
+    public int getNumListener() {
         return idToListener.size();
     }
 
@@ -71,12 +63,13 @@ public class ListenerHandler<ListenerType> {
      * @param username of the player
      * @param notifier with the players
      */
-    public synchronized void notify(String username, Notifier<ListenerType> notifier) {
-        if (!idToListener.containsKey(username))
-            return;
+    public void notify(String username, Notifier<ListenerType> notifier) {
         ListenerType toNotify = idToListener.get(username);
-        ExecutorService executor = idToExecutors.get(username);
-        executor.submit(() -> sendNotification(username, toNotify, notifier));
+        // the result of an automatic draw
+        if (toNotify == null) {
+            return;
+        }
+        sendNotification(username, toNotify, notifier);
     }
 
     /**
@@ -86,13 +79,8 @@ public class ListenerHandler<ListenerType> {
      * @param recipient to notify
      * @param notifier  with the players
      */
-    private synchronized void sendNotification(String id, ListenerType recipient, Notifier<ListenerType> notifier) {
-        try {
-            notifier.sendUpdate(recipient);
-        } catch (RemoteException e) {
-            System.err.println("The player " + id + " has been disconnected while sending the notification");
-            removeUser(id);
-        }
+    private void sendNotification(String id, ListenerType recipient, Notifier<ListenerType> notifier) {
+        notifier.sendUpdate(recipient);
     }
 
     /**
@@ -100,15 +88,16 @@ public class ListenerHandler<ListenerType> {
      *
      * @param notifier with players
      */
-    public synchronized void notifyBroadcast(Notifier<ListenerType> notifier) {
-        idToListener.forEach((id, listener) -> idToExecutors.get(id).submit(
-                () -> sendNotification(id, listener, notifier)));
+    public void notifyBroadcast(Notifier<ListenerType> notifier) {
+        for (Map.Entry<String, ListenerType> entry : idToListener.entrySet()) {
+            sendNotification(entry.getKey(), entry.getValue(), notifier);
+        }
     }
 
     /**
      * Clear all players from the <code>Listener Handler</code>
      */
-    public synchronized void clear() {
+    public void clear() {
         List<String> users = new ArrayList<>(idToListener.keySet());
 
         for (String user : users) {
