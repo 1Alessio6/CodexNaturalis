@@ -40,7 +40,7 @@ public class Controller implements EventListener, GameRequest {
         listenerHandler = new ListenerHandler<>();
     }
 
-    private boolean validUsername(String username) {
+    private boolean validFormat(String username) {
         return username != null && !username.isEmpty();
     }
 
@@ -57,16 +57,14 @@ public class Controller implements EventListener, GameRequest {
      * @param user     the representation of the user.
      * @param username the user's name.
      */
-    public synchronized boolean handleConnection(String username, VirtualView user) {
+    public synchronized boolean handleConnection(String username, ClientHandler user) {
         boolean isAccepted;
-        if (!validUsername(username)) {
-            try {
-                user.resultOfLogin(false, username, "empty name is not allowed here");
-                isAccepted = false;
-            } catch (RemoteException remoteException) {
-                System.err.println("Connection error");
-                isAccepted = false;
-            }
+        if (!validFormat(username)) {
+            user.resultOfLogin(false, "Wrong username format");
+            isAccepted = false;
+        } else if (listenerHandler.getIds().contains(username)) {
+            user.resultOfLogin(false, "Already registered username");
+            isAccepted = false;
         } else if (!lobby.isGameReady()) {
             isAccepted = joinLobby(username, user);
         } else if (game.isFinished()) {
