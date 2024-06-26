@@ -12,9 +12,7 @@ import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
-import it.polimi.ingsw.model.lobby.FullLobbyException;
 import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
-import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.UnReachableServerException;
@@ -32,16 +30,20 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The Client Controller modifies the model that is present in the client and the Model using the virtual server
- * in response to an action performed in the view. Furthermore, it notifies any changes to the view.
+ * in response to an action performed in the view.
  */
 public class ClientController implements ClientActions {
 
     private VirtualServer server;
     private ClientGame game;
     private Client client;
+    private final ExecutorService requestsForTheServer;
 
     private String mainPlayerUsername = ""; // todo. set by the view after user's input
 
@@ -51,6 +53,7 @@ public class ClientController implements ClientActions {
 
     public ClientController(Client client) {
         this.client = client;
+        this.requestsForTheServer = Executors.newSingleThreadExecutor();
     }
 
     public void configureClient(View view, String ip, Integer port) throws UnReachableServerException {
@@ -66,13 +69,19 @@ public class ClientController implements ClientActions {
      *{@inheritDoc}
      */
     @Override
-    public void connect(String username)  {
-        try {
-            server.connect(client.getInstanceForTheServer(), username);
-        } catch (RemoteException e) {
-            System.err.println(e.getMessage());
-            client.handleUnresponsiveness("server");
-        }
+    public void connect(String username) {
+        requestsForTheServer.submit(() -> {
+            try {
+                server.connect(client.getInstanceForTheServer(), username);
+            } catch (RemoteException e) {
+                System.err.println(e.getMessage());
+                handleServerCrash();
+            }
+        });
+    }
+
+    private void handleServerCrash() {
+        client.handleServerCrash();
     }
 
     /**
@@ -168,11 +177,13 @@ public class ClientController implements ClientActions {
                 break;
         }
 
-        try {
-            server.draw(getMainPlayerUsername(), IdToDraw);
-        } catch (RemoteException e) {
-            client.handleUnresponsiveness("server");
-        }
+        requestsForTheServer.submit(() -> {
+            try {
+                server.draw(getMainPlayerUsername(), IdToDraw);
+            } catch (RemoteException e) {
+                handleServerCrash();
+            }
+        });
     }
 
     /**
@@ -189,11 +200,13 @@ public class ClientController implements ClientActions {
             throw new InvalidGamePhaseException("You can only place your starter card during the setup phase");
         }
 
-        try {
-            server.placeStarter(getMainPlayerUsername(), side);
-        } catch (RemoteException e) {
-            client.handleUnresponsiveness("server");
-        }
+        requestsForTheServer.submit(() -> {
+            try {
+                server.placeStarter(getMainPlayerUsername(), side);
+            } catch (RemoteException e) {
+                handleServerCrash();
+            }
+        });
     }
 
     /**
@@ -214,12 +227,13 @@ public class ClientController implements ClientActions {
             throw new InvalidColorException("The color selected is already taken");
         }
 
-        try {
-            server.chooseColor(getMainPlayerUsername(), color);
-        } catch (RemoteException e) {
-            client.handleUnresponsiveness("server");
-        }
-
+        requestsForTheServer.submit(() -> {
+            try {
+                server.chooseColor(getMainPlayerUsername(), color);
+            } catch (RemoteException e) {
+                handleServerCrash();
+            }
+        });
     }
 
     /**
@@ -235,11 +249,13 @@ public class ClientController implements ClientActions {
             throw new InvalidGamePhaseException("You can only choose your private objective during the setup phase");
         }
 
-        try {
-            server.placeObjectiveCard(getMainPlayerUsername(), chosenObjective);
-        } catch (RemoteException e) {
-            client.handleUnresponsiveness("server");
-        }
+        requestsForTheServer.submit(() -> {
+            try {
+                server.placeObjectiveCard(getMainPlayerUsername(), chosenObjective);
+            } catch (RemoteException e) {
+                handleServerCrash();
+            }
+        });
     }
 
     /**
@@ -255,11 +271,13 @@ public class ClientController implements ClientActions {
             throw new InvalidMessageException("recipient doesn't exists");
         }
 
-        try {
-            server.sendMessage(message);
-        } catch (RemoteException e) {
-            client.handleUnresponsiveness("server");
-        }
+        requestsForTheServer.submit(() -> {
+            try {
+                server.sendMessage(message);
+            } catch (RemoteException e) {
+                handleServerCrash();
+            }
+        });
     }
 
     /**
@@ -270,11 +288,14 @@ public class ClientController implements ClientActions {
         if (playersNumber > 4 || playersNumber < 2) {
             throw new InvalidPlayersNumberException();
         }
-        try {
-            server.setPlayersNumber(mainPlayerUsername, playersNumber);
-        } catch (RemoteException e) {
-            client.handleUnresponsiveness("server");
-        }
+
+        requestsForTheServer.submit(() -> {
+            try {
+                server.setPlayersNumber(mainPlayerUsername, playersNumber);
+            } catch (RemoteException e) {
+                handleServerCrash();
+            }
+        });
     }
 
     /**
@@ -286,8 +307,22 @@ public class ClientController implements ClientActions {
             try {
                 server.disconnect(username);
             } catch (RemoteException ignored) {
+            requestsForTheServer.submit(() -> {
+                try {
+                    server.disconnect(username);
+                } catch (RemoteException ignored) {
 
-            }
+                }
+            });
+            requestsForTheServer.shutdown();
+            try {
+                boolean areTasksCompleted = requestsForTheServer.awaitTermination(3, TimeUnit.SECONDS);
+                if (areTasksCompleted) {
+                    System.out.println("All requests have been sent to the server");
+                } else {
+                    System.err.println("There are requests not sent to the server");
+                }
+            } catch (InterruptedException ignored) {}
         }
     }
 
