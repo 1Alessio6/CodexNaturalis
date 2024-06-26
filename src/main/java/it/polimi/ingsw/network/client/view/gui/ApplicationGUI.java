@@ -243,6 +243,15 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         });
     }
 
+    @Override
+    public void showConnectionLost() {
+        Platform.runLater(() -> {
+            loadScene(SceneType.CRASH);
+            currentScene = SceneType.CRASH;
+            ((CrashScene) currentSceneController).setReason("CONNECTION LOST");
+        });
+    }
+
     public ClientController getController() {
         return controller;
     }

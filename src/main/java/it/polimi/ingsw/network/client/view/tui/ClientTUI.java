@@ -845,4 +845,9 @@ public class ClientTUI implements View {
         ClientUtil.printCommand("Error: " + details);
     }
 
+    @Override
+    public synchronized void showConnectionLost() {
+        ClientUtil.printCommand("Connection lost");
+        setActionsForClosingTheApplication();
+    }
 }
