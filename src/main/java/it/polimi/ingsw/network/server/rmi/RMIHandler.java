@@ -144,7 +144,6 @@ public class RMIHandler implements ClientHandler, HeartBeatHandler {
                 }
             }
         });
-        server.remove(username);
     }
 
     /**
@@ -161,7 +160,6 @@ public class RMIHandler implements ClientHandler, HeartBeatHandler {
                 }
             }
         });
-        server.remove(username);
     }
 
     /**

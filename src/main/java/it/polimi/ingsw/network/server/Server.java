@@ -118,6 +118,10 @@ public class Server implements HeartBeatHandler, GameActions {
             boolean hasBeenAccepted = controller.handleConnection(username, clientHandler);
             if (hasBeenAccepted) {
                 System.out.println("\thas been accepted");
+                ClientHandler oldHandler = activeClients.get(username);
+                if (oldHandler != null) {
+                    oldHandler.terminate();
+                }
                 clientHandler.startHeartBeat();
                 activeClients.put(username, clientHandler);
             } else {
@@ -138,17 +142,6 @@ public class Server implements HeartBeatHandler, GameActions {
                 System.out.println("Spontaneous disconnection from " + username);
                 handleDisconnection(username);
             }
-        }
-    }
-
-    /**
-     * Removes the client (specified by their username) to the server without removing them from the game.
-     *
-     * @param username of the client to disconnect.
-     */
-    public void remove(String username) {
-        synchronized (lockOnConnections) {
-            activeClients.remove(username);
         }
     }
 

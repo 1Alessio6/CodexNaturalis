@@ -169,7 +169,6 @@ public class SocketHandler implements ClientHandler, HeartBeatHandler {
                 out.flush();
             }
         });
-        server.remove(username);
     }
 
     /**
@@ -213,7 +212,6 @@ public class SocketHandler implements ClientHandler, HeartBeatHandler {
                 out.flush();
             }
         });
-        server.remove(username);
     }
 
     @Override
