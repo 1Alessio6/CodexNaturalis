@@ -69,6 +69,11 @@ public class Controller implements EventListener, GameRequest {
         } else if (!lobby.isGameReady()) {
             isAccepted = joinLobby(username, user);
         } else if (game.isFinished()) {
+            // clean the players still in the game
+            List<Player> playersStillInGame = game.getPlayers();
+            for (Player p : playersStillInGame)  {
+                listenerHandler.remove(p.getUsername());
+            }
             game = null;
             lobby = new Lobby();
             isAccepted = joinLobby(username, user);
