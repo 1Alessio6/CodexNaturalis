@@ -194,10 +194,6 @@ public class ClientController implements ClientActions {
     @Override
     public void placeStarter(Side side) throws SuspendedGameException, InvalidGamePhaseException {
 
-        if (!game.isGameActive()) {
-            throw new SuspendedGameException("The game is suspended, you can only text messages");
-        }
-
         if (game.getCurrentPhase() != GamePhase.Setup) {
             throw new InvalidGamePhaseException("You can only place your starter card during the setup phase");
         }
@@ -214,10 +210,6 @@ public class ClientController implements ClientActions {
      */
     @Override
     public void chooseColor(PlayerColor color) throws InvalidColorException, SuspendedGameException, InvalidGamePhaseException {
-
-        if (!game.isGameActive()) {
-            throw new SuspendedGameException("The game is suspended, you can only text messages");
-        }
 
         if (game.getCurrentPhase() != GamePhase.Setup) {
             throw new InvalidGamePhaseException("You can only choose your color during the setup phase");
@@ -240,9 +232,6 @@ public class ClientController implements ClientActions {
      */
     @Override
     public void placeObjectiveCard(int chosenObjective) throws SuspendedGameException, InvalidGamePhaseException {
-        if (!game.isGameActive()) {
-            throw new SuspendedGameException("The game is suspended, you can only text messages");
-        }
 
         if (game.getCurrentPhase() != GamePhase.Setup) {
             throw new InvalidGamePhaseException("You can only choose your private objective during the setup phase");
