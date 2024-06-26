@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.controller.PlainVirtualView;
+import it.polimi.ingsw.controller.PlainGameListener;
 import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
@@ -63,7 +63,7 @@ public class GameTest {
         List<PlayerColor> colors = new ArrayList<>(game.getAvailableColor());
 
         for (String user : usernames) {
-            Assertions.assertDoesNotThrow(() -> game.add(user, new PlainVirtualView()));
+            Assertions.assertDoesNotThrow(() -> game.add(user, new PlainGameListener()));
         }
 
         Assertions.assertDoesNotThrow(
