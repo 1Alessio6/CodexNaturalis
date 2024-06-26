@@ -88,11 +88,12 @@ public class Lobby {
     /**
      * Resets the lobby in case it crashes.
      */
-    private List<String> resetLobby() {
+    private List<String> resetLobby(String nameOfCreator) {
         System.out.println("Lobby crashed");
         listenerHandler.notifyBroadcast(LobbyListener::updateAfterLobbyCrash);
 
         List<String> toRemoves = listenerHandler.getIds();
+        toRemoves.add(nameOfCreator);
         creator = null;
         numPlayersToStartTheGame = INVALID_NUM_PLAYERS;
         isGameReady = false;
@@ -121,7 +122,7 @@ public class Lobby {
         listenerHandler.remove(username);
         List<String> removedUsers = new ArrayList<>();
         if (creator != null && creator.equals(username) && numPlayersToStartTheGame == INVALID_NUM_PLAYERS) {
-            removedUsers.addAll(resetLobby());
+            removedUsers.addAll(resetLobby(username));
         } else {
             List<String> usernames = new ArrayList<>(listenerHandler.getIds());
             listenerHandler.notifyBroadcast(receiver -> receiver.showUpdatePlayersInLobby(usernames));
