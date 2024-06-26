@@ -56,17 +56,13 @@ public class ClientController implements ClientActions {
         this.requestsForTheServer = Executors.newSingleThreadExecutor();
     }
 
-    public void configureClient(View view, String ip, Integer port) throws UnReachableServerException {
+    public synchronized void configureClient(View view, String ip, Integer port) throws UnReachableServerException {
         client.configure(this, view);
         server = client.bindServer(ip, port);
     }
 
-    //public void bindServer(String ip, String port) {
-    //    server = client.bindServer(ip, port);
-    //}
-
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void connect(String username) {
@@ -88,7 +84,7 @@ public class ClientController implements ClientActions {
      * {@inheritDoc}
      */
     @Override
-    public void placeCard(int cardHandPosition, Side selectedSide, Position position) throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException {
+    public synchronized void placeCard(int cardHandPosition, Side selectedSide, Position position) throws Playground.UnavailablePositionException, Playground.NotEnoughResourcesException, InvalidGamePhaseException, SuspendedGameException {
 
         if (!game.isGameActive()) {
             throw new SuspendedGameException("The game is suspended, you can only text messages");
@@ -112,18 +108,20 @@ public class ClientController implements ClientActions {
             throw new Playground.UnavailablePositionException("The position selected isn't available");
         }
 
-        try {
-            server.placeCard(getMainPlayerUsername(), getMainPlayerCard(cardHandPosition).getFrontId(), getMainPlayerCard(cardHandPosition).getBackId(), selectedSide, position);
-        } catch (RemoteException e) {
-            client.handleUnresponsiveness("server");
-        }
+        requestsForTheServer.submit(() -> {
+            try {
+                server.placeCard(getMainPlayerUsername(), getMainPlayerCard(cardHandPosition).getFrontId(), getMainPlayerCard(cardHandPosition).getBackId(), selectedSide, position);
+            } catch (RemoteException e) {
+                handleServerCrash();
+            }
+        });
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void draw(int IdToDraw) throws InvalidGamePhaseException, EmptyDeckException, NotExistingFaceUp, SuspendedGameException, InvalidIdForDrawingException {
+    public synchronized void draw(int IdToDraw) throws InvalidGamePhaseException, EmptyDeckException, NotExistingFaceUp, SuspendedGameException, InvalidIdForDrawingException {
 
         if (IdToDraw > 5 || IdToDraw < 0) {
             throw new InvalidIdForDrawingException();
@@ -190,7 +188,7 @@ public class ClientController implements ClientActions {
      * {@inheritDoc}
      */
     @Override
-    public void placeStarter(Side side) throws SuspendedGameException, InvalidGamePhaseException {
+    public synchronized void placeStarter(Side side) throws SuspendedGameException, InvalidGamePhaseException {
 
         if (!game.isGameActive()) {
             throw new SuspendedGameException("The game is suspended, you can only text messages");
@@ -213,7 +211,7 @@ public class ClientController implements ClientActions {
      * {@inheritDoc}
      */
     @Override
-    public void chooseColor(PlayerColor color) throws InvalidColorException, SuspendedGameException, InvalidGamePhaseException {
+    public synchronized void chooseColor(PlayerColor color) throws InvalidColorException, SuspendedGameException, InvalidGamePhaseException {
 
         if (!game.isGameActive()) {
             throw new SuspendedGameException("The game is suspended, you can only text messages");
@@ -262,7 +260,7 @@ public class ClientController implements ClientActions {
      * {@inheritDoc}
      */
     @Override
-    public void sendMessage(Message message) throws InvalidMessageException{
+    public void sendMessage(Message message) throws InvalidMessageException {
 
         if (!message.getSender().equals(getMainPlayerUsername())) {
             throw new InvalidMessageException("sender doesn't match the author's username");
@@ -302,11 +300,8 @@ public class ClientController implements ClientActions {
      * {@inheritDoc}
      */
     @Override
-    public void disconnect(String username) {
-        if (server != null) {
-            try {
-                server.disconnect(username);
-            } catch (RemoteException ignored) {
+    public synchronized void disconnect(String username) {
+        if (server != null && client.isConnected()) {
             requestsForTheServer.submit(() -> {
                 try {
                     server.disconnect(username);
@@ -331,7 +326,7 @@ public class ClientController implements ClientActions {
      *
      * @param clientGame to which the game is to be updated.
      */
-    public void updateAfterConnection(ClientGame clientGame) {
+    public synchronized void updateAfterConnection(ClientGame clientGame) {
         game = clientGame;
     }
 
@@ -341,7 +336,7 @@ public class ClientController implements ClientActions {
      * @param isConnected player status.
      * @param username    of the player.
      */
-    public void updatePlayerStatus(boolean isConnected, String username) {
+    public synchronized void updatePlayerStatus(boolean isConnected, String username) {
         if (!game.containsPlayer(username)) {
             game.addPlayer(username);
         }
@@ -389,7 +384,7 @@ public class ClientController implements ClientActions {
      * @param placedSide              the side of the card that has been placed.
      * @param position                of the card in the playground.
      */
-    public void updateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide, Position position) {
+    public synchronized void updateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide, Position position) {
 
         ClientPlayground playground = game.getPlaygroundByUsername(username);
 
@@ -415,7 +410,7 @@ public class ClientController implements ClientActions {
      * @param username       of the player who performs the drawing
      * @param boardPosition  from which the card was selected, 4 for golden deck, 5 for resource deck and 0,1,2 or 3 for face up cards.
      */
-    public void updateAfterDraw(ClientCard drawnCard, ClientFace newTopBackDeck, ClientCard newFaceUpCard, String username, int boardPosition) {
+    public synchronized void updateAfterDraw(ClientCard drawnCard, ClientFace newTopBackDeck, ClientCard newFaceUpCard, String username, int boardPosition) {
         assert (boardPosition <= 5 && boardPosition >= 0);
 
         game.getPlayer(username).addPlayerCard(drawnCard);
@@ -435,7 +430,7 @@ public class ClientController implements ClientActions {
 
     }
 
-    public List<PlayerColor> getAvailableColors() {
+    public synchronized List<PlayerColor> getAvailableColors() {
         List<PlayerColor> availableColors = new ArrayList<>();
         List<ClientPlayer> players = game.getPlayers();
         for (PlayerColor color : PlayerColor.values()) {
@@ -461,7 +456,7 @@ public class ClientController implements ClientActions {
      * @param message the new message to be added to the chat.
      */
     //todo check if other players discard private message of others or if they save them but the view avoid the to show to the players
-    public void updateChat(Message message) {
+    public synchronized void updateChat(Message message) {
         game.getMessages().add(message);
     }
 
@@ -471,7 +466,7 @@ public class ClientController implements ClientActions {
      * @param currentPlayerIdx index of the current player
      * @param phase            in which the current player is.
      */
-    public void updateCurrentPlayer(int currentPlayerIdx, GamePhase phase) {
+    public synchronized void  updateCurrentPlayer(int currentPlayerIdx, GamePhase phase) {
         game.setCurrentPlayerIdx(currentPlayerIdx);
         game.setCurrentPhase(phase);
     }
@@ -479,7 +474,7 @@ public class ClientController implements ClientActions {
     /**
      * Updates the game from an active state to an inactive state
      */
-    public void updateSuspendedGame() {
+    public synchronized void updateSuspendedGame() {
         game.setGameActive(!game.isGameActive());
     }
 
@@ -489,7 +484,7 @@ public class ClientController implements ClientActions {
      * @param position to be verified.
      * @return true if the <code>position</code> is available, false otherwise.
      */
-    private boolean checkPosition(Position position) {
+    private synchronized boolean checkPosition(Position position) {
         return getMainPlayerPlayground().getAvailablePositions().contains(position);
     }
 
@@ -508,44 +503,44 @@ public class ClientController implements ClientActions {
         return true;
     }
 
-    public ClientPlayer getMainPlayer() {
+    public synchronized ClientPlayer getMainPlayer() {
         return game.getPlayer(mainPlayerUsername);
     }
 
-    public ClientCard getMainPlayerCard(int cardHandPosition) {
+    public synchronized ClientCard getMainPlayerCard(int cardHandPosition) {
         return getMainPlayer().getPlayerCard(cardHandPosition);
     }
 
-    public List<ClientCard> getMainPlayerCards() {
+    public synchronized List<ClientCard> getMainPlayerCards() {
         return getMainPlayer().getPlayerCards();
     }
 
-    public ClientCard getMainPlayerStarter() {
+    public synchronized ClientCard getMainPlayerStarter() {
         return getMainPlayer().getStarterCard();
     }
 
-    public String getMainPlayerUsername() {
+    public synchronized String getMainPlayerUsername() {
         return mainPlayerUsername;
     }
 
-    public ClientPlayground getMainPlayerPlayground() {
+    public synchronized ClientPlayground getMainPlayerPlayground() {
         return getMainPlayer().getPlayground();
     }
 
-    public boolean isMainPlayerTurn() {
+    public synchronized boolean isMainPlayerTurn() {
         return getMainPlayer().getUsername().equals(game.getCurrentPlayer().getUsername());
     }
 
-    public GamePhase getGamePhase() {
+    public synchronized GamePhase getGamePhase() {
         return this.game.getCurrentPhase();
     }
 
-    public String getLastMessage() {
+    public synchronized String getLastMessage() {
         Message lastMessage = game.getMessages().getLast();
         return lastMessage.getSender() + " -> " + lastMessage.getRecipient() + ": " + lastMessage.getContent();
     }
 
-    public List<Message> getMessages() {
+    public synchronized List<Message> getMessages() {
         return game.getMessages();
     }
 
@@ -553,15 +548,15 @@ public class ClientController implements ClientActions {
         return game.getPlayer(mainPlayerUsername).getColor();
     }
 
-    public boolean getPlayerStatus() {
+    public synchronized boolean getPlayerStatus() {
         return game.getPlayer(mainPlayerUsername).isConnected();
     }
 
-    public List<String> getConnectedUsernames() {
+    public synchronized List<String> getConnectedUsernames() {
         return this.game.getPlayers().stream().filter(ClientPlayer::isConnected).map(ClientPlayer::getUsername).toList();
     }
 
-    public List<String> getUsernames() {
+    public synchronized List<String> getUsernames() {
         return this.game.getPlayers().stream().map(ClientPlayer::getUsername).toList();
     }
 
@@ -569,19 +564,19 @@ public class ClientController implements ClientActions {
         return this.game.getPlayers();
     }
 
-    public List<ClientCard> getFaceUpCards() {
+    public synchronized List<ClientCard> getFaceUpCards() {
         return this.game.getClientBoard().getFaceUpCards();
     } //review
 
-    public ClientFace getGoldenDeckTopBack() {
+    public synchronized ClientFace getGoldenDeckTopBack() {
         return this.game.getClientBoard().getGoldenDeckTopBack();
     } //review
 
-    public ClientFace getResourceDeckTopBack() {
+    public synchronized ClientFace getResourceDeckTopBack() {
         return this.game.getClientBoard().getResourceDeckTopBack();
     }
 
-    public String getCurrentPlayerUsername() {
+    public synchronized String getCurrentPlayerUsername() {
         return game.getPlayer(game.getCurrentPlayerIdx()).getUsername();
     }
 
@@ -605,11 +600,11 @@ public class ClientController implements ClientActions {
         return game.getPlayer(username);
     }
 
-    public boolean isGameActive() {
+    public synchronized boolean isGameActive() {
         return game.isGameActive();
     }
 
-    public int getPlayerRank(String playerUsername) {
+    public synchronized int getPlayerRank(String playerUsername) {
 
         int rank = 1;
         int playerScore = getPlayer(playerUsername).getScore();
@@ -629,7 +624,7 @@ public class ClientController implements ClientActions {
         mainPlayerUsername = name;
     }
 
-    public boolean isMainPlaygroundEmpty() {
+    public synchronized boolean isMainPlaygroundEmpty() {
         return getMainPlayerPlayground().getArea().values().stream()
                 .noneMatch(tile -> tile.sameAvailability(Availability.OCCUPIED));
     }
