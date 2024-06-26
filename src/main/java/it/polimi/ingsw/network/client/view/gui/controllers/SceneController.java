@@ -56,11 +56,14 @@ public abstract class SceneController {
 
     private Button initializeSettings() {
 
+
         Button settings = new Button();
         settings.setPrefSize(50, 50);
         settings.setGraphic(initializeIconImageView(Icon.SETTINGS.getPath(), 30));
-
         Pane mainPane = new Pane();
+        initializeSettingsSectionTitle("Settings", mainPane, 30, 50);
+        initializeSettingsSectionTitle("Commands", mainPane, 30, 400);
+
         Button fullscreenButton = initializeFullScreenButton(mainPane);
         mainPane.setBackground(createMainBackground());
         mainPane.setPrefSize(500, 500);
@@ -168,11 +171,19 @@ public abstract class SceneController {
         return page;
     }
 
+    private void initializeSettingsSectionTitle(String title, Pane settingsMainPane, double layoutX, double layoutY){
+        Text sectionTitle = new Text(title);
+        sectionTitle.setFont(loadTitleFont(30));
+        sectionTitle.setLayoutX(layoutX);
+        sectionTitle.setLayoutY(layoutY);
+        settingsMainPane.getChildren().add(sectionTitle);
+    }
+
     private Button initializeFullScreenButton(Pane mainPane) {
 
         Pane fullscreenPane = new Pane();
         fullscreenPane.setPrefSize(190,40);
-        fullscreenPane.setLayoutX(100);
+        fullscreenPane.setLayoutX(30);
         fullscreenPane.setLayoutY(100);
 
         Button fullscreenButton = new Button("Full-Screen Mode");
