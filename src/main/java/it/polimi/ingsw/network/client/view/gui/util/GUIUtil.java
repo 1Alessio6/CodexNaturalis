@@ -53,6 +53,16 @@ public class GUIUtil {
     }
 
     /**
+     * Loads liberation sans regular font in the given <code>size</code>
+     *
+     * @param size the size of the font
+     * @return the required font
+     */
+    public static Font loadFontLiberationSansRegular(double size) {
+        return Font.loadFont(GUIUtil.class.getResourceAsStream("/gui/fonts/LiberationSans-Regular.ttf"), size);
+    }
+
+    /**
      * Initializes the icon found in the given <code>path</code> and adjusts it to the given <code>fitSize</code>
      *
      * @param path    the icon path
