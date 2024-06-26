@@ -860,7 +860,7 @@ public class ClientTUI implements View {
     public void showWinners(List<String> winners) {
         ClientUtil.printCommand("Winners\n");
         for (String i : winners) {
-            ClientUtil.printCommand(i + "\n");
+            ClientUtil.printCommand("Player: " + i + "Points: " + controller.getPlayer(i).getScore() + "\n");
         }
     }
 
