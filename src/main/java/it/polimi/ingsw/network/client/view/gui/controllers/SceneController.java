@@ -1,7 +1,6 @@
 package it.polimi.ingsw.network.client.view.gui.controllers;
 
 import it.polimi.ingsw.network.client.view.gui.ApplicationGUI;
-import it.polimi.ingsw.network.client.view.gui.util.GUIUtil;
 import it.polimi.ingsw.network.client.view.gui.util.Icon;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
@@ -10,10 +9,9 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Pagination;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -23,6 +21,8 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javafx.util.Duration;
+
+import java.util.Optional;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
 
@@ -64,13 +64,15 @@ public abstract class SceneController {
         initializeSettingsSectionTitle("Settings", mainPane, 30, 50);
         initializeSettingsSectionTitle("Commands", mainPane, 30, 400);
 
-        Button fullscreenButton = initializeFullScreenButton(mainPane);
+
         mainPane.setBackground(createMainBackground());
         mainPane.setPrefSize(500, 500);
         //mainPane.getChildren().add(fullscreenButton);
         Scene settingsScene = new Scene(mainPane);
         Stage settingsStage = new Stage();
         initializePopUpScene(settingsStage, settingsScene, Icon.SETTINGS);
+        initializeFullScreenButton(mainPane);
+        initializeLogoutButton(mainPane, settingsStage);
 
         settings.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -171,7 +173,7 @@ public abstract class SceneController {
         return page;
     }
 
-    private void initializeSettingsSectionTitle(String title, Pane settingsMainPane, double layoutX, double layoutY){
+    private void initializeSettingsSectionTitle(String title, Pane settingsMainPane, double layoutX, double layoutY) {
         Text sectionTitle = new Text(title);
         sectionTitle.setFont(loadTitleFont(30));
         sectionTitle.setLayoutX(layoutX);
@@ -179,23 +181,56 @@ public abstract class SceneController {
         settingsMainPane.getChildren().add(sectionTitle);
     }
 
-    private Button initializeFullScreenButton(Pane mainPane) {
+    private void initializeLogoutButton(Pane settingsPane, Stage settingsStage) {
+
+        Button logoutButton = new Button("Exit");
+        logoutButton.setFont(new Font(CAMBRIA_MATH, 15));
+        logoutButton.setPrefSize(160, 40);
+        logoutButton.setLayoutX(30);
+        logoutButton.setLayoutY(150);
+
+        ImageView logoutImage = (new ImageView(Icon.LOGOUT.getPath()));
+        logoutImage.setFitHeight(20);
+        logoutImage.setFitWidth(20);
+        logoutButton.setGraphic(logoutImage);
+
+        settingsPane.getChildren().add(logoutButton);
+
+        logoutButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if (isClicked(mouseEvent, MouseButton.PRIMARY)) {
+                    Alert logoutConfirmationMessage = new Alert(Alert.AlertType.CONFIRMATION);
+                    logoutConfirmationMessage.setTitle("Exit");
+                    logoutConfirmationMessage.setHeaderText("Are you sure to close the application?");
+                    logoutConfirmationMessage.setContentText("You'll be able to connect and play again, with the same username if the game isn't finished");
+                    logoutConfirmationMessage.initOwner(settingsStage);
+                    Optional<ButtonType> result = logoutConfirmationMessage.showAndWait();
+                    if(result.isPresent()){
+                        if(result.get().equals(ButtonType.OK)){
+                            System.exit(0);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private void initializeFullScreenButton(Pane mainPane) {
 
         Pane fullscreenPane = new Pane();
-        fullscreenPane.setPrefSize(190,40);
+        fullscreenPane.setPrefSize(190, 40);
         fullscreenPane.setLayoutX(30);
         fullscreenPane.setLayoutY(100);
 
         Button fullscreenButton = new Button("Full-Screen Mode");
-        fullscreenButton.setFont(new Font(CAMBRIA_MATH,15));
-        fullscreenButton.setPrefSize(160,40);
+        fullscreenButton.setFont(new Font(CAMBRIA_MATH, 15));
+        fullscreenButton.setPrefSize(160, 40);
 
         ImageView fullscreenImage = (new ImageView(Icon.FULLSCREEN.getPath()));
         fullscreenImage.setFitHeight(20);
         fullscreenImage.setFitWidth(20);
         fullscreenButton.setGraphic(fullscreenImage);
-        //fullscreenButton.setLayoutX(120);
-        //fullscreenButton.setLayoutY(100);
 
         Text fullScreenStatus = new Text("OFF");
         fullScreenStatus.setFont(new Font(CAMBRIA_MATH, 15));
@@ -208,17 +243,17 @@ public abstract class SceneController {
         fullscreenButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                if (gui.getIsFullScreen()) {
-                    gui.setWindowScreenMode();
-                    fullScreenStatus.setText("OFF");
-                } else {
-                    gui.setFullScreenMode();
-                    fullScreenStatus.setText("ON");
+                if (isClicked(mouseEvent, MouseButton.PRIMARY)) {
+                    if (gui.getIsFullScreen()) {
+                        gui.setWindowScreenMode();
+                        fullScreenStatus.setText("OFF");
+                    } else {
+                        gui.setFullScreenMode();
+                        fullScreenStatus.setText("ON");
+                    }
                 }
             }
         });
-
-        return fullscreenButton;
     }
 
     public abstract double getSceneWindowWidth();
@@ -256,8 +291,8 @@ public abstract class SceneController {
         return errorPane;
     }
 
-    protected void fadeOutUpdatePane(StackPane updatePane){
-        FadeTransition transition = new FadeTransition(Duration.seconds(1),updatePane);
+    protected void fadeOutUpdatePane(StackPane updatePane) {
+        FadeTransition transition = new FadeTransition(Duration.seconds(1), updatePane);
         transition.setFromValue(updatePane.getOpacity());
         transition.setToValue(0);
         transition.setOnFinished(actionEvent -> removeUpdatePaneFromMainPane(updatePane));
