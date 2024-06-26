@@ -18,7 +18,6 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.gamePhase.PhaseHandler;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
-import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.model.ClientGame;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
@@ -790,12 +789,13 @@ public class Game {
     }
 
     public void terminateForInactivity() {
+        System.err.println("Game is terminated for inactivity");
+        phase = GamePhase.End;
         try {
             String lastConnectedPlayer = getListOfActivePlayers().getFirst().getUsername();
-            phase = GamePhase.End;
             listenerHandler.notifyBroadcast(receiver -> receiver.showWinners(Collections.singletonList(lastConnectedPlayer)));
         } catch (NoSuchElementException noSuchElementException) {
-            // empty list: there's no player to notify
+            System.err.println("There's no players to notify about the victory, all have gone");
         }
     }
 
