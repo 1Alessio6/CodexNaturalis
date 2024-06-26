@@ -12,6 +12,7 @@ import it.polimi.ingsw.model.listenerhandler.ListenerHandler;
 import it.polimi.ingsw.model.lobby.*;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.board.Position;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.ClientHandler;
 
 import java.util.*;
@@ -189,11 +190,13 @@ public class Controller implements EventListener, GameRequest {
             game.remove(username);
             turnCompletion.handleLeave(game);
             if (!game.isActive()) {
+                // make a copy to avoid the schedule to be executed on a new created game.
+                Game currentGame = game;
                 timerForSuspendedGame.schedule(new TimerTask() {
                     @Override
                     public void run() {
                         synchronized (Controller.this) {
-                            game.terminateForInactivity();
+                            currentGame.terminateForInactivity();
                         }
                     }
                 }, Game.MAX_DELAY_FOR_SUSPENDED_GAME);
