@@ -873,7 +873,7 @@ public class ClientTUI implements View {
     public synchronized void showWinners(List<String> winners) {
         ClientUtil.printCommand("Winners: ");
         for (String i : winners) {
-            ClientUtil.printCommand("Player: " + i + "Points: " + controller.getPlayer(i).getScore() + "\n");
+            ClientUtil.printCommand("Player: " + i + " Points: " + controller.getPlayer(i).getScore() + "\n");
         }
         availableActions.clear();
         availableActions.add(TUIActions.HELP);
