@@ -38,8 +38,6 @@ public interface View {
      */
     void showUpdateAfterLobbyCrash();
 
-    void showUpdateFullLobby();
-
     void showUpdateExceedingPlayer();
 
     void showInvalidLogin(String details);

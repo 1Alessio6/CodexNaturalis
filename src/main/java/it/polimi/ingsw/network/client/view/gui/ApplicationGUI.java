@@ -110,15 +110,6 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
     }
 
     @Override
-    public void showUpdateFullLobby() {
-        Platform.runLater(() -> {
-            loadScene(SceneType.CRASH);
-            currentScene = SceneType.CRASH;
-            ((CrashScene)currentSceneController).setReason("FULL LOBBY");
-        });
-    }
-
-    @Override
     public void showUpdateExceedingPlayer() {
         Platform.runLater(() -> {
             loadScene(SceneType.CRASH);

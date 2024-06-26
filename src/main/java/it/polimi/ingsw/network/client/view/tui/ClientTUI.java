@@ -623,13 +623,7 @@ public class ClientTUI implements View {
     }
 
     @Override
-    public void showUpdateFullLobby() {
-        ClientUtil.printCommand("Full lobby, sorry you have to connect somewhere else");
-        setActionsForConnection();
-    }
-
-    @Override
-    public void showUpdateExceedingPlayer() {
+    public synchronized void showUpdateExceedingPlayer() {
         ClientUtil.printCommand("You're an exceeding player!");
         setActionsForConnection();
     }
