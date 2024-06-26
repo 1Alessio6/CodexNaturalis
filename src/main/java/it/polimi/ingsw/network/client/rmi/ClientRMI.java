@@ -1,18 +1,11 @@
 package it.polimi.ingsw.network.client.rmi;
 
-import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.card.*;
-import it.polimi.ingsw.model.card.Color.PlayerColor;
-import it.polimi.ingsw.model.card.Symbol;
-import it.polimi.ingsw.model.chat.message.Message;
-import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.VirtualView;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.UnReachableServerException;
-import it.polimi.ingsw.network.client.model.*;
-import it.polimi.ingsw.network.client.model.card.*;
 import it.polimi.ingsw.network.heartbeat.HeartBeat;
+import it.polimi.ingsw.network.heartbeat.HeartBeatHandler;
 import it.polimi.ingsw.network.heartbeat.HeartBeatMessage;
 import it.polimi.ingsw.network.server.rmi.ServerRMI;
 
@@ -21,14 +14,11 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.List;
-import java.util.Map;
 
 /**
- * The ClientRMI updates the view content and the information present in the ClientController when RMI communication is
- * used.
+ * The ClientRMI defines the methods to handle an RMI connection and inherits from Client the methods to update the client's model and view.
  */
-public class ClientRMI extends Client {
+public class ClientRMI extends Client implements HeartBeatHandler {
     private HeartBeat heartBeat;
     private VirtualView stub;
 
@@ -59,33 +49,34 @@ public class ClientRMI extends Client {
         return stub;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void runView() throws RemoteException {
-        // register stub
-        clientView.runView();
+    protected void terminateConnection() {
+        if (heartBeat != null) {
+            heartBeat.terminate();
+        }
+        isConnected = false;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void disconnect() {
-        heartBeat.terminate();
-    }
-
-
 
     @Override
     public void resultOfLogin(boolean accepted, String username, String details) throws RemoteException {
-        if (accepted) {
-            controller.setMainPlayerUsername(username);
-            heartBeat.setHandlerName(username);
-            heartBeat.startHeartBeat();
-        } else {
-            clientView.showInvalidLogin(details);
+        System.err.println("Received result of login");
+        synchronized (lockOnNetworkStatus) {
+            if (isConnected) {
+                System.err.println("I'm (" + username + ") already connected");
+                return;
+            }
+
+            System.err.println(" which belongs to me");
+            System.err.println(username + " is connected");
+            if (accepted) {
+                //System.out.println(username + " has been accepted");
+                controller.setMainPlayerUsername(username);
+                heartBeat.setHandlerName(username);
+                heartBeat.startHeartBeat();
+                isConnected = true;
+            } else {
+                clientView.showInvalidLogin(details);
+            }
         }
     }
 
@@ -93,159 +84,12 @@ public class ClientRMI extends Client {
      * {@inheritDoc}
      */
     @Override
-    public void updateCreator() throws RemoteException {
-        clientView.showUpdateCreator();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void updateAfterConnection(ClientGame clientGame) {
-        controller.updateAfterConnection(clientGame);
-        clientView.showUpdateAfterConnection();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void showUpdatePlayersInLobby(List<String> usernames) throws RemoteException {
-        controller.updatePlayersInLobby(usernames);
-        clientView.showUpdatePlayersInLobby();
-    }
-
-    @Override
-    public void showUpdateFullLobby() throws RemoteException {
-        clientView.showUpdateFullLobby();
-        disconnect();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void updateAfterLobbyCrash() throws RemoteException {
-        clientView.showUpdateAfterLobbyCrash();
-        disconnect();
-    }
-
-    @Override
-    public void showUpdateExceedingPlayer() throws RemoteException {
-        clientView.showUpdateExceedingPlayer();
-        disconnect();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void showUpdatePlayerStatus(boolean isConnected, String username) throws RemoteException {
-        controller.updatePlayerStatus(isConnected, username);
-        clientView.showUpdatePlayerStatus();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void showUpdateColor(PlayerColor color, String username) throws RemoteException {
-        controller.updateColor(color, username);
-        clientView.showUpdateColor(username);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void showUpdateObjectiveCard(ClientObjectiveCard chosenObjective, String username) {
-        controller.updateObjectiveCard(chosenObjective, username);
-        //todo: if the objective card isn't of the main player the view should not show the card
-        if (controller.getMainPlayerUsername().equals(username)) {
-            clientView.showUpdateObjectiveCard();
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void showUpdateAfterPlace(Map<Position, CornerPosition> positionToCornerCovered, List<Position> newAvailablePositions, Map<Symbol, Integer> newResources, int points, String username, ClientCard placedCard, Side placedSide, Position position) throws RemoteException {
-        controller.updateAfterPlace(positionToCornerCovered, newAvailablePositions, newResources, points, username, placedCard, placedSide, position);
-
-        if (controller.getGamePhase().equals(GamePhase.Setup)) {
-            clientView.showStarterPlacement(username);
-        } else {
-            clientView.showUpdateAfterPlace(username);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void showUpdateAfterDraw(ClientCard drawnCard, ClientFace newTopDeck, ClientCard newFaceUpCard, String username, int boardPosition) throws RemoteException {
-        controller.updateAfterDraw(drawnCard, newTopDeck, newFaceUpCard, username, boardPosition);
-        clientView.showUpdateAfterDraw(username);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void showUpdateChat(Message message) throws RemoteException {
-        controller.updateChat(message);
-        clientView.showUpdateChat();
-    }
-
-    //@Override
-    //public void showUpdateTriggeredEndGame(String username) {
-
-    //}
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void showUpdateCurrentPlayer(int currentPlayerIdx, GamePhase phase) throws RemoteException {
-        controller.updateCurrentPlayer(currentPlayerIdx, phase);
-        clientView.showUpdateCurrentPlayer();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void showUpdateGameState() throws RemoteException {
-        controller.updateSuspendedGame();
-        clientView.showUpdateSuspendedGame();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void showWinners(List<String> winners) throws RemoteException {
-        clientView.showWinners(winners);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void reportError(String details) throws RemoteException {
-        clientView.reportError(details);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    // synchronized because two threads may invoke the method: the client controller and the heartbeat
-    @Override
-    public synchronized void handleUnresponsiveness(String unresponsiveListener) {
-        if (heartBeat.isActive()) {
-            clientView.showServerCrash();
-            disconnect();
+    public void handleUnresponsiveness(String unresponsiveListener) {
+        synchronized (lockOnNetworkStatus) {
+            if (isConnected) {
+                terminateConnection();
+                clientView.showConnectionLost();
+            }
         }
     }
 
