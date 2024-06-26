@@ -40,6 +40,8 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
     private boolean isFullScreen;
 
+    private boolean gameSuspendedDuringSetup;
+
     private Parent currentRoot;
 
 
@@ -71,6 +73,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
     public void start(Stage primaryStage) throws Exception {
         System.out.println("Start the gui");
         isFullScreen = false;
+        gameSuspendedDuringSetup = false;
         client = ClientMain.createClient(getParameters().getUnnamed().getFirst());
         controller = new ClientController(client);
         this.primaryStage = primaryStage;
@@ -312,7 +315,12 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
             }
 
             if(currentScene == SceneType.GAME){
-                ((GameScene)currentSceneController).updateCurrentPhase();
+                if(gameSuspendedDuringSetup){
+                    ((GameScene)currentSceneController).updateSuspendedGame();
+                }
+                else{
+                    ((GameScene)currentSceneController).updateCurrentPhase();
+                }
                 ((GameScene)currentSceneController).updateCurrentPlayerUsername();
             }
 
@@ -325,8 +333,11 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
     @Override
     public void showUpdateSuspendedGame() {
         Platform.runLater(() -> {
-            System.err.println("suspend game");
-            ((GameScene)currentSceneController).updateSuspendedGame();
+            if(currentScene == SceneType.GAME) {
+                ((GameScene) currentSceneController).updateSuspendedGame();
+            } else if (currentScene == SceneType.SETUP) {
+                gameSuspendedDuringSetup = true;
+            }
         });
     }
 
