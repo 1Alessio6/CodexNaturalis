@@ -11,7 +11,13 @@ import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.Collections;
 
+/**
+ * ApplicationTUI runs the client in a text-based user interface
+ */
 public class ApplicationTUI implements ClientApplication {
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void run(String typeConnection) throws UnReachableServerException, RemoteException {
         Client client = ClientMain.createClient(typeConnection);

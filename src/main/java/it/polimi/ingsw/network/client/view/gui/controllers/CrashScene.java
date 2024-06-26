@@ -9,10 +9,15 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
-import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.createMainBackground;
-import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.isClicked;
 
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.connectionSceneHeight;
+
+/**
+ * CrashScene is the controller concerning crash scene
+ */
 public class CrashScene extends SceneController {
 
     @FXML
@@ -29,6 +34,9 @@ public class CrashScene extends SceneController {
     public CrashScene() {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void initialize() {
         mainPane.setBackground(createMainBackground());
         ImageView returnImage = (new ImageView(Icon.RETURN.getPath()));
@@ -60,6 +68,41 @@ public class CrashScene extends SceneController {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void initializeUsingGameInformation() {
+        super.initializeUsingGameInformation();
+        addButtonPane(mainPane, buttonPane, 860, 650);
+    }
+
+    @Override
+    protected void removeUpdatePaneFromMainPane(StackPane errorPane) {
+        mainPane.getChildren().remove(errorPane);
+    }
+
+    @Override
+    public void showError(String details) {
+        StackPane errorPane = generateError(details);
+        errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth) / 2);
+        errorPane.setLayoutY(10);
+        mainPane.getChildren().add(errorPane);
+    }
+
+    public double getSceneWindowWidth() {
+        return connectionSceneWidth;
+    }
+
+    public double getSceneWindowHeight() {
+        return connectionSceneHeight;
+    }
+
+    /**
+     * Sets the reason of the crash
+     *
+     * @param reason the detail reason
+     */
     public void setReason(String reason) {
         message.setText(reason);
     }

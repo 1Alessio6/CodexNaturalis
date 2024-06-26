@@ -17,16 +17,17 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.control.Alert;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.createMainBackground;
-import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.isClicked;
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
 
+/**
+ * SetupScene is the controller concerning set-up scene
+ */
 public class SetupScene extends SceneController {
 
     @FXML
@@ -76,6 +77,9 @@ public class SetupScene extends SceneController {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initialize() {
         isStarterSelected = false;
@@ -83,10 +87,28 @@ public class SetupScene extends SceneController {
         mainPane.setBackground(createMainBackground());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initializeUsingGameInformation() {
+        super.initializeUsingGameInformation();
         initializeStarterCards();
         initializeColors();
+        addButtonPane(mainPane, buttonPane, 1028, 637);
+    }
+
+    @Override
+    protected void removeUpdatePaneFromMainPane(StackPane errorPane) {
+        mainPane.getChildren().remove(errorPane);
+    }
+
+    @Override
+    public void showError(String details) {
+        StackPane errorPane = generateError(details);
+        errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth)/2);
+        errorPane.setLayoutY(10);
+        mainPane.getChildren().add(errorPane);
     }
 
     private void setStarterPlaceCommand(Rectangle face, Side starterSide) {
@@ -97,10 +119,7 @@ public class SetupScene extends SceneController {
                     try {
                         gui.getController().placeStarter(starterSide);
                     } catch (SuspendedGameException | InvalidGamePhaseException e) {
-                        //todo update
-                        Alert error = new Alert(Alert.AlertType.ERROR);
-                        error.setTitle("place starter has generated an error");
-                        error.show();
+                        showError("Place starter has generated an error\n" + e.getMessage());
                     }
                 }
             }
@@ -119,10 +138,18 @@ public class SetupScene extends SceneController {
         setStarterPlaceCommand(secondRectangle, Side.BACK);
     }
 
+    /**
+     * Constructs a new <code>SetupScene</code> with no parameter provided
+     */
     public SetupScene() {
         System.out.println("Constructing the setup scene");
     }
 
+    /**
+     * Method used to show the scene after placing the starter card
+     *
+     * @param username the username of the player who placed the card
+     */
     public void updateAfterStarterPlace(String username) {
         if (gui.getController().getMainPlayer().getUsername().equals(username)) {
             isStarterSelected = true;
@@ -156,9 +183,8 @@ public class SetupScene extends SceneController {
                     try {
                         gui.getController().placeObjectiveCard(objectiveCardId);
                     } catch (SuspendedGameException | InvalidGamePhaseException e) {
-                        Alert error = new Alert(Alert.AlertType.ERROR);
-                        error.setTitle("Error in placing the objective");
-                        error.show();
+                        showError("Error in placing the objective\n" + e.getMessage());
+
                     }
                 }
             }
@@ -190,6 +216,11 @@ public class SetupScene extends SceneController {
         centerColors();
     }
 
+    /**
+     * Method used to show the scene after choosing the token color
+     *
+     * @param username the username of the player chose the color
+     */
     public void updateAfterColor(String username) {
         ClientController controller = gui.getController();
         ClientPlayer player = controller.getPlayer(username);
@@ -200,9 +231,31 @@ public class SetupScene extends SceneController {
         }
     }
 
+    /**
+     * Method used to show the scene after choosing the secret objective card
+     */
     public void updateObjectiveCard() {
         firstRectangle.setVisible(false);
         secondRectangle.setVisible(false);
         text.setText("Wait for the other players to complete their setup");
     }
+
+    /**
+     * Method used to complete the set-up
+     */
+    public void initializeCompletedSetup() {
+        for (GUICircle circle : colors) {
+            circle.setVisibility(false);
+        }
+        updateObjectiveCard();
+    }
+
+    public double getSceneWindowWidth() {
+        return startedGameSceneWidth;
+    }
+
+    public double getSceneWindowHeight() {
+        return startedGameSceneHeight;
+    }
+
 }

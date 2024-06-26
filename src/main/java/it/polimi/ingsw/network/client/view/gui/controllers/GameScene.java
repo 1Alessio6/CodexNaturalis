@@ -20,9 +20,12 @@ import it.polimi.ingsw.network.client.view.gui.util.BoardPane;
 import it.polimi.ingsw.network.client.view.gui.util.PlayerInfoPane;
 import it.polimi.ingsw.network.client.view.gui.util.PlaygroundInfoPane;
 import it.polimi.ingsw.network.client.view.gui.util.chat.Chat;
+import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -31,10 +34,14 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.util.Duration;
 
 import java.rmi.RemoteException;
 import java.util.*;
@@ -44,6 +51,9 @@ import java.util.List;
 import static it.polimi.ingsw.network.client.view.gui.util.GUICards.*;
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
 
+/**
+ * GameScene is the controller concerning game scene
+ */
 public class GameScene extends SceneController {
 
     @FXML
@@ -63,6 +73,13 @@ public class GameScene extends SceneController {
 
     @FXML
     private ScrollPane chatPane;
+
+    @FXML
+    private Pane currentPlayerPane;
+
+    private Text currentPlayerUsername;
+
+    private Text currentPhase;
 
     private Pane mainPlayerCardsPane;
 
@@ -87,6 +104,9 @@ public class GameScene extends SceneController {
     public GameScene() {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void initialize() {
 
         mainPane.setBackground(createMainBackground());
@@ -107,6 +127,7 @@ public class GameScene extends SceneController {
                         m.isBroadcast();
     }
 
+    //todo check if font Cambria math is more readable for lighter color
     private void appendMessage(Message m) {
         ClientController controller = gui.getController();
         String myName = controller.getMainPlayerUsername();
@@ -115,24 +136,32 @@ public class GameScene extends SceneController {
         String sender = m.getSender();
         String recipient = m.getRecipient();
         if (sender.equals(myName)) {
-            preposition = "to";
+            preposition = " to";
             user = recipient;
         } else {
-            preposition = "from";
+            if (m.getRecipient().equals("Everyone")) {
+                preposition = " <Everyone> from";
+            } else {
+                preposition = " <Private> from";
+            }
             user = sender;
         }
         Text userText = new Text(user);
         if (!user.equals(Message.getNameForGroup())) {
-            userText.setStyle("-fx-fill:"
+            userText.setStyle("-fx-font-weight: bold;" + "-fx-fill:"
                     +
-                    PlayerColor.conversionToCssStyle.get(controller.getPlayer(user).getColor())
+                    convertPlayerColorIntoHexCode(controller.getPlayer(user).getColor())
             );
         }
-        Text content = new Text(": " + m.getContent() + "\n\n");
+        Text content = new Text(": " + m.getContent() + "\n");
         sentMessages.getChildren().addAll(new Text(preposition + " "), userText, content);
     }
 
     private void initializeChat() {
+        Text chatTitle = new Text("Chat");
+        chatTitle.setFont(loadTitleFont(25));
+        chatTitle.setLayoutX(1028);
+        chatTitle.setLayoutY(214);
         ClientController controller = gui.getController();
         List<String> usernames = new ArrayList<>(controller.getUsernames());
         String myName = controller.getMainPlayerUsername();
@@ -146,22 +175,168 @@ public class GameScene extends SceneController {
                 appendMessage(m);
             }
         }
+        mainPane.getChildren().add(chatTitle);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initializeUsingGameInformation() {
         ClientController controller = gui.getController();
-        currentVisiblePlaygroundOwner = controller.getMainPlayerUsername();
-
-        // make the snapshot of the current game atomic
         synchronized (controller) {
+            super.initializeUsingGameInformation();
+            currentVisiblePlaygroundOwner = gui.getController().getMainPlayerUsername();
+
             initializePlayerInfoBox();
             initializeMainPlayerCardPane();
             drawPlayground(gui.getController().getMainPlayerPlayground());
             initializeBoard();
             initializeChat();
             initializePlaygroundInfoPane();
+            addButtonPane(mainPane, buttonPane, 1028, 637);
+            initializeCurrentPlayerUsernameText();
+            initializeCurrentPhaseText();
         }
+    }
+
+    @Override
+    protected void removeUpdatePaneFromMainPane(StackPane errorPane) {
+        mainPane.getChildren().remove(errorPane);
+    }
+
+    @Override
+    public void showError(String details) {
+        StackPane errorPane = generateError(details);
+        errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth) / 2);
+        errorPane.setLayoutY(10);
+        mainPane.getChildren().add(errorPane);
+    }
+
+    private void initializeCurrentPlayerUsernameText() {
+        //todo add synchronization on client controller for all initialize with gaming information method
+
+        ClientController controller = gui.getController();
+
+        Text currentPlayerText = new Text("Current Player: ");
+        currentPlayerText.setFont(new Font(CAMBRIA_MATH, 15));
+        currentPlayerText.setLayoutX(10);
+        currentPlayerText.setLayoutY(25);
+
+        currentPlayerUsername = new Text();
+        updateCurrentPlayerUsername();
+        currentPlayerUsername.setLayoutX(115);
+        currentPlayerUsername.setLayoutY(25);
+
+        currentPlayerPane.getChildren().add(currentPlayerText);
+        currentPlayerPane.getChildren().add(currentPlayerUsername);
+    }
+
+    private void initializeCurrentPhaseText() {
+
+        Text currentPhaseTitle = new Text("Current Phase: ");
+        currentPhaseTitle.setFont(new Font(CAMBRIA_MATH, 15));
+        currentPhaseTitle.setLayoutX(10);
+        currentPhaseTitle.setLayoutY(50);
+
+        currentPhase = new Text();
+        updateCurrentPhase();
+        currentPhase.setLayoutX(110);
+        currentPhase.setLayoutY(50);
+
+        currentPlayerPane.getChildren().add(currentPhase);
+        currentPlayerPane.getChildren().add(currentPhaseTitle);
+    }
+
+    /**
+     * Updates the username of the current player
+     */
+    public void updateCurrentPlayerUsername() {
+        ClientController controller = gui.getController();
+        currentPlayerUsername.setText(controller.getCurrentPlayerUsername());
+        if (controller.isGameActive()) {
+            showCurrentPlayerUpdatePane();
+        }
+        currentPlayerUsername.setFont(new Font(CAMBRIA_MATH, 13));
+    }
+
+    private void showCurrentPlayerUpdatePane() {
+        ClientController controller = gui.getController();
+
+        if (controller.getCurrentPlayerUsername().equals(controller.getMainPlayerUsername())) {
+            StackPane currentPlayerUpdatePane = generateUpdatePane("It's your\n    Turn");
+            currentPlayerUpdatePane.setStyle("-fx-background-color: #3CB371;" + "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0.2, 0, 0);" + " -fx-background-radius: 10px;");
+            currentPlayerUpdatePane.setLayoutY((getSceneWindowHeight() - updatePaneHeight - 10) / 2);
+            mainPane.getChildren().add(currentPlayerUpdatePane);
+        }
+    }
+
+    /**
+     * Updates the current phase
+     */
+    public void updateCurrentPhase() {
+        ClientController controller = gui.getController();
+        GamePhase phase = controller.getGamePhase();
+
+        //todo check the behaviour if phase == end it should load another scene\
+        if (controller.isGameActive()) {
+            if ((phase == GamePhase.PlaceNormal || phase == GamePhase.DrawNormal) && !currentPhase.getText().equals("Normal Turn")) {
+                StackPane phaseUpdatePane = generateUpdatePane("Normal Phase");
+                phaseUpdatePane.setStyle("-fx-background-color: #3CB371;" + "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0.2, 0, 0);" + " -fx-background-radius: 10px;");
+                mainPane.getChildren().add(phaseUpdatePane);
+                currentPhase.setText("Normal Turn");
+                currentPhase.setFill(Color.web("#3CB371"));
+            } else if (phase == GamePhase.PlaceAdditional && !currentPhase.getText().equals("Additional Turn")) {
+                currentPhase.setText("Additional Turn");
+                StackPane phaseUpdatePane = generateUpdatePane("Additional Phase");
+                phaseUpdatePane.setStyle("-fx-background-color: #0077B6;" + "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0.2, 0, 0);" + " -fx-background-radius: 10px;");
+                mainPane.getChildren().add(phaseUpdatePane);
+                currentPhase.setFill(convertPlayerColor(PlayerColor.BLUE));
+            }
+            currentPhase.setFont(new Font(CAMBRIA_MATH, 13));
+        }
+    }
+
+    /**
+     * Updates the phase to suspended if the game is not active
+     */
+    public void updateSuspendedGame() {
+        ClientController controller = gui.getController();
+
+        if (!controller.isGameActive()) {
+            StackPane phaseUpdatePane = generateUpdatePane("GAME IS SUSPENDED");
+            phaseUpdatePane.setStyle("-fx-background-color: #FF0000;" + "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0.2, 0, 0);" + " -fx-background-radius: 10px;");
+            mainPane.getChildren().add(phaseUpdatePane);
+            currentPhase.setText("GAME SUSPENDED");
+            currentPhase.setFill(convertPlayerColor(PlayerColor.RED));
+        } else {
+            showCurrentPlayerUpdatePane();
+            updateCurrentPhase();
+        }
+    }
+
+    private StackPane generateUpdatePane(String updateMessage) {
+        StackPane updatePane = new StackPane();
+        updatePane.setPrefSize(updatePaneWidth, updatePaneHeight);
+        Label updateMessageLabel = new Label();
+        updateMessageLabel.setStyle("-fx-text-fill: #000000;" + "-fx-font-weight: bold;");
+        updateMessageLabel.setFont(new Font(CAMBRIA_MATH, 20));
+        updateMessageLabel.setWrapText(true);
+        updatePane.getChildren().add(updateMessageLabel);
+        StackPane.setAlignment(updateMessageLabel, Pos.CENTER);
+        updateMessageLabel.setText(updateMessage);
+        updatePane.setLayoutX((getSceneWindowWidth() - updatePaneWidth) / 2);
+        updatePane.setLayoutY((getSceneWindowHeight() + updatePaneHeight) / 2);
+
+        Timeline timeline = new Timeline(new KeyFrame(
+                Duration.seconds(1),
+                timerEndEvent -> fadeOutUpdatePane(updatePane)
+        ));
+
+        timeline.play();
+
+
+        return updatePane;
     }
 
     private void initializePlaygroundInfoPane() {
@@ -189,11 +364,11 @@ public class GameScene extends SceneController {
 
     private void initializePlayerInfoBox() {
 
-        playerInfoPanes = new ArrayList<PlayerInfoPane>();
+        playerInfoPanes = new ArrayList<>();
 
 
         int distance = 20;
-        int layoutX = 30;
+        int layoutX = 44;
         int layoutY = 14;
 
         ClientController controller = gui.getController();
@@ -215,9 +390,25 @@ public class GameScene extends SceneController {
 
     private void initializeMainPlayerCardPane() {
         mainPlayerCardsPane = new Pane();
+
+        Text secretObjectiveTitle = new Text();
+        secretObjectiveTitle.setFont(new Font(CAMBRIA_MATH, 15));
+        secretObjectiveTitle.setLayoutY(630.5);
+        secretObjectiveTitle.setLayoutX(345);
+        secretObjectiveTitle.setText("Secret Objective");
+
+        Text playerCardsTitle = new Text();
+        playerCardsTitle.setFont(new Font(CAMBRIA_MATH, 15));
+        playerCardsTitle.setLayoutY(630.5);
+        playerCardsTitle.setLayoutX(545);
+        playerCardsTitle.setText("Your Cards");
+
+        mainPane.getChildren().add(playerCardsTitle);
+        mainPane.getChildren().add(secretObjectiveTitle);
+
         mainPlayerCardsPane.setPrefSize(700, 90);
         mainPlayerCardsPane.setLayoutX(345);
-        mainPlayerCardsPane.setLayoutY(630);
+        mainPlayerCardsPane.setLayoutY(640);
         initializeMainPlayerObjectiveCard();
         initializeMainPlayerCards();
         mainPane.getChildren().add(mainPlayerCardsPane);
@@ -230,17 +421,14 @@ public class GameScene extends SceneController {
         rectangle.setLayoutX(layoutX);
         rectangle.setFill(pathToImage(gui.getController().getMainPlayerObjectiveCard().getPath()));
         mainPlayerCardsPane.getChildren().add(rectangle);
-        mainPlayerCardsPane.setBackground(setBackgroundColor("EEE5BC"));
+        //mainPlayerCardsPane.setBackground(setBackgroundColor("EEE5BC"));
     }
 
-
-    //todo when a card is placed even if the player hasn't draw it should be not visible
 
     private void initializeBoard() {
         boardPane = new BoardPane(gui.getController().getBoard());
         initializeBoardCards(boardPane);
         mainPane.getChildren().add(boardPane.getBoardMainPane());
-
     }
 
     private ImagePattern getFacePath(String username, int cardHandPosition, Side side) {
@@ -300,6 +488,18 @@ public class GameScene extends SceneController {
 
     }
 
+    /**
+     * Updates the current status of the players
+     */
+    public void updatePlayersStatus() {
+        for (ClientPlayer player : gui.getController().getPlayers()) {
+            if (!player.getUsername().equals(gui.getController().getMainPlayerUsername())) {
+                Objects.requireNonNull(getPlayerInfoPane(player.getUsername())).updateStatus(player.isConnected());
+            }
+
+        }
+    }
+
     private void initializeSwitchPlayground(PlayerInfoPane playerInfoPane) {
 
         ImageView switchPlayground = playerInfoPane.getSwitchPlayground();
@@ -335,7 +535,12 @@ public class GameScene extends SceneController {
 
     }
 
-    private void drawPlayground(ClientPlayground clientPlayground) {
+    /**
+     * Method used to draw the playground
+     *
+     * @param clientPlayground the representation of the playground
+     */
+    public void drawPlayground(ClientPlayground clientPlayground) {
 
         // CRITICAL
         //do not remove
@@ -380,10 +585,8 @@ public class GameScene extends SceneController {
                             gui.getController().placeCard(selectedCardHandPosition, playerCardsVisibleSide.get(selectedCardHandPosition), pos);
                         } catch (Playground.UnavailablePositionException | InvalidGamePhaseException |
                                  SuspendedGameException | Playground.NotEnoughResourcesException e) {
-                            Alert alert = new Alert(Alert.AlertType.ERROR);
-                            alert.setTitle(e.getMessage());
-                            alert.setContentText(e.getMessage());
-                            alert.show();
+
+                            showError(e.getMessage());
                             selectedCardHandPosition = -1;
                         }
 
@@ -428,6 +631,11 @@ public class GameScene extends SceneController {
         });
     }
 
+    /**
+     * Method used to update the screen after a draw
+     *
+     * @param username the username of the player
+     */
     //todo add Images/ empty rectangles for deck and faceUp empty
     public void updateAfterDraw(String username) {
         ClientController controller = gui.getController();
@@ -441,6 +649,18 @@ public class GameScene extends SceneController {
             }
 
             boardPane.boardUpdate(gui.getController().getBoard());
+            for (Rectangle emptyFace : boardPane.getEmptySlotsToInitialize()) {
+                emptyFace.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        if (isClicked(mouseEvent, MouseButton.PRIMARY)) {
+                            showError("You can't draw from an empty slot, please try again");
+                        }
+                    }
+                });
+            }
+
+            boardPane.setEmptySlotsToInitialize(new ArrayList<>());
         }
     }
 
@@ -458,7 +678,11 @@ public class GameScene extends SceneController {
         }
     }
 
-
+    /**
+     * Method used to update the screen after a placement
+     *
+     * @param username the username of the player
+     */
     public void updateAfterPlace(String username) {
         ClientController controller = gui.getController();
         synchronized (controller) {
@@ -516,12 +740,7 @@ public class GameScene extends SceneController {
                 chat.sendMessage(gui.getController());
 
             } catch (InvalidMessageException e) {
-                System.err.println("error: " + e.getMessage());
-                //could be changed with an error scene
-                Alert invalidMessage = new Alert(Alert.AlertType.ERROR);
-                invalidMessage.setTitle("Invalid message");
-                invalidMessage.setContentText("Exception: " + e.getMessage());
-                invalidMessage.show();
+                showError("Invalid message\n" + e.getMessage());
             } catch (RemoteException e) {
                 // todo. add notification for server crashed
             }
@@ -529,10 +748,24 @@ public class GameScene extends SceneController {
         }
     }
 
+    /**
+     * Method used to receive a message
+     *
+     * @param message the incoming message
+     */
     public void receiveMessage(Message message) {
         if (isReferringToMe(message)) {
             appendMessage(message);
         }
     }
+
+    public double getSceneWindowWidth() {
+        return startedGameSceneWidth;
+    }
+
+    public double getSceneWindowHeight() {
+        return startedGameSceneHeight;
+    }
+
 
 }

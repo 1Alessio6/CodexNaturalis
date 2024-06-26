@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.client.view.gui.util;
 
+import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 import javafx.scene.control.Label;
@@ -11,20 +12,28 @@ import javafx.scene.text.Text;
 
 import java.util.Map;
 
-import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.setBackgroundColor;
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
 import static javax.swing.text.StyleConstants.setBackground;
 
+/**
+ * PlaygroundInfoPane represents the pane in which player's playground resides.
+ * PlaygroundInfoPane includes a <code>ResourcePane</code> and a <code>RankPane</code>
+ */
 public class PlaygroundInfoPane {
 
-    Pane mainPane;
-    Label playGroundOwner;
+    private final Pane mainPane;
+
+    private final Label playGroundOwner;
 
     private final RankPane rank;
 
+    private final ImageView returnToMainPlayground;
 
-    ImageView returnToMainPlayground;
-    ResourcePane resourcePane;
+    private final ResourcePane resourcePane;
 
+    /**
+     * Constructs a new <code>PlaygroundInfoPane</code>
+     */
     public PlaygroundInfoPane() {
         returnToMainPlayground = new ImageView(Icon.HOME.getPath());
         returnToMainPlayground.setFitWidth(30);
@@ -32,7 +41,7 @@ public class PlaygroundInfoPane {
         returnToMainPlayground.setLayoutX(600);
         returnToMainPlayground.setLayoutY(5);
 
-        rank = new RankPane(55,40,30);
+        rank = new RankPane(55, 40, 30);
         Pane rankMainPane = rank.getMainPane();
         rankMainPane.setLayoutX(560);
         rankMainPane.setLayoutY(5);
@@ -45,9 +54,15 @@ public class PlaygroundInfoPane {
         mainPane.setLayoutY(183);
         mainPane.setBackground(setBackgroundColor("#EEE5BC"));
         mainPane.getChildren().add(rankMainPane);
+        mainPane.setStyle("-fx-background-radius: 5px;" + "-fx-background-color: #EEE5BC;");
 
-        playGroundOwner.setLayoutY(15);
+
+        playGroundOwner.setLayoutY(9);
         playGroundOwner.setLayoutX(5);
+        playGroundOwner.setFont(new Font(CAMBRIA_MATH, 12));
+        playGroundOwner.setPrefWidth(143);
+        playGroundOwner.setWrapText(true);
+
 
         resourcePane = new ResourcePane(400, 40);
         resourcePane.initialize(36.25, 40, 20);
@@ -60,6 +75,12 @@ public class PlaygroundInfoPane {
         mainPane.getChildren().add(returnToMainPlayground);
     }
 
+    /**
+     * Adds playground information
+     *
+     * @param player       the representation of the player
+     * @param isMainPlayer boolean representing whether the <code>player</code> is the main player or not
+     */
     public void setPlaygroundInfo(ClientPlayer player, boolean isMainPlayer) {
 
 
@@ -72,16 +93,26 @@ public class PlaygroundInfoPane {
             rank.getMainPane().setVisible(true);
             returnToMainPlayground.setVisible(false);
         }
-        playGroundOwner.setFont(new Font("Arial", 11));
+        playGroundOwner.setFont(new Font(CAMBRIA_MATH, 12));
 
         resourcePane.updateResources(player.getPlayground().getResources());
     }
 
-    public void updateRank(int rank){
+    /**
+     * Updates the rank of the player
+     *
+     * @param rank the new rank of the player
+     */
+    public void updateRank(int rank) {
         this.rank.updateRank(rank);
     }
 
-    public void updateScore(int score){
+    /**
+     * Updates the score of the player
+     *
+     * @param score the new score of the player
+     */
+    public void updateScore(int score) {
         this.rank.updateScore(score);
     }
 
@@ -89,8 +120,12 @@ public class PlaygroundInfoPane {
         return mainPane;
     }
 
-
-    public ImageView getReturnToMainPlayground(){
+    /**
+     * Provides the home's <code>ImageView</code>
+     *
+     * @return home's <code>ImageView</code>
+     */
+    public ImageView getReturnToMainPlayground() {
         return returnToMainPlayground;
     }
 

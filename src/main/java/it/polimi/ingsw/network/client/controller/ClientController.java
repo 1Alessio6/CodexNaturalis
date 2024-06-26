@@ -51,11 +51,24 @@ public class ClientController implements ClientActions {
     //    this.server = server;
     //}
 
+    /**
+     * Constructs the <code>ClientController</code> with the <code>client</code> provided.
+     *
+     * @param client the representation of the client
+     */
     public ClientController(Client client) {
         this.client = client;
         this.requestsForTheServer = Executors.newSingleThreadExecutor();
     }
 
+    /**
+     * Configures the client binding it to the <code>ip</code> and <code>port</code> provided.
+     *
+     * @param view the representation of the view
+     * @param ip   the ip address
+     * @param port the port number
+     * @throws UnReachableServerException if the server isn't reachable
+     */
     public synchronized void configureClient(View view, String ip, Integer port) throws UnReachableServerException {
         client.configure(this, view);
         server = client.bindServer(ip, port);
@@ -190,10 +203,6 @@ public class ClientController implements ClientActions {
     @Override
     public synchronized void placeStarter(Side side) throws SuspendedGameException, InvalidGamePhaseException {
 
-        if (!game.isGameActive()) {
-            throw new SuspendedGameException("The game is suspended, you can only text messages");
-        }
-
         if (game.getCurrentPhase() != GamePhase.Setup) {
             throw new InvalidGamePhaseException("You can only place your starter card during the setup phase");
         }
@@ -212,10 +221,6 @@ public class ClientController implements ClientActions {
      */
     @Override
     public synchronized void chooseColor(PlayerColor color) throws InvalidColorException, SuspendedGameException, InvalidGamePhaseException {
-
-        if (!game.isGameActive()) {
-            throw new SuspendedGameException("The game is suspended, you can only text messages");
-        }
 
         if (game.getCurrentPhase() != GamePhase.Setup) {
             throw new InvalidGamePhaseException("You can only choose your color during the setup phase");
@@ -239,9 +244,6 @@ public class ClientController implements ClientActions {
      */
     @Override
     public void placeObjectiveCard(int chosenObjective) throws SuspendedGameException, InvalidGamePhaseException {
-        if (!game.isGameActive()) {
-            throw new SuspendedGameException("The game is suspended, you can only text messages");
-        }
 
         if (game.getCurrentPhase() != GamePhase.Setup) {
             throw new InvalidGamePhaseException("You can only choose your private objective during the setup phase");

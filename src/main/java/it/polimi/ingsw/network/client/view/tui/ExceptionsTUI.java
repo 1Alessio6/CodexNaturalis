@@ -39,6 +39,10 @@ public enum ExceptionsTUI {
      */
     INVALID_SPY_COMMAND("you can't spy yourself..."),
     /**
+     * INVALID_USERNAME is thrown when the username digitized by the player exceeds 15 characters.
+     */
+    INVALID_USERNAME("Username too long"),
+    /**
      * INVALID_GAME_COMMAND is thrown when a player digits an invalid game command.
      */
     INVALID_GAME_COMMAND("Invalid game command");

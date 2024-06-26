@@ -7,7 +7,7 @@
 * Quill   🪶                                                                                                                   And Remember:
 * Inkwell  🫙                                                              ╔ ═════ ╗    ╔ ═════ ╗
 * Manuscript  📜                                                           ║  <1>  ║    ║  <2>  ║                                       The first player to reach 20 points triggers the end
-* Corner 🗂️                                                                ╚ ═════ ╝    ╚ ═════ ╝                                        of the game
+* Corner  📋                                                               ╚ ═════ ╝    ╚ ═════ ╝                                        of the game
 
                                                                            ╔ ═════ ╗    ╔ ═════ ╗
       ~ CHOOSING THE SECRET OBJECTIVE CARD ~                               ║  <3>  ║    ║  <4>  ║                              >> Page 2 >>
@@ -23,7 +23,7 @@ otherwise.
                ║  <1>  ║    ║  <2>  ║                        otherwise, digit the number <6>.
                ╚ ═════ ╝    ╚ ═════ ╝
                                                                             ╔ ═════ ╗    ╔ ═════ ╗
-                                                                            ║  <6>  ║    ║  <5>  ║
+                                                                            ║  <5>  ║    ║  <6>  ║
                                                                             ╚ ═════ ╝    ╚ ═════ ╝
 
              ~ DRAWING A CARD LEGEND ~

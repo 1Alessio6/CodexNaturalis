@@ -14,18 +14,40 @@ public class Chat {
     private String recipient;
     private String content;
 
+    /**
+     * Constructs a <code>Chat</code>
+     *
+     * @param author the author of the message
+     */
     public Chat(String author) {
         this.author = author;
     }
 
+    /**
+     * Selects the recipient of the message
+     *
+     * @param recipient the message recipient
+     */
     public void selectRecipient(String recipient) {
         this.recipient = recipient;
     }
 
+    /**
+     * Inserts the <code>content</code> of the message
+     *
+     * @param content the message content
+     */
     public void insertText(String content) {
         this.content = content;
     }
 
+    /**
+     * Sends a message
+     *
+     * @param controller the representation of the controller
+     * @throws RemoteException         in the event of an error occurring during the execution of a remote method
+     * @throws InvalidMessageException if the author doesn't match the author or the recipient doesn't exist
+     */
     public void sendMessage(ClientController controller) throws RemoteException, InvalidMessageException {
         Message toSend = new Message(author, recipient, content);
         if (recipient.equals("Everyone")) {

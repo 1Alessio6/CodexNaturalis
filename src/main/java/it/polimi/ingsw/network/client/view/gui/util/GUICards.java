@@ -11,6 +11,9 @@ import javafx.scene.shape.Rectangle;
 
 import java.util.List;
 
+/**
+ * GUICards represents the cards in the Graphical User Interface
+ */
 public class GUICards {
 
     public static final int boardCardsWidth = 126;
@@ -22,7 +25,16 @@ public class GUICards {
     public static final int playerCardsHeight = 81;
 
 
-
+    /**
+     * Initializes the cards of the player
+     *
+     * @param playerPane           the player Pane
+     * @param cards                the cards inside the player's hand
+     * @param cardWidth            the width of the card
+     * @param cardHeight           the height of the card
+     * @param distanceBetweenCards the distance between each card
+     * @param flipButton           the button that flips over tha cards
+     */
     //todo modify with usernames
     public static void initializePlayerCards(Pane playerPane, List<ClientCard> cards, int cardWidth, int cardHeight, int distanceBetweenCards, MouseButton flipButton) {
 
@@ -41,6 +53,14 @@ public class GUICards {
 
     }
 
+    /**
+     * Flips the cards over
+     *
+     * @param rectangle   the rectangle in which the cards to be turned over are
+     * @param mouseButton the mouse button that flips over the cards
+     * @param frontImage  the representation of the front side of the cards
+     * @param backImage   the representation of the reverse side of the cards
+     */
     public static void flipCard(Rectangle rectangle, MouseButton mouseButton, ImagePattern frontImage, ImagePattern backImage) {
 
         if(mouseButton == null){
@@ -62,6 +82,12 @@ public class GUICards {
         });
     }
 
+    /**
+     * Provides a new <code>ImagePattern</code> for the given <code>path</code>
+     *
+     * @param path the image path
+     * @return the ImagePattern corresponding to the <code>path</code>
+     */
     public static ImagePattern pathToImage(String path){
         return new ImagePattern(new Image(path));
     }

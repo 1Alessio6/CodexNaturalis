@@ -3,7 +3,9 @@ package it.polimi.ingsw.network.client.view.tui.drawplayground;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.network.client.view.tui.ClientUtil;
 
-
+/**
+ * DrawlablePlayground is the class responsible for managing the playground's drawing
+ */
 public class DrawablePlayground {
     String[][] matPlayground;
     int cardWidth;
@@ -103,6 +105,14 @@ public class DrawablePlayground {
         return new Position(x, y);
     }
 
+    /**
+     * Draws a <code>card</code> in the <code>cardPos</code>
+     *
+     * @param cardPos the position in which the card is drawn
+     * @param card    the representation of the card
+     * @throws InvalidCardRepresentationException if the card has an invalid representation respect to the playground
+     *                                            dimension
+     */
     public void drawCard(Position cardPos, String[][] card) throws InvalidCardRepresentationException {
         if (!validCardRepresentation(card)) {
             throw new InvalidCardRepresentationException(cardPos.getX(), cardPos.getY());

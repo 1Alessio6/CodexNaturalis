@@ -12,7 +12,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import com.google.gson.GsonBuilder;
 
+/**
+ * Test to check the correct operation of the <code>printPlayground</code> method
+ */
 class ClientUtilTest {
+    /**
+     * Test to check that printing a playground with a card containing not available positions inside of it, doesn't thow
+     * any kind of exception
+     */
     @Test
     void printPlaygroundWithCardContainingNotAvailablePos_doesNotThrow() {
         Gson gson;

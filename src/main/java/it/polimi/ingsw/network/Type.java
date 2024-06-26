@@ -108,8 +108,17 @@ public enum Type {
      * DISCONNECT refers to the action of disconnecting a player from the game.
      */
     DISCONNECT,
+    /**
+     * RESULT_OF_LOGIN refer to the action of showing the result of the login, that can be <code>accepted</code> or not.
+     */
     RESULT_OF_LOGIN,
+    /**
+     * FULL_LOBBY refers to the action of showing the fullness of the lobby.
+     */
     FULL_LOBBY,
+    /**
+     * EXCEEDING_PLAYER refers to the action of notifying an exceeding player about his/her status.
+     */
     EXCEEDING_PLAYER,
     GAME_ALREADY_STARTED
 }

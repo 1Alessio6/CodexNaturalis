@@ -50,6 +50,11 @@ public interface VirtualView extends HeartBeatListener, Remote {
      */
     void showUpdatePlayersInLobby(List<String> usernames) throws RemoteException;
 
+    /**
+     * Method used to notify an exceeding player about his/her status.
+     *
+     * @throws RemoteException in the event of an error occurring during the execution of a remote method.
+     */
     void showUpdateExceedingPlayer() throws RemoteException;
 
     /**
@@ -153,5 +158,14 @@ public interface VirtualView extends HeartBeatListener, Remote {
      */
     void reportError(String details) throws RemoteException;
 
+    /**
+     * Method used to connect the player or an output with the <code>details</code>, depending on whether the
+     * player is <code>accepted</code> or not.
+     *
+     * @param accepted boolean indicating whether the player is accepted or not.
+     * @param username the player's username.
+     * @param details  the error details.
+     * @throws RemoteException in the event of an error occurring during the execution of a remote method.
+     */
     void resultOfLogin(boolean accepted, String username, String details) throws RemoteException;
 }

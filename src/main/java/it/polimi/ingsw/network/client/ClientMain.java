@@ -9,12 +9,21 @@ import it.polimi.ingsw.network.client.view.tui.ClientUtil;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 
+/**
+ * ClientMain is the class that starts the client in a GUI/TUI interface and in an RMI/Socket communication
+ */
 public class ClientMain {
     private static final String OPTION_RMI = "rmi";
     private static final String OPTION_SOCKET = "socket";
     private static final String OPTION_TUI = "tui";
     private static final String OPTION_GUI = "gui";
 
+    /**
+     * Creates the client with the <code>typeConnection</code> provided
+     *
+     * @param typeConnection the type of communication to be used, that is, OPTION_RMI or OPTION_SOCKET
+     * @return the client in the <code>typeConnection</code> desired
+     */
     public static Client createClient(String typeConnection) {
         Client client;
         if (typeConnection.equals(OPTION_RMI)) {
@@ -25,6 +34,12 @@ public class ClientMain {
         return client;
     }
 
+    /**
+     * Runs the application in the <code>args</code> provided
+     *
+     * @param args the arguments of the connection,
+     *             those are, the <code>typeConnection</code> and the <code>typeView</code>
+     */
     public static void main(String[] args) {
         String typeConnection = OPTION_SOCKET;
         String typeView = OPTION_GUI;

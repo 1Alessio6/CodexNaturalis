@@ -41,6 +41,9 @@ public class ClientRMI extends Client implements HeartBeatHandler {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public VirtualView getInstanceForTheServer() throws RemoteException {
         if (stub == null) {
@@ -57,6 +60,10 @@ public class ClientRMI extends Client implements HeartBeatHandler {
         isConnected = false;
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void resultOfLogin(boolean accepted, String username, String details) throws RemoteException {
         System.err.println("Received result of login");

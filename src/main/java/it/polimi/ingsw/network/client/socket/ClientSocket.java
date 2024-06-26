@@ -28,6 +28,10 @@ public class ClientSocket extends Client implements HeartBeatHandler {
 
     public ClientSocket() {}
 
+    /**
+     * {@inheritDoc}
+     * @return
+     */
     @Override
     public VirtualView getInstanceForTheServer() {
         return this;
@@ -60,11 +64,11 @@ public class ClientSocket extends Client implements HeartBeatHandler {
             server.start();
             return server;
         } catch (UnknownHostException e) {
-            System.err.println("Don't know about host " + ip);
+            // System.err.println("Don't know about host " + ip);
             closeResources();
             throw new UnReachableServerException(e.getMessage());
         } catch (IOException e) {
-            System.err.println("Couldn't get I/O for the connection to " + ip);
+            //System.err.println("Couldn't get I/O for the connection to " + ip);
             closeResources();
             throw new UnReachableServerException(e.getMessage());
         }

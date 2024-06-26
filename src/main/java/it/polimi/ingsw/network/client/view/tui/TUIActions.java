@@ -37,7 +37,7 @@ public enum TUIActions {
      */
     LOBBYSIZE("<n>: set size of the lobby"),
     /**
-     * OBJECTIVE refers to the action that allows a player to choose his/her the secret objective
+     * OBJECTIVE refers to the action that allows a player to choose his/her secret objective
      */
     OBJECTIVE("choose your objective"),
     /**
@@ -49,9 +49,9 @@ public enum TUIActions {
      */
     STARTER("place your starter"),
     /**
-     * SPY refers to the action that allows the player to look the n-player playground
+     * SPY refers to the action that allows the player to look the <code>user</code>'s playground
      */
-    SPY("<n>: look at n-index player"),
+    SPY("<user>: look at user's playground"),
     /**
      * PM refers to the action that allows the player to write a private message
      */

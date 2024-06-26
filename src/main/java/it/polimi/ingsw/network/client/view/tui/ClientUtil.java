@@ -40,9 +40,9 @@ enum GameScreenArea {
     COMMON_OBJECTIVE(2 + 2 * ClientUtil.objectiveCardWidth, ClientUtil.objectiveCardHeight, new Position(42, 2)),
     RESOURCES(26, 15, new Position(14, 2));
 
-    final int width;
-    final int height;
-    final Position screenPosition;
+    private final int width;
+    private final int height;
+    private final Position screenPosition;
 
     GameScreenArea(int width, int height, Position screenPosition) {
         this.width = width;
@@ -90,7 +90,7 @@ public class ClientUtil {
     static String doubleThinSpace = "\u2009\u2009";
     static String doubleHairSpace = "\u200A" + "\u200A";
     static String hairSpace = "\u200A";
-    static String corner = "\uD83D\uDDC2️";
+    static String corner = "\uD83D\uDCCB";
     static String one = "\uD835\uDFCF";
     static String two = "\uD835\uDFD0";
     static String three = "\uD835\uDFD1";
@@ -279,14 +279,13 @@ public class ClientUtil {
         String[][] cardMatrix = new String[5][9];
         initializeMatrix(cardMatrix);
         ANSIColor color = YELLOW;
-        int points;
+        int points=objectiveCard.getScore();
         Map<Position, CardColor> positionCondition = objectiveCard.getPositionCondition();
         Map<Symbol, Integer> resourceCondition = objectiveCard.getResourceCondition();
 
         int switchCase = positionOrResourcesSwitchCase(positionCondition, resourceCondition);
 
         if (switchCase == 1) {//it is a card with a position condition
-            points = positionCase(positionCondition) == 1 || positionCase(positionCondition) == 3 ? 2 : 3;
             appendNewResources(new HashMap<>(), cardMatrix, color);
             appendObjectiveMatrixLines(new HashMap<>(), cardMatrix, color);
             paintBackground(cardMatrix, positionCondition);
@@ -295,6 +294,7 @@ public class ClientUtil {
             appendNewResources(new HashMap<>(), cardMatrix, color);
             appendObjectiveMatrixLines(resourceCondition, cardMatrix, color);
             appendInternalResources(resourceCondition, cardMatrix, true);
+            appendPoints(cardMatrix,null,points,switchCase);
         }
         return cardMatrix;
     }
@@ -324,7 +324,8 @@ public class ClientUtil {
      * Clears the area where exceptions are displayed.
      */
     public static void clearExceptionSpace(){
-        writeLine(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+11,
+        writeLine(GameScreenArea.INPUT_AREA.getScreenPosition().getX()+
+                        GameScreenArea.INPUT_AREA.getHeight(),
                 GameScreenArea.INPUT_AREA.getScreenPosition().getY()+1,
                 GameScreenArea.INPUT_AREA.getWidth() -2,
                 " ".repeat(120));
@@ -422,30 +423,6 @@ public class ClientUtil {
     }
 
     /**
-     * Converts a <code>color</code> from CardColor to ANSIColor, seen as a background color.
-     *
-     * @param color the color to convert.
-     * @return the ANSIColor background color corresponding to the CardColor <code>color</code>.
-     */
-    public static ANSIColor cardColorToBGConversion(CardColor color) {
-        return switch (color) {
-            case RED -> RED_BACKGROUND_BRIGHT;
-            case BLUE -> BLUE_BACKGROUND_BRIGHT;
-            case GREEN -> GREEN_BACKGROUND_BRIGHT;
-            case PURPLE -> PURPLE_BACKGROUND_HIGH_INTENSITY;
-            case YELLOW -> null;
-        };
-    }
-
-    private static void searchForRelevantInformation(Map<Symbol, Integer> requirements) {
-        if (!requirements.isEmpty()) {
-            for (Map.Entry<Symbol, Integer> entry : requirements.entrySet()) {
-                System.out.println(ITALIC + "Req.: " + entry.getKey().toString() + printResources(entry.getKey()) + " " + entry.getValue());
-            }
-        }
-    }
-
-    /**
      * Appends the outer edges to the <code>cardMatrix</code>. It adds the bottom, top and side edges.
      *
      * @param resources  a map containing the resources of the card and their quantities.
@@ -481,7 +458,7 @@ public class ClientUtil {
      * @param color      the color of the <B>objective</B> card.
      */
     private static void appendObjectiveMatrixLines(Map<Symbol, Integer> resources, String[][] cardMatrix, ANSIColor color) {
-        int midLine = cardMatrix.length / 2;
+        int resourceLine = (cardMatrix.length / 2)+1;
         for (int i = 0; i < cardMatrix.length; i++) {
             if (i == 0 || i == cardMatrix.length - 1) {
                 for (int j = 1; j < cardMatrix[0].length - 1; j++) {
@@ -491,9 +468,9 @@ public class ClientUtil {
         }
         for (int i = 1; i < cardMatrix.length - 1; i++) {
             cardMatrix[i][0] = color + "║" + RESET;
-            if ((resourcesSize(resources) == 1 || resourcesSize(resources) == 2) && i == midLine) {
+            if ((resourcesSize(resources) == 1 || resourcesSize(resources) == 2) && i == resourceLine) {
                 cardMatrix[i][cardMatrix[0].length - 1] = color + "║" + RESET;
-            } else if (resourcesSize(resources) == 3 && i == midLine) {
+            } else if (resourcesSize(resources) == 3 && i == resourceLine) {
                 cardMatrix[i][cardMatrix[0].length - 2] = color + "║" + RESET;
             } else {
                 cardMatrix[i][cardMatrix[0].length - 1] = color + "  ║" + RESET;
@@ -511,8 +488,11 @@ public class ClientUtil {
     private static void appendPoints(String[][] cardMatrix, Condition pointsCondition, int points,int switchCase) {
         if(pointsCondition==null && switchCase==1){
             cardMatrix[2][6] = YELLOW + printPoints(points) + RESET;
-        }else if (pointsCondition == null) {
-            cardMatrix[1][4] = YELLOW + printPoints(points) + RESET;//
+        } else if (pointsCondition == null && switchCase == 2) {
+            cardMatrix[1][5] = YELLOW + printPoints(points) + RESET;
+        }
+        else if (pointsCondition == null) {
+            cardMatrix[1][4] = YELLOW + printPoints(points) + RESET;
         } else {
             cardMatrix[1][3] = YELLOW + printPoints(points) + RESET;
             cardMatrix[1][4] = YELLOW + "|" + RESET;
@@ -528,29 +508,30 @@ public class ClientUtil {
      */
     private static void appendInternalResources(Map<Symbol, Integer> resources, String[][] cardMatrix,boolean isObjective) {//works only in starter and back cards
         int i = 0;
-        int objPad=0;
+        int objPad = 0, objMidLinePad = 0;
         int midLine=cardMatrix.length/2;
         if(isObjective){
             objPad=1;
+            objMidLinePad = 1;
         }
         for (Map.Entry<Symbol, Integer> entry : resources.entrySet()) {
             for (int j = 0; j < entry.getValue(); j++) {
                 if (i == 0) {
                     if (resourcesSize(resources) == 1) {
-                        cardMatrix[midLine][3+objPad] = printResources(entry.getKey());
+                        cardMatrix[midLine+objMidLinePad][3+objPad] = printResources(entry.getKey());
                     } else if (resourcesSize(resources) == 2) {
-                        cardMatrix[midLine][2+objPad] = printResources(entry.getKey());//5//2,3,4
+                        cardMatrix[midLine+objMidLinePad][2+objPad] = printResources(entry.getKey());//5//2,3,4
                     } else if (resourcesSize(resources) == 3) {
-                        cardMatrix[midLine][1+objPad] = printResources(entry.getKey());
+                        cardMatrix[midLine+objMidLinePad][1+objPad] = printResources(entry.getKey());
                     }
                 } else if (i == 1) {
                     if (resourcesSize(resources) == 2) {
-                        cardMatrix[midLine][3+objPad] = printResources(entry.getKey());
+                        cardMatrix[midLine+objMidLinePad][3+objPad] = printResources(entry.getKey());
                     } else {
-                        cardMatrix[midLine][2+objPad] = printResources(entry.getKey());
+                        cardMatrix[midLine+objMidLinePad][2+objPad] = printResources(entry.getKey());
                     }
                 } else if (i == 2) {
-                    cardMatrix[midLine][3+objPad] = printResources(entry.getKey());
+                    cardMatrix[midLine+objMidLinePad][3+objPad] = printResources(entry.getKey());
                 }
                 i++;
             }
@@ -850,6 +831,12 @@ public class ClientUtil {
         return str.toString();
     }
 
+    /**
+     * Prints the cards in the player's hand
+     *
+     * @param hand the player's hand
+     * @param side the side of the cards to be printed
+     */
     public static void printPlayerHand(List<ClientCard> hand, Side side) {
         int x = GameScreenArea.HAND_CARDS.getScreenPosition().getX();
         int y = GameScreenArea.HAND_CARDS.getScreenPosition().getY();
@@ -887,7 +874,8 @@ public class ClientUtil {
      * @param filler the resources of the player.
      */
     public static void printResourcesArea(Map<Symbol, Integer> filler) {
-        printToLineColumn(GameScreenArea.RESOURCES.screenPosition.getX(), GameScreenArea.RESOURCES.screenPosition.getY(), createResourcesTable(filler));
+        printToLineColumn(GameScreenArea.RESOURCES.getScreenPosition().getX(),
+                GameScreenArea.RESOURCES.getScreenPosition().getY(), createResourcesTable(filler));
     }
 
     /**
@@ -1006,14 +994,19 @@ public class ClientUtil {
      * @param players the players.
      */
     public static void printScoreboard(List<ClientPlayer> players) {
-        printToLineColumn(GameScreenArea.SCOREBOARD.screenPosition.getX(),
-                GameScreenArea.SCOREBOARD.screenPosition.getY(),
+        printToLineColumn(GameScreenArea.SCOREBOARD.getScreenPosition().getX(),
+                GameScreenArea.SCOREBOARD.getScreenPosition().getY(),
                 createScoreBoard(players));
     }
 
+    /**
+     * Prints the list of the players waiting in the lobby
+     *
+     * @param usernames the usernames of the waiting players
+     */
     public static void printWaitingList(List<String> usernames) {
-        printToLineColumn(GameScreenArea.SCOREBOARD.screenPosition.getX(),
-                GameScreenArea.SCOREBOARD.screenPosition.getY(),
+        printToLineColumn(GameScreenArea.SCOREBOARD.getScreenPosition().getX(),
+                GameScreenArea.SCOREBOARD.getScreenPosition().getY(),
                 createWaitingList(usernames));
     }
 
@@ -1039,7 +1032,8 @@ public class ClientUtil {
     public static void putCursorToInputArea() {
         // todo: put correct values
         moveCursor(Position.sum(new Position(1,1),
-                new Position(GameScreenArea.INPUT_AREA.screenPosition.getY(), GameScreenArea.INPUT_AREA.screenPosition.getX())));
+                new Position(GameScreenArea.INPUT_AREA.getScreenPosition().getY(),
+                        GameScreenArea.INPUT_AREA.getScreenPosition().getX())));
     }
 
     /**
@@ -1048,10 +1042,9 @@ public class ClientUtil {
      * @param currentOffset respect to the centered start print (is the position that will leave exactly half tiles out)
      *                      in both directions
      * @param requestedOffset to add to the current offset
-     * @return
      */
     public static DrawablePlayground buildPlayground(ClientPlayground clientPlayground, Position currentOffset, Position requestedOffset)
-            throws InvalidCardRepresentationException, UnInitializedPlaygroundException, InvalidCardDimensionException, FittablePlaygroundException {
+            throws InvalidCardRepresentationException, InvalidCardDimensionException, FittablePlaygroundException {
         DrawablePlayground dp = new DrawablePlayground(7, cardHeight); // 7 array cells for each matrix line of the card
 
         Position[] realLimitPositions = clientPlayground.retrieveTopLeftAndBottomRightPosition();
@@ -1184,15 +1177,22 @@ public class ClientUtil {
      */
     public static Position printPlayground(ClientPlayground clientPlayground, Position currentOffset, Position requestedOffset)
             throws UndrawablePlaygroundException {
+
         DrawablePlayground drawablePlayground = buildPlayground(clientPlayground, currentOffset, requestedOffset);
         String[][] playgroundToPrint = drawablePlayground.getPlaygroundRepresentation();
         int playgroundHeight = playgroundToPrint.length;
         int playgroundWidth = playgroundToPrint[0].length;
 
         // center playground
-        int printX = GameScreenArea.PLAYGROUND.screenPosition.getX() + ((GameScreenArea.PLAYGROUND.getWidth() - playgroundWidth) / 2);
-        int printY = GameScreenArea.PLAYGROUND.screenPosition.getY() + ((GameScreenArea.PLAYGROUND.getHeight() - playgroundHeight) / 2);
+        int printX = GameScreenArea.PLAYGROUND.getScreenPosition().getX() + ((GameScreenArea.PLAYGROUND.getWidth() - playgroundWidth) / 2);
+        int printY = GameScreenArea.PLAYGROUND.getScreenPosition().getY() + ((GameScreenArea.PLAYGROUND.getHeight() - playgroundHeight) / 2);
 
+        // clear playground area
+        printToLineColumn(GameScreenArea.PLAYGROUND.getScreenPosition().getY(),
+                GameScreenArea.PLAYGROUND.getScreenPosition().getX(),
+                createEmptyArea(GameScreenArea.PLAYGROUND.getHeight(), GameScreenArea.PLAYGROUND.getWidth()));
+
+        // then print playground
         printToLineColumn(printY,
                 printX,
                 playgroundToPrint);
@@ -1200,6 +1200,13 @@ public class ClientUtil {
         return drawablePlayground.getCurrentOffset();
     }
 
+    /**
+     * Draws the card located in <code>pos</code>
+     * The passed position must be an available position
+     *
+     * @param pos available position
+     * @return a card containing of the position
+     */
     // todo: please update card representation
     public static String[][] drawAvailablePosition(Position pos) {
         int matrixCardLength = cardWidth - 2;
@@ -1248,14 +1255,14 @@ public class ClientUtil {
         int relativeX = areaPadding;
         for (int i = 0; i < 4; i++) {
             // if new card will go over the faceUpCard area
-            if (relativeX + cardWidth > GameScreenArea.FACE_UP_CARDS.width){
+            if (relativeX + cardWidth > GameScreenArea.FACE_UP_CARDS.getWidth()){
                 relativeY += cardHeight + areaPadding;
                 relativeX = areaPadding;
             }
 
             ClientFace face = i < faces.size() ? faces.get(i) : null;
-            printCardOutsidePlayground(GameScreenArea.FACE_UP_CARDS.screenPosition.getX() + relativeX,
-                    GameScreenArea.FACE_UP_CARDS.screenPosition.getY() + relativeY,
+            printCardOutsidePlayground(GameScreenArea.FACE_UP_CARDS.getScreenPosition().getX() + relativeX,
+                    GameScreenArea.FACE_UP_CARDS.getScreenPosition().getY() + relativeY,
                     face);
 
             relativeX += cardWidth + areaPadding;
@@ -1379,20 +1386,6 @@ public class ClientUtil {
         //    cnt++;
         //}
     }
-    public static void eraseLine(int line, int initialColumn, int finalColumn, int numberOfLinesToDelete) {
-        if (finalColumn < initialColumn) {
-            System.err.println("Final column is less than initial column");
-        } else {
-            for (int i = 0; i < numberOfLinesToDelete; i++) {
-                int currentLine = line + i;
-                System.out.print("\033[" + currentLine + ";" + initialColumn + "H");
-                for (int j = initialColumn; j < finalColumn + 1; j++) {
-                    System.out.print(" ");
-                }
-            }
-            System.out.print("\033[" + (line + numberOfLinesToDelete) + ";0H");
-        }
-    }
 
     /**
      * Prints the rulebook on the screen.
@@ -1486,6 +1479,15 @@ public class ClientUtil {
         return requirementsArea;
     }
 
+    /**
+     * Decides whether the <code>currOffset</code> is exaggerated or not and if it is, corrects it and returns the
+     * upper left position from where the printing will start
+     *
+     * @param playground of reference
+     * @param currOffset of the playground
+     * @return the adjusted position
+     * @throws UndrawablePlaygroundException if an error occurs during the playground representation design
+     */
     public static Position printPlayground(ClientPlayground playground, Position currOffset)
             throws UndrawablePlaygroundException {
         return printPlayground(playground, currOffset, new Position(0,0));

@@ -9,12 +9,16 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.util.List;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
 
+/**
+ * EndScene is the controller concerning the end scene
+ */
 public class EndScene extends SceneController {
 
     @FXML
@@ -29,11 +33,40 @@ public class EndScene extends SceneController {
     public EndScene() {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void initialize() {
         mainPane.setBackground(createMainBackground());
         winnersPane.setAlignment(Pos.TOP_CENTER);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public void initializeUsingGameInformation() {
+        super.initializeUsingGameInformation();
+        addButtonPane(mainPane, buttonPane, 1028, 637);
+    }
+
+    @Override
+    protected void removeUpdatePaneFromMainPane(StackPane errorPane) {
+        mainPane.getChildren().remove(errorPane);
+    }
+
+    @Override
+    public void showError(String details) {
+        StackPane errorPane = generateError(details);
+        errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth)/2);
+        errorPane.setLayoutY(10);
+        mainPane.getChildren().add(errorPane);
+    }
+
+    /**
+     * Method used to show the winners of the game
+     *
+     * @param winners the winners' list
+     */
     public void showWinners(List<String> winners) {
         for (String w : winners) {
             Label winnerLabel = new Label();
@@ -54,5 +87,13 @@ public class EndScene extends SceneController {
             controller.disconnect(controller.getMainPlayerUsername());
             System.exit(0);
         }
+    }
+
+    public double getSceneWindowWidth() {
+        return startedGameSceneWidth;
+    }
+
+    public double getSceneWindowHeight() {
+        return startedGameSceneHeight;
     }
 }

@@ -35,8 +35,16 @@ public interface View {
      */
     void showUpdateAfterLobbyCrash();
 
+    /**
+     * Method used to notify an exceeding player about his/her status.
+     */
     void showUpdateExceedingPlayer();
 
+    /**
+     * Method used to show a player that he/she has digitized an invalid username
+     *
+     * @param details the reasons
+     */
     void showInvalidLogin(String details);
 
     /**
@@ -107,6 +115,11 @@ public interface View {
      */
     void showWinners(List<String> winners);
 
+    /**
+     * Method used to report an error
+     *
+     * @param details error details
+     */
     void reportError(String details);
 
     /**
