@@ -10,6 +10,7 @@ import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
@@ -139,7 +140,8 @@ public class GameScene extends SceneController {
         usernames.add("Everyone");
         recipients.getItems().addAll(usernames);
         chat = new Chat(myName);
-        for (Message m : gui.getController().getMessages()) {
+        List<Message> messages = new ArrayList<>(gui.getController().getMessages());
+        for (Message m : messages) {
             if (isReferringToMe(m)) {
                 appendMessage(m);
             }
@@ -148,14 +150,18 @@ public class GameScene extends SceneController {
 
     @Override
     public void initializeUsingGameInformation() {
-        currentVisiblePlaygroundOwner = gui.getController().getMainPlayerUsername();
-        initializePlayerInfoBox();
-        initializeMainPlayerCardPane();
-        drawPlayground(gui.getController().getMainPlayerPlayground());
-        initializeBoard();
-        initializeChat();
-        initializePlaygroundInfoPane();
-        //setPlaygroundFrameColor();
+        ClientController controller = gui.getController();
+        currentVisiblePlaygroundOwner = controller.getMainPlayerUsername();
+
+        // make the snapshot of the current game atomic
+        synchronized (controller) {
+            initializePlayerInfoBox();
+            initializeMainPlayerCardPane();
+            drawPlayground(gui.getController().getMainPlayerPlayground());
+            initializeBoard();
+            initializeChat();
+            initializePlaygroundInfoPane();
+        }
     }
 
     private void initializePlaygroundInfoPane() {
@@ -190,10 +196,11 @@ public class GameScene extends SceneController {
         int layoutX = 30;
         int layoutY = 14;
 
-        for (ClientPlayer player : gui.getController().getPlayers()) {
-            if (!player.getUsername().equals(gui.getController().getMainPlayerUsername())) {
+        ClientController controller = gui.getController();
+        for (ClientPlayer player : controller.getPlayers()) {
+            if (!player.getUsername().equals(controller.getMainPlayerUsername())) {
                 PlayerInfoPane playerInfoPane = new PlayerInfoPane(player);
-                playerInfoPane.updateRank(gui.getController().getPlayerRank(player.getUsername()));
+                playerInfoPane.updateRank(controller.getPlayerRank(player.getUsername()));
                 playerInfoPane.updateScore(player.getScore());
                 Pane pane = playerInfoPane.getPlayerMainPane();
                 pane.setLayoutX(layoutX);
@@ -203,9 +210,7 @@ public class GameScene extends SceneController {
                 initializeSwitchPlayground(playerInfoPane);
                 layoutX = layoutX + 361 + distance;
             }
-
         }
-
     }
 
     private void initializeMainPlayerCardPane() {
@@ -254,7 +259,7 @@ public class GameScene extends SceneController {
         //todo you should remove from main pain too
 
         double layoutX = 200;
-        List<ClientCard> cards = gui.getController().getMainPlayerCards();
+        List<ClientCard> cards = new ArrayList<>(gui.getController().getMainPlayerCards());
 
         for (int i = 0; i < cards.size(); i++) {
 
@@ -330,10 +335,11 @@ public class GameScene extends SceneController {
 
     }
 
-    public void drawPlayground(ClientPlayground clientPlayground) {
+    private void drawPlayground(ClientPlayground clientPlayground) {
 
+        // CRITICAL
         //do not remove
-        for(Rectangle rectangle : availablePositions){
+        for (Rectangle rectangle : availablePositions) {
             mainPane.getChildren().remove(rectangle);
         }
 
@@ -354,7 +360,7 @@ public class GameScene extends SceneController {
             if (!clientPlayground.getTile(pos).sameAvailability(Availability.EMPTY)) {
                 playgroundPane.getChildren().add(guiPlayground.getRectangle(pos, pathToImage(clientPlayground.getTile(pos).getFace().getPath())));
             } else {
-                if(clientPlayground.getAvailablePositions().contains(pos)){
+                if (clientPlayground.getAvailablePositions().contains(pos)) {
                     playgroundPane.getChildren().add(guiPlayground.getRectangleEmptyTile(pos));
                 }
 
@@ -424,52 +430,58 @@ public class GameScene extends SceneController {
 
     //todo add Images/ empty rectangles for deck and faceUp empty
     public void updateAfterDraw(String username) {
-        if (username.equals(gui.getController().getMainPlayerUsername())) {
-            initializeMainPlayerCards();
-        } else {
-            PlayerInfoPane playerInfoPane = getPlayerInfoPane(username);
-            assert playerInfoPane != null;
-            playerInfoPane.updatePlayerCards(gui.getController().getPlayer(username).getPlayerCards());
+        ClientController controller = gui.getController();
+        synchronized (controller) {
+            if (username.equals(gui.getController().getMainPlayerUsername())) {
+                initializeMainPlayerCards();
+            } else {
+                PlayerInfoPane playerInfoPane = getPlayerInfoPane(username);
+                assert playerInfoPane != null;
+                playerInfoPane.updatePlayerCards(gui.getController().getPlayer(username).getPlayerCards());
+            }
+
+            boardPane.boardUpdate(gui.getController().getBoard());
         }
-
-        boardPane.boardUpdate(gui.getController().getBoard());
-
     }
 
 
-    //todo check if creates concurrency problems with update after place (java fx should be single thread so there shouldn't be problems)
     private void changeVisiblePlayground(String username) {
         currentVisiblePlaygroundOwner = username;
         updatePlayground(username);
-
     }
 
     private void updatePlayground(String username) {
-        drawPlayground(gui.getController().getPlaygroundByUsername(username));
-        playgroundInfoPane.setPlaygroundInfo(gui.getController().getPlayer(username), username.equals(gui.getController().getMainPlayerUsername()));
+        ClientController controller = gui.getController();
+        synchronized (controller) {
+            drawPlayground(gui.getController().getPlaygroundByUsername(username));
+            playgroundInfoPane.setPlaygroundInfo(gui.getController().getPlayer(username), username.equals(gui.getController().getMainPlayerUsername()));
+        }
     }
 
 
     public void updateAfterPlace(String username) {
-        if (username.equals(currentVisiblePlaygroundOwner)) {
-            updatePlayground(username);
-        } else if (username.equals(gui.getController().getMainPlayerUsername())) {
-            changeVisiblePlayground(gui.getController().getMainPlayerUsername());
-        }
+        ClientController controller = gui.getController();
+        synchronized (controller) {
+            if (username.equals(currentVisiblePlaygroundOwner)) {
+                updatePlayground(username);
+            } else if (username.equals(gui.getController().getMainPlayerUsername())) {
+                changeVisiblePlayground(gui.getController().getMainPlayerUsername());
+            }
 
-        if (!username.equals(gui.getController().getMainPlayerUsername())) {
-            Objects.requireNonNull(getPlayerInfoPane(username)).updateResources(gui.getController().getPlaygroundByUsername(username).getResources());
-        } else {
-            mainPlayerCards.get(selectedCardHandPosition).setVisible(false);
-            selectedCardHandPosition = -1;
-        }
+            if (!username.equals(gui.getController().getMainPlayerUsername())) {
+                Objects.requireNonNull(getPlayerInfoPane(username)).updateResources(gui.getController().getPlaygroundByUsername(username).getResources());
+            } else {
+                mainPlayerCards.get(selectedCardHandPosition).setVisible(false);
+                selectedCardHandPosition = -1;
+            }
 
-        for(PlayerInfoPane playerInfoPane : playerInfoPanes){
-            playerInfoPane.updateRank(gui.getController().getPlayerRank(playerInfoPane.getPlayerUsername()));
-            playerInfoPane.updateScore(gui.getController().getPlaygroundByUsername(playerInfoPane.getPlayerUsername()).getPoints());
+            for (PlayerInfoPane playerInfoPane : playerInfoPanes) {
+                playerInfoPane.updateRank(gui.getController().getPlayerRank(playerInfoPane.getPlayerUsername()));
+                playerInfoPane.updateScore(gui.getController().getPlaygroundByUsername(playerInfoPane.getPlayerUsername()).getPoints());
+            }
+            playgroundInfoPane.updateRank(gui.getController().getPlayerRank(gui.getController().getMainPlayerUsername()));
+            playgroundInfoPane.updateScore(gui.getController().getMainPlayerPlayground().getPoints());
         }
-        playgroundInfoPane.updateRank(gui.getController().getPlayerRank(gui.getController().getMainPlayerUsername()));
-        playgroundInfoPane.updateScore(gui.getController().getMainPlayerPlayground().getPoints());
     }
 
     /*
