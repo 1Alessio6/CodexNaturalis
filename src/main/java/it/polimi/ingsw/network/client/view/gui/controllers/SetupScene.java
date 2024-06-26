@@ -64,7 +64,7 @@ public class SetupScene extends SceneController {
                         // todo. change with specific report error
                     } catch (InvalidColorException | InvalidGamePhaseException |
                              SuspendedGameException e) {
-                        throw new RuntimeException(e);
+                        gui.reportError(e.getMessage());
                     }
                 }
             });
