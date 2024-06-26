@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.*;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
+import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.player.Player;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -72,9 +73,9 @@ public class GameTest {
 
     @Test
     void removeAll() {
-        String casual = "adidas";
+        String notPresent = "notPresent";
 
-        assertThrows(InvalidUsernameException.class, () -> game.remove(casual));
+        assertThrows(InvalidUsernameException.class, () -> game.remove(notPresent));
 
         // game is full
         for (String username : users) {
@@ -139,9 +140,23 @@ public class GameTest {
         // go directly to placeNormal Phase
         finishSetup_phaseIsPlaceNormal();
 
+        // test place when game is inactive
+        Player currentPlayer = game.getCurrentPlayer();
+        for (String username : users) {
+            if (!currentPlayer.getUsername().equals(username)) {
+                assertDoesNotThrow(() -> game.remove(username));
+            }
+        }
+
+        assertThrows(SuspendedGameException.class, () -> game.placeCard(currentPlayer.getUsername(),
+                currentPlayer.getCards().getFirst(),
+                Side.BACK, new Position(1,1)));
+
+        add();
+
         for (Player player : game.getPlayers()) {
-            if (!player.equals(game.getCurrentPlayer()))
-                assertThrows(InvalidGamePhaseException.class,
+            if (!player.equals(currentPlayer))
+                assertThrows(InvalidPlayerActionException.class,
                         () -> game.placeCard(player.getUsername(), player.getCards().getFirst(),
                                 Side.BACK, new Position(1,1)));
             else {
@@ -165,7 +180,6 @@ public class GameTest {
                         () -> game.placeCard(player.getUsername(), player.getCards().getLast(),
                                 Side.BACK, new Position(-1,-1)));
             }
-            System.out.println(game.getCurrentPlayer().getUsername());
         }
     }
 
