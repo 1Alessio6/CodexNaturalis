@@ -1,10 +1,7 @@
 package it.polimi.ingsw.model.lobby;
 
-import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.listenerhandler.ListenerHandler;
-import it.polimi.ingsw.network.VirtualView;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +13,7 @@ import java.util.List;
  */
 
 public class Lobby {
-    private final ListenerHandler<VirtualView> listenerHandler;
+    private final ListenerHandler<LobbyListener> listenerHandler;
     private String creator;
 
     int numPlayersToStartTheGame;
@@ -51,7 +48,7 @@ public class Lobby {
      * @throws IllegalArgumentException if the <code>username</code> is <code>null</code> or an empty string.
      * @throws FullLobbyException       if the lobby contains 4 players or the number chosen by the creator of the lobby.
      */
-    public void add(String username, VirtualView listener) throws IllegalArgumentException, FullLobbyException, InvalidUsernameException {
+    public void add(String username, LobbyListener listener) throws IllegalArgumentException, FullLobbyException, InvalidUsernameException {
         if (!isValid(username)) {
             throw new InvalidUsernameException();
         }
@@ -63,11 +60,11 @@ public class Lobby {
 
         listenerHandler.add(username, listener);
 
-        listenerHandler.notify(username, receiver -> receiver.resultOfLogin(true, username, ""));
+        listenerHandler.notify(username, receiver -> receiver.resultOfLogin(true, ""));
 
         if (creator == null) {
             creator = username;
-            listenerHandler.notify(creator, VirtualView::updateCreator);
+            listenerHandler.notify(creator, LobbyListener::updateCreator);
         }
         List<String> usernames = new ArrayList<>(listenerHandler.getIds());
         listenerHandler.notifyBroadcast(receiver -> receiver.showUpdatePlayersInLobby(usernames));
@@ -120,7 +117,7 @@ public class Lobby {
      */
     private List<String> resetLobby() {
         System.out.println("Lobby crashed");
-        listenerHandler.notifyBroadcast(VirtualView::updateAfterLobbyCrash);
+        listenerHandler.notifyBroadcast(LobbyListener::updateAfterLobbyCrash);
 
         List<String> toRemoves = listenerHandler.getIds();
         creator = null;
@@ -168,14 +165,6 @@ public class Lobby {
         }
         // method is called once.
         this.numPlayersToStartTheGame = numPlayersToStartTheGame;
-    }
-
-    private void reportError(String username, String errorDetails) {
-        try {
-            listenerHandler.get(username).reportError(errorDetails);
-        } catch (RemoteException e) {
-            System.err.println("Connection error");
-        }
     }
 
 }

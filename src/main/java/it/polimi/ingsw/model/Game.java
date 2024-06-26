@@ -63,7 +63,7 @@ public class Game {
 
     public static final int MAX_DELAY_FOR_SUSPENDED_GAME = 120000;
 
-    private ListenerHandler<VirtualView> listenerHandler;
+    private ListenerHandler<GameListener> listenerHandler;
 
     // Advanced Features
 
@@ -292,7 +292,7 @@ public class Game {
      * @throws InvalidUsernameException if the game has started but the <code>username</code> wasn't registered or if it
      *                                  is already connected in the game.
      */
-    public void add(String username, VirtualView client) throws InvalidUsernameException {
+    public void add(String username, GameListener client) throws InvalidUsernameException {
         // only previously connected users can join the game
         if (!validUsernames.contains(username)) {
             throw new InvalidUsernameException("The game is already started and there are no players registered with the username " + username);
@@ -306,15 +306,15 @@ public class Game {
 
         setNetworkStatus(username, true);
 
-        listenerHandler.notify(username, receiver -> receiver.resultOfLogin(true, username, ""));
+        listenerHandler.notify(username, receiver -> receiver.resultOfLogin(true,""));
 
         //   System.out.println("Notify the game representation.\tIsActive = " + isActive);
         ClientGame clientRepresentationOfTheGame = new ClientGame(this);
         listenerHandler.notify(username, receiver -> receiver.updateAfterConnection(clientRepresentationOfTheGame));
 
         if (!isActive && getListOfActivePlayers().size() > 1) {
-            //    System.out.println("Game is active after being suspended");
-            listenerHandler.notifyBroadcast(VirtualView::showUpdateGameState);
+            System.out.println("Game is active after being suspended");
+            listenerHandler.notifyBroadcast(GameListener::showUpdateGameState);
             isActive = true;
         }
 
@@ -338,7 +338,7 @@ public class Game {
         listenerHandler.notifyBroadcast(receiver -> receiver.showUpdatePlayerStatus(false, username));
         if (getListOfActivePlayers().size() < 2) {
             System.err.println("Game is suspended");
-            listenerHandler.notifyBroadcast(VirtualView::showUpdateGameState);
+            listenerHandler.notifyBroadcast(GameListener::showUpdateGameState);
             isActive = false;
         }
     }
@@ -823,16 +823,5 @@ public class Game {
             return 5;
         }
     }
-
-    /**
-     * Reports <code>errorDetails</code> to the <code>username</code>.
-     *
-     * @param username     the name of the user to whom the error is to be reported.
-     * @param errorDetails the details of the error.
-     */
-    private void reportError(String username, String errorDetails) {
-        listenerHandler.notify(username, receiver -> receiver.reportError(errorDetails));
-    }
-
 }
 
