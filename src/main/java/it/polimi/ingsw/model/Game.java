@@ -51,8 +51,6 @@ public class Game {
 
     private int currentPlayerIdx; // index in the current player list.
 
-    private final boolean isFinished;
-
     private boolean isActive;
 
     private List<Player> players;
@@ -182,7 +180,6 @@ public class Game {
         this.validUsernames = validUsernames;
         phase = GamePhase.Setup;
         currentPlayerIdx = 0;
-        isFinished = false;
         isActive = true;
         chatDatabase = new ChatDatabase();
         phaseHandler = new PhaseHandler(validUsernames.size());
@@ -233,7 +230,6 @@ public class Game {
         this.commonObjects = gameBeforeCrash.commonObjects;
 
         this.currentPlayerIdx = gameBeforeCrash.currentPlayerIdx;
-        this.isFinished = gameBeforeCrash.isFinished;
         this.isActive = gameBeforeCrash.isActive;
         this.players = gameBeforeCrash.players;
         this.phase = gameBeforeCrash.phase;
