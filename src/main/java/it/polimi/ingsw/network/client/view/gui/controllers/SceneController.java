@@ -73,6 +73,7 @@ public abstract class SceneController {
         initializePopUpScene(settingsStage, settingsScene, Icon.SETTINGS);
         initializeFullScreenButton(mainPane);
         initializeLogoutButton(mainPane, settingsStage);
+        initializeCloseSettingsButton(mainPane, settingsStage);
 
         settings.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -187,7 +188,7 @@ public abstract class SceneController {
         logoutButton.setFont(new Font(CAMBRIA_MATH, 15));
         logoutButton.setPrefSize(160, 40);
         logoutButton.setLayoutX(30);
-        logoutButton.setLayoutY(150);
+        logoutButton.setLayoutY(200);
 
         ImageView logoutImage = (new ImageView(Icon.LOGOUT.getPath()));
         logoutImage.setFitHeight(20);
@@ -200,17 +201,46 @@ public abstract class SceneController {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 if (isClicked(mouseEvent, MouseButton.PRIMARY)) {
-                    Alert logoutConfirmationMessage = new Alert(Alert.AlertType.CONFIRMATION);
-                    logoutConfirmationMessage.setTitle("Exit");
-                    logoutConfirmationMessage.setHeaderText("Are you sure to close the application?");
-                    logoutConfirmationMessage.setContentText("You'll be able to connect and play again, with the same username if the game isn't finished");
-                    logoutConfirmationMessage.initOwner(settingsStage);
-                    Optional<ButtonType> result = logoutConfirmationMessage.showAndWait();
-                    if(result.isPresent()){
-                        if(result.get().equals(ButtonType.OK)){
-                            System.exit(0);
-                        }
-                    }
+                    getLogoutConfirmationInput(settingsStage);
+                }
+            }
+        });
+    }
+
+    private void getLogoutConfirmationInput(Stage settingsStage){
+        Alert logoutConfirmationMessage = new Alert(Alert.AlertType.CONFIRMATION);
+        logoutConfirmationMessage.setTitle("Exit");
+        logoutConfirmationMessage.setHeaderText("Are you sure to close the application?");
+        logoutConfirmationMessage.setContentText("You'll be able to connect and play again, with the same username if the game isn't finished");
+        logoutConfirmationMessage.initOwner(settingsStage);
+        Optional<ButtonType> result = logoutConfirmationMessage.showAndWait();
+        if(result.isPresent()){
+            if(result.get().equals(ButtonType.OK)){
+                System.exit(0);
+            }
+        }
+    }
+
+    private void initializeCloseSettingsButton(Pane settingsPane, Stage settingsStage){
+        Button closeSettingsButton = new Button("Close Settings");
+        closeSettingsButton.setFont(new Font(CAMBRIA_MATH, 15));
+        closeSettingsButton.setPrefSize(160, 40);
+        closeSettingsButton.setLayoutX(30);
+        closeSettingsButton.setLayoutY(150);
+
+        ImageView closeSettingsImage = (new ImageView(Icon.RETURN.getPath()));
+        closeSettingsImage.setFitHeight(20);
+        closeSettingsImage.setFitWidth(20);
+        closeSettingsButton.setGraphic(closeSettingsImage);
+
+        settingsPane.getChildren().add(closeSettingsButton);
+
+        closeSettingsButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if (isClicked(mouseEvent, MouseButton.PRIMARY)) {
+                    settingsStage.close();
+                    settingsOpened = false;
                 }
             }
         });
