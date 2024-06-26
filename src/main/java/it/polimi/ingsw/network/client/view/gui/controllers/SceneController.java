@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.client.view.gui.controllers;
 
 import it.polimi.ingsw.network.client.view.gui.ApplicationGUI;
+import it.polimi.ingsw.network.client.view.gui.util.GUIUtil;
 import it.polimi.ingsw.network.client.view.gui.util.Icon;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
@@ -16,6 +17,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
@@ -57,10 +60,11 @@ public abstract class SceneController {
         settings.setPrefSize(50, 50);
         settings.setGraphic(initializeIconImageView(Icon.SETTINGS.getPath(), 30));
 
-        Button fullscreenButton = initializeFullScreenButton();
         Pane mainPane = new Pane();
+        Button fullscreenButton = initializeFullScreenButton(mainPane);
+        mainPane.setBackground(createMainBackground());
         mainPane.setPrefSize(500, 500);
-        mainPane.getChildren().add(fullscreenButton);
+        //mainPane.getChildren().add(fullscreenButton);
         Scene settingsScene = new Scene(mainPane);
         Stage settingsStage = new Stage();
         initializePopUpScene(settingsStage, settingsScene, Icon.SETTINGS);
@@ -164,17 +168,41 @@ public abstract class SceneController {
         return page;
     }
 
-    private Button initializeFullScreenButton() {
-        Button fullscreenButton = new Button("FullScreen");
+    private Button initializeFullScreenButton(Pane mainPane) {
 
-        fullscreenButton.setPrefSize(70, 20);
+        Pane fullscreenPane = new Pane();
+        fullscreenPane.setPrefSize(190,40);
+        fullscreenPane.setLayoutX(100);
+        fullscreenPane.setLayoutY(100);
+
+        Button fullscreenButton = new Button("Full-Screen Mode");
+        fullscreenButton.setFont(new Font(CAMBRIA_MATH,15));
+        fullscreenButton.setPrefSize(160,40);
+
+        ImageView fullscreenImage = (new ImageView(Icon.FULLSCREEN.getPath()));
+        fullscreenImage.setFitHeight(20);
+        fullscreenImage.setFitWidth(20);
+        fullscreenButton.setGraphic(fullscreenImage);
+        //fullscreenButton.setLayoutX(120);
+        //fullscreenButton.setLayoutY(100);
+
+        Text fullScreenStatus = new Text("OFF");
+        fullScreenStatus.setFont(new Font(CAMBRIA_MATH, 15));
+        fullScreenStatus.setLayoutX(165);
+        fullScreenStatus.setLayoutY(25);
+        fullscreenPane.getChildren().add(fullscreenButton);
+        fullscreenPane.getChildren().add(fullScreenStatus);
+        mainPane.getChildren().add(fullscreenPane);
+
         fullscreenButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 if (gui.getIsFullScreen()) {
                     gui.setWindowScreenMode();
+                    fullScreenStatus.setText("OFF");
                 } else {
                     gui.setFullScreenMode();
+                    fullScreenStatus.setText("ON");
                 }
             }
         });
