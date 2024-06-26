@@ -9,16 +9,11 @@ import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.listenerhandler.ListenerHandler;
-import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
-import it.polimi.ingsw.model.lobby.InvalidUsernameException;
-import it.polimi.ingsw.model.lobby.FullLobbyException;
-import it.polimi.ingsw.model.lobby.Lobby;
+import it.polimi.ingsw.model.lobby.*;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.network.VirtualView;
+import it.polimi.ingsw.network.ClientHandler;
 
-import java.rmi.RemoteException;
 import java.util.*;
 
 /**
@@ -33,7 +28,7 @@ public class Controller implements EventListener, GameRequest {
     private Timer timerForSuspendedGame;
     private TurnCompletion turnCompletion;
 
-    private ListenerHandler<VirtualView> listenerHandler;
+    private ListenerHandler<ClientHandler> listenerHandler;
 
     /**
      * Constructs a new <code>Controller</code> with no parameters provided.
@@ -84,15 +79,25 @@ public class Controller implements EventListener, GameRequest {
         return isAccepted;
     }
 
-    /**
-     * Removes excess players from registered users.
-     */
-    private void removeExceedingPlayers() {
-        List<String> usersInGame = game.getPlayers().stream().map(Player::getUsername).toList();
-        for (String registeredUser : listenerHandler.getIds()) {
-            if (!usersInGame.contains(registeredUser)) {
-                listenerHandler.remove(registeredUser);
+    private void createGame() {
+        List<String> usernames = lobby.getPlayersInLobby();
+        int numPlayersToStartTheGame = lobby.getNumPlayersToStartTheGame();
+        List<String> usersToGoInGame = usernames.subList(0, numPlayersToStartTheGame);
+        List<String> exceededPlayers = usernames.subList(numPlayersToStartTheGame, usernames.size());
+        game = new Game(usersToGoInGame);
+
+        for (String user : usersToGoInGame) {
+            try {
+                game.add(user, listenerHandler.get(user));
+            } catch (InvalidUsernameException e) {
+                System.err.println("Username is declared invalid even if it shouldn't => server will die");
+                e.printStackTrace();
             }
+        }
+
+        for (String user : exceededPlayers) {
+            listenerHandler.notify(user, LobbyListener::showUpdateExceedingPlayer);
+            listenerHandler.remove(user);
         }
     }
 
@@ -101,30 +106,17 @@ public class Controller implements EventListener, GameRequest {
      *
      * @param username the user's name who joins the lobby.
      */
-    private boolean joinLobby(String username, VirtualView lobbyListener) {
+    private boolean joinLobby(String username, ClientHandler lobbyListener) {
         boolean isJoined;
         try {
             lobby.add(username, lobbyListener);
             listenerHandler.add(username, lobbyListener);
             if (game == null && lobby.isGameReady()) {
-                game = lobby.createGame();
-                removeExceedingPlayers();
+                createGame();
             }
             isJoined = true;
-        } catch (FullLobbyException e) {
-            try {
-                lobbyListener.showUpdateFullLobby();
-                isJoined = false;
-            } catch (RemoteException remoteException) {
-                System.err.println("Connection error: " + remoteException.getMessage());
-                isJoined = false;
-            }
-        } catch (InvalidUsernameException e) {
-            try {
-                lobbyListener.resultOfLogin(false, username, e.getMessage());
-            } catch (RemoteException remoteException) {
-                System.err.println("Connection error: " + remoteException.getMessage());
-            }
+        } catch (InvalidUsernameException | FullLobbyException e) {
+            lobbyListener.resultOfLogin(false, e.getMessage());
             isJoined = false;
         }
         return isJoined;
@@ -137,17 +129,12 @@ public class Controller implements EventListener, GameRequest {
      * @param gameListener the game listener
      * @return true if the player has been added correctly, false otherwise
      */
-    private boolean joinGame(String username, VirtualView gameListener) {
+    private boolean joinGame(String username, ClientHandler gameListener) {
         try {
             game.add(username, gameListener);
         } catch (InvalidUsernameException e) {
-            try {
-                gameListener.resultOfLogin(false, username, e.getMessage());
-                return false;
-            } catch (RemoteException remoteException) {
-                System.err.println("Connection error");
-                return false;
-            }
+            gameListener.resultOfLogin(false, e.getMessage());
+            return false;
         }
         listenerHandler.add(username, gameListener);
 
@@ -348,8 +335,7 @@ public class Controller implements EventListener, GameRequest {
             return;
         }
         if (game == null && lobby.isGameReady()) {
-            game = lobby.createGame();
-            removeExceedingPlayers();
+            createGame();
         }
     }
 
@@ -361,15 +347,10 @@ public class Controller implements EventListener, GameRequest {
      * @param errorDetails the details of the error.
      */
     private void reportError(String username, String errorDetails) {
-        try {
-            VirtualView toReport = listenerHandler.get(username);
-            // if it's registered in the controller
-            if (toReport != null) {
-                toReport.reportError(errorDetails);
-            }
-        } catch (RemoteException e) {
-            System.err.println("Connection error");
-            handleDisconnection(username);
+        ClientHandler toReport = listenerHandler.get(username);
+        // if it's registered in the controller
+        if (toReport != null) {
+            toReport.reportError(errorDetails);
         }
     }
 }

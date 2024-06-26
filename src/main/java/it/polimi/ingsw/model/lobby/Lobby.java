@@ -80,37 +80,10 @@ public class Lobby {
         return isGameReady;
     }
 
-    /**
-     * Creates a game.
-     *
-     * @return the game.
-     */
-    public Game createGame() {
-        if (!isGameReady) {
-            return null;
-        }
-
-        List<String> usernames = listenerHandler.getIds();
-        List<String> usersToGoInGame = usernames.subList(0, numPlayersToStartTheGame);
-        List<String> exceededPlayers = usernames.subList(numPlayersToStartTheGame, usernames.size());
-        Game game = new Game(usersToGoInGame);
-
-        for (String user : usersToGoInGame) {
-            try {
-                game.add(user, listenerHandler.get(user));
-            } catch (InvalidUsernameException e) {
-                System.err.println("Username is declared invalid even if it shouldn't => server will die");
-                e.printStackTrace();
-
-            }
-        }
-
-        for (String user : exceededPlayers) {
-            listenerHandler.notify(user, VirtualView::showUpdateExceedingPlayer);
-        }
-
-        return game;
+    public int getNumPlayersToStartTheGame() {
+        return numPlayersToStartTheGame;
     }
+
 
     /**
      * Resets the lobby in case it crashes.
@@ -125,6 +98,10 @@ public class Lobby {
         isGameReady = false;
         listenerHandler.clear();
         return toRemoves;
+    }
+
+    public List<String> getPlayersInLobby() {
+        return listenerHandler.getIds();
     }
 
     /**
