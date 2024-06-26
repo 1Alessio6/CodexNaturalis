@@ -531,16 +531,6 @@ public class ClientTUI implements View {
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public synchronized void showServerCrash() {
-        ClientUtil.printCommand("Server is crashed");
-        availableActions.clear();
-        setActionsForClosingTheApplication();
-    }
-
-    /**
      * Sets available actions in accordance to the current phase of the game.
      */
     private void setAvailableActions() {
@@ -593,6 +583,16 @@ public class ClientTUI implements View {
     }
 
     // SHOW UPDATE
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public synchronized void showServerCrash() {
+        ClientUtil.printCommand("Server is crashed");
+        availableActions.clear();
+        setActionsForClosingTheApplication();
+    }
 
     /**
      * {@inheritDoc}
@@ -747,15 +747,15 @@ public class ClientTUI implements View {
         synchronized (controller) {
             ClientUtil.printScoreboard(this.controller.getPlayers());
 
-            if (controller.getMainPlayerUsername().equals(username))
-                setAvailableActions();
-
             // don't print if main player has already chosen the color
             if (controller.getMainColor() == null)
                 printAvailableColorList();
 
-            // remove color list if present
-            ClientUtil.clearExceptionSpace();
+            if (controller.getMainPlayerUsername().equals(username)){
+                setAvailableActions();
+                // remove color list if present
+                ClientUtil.clearExceptionSpace();
+            }
 
             ClientUtil.putCursorToInputArea();
         }
