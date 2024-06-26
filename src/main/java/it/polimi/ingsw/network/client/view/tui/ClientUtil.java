@@ -90,7 +90,7 @@ public class ClientUtil {
     static String doubleThinSpace = "\u2009\u2009";
     static String doubleHairSpace = "\u200A" + "\u200A";
     static String hairSpace = "\u200A";
-    static String corner = "\uD83D\uDDC2️";
+    static String corner = "\uD83D\uDCCB";
     static String one = "\uD835\uDFCF";
     static String two = "\uD835\uDFD0";
     static String three = "\uD835\uDFD1";
