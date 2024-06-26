@@ -3,7 +3,7 @@ package it.polimi.ingsw.jsondeserializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import it.polimi.ingsw.controller.PlainVirtualView;
+import it.polimi.ingsw.controller.PlainGameListener;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.*;
@@ -409,7 +409,7 @@ public class JsonDeserializerTest {
         Game game = new Game(createList(2, "User"));
         Assertions.assertDoesNotThrow(
                 () -> {
-                    game.add("User", new PlainVirtualView());
+                    game.add("User", new PlainGameListener());
                 }
         );
         ClientGame clientGame = new ClientGame(game);
