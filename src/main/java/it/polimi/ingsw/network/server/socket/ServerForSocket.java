@@ -6,42 +6,19 @@ import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.chat.message.Message;
 
-import java.io.*;
 import java.net.ServerSocket;
-import java.net.Socket;
 
 /**
  * Server notifies the controller of changes made by the player in the view when Socket communication is used.
  */
-public class Server {
+public class ServerForSocket {
     private final ServerSocket listenSocket;
 
     private Controller controller;
 
-    public Server(ServerSocket listenSocket) {
+    public ServerForSocket(ServerSocket listenSocket) {
         this.listenSocket = listenSocket;
         this.controller = new Controller();
-    }
-
-    /**
-     * Method used to accept clients' connections represented by the ClientHandler.
-     */
-    private void runServer() throws IOException {
-        Socket clientSocket = null;
-        while ((clientSocket = listenSocket.accept()) != null) {
-            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            System.out.println("Received connection");
-            ClientHandler handler = new ClientHandler(this, in, out, clientSocket);
-            new Thread(handler::run).start();
-        }
-    }
-
-    public static void main(String[] args) throws IOException {
-        int port = Integer.parseInt("1234");
-        System.out.println("Server is ready on port " + port);
-        ServerSocket listenSocket = new ServerSocket(port);
-        new Server(listenSocket).runServer();
     }
 
     /**
@@ -50,7 +27,7 @@ public class Server {
      * @param client   the representation of the client.
      * @param username the username of the player to connect.
      */
-    public void connect(ClientHandler client, String username) {
+    public void connect(SocketHandler client, String username) {
         controller.handleConnection(username, client);
     }
 
