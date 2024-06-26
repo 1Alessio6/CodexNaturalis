@@ -22,7 +22,6 @@ import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 import it.polimi.ingsw.network.client.view.View;
 import it.polimi.ingsw.network.client.view.tui.drawplayground.*;
 
-import java.rmi.RemoteException;
 import java.util.*;
 
 /**
@@ -886,10 +885,13 @@ public class ClientTUI implements View {
      */
     @Override
     public synchronized void showWinners(List<String> winners) {
-        ClientUtil.printCommand("Winners: ");
+        StringBuilder winnerList = new StringBuilder("Winners: ");
         for (String i : winners) {
-            ClientUtil.printCommand("Player: " + i + " Points: " + controller.getPlayer(i).getScore() + "\n");
+            winnerList.append("Player: ").append(i)
+                    .append(", Points: ").append(controller.getPlayer(i).getScore()).append("\n");
         }
+
+        ClientUtil.printCommand(winnerList.toString());
         availableActions.clear();
         availableActions.add(TUIActions.HELP);
         availableActions.add(TUIActions.QUIT);
