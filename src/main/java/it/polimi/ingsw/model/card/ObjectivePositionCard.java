@@ -57,8 +57,11 @@ public class ObjectivePositionCard extends ObjectiveCard {
      * @return true if there is a card in the given position with the specified color on the playground, false otherwise
      */
     private boolean matchRequirement(Playground playground, Position requiredPosition, CardColor requiredColor) {
+        Face f = playground.getTile(requiredPosition).getFace();
+        CardColor color = f.getColor();
         return playground.contains(requiredPosition)
-                && playground.getTile(requiredPosition).getFace().getColor().equals(requiredColor);
+                &&
+                (color != null && color.equals(requiredColor));
     }
 
     /**
