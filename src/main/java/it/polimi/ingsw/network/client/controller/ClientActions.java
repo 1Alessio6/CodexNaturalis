@@ -12,10 +12,7 @@ import it.polimi.ingsw.model.card.NotExistingFaceUp;
 import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
-import it.polimi.ingsw.model.lobby.FullLobbyException;
 import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
-import it.polimi.ingsw.model.lobby.InvalidUsernameException;
-import it.polimi.ingsw.network.VirtualView;
 
 import java.rmi.RemoteException;
 
@@ -27,11 +24,8 @@ public interface ClientActions {
      * Handles the connection of the <code>client</code>.
      *
      * @param username the client's name.
-     * @throws InvalidUsernameException if the username in question has already been taken.
-     * @throws RemoteException          in the event of an error occurring during the execution of a remote method.
-     * @throws FullLobbyException       if the lobby is full.
      */
-    void connect(String username) throws InvalidUsernameException, RemoteException, FullLobbyException;
+    void connect(String username) ;
 
     /**
      * Places the <code>cardHandPosition</code> on the <code>selectedSide</code> and <code>position</code> specified.
