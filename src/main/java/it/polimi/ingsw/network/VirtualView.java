@@ -50,8 +50,6 @@ public interface VirtualView extends HeartBeatListener, Remote {
      */
     void showUpdatePlayersInLobby(List<String> usernames) throws RemoteException;
 
-    void showUpdateFullLobby() throws RemoteException;
-
     void showUpdateExceedingPlayer() throws RemoteException;
 
     /**
