@@ -289,10 +289,6 @@ public abstract class Client implements VirtualView {
         System.err.print("Winners: ");
         winners.forEach(System.err::println);
 
-    /**
-     * Closes any resource related to networking
-     */
-    protected abstract void disconnect();
         synchronized (lockOnNetworkStatus) {
             if (isConnected) {
                 clientView.showWinners(winners);
