@@ -66,7 +66,7 @@ public abstract class SceneController {
         initializeCommandInfoPane(mainPane);
 
         mainPane.setBackground(createMainBackground());
-        mainPane.setPrefSize(485, 1000);
+        mainPane.setPrefSize(485, 1100);
         //mainPane.getChildren().add(fullscreenButton);
         ScrollPane mainScrollPane = new ScrollPane();
         mainScrollPane.setPrefSize(500, 500);
@@ -188,7 +188,11 @@ public abstract class SceneController {
     private void initializeLogoutButton(Pane settingsPane, Stage settingsStage) {
 
         Button logoutButton = new Button("Exit");
-        logoutButton.setFont(new Font(CAMBRIA_MATH, 15));
+        Font liberationSans = loadFontLiberationSansRegular(15);
+        if(liberationSans == null){
+            System.err.println("err");
+        }
+        logoutButton.setFont(liberationSans);
         logoutButton.setPrefSize(160, 40);
         logoutButton.setLayoutX(30);
         logoutButton.setLayoutY(200);
@@ -232,20 +236,20 @@ public abstract class SceneController {
 
         Pane commandInfoPane = new Pane();
         Text setupPhase = new Text("- Setup Phase");
-        setupPhase.setFont(new Font("Arial", 18));
+        setupPhase.setFont(loadFontLiberationSansRegular(18));
         commandInfoPane.getChildren().add(setupPhase);
         Text setupPhaseInstruction = new Text("  During this phase every player can only click on the cards or on the colors\n  in order to select them");
 
         layoutY = layoutY + distanceFromTitle;
 
         setupPhaseInstruction.setLayoutY(layoutY);
-        setupPhaseInstruction.setFont(new Font("Arial", 12));
+        setupPhaseInstruction.setFont(loadFontLiberationSansRegular(12));
         commandInfoPane.getChildren().add(setupPhaseInstruction);
 
         layoutY = layoutY + distanceFromInstructions;
 
         Text gamePhase = new Text("- Game Phase");
-        gamePhase.setFont(new Font("Arial", 18));
+        gamePhase.setFont(loadFontLiberationSansRegular(18));
         gamePhase.setLayoutY(layoutY);
         commandInfoPane.getChildren().add(gamePhase);
         Text gamePhaseInstruction = new Text("""
@@ -279,34 +283,32 @@ public abstract class SceneController {
                      This action can only be performed after a placing a card\
                 """);
 
-        gamePhaseInstruction.setFont(new Font("Arial", 12));
+        gamePhaseInstruction.setFont(loadFontLiberationSansRegular(12));
 
 
         layoutY = layoutY + distanceFromTitle;
 
         gamePhaseInstruction.setLayoutY(layoutY);
-        gamePhaseInstruction.setFont(new Font("Arial", 12));
         commandInfoPane.getChildren().add(gamePhaseInstruction);
 
-        layoutY = layoutY + 415;
+        layoutY = 560;
 
-        System.err.println(layoutY);
 
         Text suspendedGamePhase = new Text("- Suspended Game Phase");
         suspendedGamePhase.setLayoutY(layoutY);
-        suspendedGamePhase.setFont(new Font("Arial", 18));
+        suspendedGamePhase.setFont(loadFontLiberationSansRegular(18));
         commandInfoPane.getChildren().add(suspendedGamePhase);
         Text suspendedGamePhaseInstruction = new Text("  During this phase every player can only click send messages");
 
         layoutY = layoutY + distanceFromTitle;
 
         suspendedGamePhaseInstruction.setLayoutY(layoutY);
-        suspendedGamePhaseInstruction.setFont(new Font("Arial", 12));
+        suspendedGamePhaseInstruction.setFont(loadFontLiberationSansRegular(12));
         commandInfoPane.getChildren().add(suspendedGamePhaseInstruction);
 
         Text creditText = new Text("  Icons by Icons8");
-        creditText.setLayoutY(970);
-        creditText.setFont(new Font("Arial", 12));
+        creditText.setLayoutY(1030);
+        creditText.setFont(loadFontLiberationSansRegular(12));
         creditText.setLayoutX(30);
         settingsPane.getChildren().add(creditText);
 
