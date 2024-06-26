@@ -19,6 +19,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,20 +32,22 @@ import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
 public class SetupScene extends SceneController {
 
     @FXML
-    Pane mainPane;
-    @FXML
-    Rectangle firstRectangle;
+    private Pane mainPane;
 
     @FXML
-    Rectangle secondRectangle;
-    @FXML
-    TextField text;
+    private Rectangle firstRectangle;
 
+    @FXML
+    private Rectangle secondRectangle;
+
+    @FXML
+    private TextField text;
+
+    @FXML
+    private Text phaseTitle;
     private List<GUICircle> colors;
 
     private boolean isStarterSelected;
-
-    private int numColorsLeft;
 
     static private final double xRefForCircleCenter = 418;
     static private final double yRefForCircleCenter = 554;
@@ -62,10 +65,9 @@ public class SetupScene extends SceneController {
                 if (GUIUtil.isClicked(mouseEvent, MouseButton.PRIMARY) && circle.getCircle().isVisible()) {
                     try {
                         gui.getController().chooseColor(availableColor);
-                        // todo. change with specific report error
                     } catch (InvalidColorException | InvalidGamePhaseException |
                              SuspendedGameException e) {
-                        gui.reportError(e.getMessage());
+                        showError(e.getMessage());
                     }
                 }
             });
@@ -82,6 +84,8 @@ public class SetupScene extends SceneController {
      */
     @Override
     public void initialize() {
+        phaseTitle.setText("Setup Phase");
+        phaseTitle.setFont(loadTitleFont(50));
         isStarterSelected = false;
         text.setText("Choose your starter");
         mainPane.setBackground(createMainBackground());
@@ -106,7 +110,7 @@ public class SetupScene extends SceneController {
     @Override
     public void showError(String details) {
         StackPane errorPane = generateError(details);
-        errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth)/2);
+        errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth) / 2);
         errorPane.setLayoutY(10);
         mainPane.getChildren().add(errorPane);
     }
