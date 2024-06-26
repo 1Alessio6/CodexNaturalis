@@ -62,13 +62,16 @@ public abstract class SceneController {
         settings.setGraphic(initializeIconImageView(Icon.SETTINGS.getPath(), 30));
         Pane mainPane = new Pane();
         initializeSettingsSectionTitle("Settings", mainPane, 30, 50);
-        initializeSettingsSectionTitle("Commands", mainPane, 30, 400);
-
+        initializeSettingsSectionTitle("Commands", mainPane, 30, 350);
+        initializeCommandInfoPane(mainPane);
 
         mainPane.setBackground(createMainBackground());
-        mainPane.setPrefSize(500, 500);
+        mainPane.setPrefSize(485, 1000);
         //mainPane.getChildren().add(fullscreenButton);
-        Scene settingsScene = new Scene(mainPane);
+        ScrollPane mainScrollPane = new ScrollPane();
+        mainScrollPane.setPrefSize(500, 500);
+        mainScrollPane.setContent(mainPane);
+        Scene settingsScene = new Scene(mainScrollPane);
         Stage settingsStage = new Stage();
         initializePopUpScene(settingsStage, settingsScene, Icon.SETTINGS);
         initializeFullScreenButton(mainPane);
@@ -207,21 +210,113 @@ public abstract class SceneController {
         });
     }
 
-    private void getLogoutConfirmationInput(Stage settingsStage){
+    private void getLogoutConfirmationInput(Stage settingsStage) {
         Alert logoutConfirmationMessage = new Alert(Alert.AlertType.CONFIRMATION);
         logoutConfirmationMessage.setTitle("Exit");
         logoutConfirmationMessage.setHeaderText("Are you sure to close the application?");
         logoutConfirmationMessage.setContentText("You'll be able to connect and play again, with the same username if the game isn't finished");
         logoutConfirmationMessage.initOwner(settingsStage);
         Optional<ButtonType> result = logoutConfirmationMessage.showAndWait();
-        if(result.isPresent()){
-            if(result.get().equals(ButtonType.OK)){
+        if (result.isPresent()) {
+            if (result.get().equals(ButtonType.OK)) {
                 System.exit(0);
             }
         }
     }
 
-    private void initializeCloseSettingsButton(Pane settingsPane, Stage settingsStage){
+    private void initializeCommandInfoPane(Pane settingsPane) {
+
+        double layoutY = 0.0;
+        int distanceFromTitle = 23;
+        int distanceFromInstructions = 50;
+
+        Pane commandInfoPane = new Pane();
+        Text setupPhase = new Text("- Setup Phase");
+        setupPhase.setFont(new Font("Arial", 18));
+        commandInfoPane.getChildren().add(setupPhase);
+        Text setupPhaseInstruction = new Text("  During this phase every player can only click on the cards or on the colors\n  in order to select them");
+
+        layoutY = layoutY + distanceFromTitle;
+
+        setupPhaseInstruction.setLayoutY(layoutY);
+        setupPhaseInstruction.setFont(new Font("Arial", 12));
+        commandInfoPane.getChildren().add(setupPhaseInstruction);
+
+        layoutY = layoutY + distanceFromInstructions;
+
+        Text gamePhase = new Text("- Game Phase");
+        gamePhase.setFont(new Font("Arial", 18));
+        gamePhase.setLayoutY(layoutY);
+        commandInfoPane.getChildren().add(gamePhase);
+        Text gamePhaseInstruction = new Text("""
+                  This is the main phase of the game and every player can perform
+                  the following actions:
+
+                   Actions the player can perform at any time:
+
+                    -Flip the visible side of the cards : left-click to flip other players' cards and
+                     right-click to flip your own cards.
+
+                    -Observe other playgrounds : left-click on the EYE icon in the player info-box.\s
+                     Then left-click on the HOME icon or one of your cards to return
+                     to your playground
+
+                    -Open Rulebook/Settings : left-click on the BOOK/SETTINGS icon
+                     in the bottom right corner of the screen (left-click again to close it). \s
+
+                    -Send Message : select recipient from the multiple-choice menu under the chat,
+                     write your message and release ENTER to send it.
+
+                   Actions the player can perform only during his turn:
+
+                    -Place a card: left-click on the card image to select its visible side and view
+                     all empty positions. Then, left-click on an empty position to place the card.
+                     To deselect the card, left-click on the card itself, or click on another card
+                     to change the selection. The card's side placed is always the visible one,
+                     even if the card is flipped after the selection
+
+                    -Draw a card: left-click on one of the face up cards or one of the decks.
+                     This action can only be performed after a placing a card\
+                """);
+
+        gamePhaseInstruction.setFont(new Font("Arial", 12));
+
+
+        layoutY = layoutY + distanceFromTitle;
+
+        gamePhaseInstruction.setLayoutY(layoutY);
+        gamePhaseInstruction.setFont(new Font("Arial", 12));
+        commandInfoPane.getChildren().add(gamePhaseInstruction);
+
+        layoutY = layoutY + 415;
+
+        System.err.println(layoutY);
+
+        Text suspendedGamePhase = new Text("- Suspended Game Phase");
+        suspendedGamePhase.setLayoutY(layoutY);
+        suspendedGamePhase.setFont(new Font("Arial", 18));
+        commandInfoPane.getChildren().add(suspendedGamePhase);
+        Text suspendedGamePhaseInstruction = new Text("  During this phase every player can only click send messages");
+
+        layoutY = layoutY + distanceFromTitle;
+
+        suspendedGamePhaseInstruction.setLayoutY(layoutY);
+        suspendedGamePhaseInstruction.setFont(new Font("Arial", 12));
+        commandInfoPane.getChildren().add(suspendedGamePhaseInstruction);
+
+        Text creditText = new Text("  Icons by Icons8");
+        creditText.setLayoutY(970);
+        creditText.setFont(new Font("Arial", 12));
+        creditText.setLayoutX(30);
+        settingsPane.getChildren().add(creditText);
+
+        commandInfoPane.setLayoutX(30);
+        commandInfoPane.setLayoutY(400);
+
+        settingsPane.getChildren().add(commandInfoPane);
+    }
+
+    private void initializeCloseSettingsButton(Pane settingsPane, Stage settingsStage) {
         Button closeSettingsButton = new Button("Close Settings");
         closeSettingsButton.setFont(new Font(CAMBRIA_MATH, 15));
         closeSettingsButton.setPrefSize(160, 40);
