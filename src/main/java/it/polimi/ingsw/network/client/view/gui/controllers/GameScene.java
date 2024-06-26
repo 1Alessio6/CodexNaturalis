@@ -214,10 +214,6 @@ public class GameScene extends SceneController {
     }
 
     private void initializeCurrentPlayerUsernameText() {
-        //todo add synchronization on client controller for all initialize with gaming information method
-
-        ClientController controller = gui.getController();
-
         Text currentPlayerText = new Text("Current Player: ");
         currentPlayerText.setFont(new Font(CAMBRIA_MATH, 15));
         currentPlayerText.setLayoutX(10);
