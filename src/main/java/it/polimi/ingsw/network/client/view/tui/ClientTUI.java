@@ -49,14 +49,14 @@ public class ClientTUI implements View {
     public ClientTUI(ClientController controller) {
         this.controller = controller;
         this.console = new Scanner(System.in);
-
-        setActionsForConnection();
-    }
-
-    private void setActionsForConnection() {
         availableActions.add(TUIActions.HELP);
         availableActions.add(TUIActions.QUIT);
         availableActions.add(TUIActions.CONNECT);
+    }
+
+    private void setActionsForClosingTheApplication() {
+        availableActions.clear();
+        availableActions.add(TUIActions.QUIT);
     }
 
     /**
@@ -529,7 +529,7 @@ public class ClientTUI implements View {
     public void showServerCrash() {
         ClientUtil.printCommand("Server is crashed. To connect again you have to join the game");
         availableActions.clear();
-        setActionsForConnection();
+        setActionsForClosingTheApplication();
     }
 
     /**
@@ -619,13 +619,13 @@ public class ClientTUI implements View {
     @Override
     public void showUpdateAfterLobbyCrash() {
         ClientUtil.printCommand("Lobby crashed! You will be disconnected. Please restart the client...");
-        setActionsForConnection();
+        setActionsForClosingTheApplication();
     }
 
     @Override
     public synchronized void showUpdateExceedingPlayer() {
         ClientUtil.printCommand("You're an exceeding player!");
-        setActionsForConnection();
+        setActionsForClosingTheApplication();
     }
 
     @Override
