@@ -3,7 +3,6 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.card.Card;
 import it.polimi.ingsw.model.card.Side;
-import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.action.PlayerState;
 import org.junit.jupiter.api.Assertions;
@@ -30,7 +29,7 @@ class TurnCompletionTest {
         game = new Game(users);
         for (String user: users){
             Assertions.assertDoesNotThrow(() -> {
-                game.add(user, new PlainVirtualView());
+                game.add(user, new PlainGameListener());
             });
         }
         turnCompletion = new TurnCompletion();
@@ -51,33 +50,32 @@ class TurnCompletionTest {
         }
 
         Assertions.assertFalse(game.isActive());
-        for (int i = 0; i < users.size() - 1; ++i) {
+        for (int i = 0; i < users.size(); ++i) {
             PlayerState playerState = game.getPlayerByUsername(users.get(i)).getPlayerAction().getPlayerState();
             Assertions.assertEquals(playerState, PlayerState.Place);
         }
 
-        // the last player setup is not completed because the game has been suspended
-        PlayerState lastPlayerState = game.getPlayerByUsername(users.getLast()).getPlayerAction().getPlayerState();
-        Assertions.assertEquals(lastPlayerState, PlayerState.ChooseStarter);
+        // check the current player is not changed
+        Assertions.assertEquals(0, game.getCurrentPlayerIdx());
+
+        //PlayerState lastPlayerState = game.getPlayerByUsername(users.getLast()).getPlayerAction().getPlayerState();
+        //Assertions.assertEquals(lastPlayerState, PlayerState.Place);
 
         Assertions.assertDoesNotThrow(() -> {
-            game.add(users.getFirst(), new PlainVirtualView());
+            game.add(users.getFirst(), new PlainGameListener());
             turnCompletion.handleJoin(game);
         });
         Assertions.assertFalse(game.isActive());
 
         // add another player to make the game active again
         Assertions.assertDoesNotThrow(() -> {
-            game.add(users.get(1), new PlainVirtualView());
+            game.add(users.get(1), new PlainGameListener());
             turnCompletion.handleJoin(game);
         });
         Assertions.assertTrue(game.isActive());
 
-        // two players are active, the game is not suspended anymore, thus the setup of the last player should be completed
-        Assertions.assertTrue(game.isActive());
-        PlayerState playerState = game.getPlayerByUsername(users.getLast()).getPlayerAction().getPlayerState();
-        Assertions.assertEquals(playerState, PlayerState.Place);
-        Assertions.assertEquals(GamePhase.PlaceNormal, game.getPhase());
+        // the current player has to be chosen
+        Assertions.assertTrue(game.getCurrentPlayer().isConnected());
     }
 
     /**

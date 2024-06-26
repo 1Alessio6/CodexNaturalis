@@ -138,7 +138,7 @@ public class TurnCompletion {
      */
     public void handleJoin(Game game) {
         // transition from suspended to active: complete turn of all disconnected players
-        if (!isGameActive && game.isActive()) {
+        if (!isGameActive && game.isActive() && !game.isFinished()) {
             completePendingTurn(game);
         }
         isGameActive = game.isActive();
@@ -150,8 +150,8 @@ public class TurnCompletion {
      * @param game the representation of the game.
      */
     public void handleLeave(Game game) {
-        // game is active: complete turn of the disconnected player.
-        if (isGameActive) {
+        GamePhase currentPhase = game.getPhase();
+        if (!game.isFinished() && (currentPhase == GamePhase.Setup || game.isActive())) {
             completePendingTurn(game);
         }
         isGameActive = game.isActive();
