@@ -45,7 +45,15 @@ public enum Icon {
     /**
      * SERVER is the icon that allows the player to change server
      */
-    SERVER("/gui/png/icons/server.png");
+    SERVER("/gui/png/icons/server.png"),
+    /**
+     * FULLSCREEN is the icon that allows the player to enter in fullscreen mode
+     */
+    FULLSCREEN("/gui/png/icons/full-screen.png"),
+    /**
+     * LOGOUT is the icon that allows the player to close the application
+     */
+    LOGOUT("/gui/png/icons/logout.png");
 
     private final String path;
 
@@ -58,7 +66,7 @@ public enum Icon {
         this.path = path;
     }
 
-    public String getPath(){
+    public String getPath() {
         return path;
     }
 
