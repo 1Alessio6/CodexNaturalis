@@ -163,6 +163,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
     public void showUpdateColor(String username) {
         System.out.println(username + " has chosen a color");
         Platform.runLater(() -> {
+            assert currentSceneController instanceof SetupScene;
             ((SetupScene) currentSceneController).updateAfterColor(username);
         });
     }
@@ -171,6 +172,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
     public void showUpdateObjectiveCard() {
         System.out.println("objective has been chosen");
         Platform.runLater(() -> {
+            assert currentSceneController instanceof SetupScene;
             ((SetupScene) currentSceneController).updateObjectiveCard();
         });
     }
@@ -194,8 +196,8 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
     @Override
     public void showUpdateChat() {
         Platform.runLater(() -> {
-            Message lastSentMessage = controller.getMessages().getLast();
             assert currentSceneController instanceof GameScene;
+            Message lastSentMessage = controller.getMessages().getLast();
             ((GameScene) currentSceneController).receiveMessage(lastSentMessage);
         });
     }
@@ -204,8 +206,8 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
     public void showUpdateCurrentPlayer() {
         Platform.runLater(() -> {
             if (currentScene == SceneType.SETUP) {
-                currentScene = SceneType.GAME;
                 loadScene(SceneType.GAME);
+                currentScene = SceneType.GAME;
             }
 
             if (controller.getGamePhase() == GamePhase.End) {
