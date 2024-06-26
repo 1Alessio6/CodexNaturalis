@@ -239,6 +239,15 @@ public class ClientTUI implements View {
         //ClientUtil.putCursorToInputArea();
     }
 
+    private void printAvailableColorList() {
+        String availableColors = String.join(",", controller.getAvailableColors()
+                .stream().map(PlayerColor::toString)
+                .toList());
+
+        // could have been any area
+        ClientUtil.printExceptions("Available colors: " + availableColors);
+    }
+
     /**
      * Receives the color chosen by the player.
      *
@@ -248,7 +257,8 @@ public class ClientTUI implements View {
      * @throws TUIException              if the player enters an invalid color.
      */
     private void chooseColor() throws InvalidColorException, InvalidGamePhaseException, SuspendedGameException, IllegalArgumentException, TUIException {
-        ClientUtil.printCommand("Choose color: ");
+        printAvailableColorList();
+        ClientUtil.printCommand("Choose color (available below): ");
 
         try {
             PlayerColor color = PlayerColor.valueOf(console.nextLine().toUpperCase());
@@ -480,7 +490,7 @@ public class ClientTUI implements View {
      */
     @Override
     public void runView() {
-        ClientUtil.clearScreen();
+        ClientUtil.printFirstScreen();
         ClientUtil.printCommand("Welcome.\nTo play connect to the server: type connect <ip> <port>");
         // todo: synchronize to have correct command list
         new Thread(this::parseCommands).start();
@@ -590,7 +600,6 @@ public class ClientTUI implements View {
      */
     @Override
     public synchronized void showUpdatePlayersInLobby() {
-        // print scoreboard (even though there are no points)
         ClientUtil.printWaitingList(controller.getUsernames());
 
         ClientUtil.putCursorToInputArea();
@@ -615,7 +624,7 @@ public class ClientTUI implements View {
      */
     @Override
     public synchronized void showUpdateAfterLobbyCrash() {
-        ClientUtil.printCommand("Lobby crashed! You will be disconnected. Please restart the client...");
+        ClientUtil.printCommand("Lobby crashed! You will be disconnected. Please connect again...");
         setActionsForClosingTheApplication();
     }
 
@@ -739,9 +748,15 @@ public class ClientTUI implements View {
         synchronized (controller) {
             ClientUtil.printScoreboard(this.controller.getPlayers());
 
-            if (controller.getMainPlayerUsername().equals(username)) {
+            if (controller.getMainPlayerUsername().equals(username))
                 setAvailableActions();
-            }
+
+            // don't print if main player has already chosen the color
+            if (controller.getMainColor() == null)
+                printAvailableColorList();
+
+            // remove color list if present
+            ClientUtil.clearExceptionSpace();
 
             ClientUtil.putCursorToInputArea();
         }
