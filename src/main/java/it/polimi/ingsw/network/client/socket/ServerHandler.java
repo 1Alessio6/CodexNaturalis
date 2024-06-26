@@ -24,7 +24,7 @@ import java.rmi.RemoteException;
 /**
  * Server Handler processes and sends the incoming commands to ClientSocket.
  */
-public class ServerHandler implements VirtualServer {
+public class ServerHandler extends Thread implements VirtualServer {
     private final BufferedReader in;
     private final PrintWriter out;
     private final ClientSocket clientSocket;
@@ -38,15 +38,13 @@ public class ServerHandler implements VirtualServer {
         this.gson = builder.create();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void hear() {
+    @Override
+    public void run() {
         //System.out.println("I'm hearing");
         try {
             String line = in.readLine();
             while (line != null) {
-                //System.out.println("received from server: " + line);
+                System.err.println("received from server: " + line);
                 NetworkMessage message = gson.fromJson(line, NetworkMessage.class);
                 Type type = message.getNetworkType();
 
@@ -54,10 +52,6 @@ public class ServerHandler implements VirtualServer {
                     case RESULT_OF_LOGIN:
                         ResultOfLogin resultOfLogin = gson.fromJson(line, ResultOfLogin.class);
                         clientSocket.resultOfLogin(resultOfLogin.getAccepted(), resultOfLogin.getSelectedUsername(), resultOfLogin.getDetails());
-                        break;
-                    case FULL_LOBBY:
-                        FullLobbyMessage fullLobbyMessage = gson.fromJson(line, FullLobbyMessage.class);
-                        clientSocket.showUpdateFullLobby();
                         break;
                     case EXCEEDING_PLAYER:
                         ExceedingPlayerMessage exceedingPlayerMessage = gson.fromJson(line, ExceedingPlayerMessage.class);
@@ -131,7 +125,6 @@ public class ServerHandler implements VirtualServer {
                         clientSocket.reportError(errorMessage.getDetails());
                         break;
                     case HEARTBEAT:
-                        //System.out.println("casting the message...");
                         HeartBeatMessage ping = gson.fromJson(line, HeartBeatMessage.class);
                         clientSocket.receivePing(ping);
                         break;
@@ -143,8 +136,10 @@ public class ServerHandler implements VirtualServer {
                 line = in.readLine();
             }
             System.out.println("Closed connection from server");
+            clientSocket.handleServerCrash();
         } catch (IOException e) {
-            System.err.println("Stop hearing: server is down");
+            System.err.println("Stop hearing: channel has been closed");
+            clientSocket.handleServerCrash();
         }
     }
 
@@ -247,7 +242,7 @@ public class ServerHandler implements VirtualServer {
         out.flush();
         try {
             in.close();
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
         out.close();
     }
