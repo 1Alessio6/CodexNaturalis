@@ -464,8 +464,8 @@ public class Game {
 
         phase = phaseHandler.getNextPhase(phase, currentPlayerIdx);
         if (phase == GamePhase.PlaceNormal) {
-            // the current player maybe inactive when the setup finishes
-            if (!players.get(currentPlayerIdx).isConnected()) {
+            // the current player maybe inactive when the setup finishes. If the game is active a new current player must be chosen
+            if (!players.get(currentPlayerIdx).isConnected() && isActive) {
                 updateCurrentPlayerIdx();
             }
             GamePhase currPhase = phase;
