@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.client.view.gui.controllers;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -19,6 +20,8 @@ public class SelectUsernameScene extends SceneController {
     @FXML
     private TextField usernameCatcher;
 
+    private boolean reachedMaximumCharacters;
+
     public SelectUsernameScene(){}
 
     /**
@@ -27,15 +30,7 @@ public class SelectUsernameScene extends SceneController {
     @Override
     public void initialize() {
         mainPane.setBackground(createMainBackground());
-    }
-
-    @FXML
-    private void connect(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-            System.out.println("Trying to connect");
-            gui.getController().connect(usernameCatcher.getText());
-            usernameCatcher.setText("");
-        }
+        reachedMaximumCharacters = false;
     }
 
     /**
@@ -45,6 +40,37 @@ public class SelectUsernameScene extends SceneController {
     public void initializeUsingGameInformation() {
         super.initializeUsingGameInformation();
         addButtonPane(mainPane, buttonPane, 860, 650);
+        usernameCatcher.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode() == KeyCode.ENTER) {
+                    if(!reachedMaximumCharacters) {
+                        System.out.println("Trying to connect");
+                        gui.getController().connect(usernameCatcher.getText());
+                        usernameCatcher.setText("");
+                    }
+                    else{
+                        showError("Your username is too long\nyou exceeded the maximum characters");
+                    }
+                }
+
+            }
+        });
+
+        usernameCatcher.setOnKeyTyped(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if(usernameCatcher.getText().length() > 12){
+                    usernameCatcher.setStyle("-fx-text-fill: #FF0000;");
+                    reachedMaximumCharacters = true;
+                }
+
+                if(reachedMaximumCharacters && usernameCatcher.getText().length() <= 12){
+                    usernameCatcher.setStyle("-fx-text-fill: #000000;");
+                    reachedMaximumCharacters = false;
+                }
+            }
+        });
     }
 
     @Override
