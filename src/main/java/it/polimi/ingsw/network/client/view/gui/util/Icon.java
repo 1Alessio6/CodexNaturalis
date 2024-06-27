@@ -53,7 +53,12 @@ public enum Icon {
     /**
      * LOGOUT is the icon that allows the player to close the application
      */
-    LOGOUT("/gui/png/icons/logout.png");
+    LOGOUT("/gui/png/icons/logout.png"),
+
+    /**
+     * CROWN is the icon representing the winners
+     */
+    CROWN("/gui/png/icons/crown.png");
 
     private final String path;
 
