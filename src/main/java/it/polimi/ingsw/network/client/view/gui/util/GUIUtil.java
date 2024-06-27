@@ -14,8 +14,6 @@ import javafx.scene.text.Font;
  */
 public class GUIUtil {
 
-    public static final String CAMBRIA_MATH = "Cambria Math";
-
     public static final double startedGameSceneHeight = 755.0;
 
     public static final double startedGameSceneWidth = 1325.0;
@@ -60,6 +58,26 @@ public class GUIUtil {
      */
     public static Font loadFontLiberationSansRegular(double size) {
         return Font.loadFont(GUIUtil.class.getResourceAsStream("/gui/fonts/LiberationSans-Regular.ttf"), size);
+    }
+
+    /**
+     * Loads liberation serif regular font in the given <code>size</code>
+     *
+     * @param size the size of the font
+     * @return the required font
+     */
+    public static Font loadFontLiberationSerifRegular(double size) {
+        return Font.loadFont(GUIUtil.class.getResourceAsStream("/gui/fonts/LiberationSerif-Regular.ttf"), size);
+    }
+
+    /**
+     * Loads liberation serif regular font in the given <code>size</code>
+     *
+     * @param size the size of the font
+     * @return the required font
+     */
+    public static Font loadFontLiberationSerifBold(double size) {
+        return Font.loadFont(GUIUtil.class.getResourceAsStream("/gui/fonts/LiberationSerif-Bold.ttf"), size);
     }
 
     /**
