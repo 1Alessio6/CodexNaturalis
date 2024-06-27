@@ -3,10 +3,13 @@ package it.polimi.ingsw.network.client.view.gui.controllers;
 
 import it.polimi.ingsw.network.client.UnReachableServerException;
 import it.polimi.ingsw.network.client.controller.ClientController;
+import it.polimi.ingsw.network.client.view.gui.util.Icon;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -31,11 +34,14 @@ public class ConnectionScene extends SceneController {
     @FXML
     private TextField portField;
 
-    //@FXML
-    //private Button exit;
+    @FXML
+    private Label ipMessage;
 
     @FXML
-    private Button connectButton;
+    private Label portMessage;
+
+    @FXML
+    private Pane textPane;
 
     public ConnectionScene() {
     }
@@ -54,7 +60,7 @@ public class ConnectionScene extends SceneController {
     @Override
     public void initializeUsingGameInformation() {
         super.initializeUsingGameInformation();
-        addButtonPane(mainPane, buttonPane, 352, 500);
+        addButtonPane(mainPane, buttonPane, 850, 630);
         portField.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
@@ -63,6 +69,19 @@ public class ConnectionScene extends SceneController {
                 }
             }
         });
+
+        Button connectButton = new Button("Connect");
+        connectButton.setLayoutY(228);
+        connectButton.setLayoutX(93);
+        ImageView connectImage = initializeIconImageView(Icon.CONNECT.getPath(),30);
+        connectImage.setFitHeight(30);
+        connectImage.setFitWidth(30);
+        connectButton.setFont(loadFontLiberationSerifRegular(15.5));
+        connectButton.setGraphic(connectImage);
+        connectButton.setPrefSize(160, 40);
+        textPane.getChildren().add(connectButton);
+
+
 
         connectButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -81,10 +100,12 @@ public class ConnectionScene extends SceneController {
     public void initialize() {
         Text welcomeMessage = new Text("Welcome");
         welcomeMessage.setFont(loadTitleFont(50));
-        welcomeMessage.setLayoutX(414.0);
-        welcomeMessage.setLayoutY(167.0);
+        welcomeMessage.setLayoutX(460.0);
+        welcomeMessage.setLayoutY(130.0);
         mainPane.getChildren().add(welcomeMessage);
         mainPane.setBackground(createMainBackground());
+        ipMessage.setFont(loadFontLiberationSerifRegular(16.5));
+        portMessage.setFont(loadFontLiberationSerifRegular(16.5));
 
     }
 

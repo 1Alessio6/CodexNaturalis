@@ -193,9 +193,7 @@ public abstract class SceneController {
         logoutButton.setLayoutX(30);
         logoutButton.setLayoutY(200);
 
-        ImageView logoutImage = (new ImageView(Icon.LOGOUT.getPath()));
-        logoutImage.setFitHeight(20);
-        logoutImage.setFitWidth(20);
+        ImageView logoutImage = initializeIconImageView(Icon.LOGOUT.getPath(),20);
         logoutButton.setGraphic(logoutImage);
 
         settingsPane.getChildren().add(logoutButton);
@@ -320,9 +318,7 @@ public abstract class SceneController {
         closeSettingsButton.setLayoutX(30);
         closeSettingsButton.setLayoutY(150);
 
-        ImageView closeSettingsImage = (new ImageView(Icon.RETURN.getPath()));
-        closeSettingsImage.setFitHeight(20);
-        closeSettingsImage.setFitWidth(20);
+        ImageView closeSettingsImage = initializeIconImageView(Icon.RETURN.getPath(),20);
         closeSettingsButton.setGraphic(closeSettingsImage);
 
         settingsPane.getChildren().add(closeSettingsButton);
@@ -349,9 +345,7 @@ public abstract class SceneController {
         fullscreenButton.setFont(loadFontLiberationSerifRegular(15.5));
         fullscreenButton.setPrefSize(160, 40);
 
-        ImageView fullscreenImage = (new ImageView(Icon.FULLSCREEN.getPath()));
-        fullscreenImage.setFitHeight(20);
-        fullscreenImage.setFitWidth(20);
+        ImageView fullscreenImage = initializeIconImageView(Icon.FULLSCREEN.getPath(),20);
         fullscreenButton.setGraphic(fullscreenImage);
 
         Text fullScreenStatus = new Text("OFF");
