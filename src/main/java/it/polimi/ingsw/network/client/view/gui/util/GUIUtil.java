@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.client.view.gui.util;
 
-import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.card.color.PlayerColor;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -113,7 +113,7 @@ public class GUIUtil {
                 return Color.web("#0000FF");
             }
             case GREEN -> { //todo replace with a darker green
-                return Color.web("#00FF00");
+                return Color.web("#32CD32");
             }
             case YELLOW -> {
                 return Color.web("#FCBA03");
@@ -140,7 +140,7 @@ public class GUIUtil {
                 return "#0000FF";
             }
             case GREEN -> {
-                return "#00FF00";
+                return "#32CD32";
             }
             case YELLOW -> {
                 return "#FCBA03"; //other possible solution #DAA520, #FFD700

@@ -5,12 +5,11 @@ import it.polimi.ingsw.model.SuspendedGameException;
 import it.polimi.ingsw.model.board.Availability;
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.card.color.PlayerColor;
 import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
-import it.polimi.ingsw.model.gamePhase.GamePhase;
-import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.gamephase.GamePhase;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
@@ -20,7 +19,6 @@ import it.polimi.ingsw.network.client.view.gui.util.BoardPane;
 import it.polimi.ingsw.network.client.view.gui.util.PlayerInfoPane;
 import it.polimi.ingsw.network.client.view.gui.util.PlaygroundInfoPane;
 import it.polimi.ingsw.network.client.view.gui.util.chat.Chat;
-import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.EventHandler;
@@ -38,7 +36,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
@@ -152,7 +149,7 @@ public class GameScene extends SceneController {
                     convertPlayerColorIntoHexCode(controller.getPlayer(user).getColor())
             );
         }
-        Text content = new Text(": " + m.getContent() + "\n");
+        Text content = new Text(" : " + m.getContent() + "\n");
         sentMessages.getChildren().addAll(new Text(preposition + " "), userText, content);
     }
 
@@ -259,7 +256,7 @@ public class GameScene extends SceneController {
         ClientController controller = gui.getController();
 
         if (controller.getCurrentPlayerUsername().equals(controller.getMainPlayerUsername())) {
-            StackPane currentPlayerUpdatePane = generateUpdatePane("It's your\n    Turn");
+            StackPane currentPlayerUpdatePane = generateUpdatePane("It's your turn");
             currentPlayerUpdatePane.setStyle("-fx-background-color: #3CB371;" + "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0.2, 0, 0);" + " -fx-background-radius: 10px;");
             currentPlayerUpdatePane.setLayoutY((getSceneWindowHeight() - updatePaneHeight - 10) / 2);
             mainPane.getChildren().add(currentPlayerUpdatePane);
