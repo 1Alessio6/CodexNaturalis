@@ -9,7 +9,7 @@ public class InvalidUsernameException extends Exception{
      * Constructs an <code>InvalidUsernameException</code> with no detail message
      */
     public InvalidUsernameException() {
-        super("This username has already been taken, please try with another one");
+        super("Invalid username");
     }
 
     /**
