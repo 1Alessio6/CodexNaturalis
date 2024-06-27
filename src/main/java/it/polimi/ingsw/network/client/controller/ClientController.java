@@ -13,6 +13,7 @@ import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.gamePhase.GamePhase;
 import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.UnReachableServerException;
@@ -319,7 +320,8 @@ public class ClientController implements ClientActions {
                 } else {
                     System.err.println("There are requests not sent to the server");
                 }
-            } catch (InterruptedException ignored) {}
+            } catch (InterruptedException ignored) {
+            }
         }
     }
 
@@ -468,7 +470,7 @@ public class ClientController implements ClientActions {
      * @param currentPlayerIdx index of the current player
      * @param phase            in which the current player is.
      */
-    public synchronized void  updateCurrentPlayer(int currentPlayerIdx, GamePhase phase) {
+    public synchronized void updateCurrentPlayer(int currentPlayerIdx, GamePhase phase) {
         game.setCurrentPlayerIdx(currentPlayerIdx);
         game.setCurrentPhase(phase);
     }
@@ -611,15 +613,24 @@ public class ClientController implements ClientActions {
         int rank = 1;
         int playerScore = getPlayer(playerUsername).getScore();
 
-
         for (ClientPlayer player : getPlayers()) {
             if (player.getScore() > playerScore) {
                 rank++;
             }
         }
 
-
         return rank;
+    }
+
+    public synchronized List<String> getAllUsernames(){
+
+        List<String> usernames = new ArrayList<>();
+
+        for(ClientPlayer player : game.getPlayers()){
+            usernames.add(player.getUsername());
+        }
+
+        return usernames;
     }
 
     public synchronized void setMainPlayerUsername(String name) {
