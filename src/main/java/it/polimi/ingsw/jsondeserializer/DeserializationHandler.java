@@ -40,15 +40,20 @@ public class DeserializationHandler<T> {
      */
     private String getJson(String jsonPath) throws FileNotFoundException {
         StringBuilder json = new StringBuilder();
-
-        File myObj = new File(jsonPath);
-        Scanner myReader = new Scanner(myObj);
-        while (myReader.hasNextLine()) {
-            json.append(myReader.nextLine());
+        try (InputStream jsonAsStream = DeserializationHandler.class.getResourceAsStream(jsonPath)) {
+            if (jsonAsStream != null) {
+                Scanner myReader = new Scanner(jsonAsStream);
+                while (myReader.hasNextLine()) {
+                    json.append(myReader.nextLine());
+                }
+                myReader.close();
+                return json.toString();
+            } else {
+                throw new FileNotFoundException("Json file " + jsonPath + " not found!!!");
+            }
+        } catch (IOException e) {
+            throw new FileNotFoundException(e.getMessage());
         }
-        myReader.close();
-
-        return json.toString();
     }
 
     /**

@@ -31,12 +31,6 @@ import java.util.Map;
  */
 public class JsonDeserializerTest {
     private Gson gson;
-    private final static String goldenCardsPath = "/cards/goldenCards.json";
-    private final static String resourceCardsPath = "/cards/resourceCards.json";
-    private final static String startingCardsPath = "/cards/startingCards.json";
-    private final static String objectivePositionCardsPath = "/cards/objectivePositionCards.json";
-    private final static String objectiveResourceCardsPath = "/cards/objectiveResourceCards.json";
-
     /**
      * Creates a new Gson instance and registers the custom type adapter before each test
      */

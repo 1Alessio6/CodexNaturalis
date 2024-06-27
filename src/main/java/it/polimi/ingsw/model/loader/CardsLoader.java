@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.Deck.Deck;
 import it.polimi.ingsw.model.card.*;
 
 import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,13 +14,13 @@ import java.util.List;
  * Loads cards and give them to the model
  */
 public class CardsLoader {
-    private static final String BACK_CARDS_PATH = "src/main/resources/cards/backCards.json";
-    private static final String GOLDEN_FRONT_CARDS_PATH = "src/main/resources/cards/goldenFrontCards.json";
-    private static final String RESOURCE_FRONT_CARDS_PATH = "src/main/resources/cards/resourceFrontCards.json";
-    private static final String STARTING_FRONT_CARDS_PATH = "src/main/resources/cards/startingFrontCards.json";
-    private static final String STARTING_BACK_CARDS_PATH = "src/main/resources/cards/startingBackCards.json";
-    private static final String OBJECTIVE_POSITION_FRONT_CARDS_PATH = "src/main/resources/cards/objectivePositionFrontCards.json";
-    private static final String OBJECTIVE_RESOURCE_CARDS_PATH = "src/main/resources/cards/objectiveResourceFrontCards.json";
+    public static final String BACK_CARDS_PATH = "/cards/backCards.json";
+    public static final String GOLDEN_FRONT_CARDS_PATH = "/cards/goldenFrontCards.json";
+    public static final String RESOURCE_FRONT_CARDS_PATH = "/cards/resourceFrontCards.json";
+    public static final String STARTING_FRONT_CARDS_PATH = "/cards/startingFrontCards.json";
+    public static final String STARTING_BACK_CARDS_PATH = "/cards/startingBackCards.json";
+    public static final String OBJECTIVE_POSITION_FRONT_CARDS_PATH = "/cards/objectivePositionFrontCards.json";
+    public static final String OBJECTIVE_RESOURCE_CARDS_PATH = "/cards/objectiveResourceFrontCards.json";
 
     private static List<Card> resourceCards;
     private static List<Card> goldenCards;
