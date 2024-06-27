@@ -612,7 +612,7 @@ public class ClientController implements ClientActions {
         int playerScore = getPlayer(playerUsername).getScore();
 
 
-        for (ClientPlayer player : getPlayers()) {
+        for (ClientPlayer player : game.getPlayers()) {
             if (player.getScore() > playerScore) {
                 rank++;
             }
