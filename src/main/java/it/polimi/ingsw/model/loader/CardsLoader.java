@@ -2,7 +2,6 @@ package it.polimi.ingsw.model.loader;
 
 import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.jsondeserializer.DeserializationHandler;
-import it.polimi.ingsw.model.Deck.Deck;
 import it.polimi.ingsw.model.card.*;
 
 import java.io.FileNotFoundException;

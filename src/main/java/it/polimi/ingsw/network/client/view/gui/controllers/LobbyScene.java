@@ -55,7 +55,7 @@ public class LobbyScene extends SceneController {
         numberPlayerCatcher.setVisible(false);
         setNumberRequest.setVisible(false);
         mainPane.setBackground(createMainBackground());
-        connectedPlayers.setFont(loadFontLiberationSerifRegular(15));
+        connectedPlayers.setFont(loadFontLiberationSerifBold(15));
         connectedPlayerText.setFont(loadFontLiberationSerifRegular(15));
         setNumberRequest.setFont(loadFontLiberationSerifRegular(15));
         requiredPlayer.setFont(loadFontLiberationSerifRegular(15));

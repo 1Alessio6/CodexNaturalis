@@ -2,8 +2,8 @@ package it.polimi.ingsw.network.client.view.gui.controllers;
 
 import it.polimi.ingsw.model.InvalidGamePhaseException;
 import it.polimi.ingsw.model.SuspendedGameException;
-import it.polimi.ingsw.model.card.Color.InvalidColorException;
-import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.card.color.InvalidColorException;
+import it.polimi.ingsw.model.card.color.PlayerColor;
 import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
@@ -14,7 +14,6 @@ import it.polimi.ingsw.network.client.view.gui.util.GUICards;
 import it.polimi.ingsw.network.client.view.gui.util.GUIUtil;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;

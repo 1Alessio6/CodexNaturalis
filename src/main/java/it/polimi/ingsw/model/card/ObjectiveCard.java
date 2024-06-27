@@ -2,9 +2,8 @@ package it.polimi.ingsw.model.card;
 
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.card.Color.CardColor;
+import it.polimi.ingsw.model.card.color.CardColor;
 
-import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;

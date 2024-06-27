@@ -2,7 +2,7 @@ package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.model.board.*;
 import it.polimi.ingsw.model.card.*;
-import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.card.color.PlayerColor;
 import it.polimi.ingsw.model.player.action.ChooseStarter;
 import it.polimi.ingsw.model.player.action.PlayerAction;
 import it.polimi.ingsw.model.player.action.PlayerState;

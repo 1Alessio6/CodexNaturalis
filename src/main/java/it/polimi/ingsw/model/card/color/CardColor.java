@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.card.Color;
+package it.polimi.ingsw.model.card.color;
 
 /**
  * Enumeration representing the possible colors of the cards.

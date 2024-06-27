@@ -3,7 +3,7 @@ package it.polimi.ingsw.model.board;
 import java.util.*;
 
 import it.polimi.ingsw.model.card.*;
-import it.polimi.ingsw.model.card.Color.CardColor;
+import it.polimi.ingsw.model.card.color.CardColor;
 import it.polimi.ingsw.model.card.strategies.CalculateCorners;
 import it.polimi.ingsw.model.card.strategies.CalculateResources;
 import org.junit.jupiter.api.Test;

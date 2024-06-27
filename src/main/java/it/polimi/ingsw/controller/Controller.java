@@ -1,11 +1,11 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.model.Deck.DeckType;
+import it.polimi.ingsw.model.deck.DeckType;
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.card.*;
-import it.polimi.ingsw.model.card.Color.InvalidColorException;
-import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.card.color.InvalidColorException;
+import it.polimi.ingsw.model.card.color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.listenerhandler.ListenerHandler;

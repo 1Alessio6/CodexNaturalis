@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.Deck;
+package it.polimi.ingsw.model.deck;
 
 /**
  * Enumeration representing the type of the deck

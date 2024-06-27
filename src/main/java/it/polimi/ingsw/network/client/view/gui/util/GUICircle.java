@@ -1,7 +1,6 @@
 package it.polimi.ingsw.network.client.view.gui.util;
 
-import it.polimi.ingsw.model.card.Color.PlayerColor;
-import it.polimi.ingsw.network.client.view.gui.util.GUIUtil;
+import it.polimi.ingsw.model.card.color.PlayerColor;
 import javafx.scene.shape.Circle;
 
 /**

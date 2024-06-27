@@ -1,11 +1,9 @@
 package it.polimi.ingsw.network.client.view.gui.controllers;
 
-import it.polimi.ingsw.model.card.Color.PlayerColor;
 import it.polimi.ingsw.network.client.view.gui.util.Icon;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -14,7 +12,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;

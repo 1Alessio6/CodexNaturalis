@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.card;
 
-import it.polimi.ingsw.model.card.Color.CardColor;
+import it.polimi.ingsw.model.card.color.CardColor;
 import it.polimi.ingsw.model.card.strategies.CalculateNoCondition;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

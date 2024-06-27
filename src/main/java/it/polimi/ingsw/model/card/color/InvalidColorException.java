@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.card.Color;
+package it.polimi.ingsw.model.card.color;
 
 /**
  * Invalid Color Exception is thrown when the player attempts to select a color that has already been selected

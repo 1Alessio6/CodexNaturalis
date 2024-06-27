@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.client.socket.message;
 
-import it.polimi.ingsw.model.gamePhase.GamePhase;
+import it.polimi.ingsw.model.gamephase.GamePhase;
 import it.polimi.ingsw.network.NetworkMessage;
 import it.polimi.ingsw.network.Type;
 

@@ -2,8 +2,7 @@ package it.polimi.ingsw.model.card;
 
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.card.Color.CardColor;
-import org.junit.jupiter.api.BeforeAll;
+import it.polimi.ingsw.model.card.color.CardColor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

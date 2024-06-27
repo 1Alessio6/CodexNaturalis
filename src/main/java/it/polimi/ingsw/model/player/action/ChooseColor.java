@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.player.action;
 
-import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.card.color.PlayerColor;
 import it.polimi.ingsw.model.player.Player;
 
 /**

@@ -1,8 +1,7 @@
 package it.polimi.ingsw.network.client.model.player;
 
 import it.polimi.ingsw.model.card.Card;
-import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.card.color.PlayerColor;
 import it.polimi.ingsw.model.card.ObjectiveCard;
 import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
@@ -11,7 +10,6 @@ import it.polimi.ingsw.network.client.model.card.ClientCard;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;

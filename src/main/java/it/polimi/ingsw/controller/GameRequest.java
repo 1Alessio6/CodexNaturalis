@@ -5,8 +5,8 @@ import it.polimi.ingsw.model.NonexistentPlayerException;
 import it.polimi.ingsw.model.SuspendedGameException;
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.card.Color.InvalidColorException;
-import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.card.color.InvalidColorException;
+import it.polimi.ingsw.model.card.color.PlayerColor;
 import it.polimi.ingsw.model.card.EmptyDeckException;
 import it.polimi.ingsw.model.card.InvalidCardIdException;
 import it.polimi.ingsw.model.card.InvalidFaceUpCardException;
@@ -17,7 +17,6 @@ import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 
 import java.rmi.RemoteException;
-import java.util.Set;
 
 /**
  * This interface represents all methods/actions that can be invoked from clients

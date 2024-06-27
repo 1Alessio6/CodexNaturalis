@@ -7,7 +7,7 @@ import it.polimi.ingsw.network.GameActions;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.heartbeat.HeartBeatHandler;
 import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.card.color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.network.heartbeat.HeartBeatMessage;
 import it.polimi.ingsw.network.server.rmi.ServerRMI;

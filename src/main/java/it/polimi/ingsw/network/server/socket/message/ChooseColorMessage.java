@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.server.socket.message;
 
-import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.card.color.PlayerColor;
 import it.polimi.ingsw.network.NetworkMessage;
 import it.polimi.ingsw.network.Type;
 
