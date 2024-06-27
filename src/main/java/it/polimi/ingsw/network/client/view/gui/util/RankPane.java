@@ -7,6 +7,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.convertRankIntoIcon;
+import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.loadFontLiberationSerifRegular;
 
 /**
  * RankPane represents the pane containing the player's rank and score
@@ -39,7 +40,7 @@ public class RankPane {
         score = new Text();
         score.setLayoutY(15);
         score.setLayoutX(iconSize + 5);
-        score.setFont(new Font("Cambria Math", 12));
+        score.setFont(loadFontLiberationSerifRegular(12.5));
 
 
         mainPane.getChildren().add(rank);

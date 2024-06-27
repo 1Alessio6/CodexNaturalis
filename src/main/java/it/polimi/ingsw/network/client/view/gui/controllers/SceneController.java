@@ -66,7 +66,7 @@ public abstract class SceneController {
         initializeCommandInfoPane(mainPane);
 
         mainPane.setBackground(createMainBackground());
-        mainPane.setPrefSize(485, 1100);
+        mainPane.setPrefSize(484, 1100);
         //mainPane.getChildren().add(fullscreenButton);
         ScrollPane mainScrollPane = new ScrollPane();
         mainScrollPane.setPrefSize(500, 500);
@@ -188,7 +188,7 @@ public abstract class SceneController {
     private void initializeLogoutButton(Pane settingsPane, Stage settingsStage) {
 
         Button logoutButton = new Button("Exit");
-        Font liberationSans = loadFontLiberationSansRegular(15);
+        Font liberationSans = loadFontLiberationSerifRegular(15.5);
         if(liberationSans == null){
             System.err.println("err");
         }
@@ -291,8 +291,7 @@ public abstract class SceneController {
         gamePhaseInstruction.setLayoutY(layoutY);
         commandInfoPane.getChildren().add(gamePhaseInstruction);
 
-        layoutY = 560;
-
+        layoutY = 510;
 
         Text suspendedGamePhase = new Text("- Suspended Game Phase");
         suspendedGamePhase.setLayoutY(layoutY);
@@ -320,7 +319,7 @@ public abstract class SceneController {
 
     private void initializeCloseSettingsButton(Pane settingsPane, Stage settingsStage) {
         Button closeSettingsButton = new Button("Close Settings");
-        closeSettingsButton.setFont(new Font(CAMBRIA_MATH, 15));
+        closeSettingsButton.setFont(loadFontLiberationSerifRegular(15.5));
         closeSettingsButton.setPrefSize(160, 40);
         closeSettingsButton.setLayoutX(30);
         closeSettingsButton.setLayoutY(150);
@@ -351,7 +350,7 @@ public abstract class SceneController {
         fullscreenPane.setLayoutY(100);
 
         Button fullscreenButton = new Button("Full-Screen Mode");
-        fullscreenButton.setFont(new Font(CAMBRIA_MATH, 15));
+        fullscreenButton.setFont(loadFontLiberationSerifRegular(15.5));
         fullscreenButton.setPrefSize(160, 40);
 
         ImageView fullscreenImage = (new ImageView(Icon.FULLSCREEN.getPath()));
@@ -360,7 +359,7 @@ public abstract class SceneController {
         fullscreenButton.setGraphic(fullscreenImage);
 
         Text fullScreenStatus = new Text("OFF");
-        fullScreenStatus.setFont(new Font(CAMBRIA_MATH, 15));
+        fullScreenStatus.setFont(loadFontLiberationSerifRegular(15.5));
         fullScreenStatus.setLayoutX(165);
         fullScreenStatus.setLayoutY(25);
         fullscreenPane.getChildren().add(fullscreenButton);

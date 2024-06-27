@@ -86,7 +86,7 @@ public class BoardPane {
         double layoutY = 50.0;
 
         Text FaceUpTitle = new Text();
-        FaceUpTitle.setFont(new Font(CAMBRIA_MATH, 15));
+        FaceUpTitle.setFont(loadFontLiberationSerifRegular(15.5));
         FaceUpTitle.setLayoutY(layoutY);
         FaceUpTitle.setLayoutX(20);
         FaceUpTitle.setText("Face-up Cards");
@@ -103,16 +103,16 @@ public class BoardPane {
                 case 0:
                     resourceFaceUp.getFirst().setLayoutX(layoutX);
                     resourceFaceUp.getFirst().setLayoutY(layoutY);
-                    setEmptyText(layoutX + 12, layoutY + 35, "Empty Face-up\n          Card", 0);
+                    setEmptyText(layoutX + 12, layoutY + 35, "Empty Face-up\n         Card", 0);
                     break;
                 case 2:
                     goldenFaceUp.getFirst().setLayoutX(layoutX);
                     goldenFaceUp.getFirst().setLayoutY(layoutY);
-                    setEmptyText(layoutX + 12, layoutY + 35, "Empty Face-up\n          Card", 2);
+                    setEmptyText(layoutX + 12, layoutY + 35, "Empty Face-up\n         Card", 2);
                     break;
                 case 4:
                     Text DeckTitle = new Text();
-                    DeckTitle.setFont(new Font(CAMBRIA_MATH, 15));
+                    DeckTitle.setFont(loadFontLiberationSerifRegular(15.5));
                     DeckTitle.setLayoutY(layoutY + 16);
                     DeckTitle.setLayoutX(20);
                     DeckTitle.setText("Decks");
@@ -131,13 +131,13 @@ public class BoardPane {
                 case 1:
                     resourceFaceUp.getLast().setLayoutX(layoutX);
                     resourceFaceUp.getLast().setLayoutY(layoutY);
-                    setEmptyText(layoutX + 12, layoutY + 35, "Empty Face-up\n          Card", 1);
+                    setEmptyText(layoutX + 12, layoutY + 35, "Empty Face-up\n         Card", 1);
                     break;
 
                 case 3:
                     goldenFaceUp.getLast().setLayoutX(layoutX);
                     goldenFaceUp.getLast().setLayoutY(layoutY);
-                    setEmptyText(layoutX + 12, layoutY + 35, "Empty Face-up\n          Card", 3);
+                    setEmptyText(layoutX + 12, layoutY + 35, "Empty Face-up\n         Card", 3);
                     break;
 
                 case 5:
@@ -153,7 +153,7 @@ public class BoardPane {
 
     private void setEmptyText(double layoutX, double layoutY, String text, int index){
         Text emptySlot = new Text(text);
-        emptySlot.setFont(new Font(CAMBRIA_MATH,15));
+        emptySlot.setFont(loadFontLiberationSerifRegular(15.5));
         emptySlot.setLayoutX(layoutX);
         emptySlot.setLayoutY(layoutY);
         boardMainPane.getChildren().add(emptySlot);
@@ -176,7 +176,7 @@ public class BoardPane {
         commonObjectivePane.setLayoutY(383.5);
 
         Text commonObjectiveTitle = new Text();
-        commonObjectiveTitle.setFont(new Font(CAMBRIA_MATH, 15));
+        commonObjectiveTitle.setFont(loadFontLiberationSerifRegular(15.5));
         commonObjectiveTitle.setLayoutY(20);
         commonObjectiveTitle.setLayoutX(20);
         commonObjectiveTitle.setText("Common Objectives");

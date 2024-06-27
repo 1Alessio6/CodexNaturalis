@@ -39,6 +39,7 @@ public class CrashScene extends SceneController {
      */
     public void initialize() {
         mainPane.setBackground(createMainBackground());
+        message.setFont(loadFontLiberationSerifRegular(24.5));
         ImageView returnImage = (new ImageView(Icon.RETURN.getPath()));
         returnImage.setFitHeight(30);
         returnImage.setFitWidth(30);

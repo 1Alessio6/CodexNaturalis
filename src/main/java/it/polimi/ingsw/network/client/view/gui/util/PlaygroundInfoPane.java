@@ -59,7 +59,7 @@ public class PlaygroundInfoPane {
 
         playGroundOwner.setLayoutY(9);
         playGroundOwner.setLayoutX(5);
-        playGroundOwner.setFont(new Font(CAMBRIA_MATH, 12));
+        playGroundOwner.setFont(loadFontLiberationSerifRegular(12));
         playGroundOwner.setPrefWidth(143);
         playGroundOwner.setWrapText(true);
 
@@ -93,7 +93,7 @@ public class PlaygroundInfoPane {
             rank.getMainPane().setVisible(true);
             returnToMainPlayground.setVisible(false);
         }
-        playGroundOwner.setFont(new Font(CAMBRIA_MATH, 12));
+        playGroundOwner.setFont(loadFontLiberationSerifRegular(12));
 
         resourcePane.updateResources(player.getPlayground().getResources());
     }

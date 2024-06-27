@@ -6,6 +6,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
+import javafx.scene.text.Text;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
 
@@ -20,6 +21,12 @@ public class SelectUsernameScene extends SceneController {
     @FXML
     private TextField usernameCatcher;
 
+    @FXML
+    private Text selectUsernameText;
+
+    @FXML
+    private Text maximumLimitText;
+
     private boolean reachedMaximumCharacters;
 
     public SelectUsernameScene(){}
@@ -31,6 +38,8 @@ public class SelectUsernameScene extends SceneController {
     public void initialize() {
         mainPane.setBackground(createMainBackground());
         reachedMaximumCharacters = false;
+        selectUsernameText.setFont(loadFontLiberationSerifRegular(24.5));
+        maximumLimitText.setFont(loadFontLiberationSerifRegular(15.5));
     }
 
     /**

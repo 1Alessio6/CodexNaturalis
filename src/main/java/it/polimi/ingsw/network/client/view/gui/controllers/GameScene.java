@@ -215,13 +215,13 @@ public class GameScene extends SceneController {
 
     private void initializeCurrentPlayerUsernameText() {
         Text currentPlayerText = new Text("Current Player: ");
-        currentPlayerText.setFont(new Font(CAMBRIA_MATH, 15));
-        currentPlayerText.setLayoutX(10);
+        currentPlayerText.setFont(loadFontLiberationSerifRegular(15.5));
+        currentPlayerText.setLayoutX(8);
         currentPlayerText.setLayoutY(25);
 
         currentPlayerUsername = new Text();
         updateCurrentPlayerUsername();
-        currentPlayerUsername.setLayoutX(115);
+        currentPlayerUsername.setLayoutX(109);
         currentPlayerUsername.setLayoutY(25);
 
         currentPlayerPane.getChildren().add(currentPlayerText);
@@ -231,13 +231,13 @@ public class GameScene extends SceneController {
     private void initializeCurrentPhaseText() {
 
         Text currentPhaseTitle = new Text("Current Phase: ");
-        currentPhaseTitle.setFont(new Font(CAMBRIA_MATH, 15));
-        currentPhaseTitle.setLayoutX(10);
+        currentPhaseTitle.setFont(loadFontLiberationSerifRegular(15.5));
+        currentPhaseTitle.setLayoutX(8);
         currentPhaseTitle.setLayoutY(50);
 
         currentPhase = new Text();
         updateCurrentPhase();
-        currentPhase.setLayoutX(110);
+        currentPhase.setLayoutX(105);
         currentPhase.setLayoutY(50);
 
         currentPlayerPane.getChildren().add(currentPhase);
@@ -253,7 +253,7 @@ public class GameScene extends SceneController {
         if (controller.isGameActive()) {
             showCurrentPlayerUpdatePane();
         }
-        currentPlayerUsername.setFont(new Font(CAMBRIA_MATH, 13));
+        currentPlayerUsername.setFont(loadFontLiberationSerifRegular(13.5));
     }
 
     private void showCurrentPlayerUpdatePane() {
@@ -289,7 +289,7 @@ public class GameScene extends SceneController {
                 mainPane.getChildren().add(phaseUpdatePane);
                 currentPhase.setFill(convertPlayerColor(PlayerColor.BLUE));
             }
-            currentPhase.setFont(new Font(CAMBRIA_MATH, 13));
+            currentPhase.setFont(loadFontLiberationSerifRegular(13.5));
         }
     }
 
@@ -315,8 +315,8 @@ public class GameScene extends SceneController {
         StackPane updatePane = new StackPane();
         updatePane.setPrefSize(updatePaneWidth, updatePaneHeight);
         Label updateMessageLabel = new Label();
-        updateMessageLabel.setStyle("-fx-text-fill: #000000;" + "-fx-font-weight: bold;");
-        updateMessageLabel.setFont(new Font(CAMBRIA_MATH, 20));
+        updateMessageLabel.setStyle("-fx-text-fill: #000000;");
+        updateMessageLabel.setFont(loadFontLiberationSerifBold(20.5));
         updateMessageLabel.setWrapText(true);
         updatePane.getChildren().add(updateMessageLabel);
         StackPane.setAlignment(updateMessageLabel, Pos.CENTER);
@@ -388,13 +388,13 @@ public class GameScene extends SceneController {
         mainPlayerCardsPane = new Pane();
 
         Text secretObjectiveTitle = new Text();
-        secretObjectiveTitle.setFont(new Font(CAMBRIA_MATH, 15));
+        secretObjectiveTitle.setFont(loadFontLiberationSerifRegular(15.5));
         secretObjectiveTitle.setLayoutY(630.5);
         secretObjectiveTitle.setLayoutX(345);
         secretObjectiveTitle.setText("Secret Objective");
 
         Text playerCardsTitle = new Text();
-        playerCardsTitle.setFont(new Font(CAMBRIA_MATH, 15));
+        playerCardsTitle.setFont(loadFontLiberationSerifRegular(15.5));
         playerCardsTitle.setLayoutY(630.5);
         playerCardsTitle.setLayoutX(545);
         playerCardsTitle.setText("Your Cards");

@@ -15,16 +15,15 @@
             </image>
 
         </ImageView>
-        <Pane layoutX="367.0" layoutY="211.0" opacity="0.9" prefHeight="298.0" prefWidth="346.0" style="-fx-background-color: #EEE5BC;">
-         <children>
-                <Text fx:id="message" fill="#dd2d2a" layoutX="72.0" layoutY="103.0" strokeType="OUTSIDE" strokeWidth="0.0" text="  SERVER CRASHED">
-                    <font>
-                        <Font name="Cambria Math" size="24.0" />
-                    </font>
-                </Text>
-            <Button fx:id="returnButton" layoutX="73.0" layoutY="149.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="201.0" text="Go back to menu" />
-            <Button fx:id="changeServer" layoutX="72.0" layoutY="219.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="201.0" text="Change Server" />
-         </children>
+        <Pane layoutX="367.0" layoutY="211.0" opacity="0.9" prefHeight="298.0" prefWidth="346.0"
+              style="-fx-background-color: #EEE5BC;">
+            <Text fx:id="message" fill="#dd2d2a" layoutX="72.0" layoutY="103.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                  text="  SERVER CRASHED">
+            </Text>
+            <Button fx:id="returnButton" layoutX="73.0" layoutY="149.0" mnemonicParsing="false" prefHeight="40.0"
+                    prefWidth="201.0" text="Go back to menu"/>
+            <Button fx:id="changeServer" layoutX="72.0" layoutY="219.0" mnemonicParsing="false" prefHeight="40.0"
+                    prefWidth="201.0" text="Change Server"/>
         </Pane>
     </children>
 </Pane>
