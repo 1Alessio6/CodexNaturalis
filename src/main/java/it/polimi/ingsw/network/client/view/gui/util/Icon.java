@@ -43,9 +43,9 @@ public enum Icon {
      */
     RETURN("/gui/png/icons/return-to-menu.png"),
     /**
-     * SERVER is the icon that allows the player to change server
+     * CONNECT is the icon that allows the player to connect
      */
-    SERVER("/gui/png/icons/server.png"),
+    CONNECT("/gui/png/icons/connect.png"),
     /**
      * FULLSCREEN is the icon that allows the player to enter in fullscreen mode
      */
