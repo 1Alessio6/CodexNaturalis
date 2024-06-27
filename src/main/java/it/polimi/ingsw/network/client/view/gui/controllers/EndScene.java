@@ -6,6 +6,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -13,6 +14,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
@@ -25,6 +27,9 @@ public class EndScene extends SceneController {
     @FXML
     private Pane mainPane;
 
+    @FXML
+    private TextArea winnersTextArea;
+
     public EndScene() {
     }
 
@@ -32,26 +37,31 @@ public class EndScene extends SceneController {
      * {@inheritDoc}
      */
     public void initialize() {
-        Text winnersTitle = new Text("Winners");
+        winnersTextArea.setEditable(false);
+        winnersTextArea.setFont(loadFontLiberationSerifBold(15.5));
+        Text winnersTitle = new Text("End Phase");
         winnersTitle.setLayoutY(94);
-        winnersTitle.setLayoutX(592);
-        Text ranking = new Text("Ranking");
-        ranking.setLayoutX(531);
-        ranking.setLayoutY(230);
-        ranking.setFont(loadFontLiberationSerifBold(25));
+        winnersTitle.setLayoutX(585);
+        Text winners = new Text("Winners");
+        winners.setLayoutX(531);
+        winners.setLayoutY(245);
+        winners.setFont(loadFontLiberationSerifBold(25));
         winnersTitle.setFont(loadTitleFont(50));
         Text exitMessage = new Text("The game is finished, close the application and\n                  restart it to play again");
         exitMessage.setFont(loadFontLiberationSerifRegular(15.5));
         exitMessage.setLayoutX(531);
-        exitMessage.setLayoutY(560);
-        Text pointsMessage = new Text("The final score of every player is updated with\n        points earned from the objective cards");
+        exitMessage.setLayoutY(575);
+        Text pointsMessage = new Text(("""
+                                 The winner (or winners in case of a tie) is
+                determined based on their score, including the extra points earned from
+                     the objective cards and the number of objective cards completed"""));
         pointsMessage.setFont(loadFontLiberationSerifRegular(15.5));
-        pointsMessage.setLayoutX(531);
-        pointsMessage.setLayoutY(150);
+        pointsMessage.setLayoutX(480);
+        pointsMessage.setLayoutY(160);
         mainPane.getChildren().add(exitMessage);
         mainPane.getChildren().add(pointsMessage);
         mainPane.getChildren().add(winnersTitle);
-        mainPane.getChildren().add(ranking);
+        mainPane.getChildren().add(winners);
         mainPane.setBackground(createMainBackground());
         initializeExitButton();
     }
@@ -72,7 +82,7 @@ public class EndScene extends SceneController {
     @Override
     public void showError(String details) {
         StackPane errorPane = generateError(details);
-        errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth)/2);
+        errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth) / 2);
         errorPane.setLayoutY(10);
         mainPane.getChildren().add(errorPane);
     }
@@ -83,28 +93,37 @@ public class EndScene extends SceneController {
      * @param winners the winners' list
      */
     public void showWinners(List<String> winners) {
-        for (String w : winners) {
 
-            Label winnerLabel = new Label();
-            winnerLabel.setWrapText(true);
-            winnerLabel.setText(w);
-            PlayerColor color = gui.getController().getPlayer(w).getColor();
-            if (color != null) {
-                winnerLabel.setStyle("-fx-text-fill:" + PlayerColor.conversionToCssStyle.get(color));
+        double distance = 38;
+        double layoutY = 294.5;
+
+        for (String username : winners) {
+            ImageView crownImage = initializeIconImageView(Icon.CROWN.getPath(), 20);
+            crownImage.setLayoutY(layoutY);
+            crownImage.setLayoutX(545);
+            mainPane.getChildren().add(crownImage);
+            winnersTextArea.appendText("\n        " + username);
+
+            if (username.equals(gui.getController().getMainPlayerUsername())) {
+                winnersTextArea.appendText(" (You)");
             }
-            //winnersPane.getChildren().add(winnerLabel);
+
+            winnersTextArea.appendText("\n");
+
+            layoutY = layoutY + distance;
+
         }
     }
 
-    private void initializeExitButton(){
+    private void initializeExitButton() {
         Button exitButton = new Button();
-        exitButton.setPrefSize(160,40);
+        exitButton.setPrefSize(160, 40);
         exitButton.setText("Exit");
         exitButton.setFont(loadFontLiberationSerifRegular(15.5));
-        ImageView logoutImage = initializeIconImageView(Icon.LOGOUT.getPath(),20);
+        ImageView logoutImage = initializeIconImageView(Icon.LOGOUT.getPath(), 20);
         exitButton.setGraphic(logoutImage);
         exitButton.setLayoutX(590);
-        exitButton.setLayoutY(600);
+        exitButton.setLayoutY(615);
         exitButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {

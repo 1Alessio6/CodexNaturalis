@@ -6,7 +6,7 @@
 <?import javafx.scene.text.TextFlow?>
 <Pane fx:id="mainPane" prefHeight="755.0" prefWidth="1325.0" xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.network.client.view.gui.controllers.EndScene">
-   <TextFlow
+   <TextArea fx:id="winnersTextArea"
            style=" -fx-padding: 8px; -fx-background-color: EEE5BC; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0.2, 0, 0); "
-           layoutX="531.0" layoutY="250.0" prefHeight="239.0" prefWidth="299.0"/>
+           layoutX="531.0" layoutY="265.0" prefHeight="239.0" prefWidth="299.0"/>
 </Pane>
