@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 class DrawablePlaygroundTest {
     Playground playground;
     Front sampleCard;
+    Position currentOffset;
 
     /**
      * Creates a new playground and placed a starter card on it, in addition, it creates a sample card before each test
@@ -32,20 +33,19 @@ class DrawablePlaygroundTest {
     @BeforeEach
     void setup(){
         playground = new Playground();
+        currentOffset = new Position(0, 0);
 
-        Map<CornerPosition, Corner> corners = new HashMap<>();
-        corners.put(CornerPosition.TOP_LEFT, new Corner());
-        Front starterFront = new Front(CardColor.BLUE, corners, 0);
+        Map<CornerPosition, Corner> allCorners = new HashMap<>();
+        for (CornerPosition cp : CornerPosition.values()) {
+            allCorners.put(cp, new Corner(Symbol.PLANT));
+        }
+        Front starterFront = new Front(CardColor.BLUE, allCorners, 0);
         Assertions.assertDoesNotThrow(
                 () -> {
                     playground.placeCard(starterFront, new Position(0, 0));
                 });
 
-        Map<CornerPosition, Corner> cornersTwo = new HashMap<>();
-        for (CornerPosition cp : CornerPosition.values()) {
-            cornersTwo.put(cp, new Corner(Symbol.PLANT));
-        }
-        sampleCard = new Front(CardColor.GREEN, cornersTwo, 1);
+        sampleCard = new Front(CardColor.GREEN, allCorners, 1);
     }
 
     //@AfterEach
@@ -56,18 +56,19 @@ class DrawablePlaygroundTest {
      * Test to check that an <code>UndrawablePlaygroundException</code> is correctly thrown when the player attempts to
      * move into a specific offset but the playground is fully represented
      *
-     * @throws UndrawablePlaygroundException if the playground is fully displayed
      */
     @Test
-    void assert_offsetWithoutOverflowThrows() throws UndrawablePlaygroundException {
+    void assert_offsetWithoutOverflowThrows() {
         Assertions.assertDoesNotThrow(
                 () -> {
-                    playground.placeCard(sampleCard, new Position(-1, 1));
+                    playground.placeCard(sampleCard, new Position(1, 1));
                 });
 
         ClientPlayground clientPlayground = new ClientPlayground(playground);
+
+        Assertions.assertDoesNotThrow(() -> ClientUtil.printPlayground(clientPlayground, currentOffset));
         Assertions.assertThrows(UndrawablePlaygroundException.class,
-                () -> ClientUtil.printPlayground(clientPlayground, new Position(0,0), new Position(-1, 1)));
+                () -> ClientUtil.printPlayground(clientPlayground, currentOffset, new Position(-1, 1)));
     }
 
     /**
@@ -84,14 +85,14 @@ class DrawablePlaygroundTest {
 
         Assertions.assertDoesNotThrow(
                 () -> {
-                    for (int i = 1; i < 23; ++i) {
+                    for (int i = 1; i < 22; ++i) {
                         playground.placeCard(sampleCard, new Position(-i, i));
                     }
                 });
 
         ClientPlayground clientPlayground = new ClientPlayground(playground);
         Assertions.assertEquals(result,
-                ClientUtil.printPlayground(clientPlayground, new Position(0,0), input));
+                ClientUtil.printPlayground(clientPlayground, currentOffset, input));
     }
 
     private static Stream<Map.Entry<Position, Position>> inputsAndResults() {
