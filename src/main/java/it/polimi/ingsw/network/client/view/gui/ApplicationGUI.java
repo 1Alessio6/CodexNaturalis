@@ -123,7 +123,7 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
                 currentScene = SceneType.LOBBY;
             }
             assert currentSceneController instanceof LobbyScene;
-            ((LobbyScene) currentSceneController).setPlayerConnected(controller.getConnectedUsernames());
+            ((LobbyScene) currentSceneController).setPlayerConnected(controller.getAllUsernames());
         });
     }
 

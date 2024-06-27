@@ -50,8 +50,7 @@ public class LobbyScene extends SceneController {
         numberPlayerCatcher.setVisible(false);
         setNumberRequest.setVisible(false);
         mainPane.setBackground(createMainBackground());
-
-        //todo fix when fullScreen
+        connectedPlayers.setFont(loadFontLiberationSerifRegular(15));
     }
 
     /**
@@ -100,13 +99,14 @@ public class LobbyScene extends SceneController {
     public void setPlayerConnected(List<String> usernames) {
         connectedPlayers.clear();
         for (int i = 0; i < usernames.size(); i++) {
-            connectedPlayers.setText(i + " - " + usernames.get(i));
+            int playerNumber = i + 1;
+            connectedPlayers.appendText(playerNumber + " - " + usernames.get(i));
 
             if (usernames.get(i).equals(gui.getController().getMainPlayerUsername())) {
-                connectedPlayers.setText(" LEADER");
+                connectedPlayers.appendText(" (You)");
             }
 
-            connectedPlayers.setText("\n");
+            connectedPlayers.appendText("\n");
         }
     }
 
