@@ -267,8 +267,8 @@ public class SetupScene extends SceneController {
         return startedGameSceneHeight;
     }
 
-    private void updateTextLayoutX(){
-        text.setLayoutX((getSceneWindowWidth() - text.boundsInLocalProperty().get().getWidth())/2);
+    private void updateTextLayoutX() {
+        text.setLayoutX((getSceneWindowWidth() - text.boundsInLocalProperty().get().getWidth()) / 2);
     }
 
 }
