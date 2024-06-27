@@ -191,10 +191,11 @@ public class ClientUtil {
         System.out.println(error);
 
         System.out.println("Codex Naturalis: codexnaturalis [ARGS]");
-        System.out.println("Possible args:");
-        System.out.println("--port [PORT]          override the default port");
-        System.out.println("--rmi                  enable rmi (default is with socket)");
-        System.out.println("--gui                 enable gui (default is cli)");
+        System.out.println("Insert in order the following args:");
+        System.out.println("<communication_protocol>: rmi or socket");
+        System.out.println("<client_ip>");
+        System.out.println("<application_type>: gui or tui");
+        System.out.println("Example:\trmi 127.0.0.1 gui");
     }
 
     // Main methods
