@@ -82,8 +82,8 @@ public class SocketHandler implements ClientHandler, HeartBeatHandler {
                 try {
                     message = gson.fromJson(line, NetworkMessage.class);
                 } catch (Exception e) {
-                    System.err.println("Received malformed input");
-                    continue;
+                    System.err.println("Received malformed input: stop listening the channel");
+                    break;
                 }
                 Type type = message.getNetworkType();
                 String sender = message.getSender();
