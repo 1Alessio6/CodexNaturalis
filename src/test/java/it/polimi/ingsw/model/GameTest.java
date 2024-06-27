@@ -5,6 +5,7 @@ import it.polimi.ingsw.controller.TurnCompletion;
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.*;
+import it.polimi.ingsw.model.deck.DeckType;
 import it.polimi.ingsw.model.gamephase.GamePhase;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
@@ -132,10 +133,6 @@ public class GameTest {
     }
 
     @Test
-    void drawFromDeck() {
-    }
-
-    @Test
     void placeCard() {
         // go directly to placeNormal Phase
         finishSetup_phaseIsPlaceNormal();
@@ -185,5 +182,64 @@ public class GameTest {
 
     @Test
     void drawFromFaceUpCards() {
+        // resume after place
+        placeCard();
+
+        Player currentPlayer = game.getCurrentPlayer();
+        List<Player> notCurrent = new ArrayList<>(game.getPlayers());
+        notCurrent.remove(currentPlayer);
+
+        // before action invalid
+        for (Player player : notCurrent) {
+            assertThrows(InvalidPlayerActionException.class,
+                    () -> game.drawFromFaceUpCards(player.getUsername(), 1));
+        }
+
+        // test current
+        assertThrows(AssertionError.class,
+                () -> game.drawFromFaceUpCards(currentPlayer.getUsername(), 5));// 5 or 4 are for decks
+
+        assertDoesNotThrow(() -> game.drawFromFaceUpCards(currentPlayer.getUsername(), 1));
+
+        // can draw only one card a time
+        assertThrows(InvalidGamePhaseException.class,
+                () -> game.drawFromFaceUpCards(currentPlayer.getUsername(), 1));
+
+        // after is invalid phase
+        for (Player player : notCurrent) {
+            assertThrows(InvalidGamePhaseException.class,
+                    () -> game.drawFromFaceUpCards(player.getUsername(), 1));
+        }
+    }
+
+    @Test
+    void drawFromDeck() {
+        // resume after place
+        placeCard();
+
+        Player currentPlayer = game.getCurrentPlayer();
+        List<Player> notCurrent = new ArrayList<>(game.getPlayers());
+        notCurrent.remove(currentPlayer);
+
+        // before action invalid
+        for (Player player : notCurrent) {
+            assertThrows(InvalidPlayerActionException.class,
+                    () -> game.drawFromDeck(player.getUsername(), DeckType.GOLDEN));
+        }
+
+        // test current
+        // todo: check for correct deck type
+
+        assertDoesNotThrow(() -> game.drawFromDeck(currentPlayer.getUsername(), DeckType.GOLDEN));
+
+        // can draw only one card a time
+        assertThrows(InvalidGamePhaseException.class,
+                () -> game.drawFromDeck(currentPlayer.getUsername(), DeckType.RESOURCE));
+
+        // after is invalid phase
+        for (Player player : notCurrent) {
+            assertThrows(InvalidGamePhaseException.class,
+                    () -> game.drawFromDeck(player.getUsername(), DeckType.GOLDEN));
+        }
     }
 }
