@@ -49,8 +49,8 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
      * {@inheritDoc}
      */
     @Override
-    public void run(String typeConnection) {
-        launch(typeConnection);
+    public void run(String typeConnection, String clientIp) {
+        launch(typeConnection, clientIp);
     }
 
     /**
@@ -74,7 +74,8 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         System.out.println("Start the gui");
         isFullScreen = false;
         gameSuspendedDuringSetup = false;
-        client = ClientMain.createClient(getParameters().getUnnamed().getFirst());
+        List<String> args = getParameters().getUnnamed();
+        client = ClientMain.createClient(args.get(0), args.get(1));
         controller = new ClientController(client);
         this.primaryStage = primaryStage;
         runView();

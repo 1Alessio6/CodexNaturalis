@@ -22,7 +22,10 @@ public class ClientRMI extends Client implements HeartBeatHandler {
     private HeartBeat heartBeat;
     private VirtualView stub;
 
-    public ClientRMI() {
+    public ClientRMI(String clientIp) {
+        if (!clientIp.isEmpty()) {
+            System.setProperty("java.rmi.server.hostname", clientIp);
+        }
     }
 
     /**

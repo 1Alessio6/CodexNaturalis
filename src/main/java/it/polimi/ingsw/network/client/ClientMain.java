@@ -6,6 +6,9 @@ import it.polimi.ingsw.network.client.view.gui.ApplicationGUI;
 import it.polimi.ingsw.network.client.view.tui.ApplicationTUI;
 import it.polimi.ingsw.network.client.view.tui.ClientUtil;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 
@@ -24,10 +27,10 @@ public class ClientMain {
      * @param typeConnection the type of communication to be used, that is, OPTION_RMI or OPTION_SOCKET
      * @return the client in the <code>typeConnection</code> desired
      */
-    public static Client createClient(String typeConnection) {
+    public static Client createClient(String typeConnection, String clientIp) {
         Client client;
         if (typeConnection.equals(OPTION_RMI)) {
-            client = new ClientRMI();
+            client = new ClientRMI(clientIp);
         } else {
             client = new ClientSocket();
         }
@@ -43,26 +46,32 @@ public class ClientMain {
     public static void main(String[] args) {
         String typeConnection = OPTION_SOCKET;
         String typeView = OPTION_GUI;
+        String clientIp = "";
         try {
-            int maxArgs = 2; // <connectionType> + <viewType>
-            // max 4 args: rmi tui
+            int maxArgs = 3; // <connectionType> + <client_ip> + <viewType>
             if (args.length > 0 && args.length <= maxArgs) {
-                // override stuff
-                if (Arrays.stream(args).anyMatch("--rmi"::equalsIgnoreCase)) {
+                if (args[0].equals(OPTION_RMI)) {
                     typeConnection = OPTION_RMI;
+                } else {
+                    typeConnection = OPTION_SOCKET;
                 }
-                if (Arrays.stream(args).anyMatch("--tui"::equalsIgnoreCase)) {
-                    typeView = OPTION_TUI;
-                }
-                //for (int i = 0; i < args.length; i++) {
-                //    if (args[i].equalsIgnoreCase("--port")) {
-                //        port = args[i + 1];
-                //    }
 
-                //    if (args[i].equalsIgnoreCase("--host")) {
-                //        host = args[i + 1];
-                //    }
-                //}
+                clientIp = args[1];
+
+                if (args[2].equals("tui")) {
+                    typeView = OPTION_TUI;
+                } else {
+                    typeView = OPTION_GUI;
+                }
+
+                if (typeView.equals(OPTION_TUI)) {
+                    try {
+                        System.setErr(new PrintStream(new FileOutputStream("log.txt",true)));
+                    } catch (FileNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
             } else if (args.length > maxArgs) {
                 ClientUtil.argsHelper("Too many arguments");
             }
@@ -73,7 +82,7 @@ public class ClientMain {
                 application = new ApplicationGUI();
             }
             //application.run(typeConnection, host, port);
-            application.run(typeConnection);
+            application.run(typeConnection, clientIp);
         } catch (UnReachableServerException | RemoteException e) {
             System.err.println(e.getMessage());
             System.exit(1);
