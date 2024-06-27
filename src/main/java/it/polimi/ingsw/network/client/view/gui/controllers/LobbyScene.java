@@ -52,7 +52,6 @@ public class LobbyScene extends SceneController {
         title.setLayoutX(600);
         title.setStrokeType(StrokeType.OUTSIDE);
         mainPane.getChildren().add(title);
-        //connectedPlayers.setText("1 - " + gui.getController().getMainPlayerUsername());
         numberPlayerCatcher.setVisible(false);
         setNumberRequest.setVisible(false);
         mainPane.setBackground(createMainBackground());

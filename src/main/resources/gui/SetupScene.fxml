@@ -7,9 +7,8 @@
 
 <Pane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="755.0" prefWidth="1325.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.network.client.view.gui.controllers.SetupScene">
     <children>
-        <Rectangle fx:id="secondRectangle" arcHeight="5.0" arcWidth="5.0" height="98.0" layoutX="708.0" layoutY="505.0" stroke="BLACK" strokeType="INSIDE" width="151.0" />
-        <Rectangle fx:id="firstRectangle" arcHeight="5.0" arcWidth="5.0" height="98.0" layoutX="418.0" layoutY="505.0" stroke="BLACK" strokeType="INSIDE" width="151.0" />
-        <TextField fx:id="text" layoutX="547.0" layoutY="288.0" text="todo. fill with tthe specific scene's related commands" />
+        <Rectangle fx:id="secondRectangle" arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="98.0" layoutX="708.0" layoutY="505.0" stroke="BLACK" strokeType="INSIDE" width="151.0" />
+        <Rectangle fx:id="firstRectangle" arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="98.0" layoutX="418.0" layoutY="505.0" stroke="BLACK" strokeType="INSIDE" width="151.0" />
       <Text fx:id="phaseTitle" layoutX="522.0" layoutY="94.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="282.0" />
     </children>
 </Pane>

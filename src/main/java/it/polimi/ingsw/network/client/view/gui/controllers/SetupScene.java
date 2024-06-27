@@ -40,8 +40,7 @@ public class SetupScene extends SceneController {
     @FXML
     private Rectangle secondRectangle;
 
-    @FXML
-    private TextField text;
+    private Text text;
 
     @FXML
     private Text phaseTitle;
@@ -84,11 +83,16 @@ public class SetupScene extends SceneController {
      */
     @Override
     public void initialize() {
+        text = new Text();
         phaseTitle.setText("Setup Phase");
         phaseTitle.setFont(loadTitleFont(50));
         isStarterSelected = false;
-        text.setText("Choose your starter");
+        text.setFont(loadFontLiberationSerifRegular(30));
+        text.setText("Choose your starter card");
         mainPane.setBackground(createMainBackground());
+        updateTextLayoutX();
+        text.setLayoutY(288);
+        mainPane.getChildren().add(text);
     }
 
     /**
@@ -131,7 +135,6 @@ public class SetupScene extends SceneController {
     }
 
     private void initializeStarterCards() {
-        System.out.println("initializing starter");
         ClientPlayer player = gui.getController().getPlayer(gui.getController().getMainPlayerUsername());
         ClientCard starter = player.getStarterCard();
         firstRectangle.setFill(GUICards.pathToImage(starter.getFrontPath()));
@@ -146,7 +149,6 @@ public class SetupScene extends SceneController {
      * Constructs a new <code>SetupScene</code> with no parameter provided
      */
     public SetupScene() {
-        System.out.println("Constructing the setup scene");
     }
 
     /**
@@ -157,7 +159,8 @@ public class SetupScene extends SceneController {
     public void updateAfterStarterPlace(String username) {
         if (gui.getController().getMainPlayer().getUsername().equals(username)) {
             isStarterSelected = true;
-            text.setText("Choose colors");
+            text.setText("Choose your color");
+            updateTextLayoutX();
             showColors();
             initializeObjectiveCards();
         }
@@ -201,7 +204,8 @@ public class SetupScene extends SceneController {
         }
         firstRectangle.setVisible(true);
         secondRectangle.setVisible(true);
-        text.setText("Choose objective");
+        text.setText("Choose you secret objective card");
+        updateTextLayoutX();
     }
 
     private void centerColors() {
@@ -241,7 +245,8 @@ public class SetupScene extends SceneController {
     public void updateObjectiveCard() {
         firstRectangle.setVisible(false);
         secondRectangle.setVisible(false);
-        text.setText("Wait for the other players to complete their setup");
+        text.setText("Waiting for the other players to complete their setup...");
+        updateTextLayoutX();
     }
 
     /**
@@ -260,6 +265,10 @@ public class SetupScene extends SceneController {
 
     public double getSceneWindowHeight() {
         return startedGameSceneHeight;
+    }
+
+    private void updateTextLayoutX(){
+        text.setLayoutX((getSceneWindowWidth() - text.boundsInLocalProperty().get().getWidth())/2);
     }
 
 }

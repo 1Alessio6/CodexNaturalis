@@ -104,8 +104,8 @@ public class ConnectionScene extends SceneController {
         welcomeMessage.setLayoutY(130.0);
         mainPane.getChildren().add(welcomeMessage);
         mainPane.setBackground(createMainBackground());
-        ipMessage.setFont(loadFontLiberationSerifRegular(16.5));
-        portMessage.setFont(loadFontLiberationSerifRegular(16.5));
+        ipMessage.setFont(loadFontLiberationSerifBold(16.5));
+        portMessage.setFont(loadFontLiberationSerifBold(16.5));
 
     }
 
