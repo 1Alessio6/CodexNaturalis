@@ -41,7 +41,7 @@ public class GameTest {
 
     private void addViews() throws InvalidUsernameException {
         for (String user : users) {
-            game.add(user, new PlainVirtualView());
+            game.add(user, new PlainGameListener());
         }
     }
 
@@ -94,14 +94,14 @@ public class GameTest {
         List<String> disconnectedPlayers = new ArrayList<>(users);
         disconnectedPlayers.removeAll(connectedPlayers);
 
-        assertThrows(InvalidUsernameException.class, () -> game.add(outsider, new PlainVirtualView()));
+        assertThrows(InvalidUsernameException.class, () -> game.add(outsider, new PlainGameListener()));
 
         for (String online : connectedPlayers) {
-            assertThrows(InvalidUsernameException.class, () -> game.add(online, new PlainVirtualView()));
+            assertThrows(InvalidUsernameException.class, () -> game.add(online, new PlainGameListener()));
         }
 
         for (String afk : disconnectedPlayers) {
-            assertDoesNotThrow(() -> game.add(afk, new PlainVirtualView()));
+            assertDoesNotThrow(() -> game.add(afk, new PlainGameListener()));
         }
     }
 
