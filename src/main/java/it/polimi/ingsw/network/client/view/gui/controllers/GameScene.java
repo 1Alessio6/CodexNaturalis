@@ -127,7 +127,6 @@ public class GameScene extends SceneController {
                         m.isBroadcast();
     }
 
-    //todo check if font Cambria math is more readable for lighter color
     private void appendMessage(Message m) {
         ClientController controller = gui.getController();
         String myName = controller.getMainPlayerUsername();

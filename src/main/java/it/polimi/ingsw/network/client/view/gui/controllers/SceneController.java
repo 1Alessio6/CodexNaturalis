@@ -185,14 +185,10 @@ public abstract class SceneController {
         settingsMainPane.getChildren().add(sectionTitle);
     }
 
-    private void initializeLogoutButton(Pane settingsPane, Stage settingsStage) {
+    protected void initializeLogoutButton(Pane settingsPane, Stage settingsStage) {
 
         Button logoutButton = new Button("Exit");
-        Font liberationSans = loadFontLiberationSerifRegular(15.5);
-        if(liberationSans == null){
-            System.err.println("err");
-        }
-        logoutButton.setFont(liberationSans);
+        logoutButton.setFont(loadFontLiberationSerifRegular(15.5));
         logoutButton.setPrefSize(160, 40);
         logoutButton.setLayoutX(30);
         logoutButton.setLayoutY(200);
