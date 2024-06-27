@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.Color.CardColor;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -11,16 +12,16 @@ import java.util.HashMap;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ObjectivePositionCardTest {
-    static Playground playground;
-    static Front red;
-    static Front blue;
-    static Front green;
+    Playground playground;
+    Front red;
+    Front blue;
+    Front green;
 
-    static ObjectivePositionCard lForm;
-    static ObjectivePositionCard diagonalForm;
+    ObjectivePositionCard lForm;
+    ObjectivePositionCard diagonalForm;
 
-    @BeforeAll
-    static void beforeAll() {
+    @BeforeEach
+    void setup() {
         HashMap<CornerPosition, Corner> corners = new HashMap<>();
         for (CornerPosition position : CornerPosition.values()) {
             corners.put(position, new Corner());
