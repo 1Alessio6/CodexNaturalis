@@ -15,9 +15,9 @@ public class HeartBeat extends Thread {
     private String listenerName;
     private HeartBeatHandler heartBeatHandler;
     private HeartBeatListener heartBeatListener;
-    private static final int MAX_DELTA = 3; // 3
+    private static final int MAX_DELTA = 10; // 3
     private static final int HEART_BEAT_PERIOD = 1000;
-    private static final int MAX_DELAY = 5000; // 5000
+    private static final int MAX_DELAY = 10000; // 5000
     private AtomicInteger mostRecentReceivedId;
     private Integer lastSentId;
     private AtomicBoolean isActive;
