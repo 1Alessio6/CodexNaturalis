@@ -22,13 +22,15 @@ public class LobbyScene extends SceneController {
     private TextArea connectedPlayers;
 
     @FXML
-    private TextArea setNumberRequest;
+    private Text setNumberRequest;
 
     @FXML
     private ComboBox<Integer> numberPlayerCatcher;
 
-    @FXML
     private Text requiredPlayer;
+
+    @FXML
+    private Text connectedPlayerText;
 
 
     public LobbyScene() {
@@ -39,11 +41,15 @@ public class LobbyScene extends SceneController {
      */
     @Override
     public void initialize() {
+        requiredPlayer = new Text();
+        requiredPlayer.setLayoutX(580.0);
+        requiredPlayer.setLayoutY(520.0);
+        mainPane.getChildren().add(requiredPlayer);
         numberPlayerCatcher.getItems().addAll(2, 3, 4);
         Text title = new Text("Lobby");
-        title.setFont(loadTitleFont(60));
-        title.setLayoutY(180);
-        title.setLayoutX(580);
+        title.setFont(loadTitleFont(50));
+        title.setLayoutY(94);
+        title.setLayoutX(600);
         title.setStrokeType(StrokeType.OUTSIDE);
         mainPane.getChildren().add(title);
         //connectedPlayers.setText("1 - " + gui.getController().getMainPlayerUsername());
@@ -51,6 +57,9 @@ public class LobbyScene extends SceneController {
         setNumberRequest.setVisible(false);
         mainPane.setBackground(createMainBackground());
         connectedPlayers.setFont(loadFontLiberationSerifRegular(15));
+        connectedPlayerText.setFont(loadFontLiberationSerifRegular(15));
+        setNumberRequest.setFont(loadFontLiberationSerifRegular(15));
+        requiredPlayer.setFont(loadFontLiberationSerifRegular(15));
     }
 
     /**
@@ -120,7 +129,8 @@ public class LobbyScene extends SceneController {
 
         numberPlayerCatcher.setVisible(false);
         setNumberRequest.setVisible(false);
-        requiredPlayer.setText("Player required to play: " + numberPlayerCatcher.getValue());
+        int numberRequiredPlayer = numberPlayerCatcher.getValue();
+        requiredPlayer.setText("Player required to play: " + numberRequiredPlayer + " ");
         requiredPlayer.setVisible(true);
 
     }
