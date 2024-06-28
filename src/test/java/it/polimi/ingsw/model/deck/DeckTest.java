@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.Deck;
+package it.polimi.ingsw.model.deck;
 
 import it.polimi.ingsw.model.card.Back;
 import it.polimi.ingsw.model.card.Card;
@@ -9,8 +9,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test to check the correct draw and addition of cards to the deck

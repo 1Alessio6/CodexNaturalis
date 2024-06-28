@@ -1,11 +1,11 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.card.color.PlayerColor;
 import it.polimi.ingsw.model.card.CornerPosition;
 import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.chat.message.Message;
-import it.polimi.ingsw.model.gamePhase.GamePhase;
+import it.polimi.ingsw.model.gamephase.GamePhase;
 import it.polimi.ingsw.network.client.model.ClientGame;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;

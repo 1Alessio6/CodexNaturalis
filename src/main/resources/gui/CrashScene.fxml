@@ -4,7 +4,6 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <Pane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.network.client.view.gui.controllers.CrashScene">
@@ -15,16 +14,8 @@
             </image>
 
         </ImageView>
-        <Pane layoutX="367.0" layoutY="211.0" opacity="0.9" prefHeight="298.0" prefWidth="346.0" style="-fx-background-color: #EEE5BC;">
-         <children>
-                <Text fx:id="message" fill="#dd2d2a" layoutX="72.0" layoutY="103.0" strokeType="OUTSIDE" strokeWidth="0.0" text="  SERVER CRASHED">
-                    <font>
-                        <Font name="Cambria Math" size="24.0" />
-                    </font>
-                </Text>
-            <Button fx:id="returnButton" layoutX="73.0" layoutY="149.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="201.0" text="Go back to menu" />
-            <Button fx:id="changeServer" layoutX="72.0" layoutY="219.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="201.0" text="Change Server" />
-         </children>
+        <Pane fx:id="textPane" layoutX="367.0" layoutY="211.0" opacity="0.9" prefHeight="298.0" prefWidth="346.0" style="-fx-background-color: EEE5BC; -fx-background-radius: 10px; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0.5, 0, 0);">
+            <Button fx:id="exitButton" layoutX="69.0" layoutY="176.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="201.0" text="Exit" />
         </Pane>
     </children>
 </Pane>

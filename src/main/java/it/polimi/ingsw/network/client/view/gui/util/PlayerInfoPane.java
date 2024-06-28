@@ -102,7 +102,7 @@ public class PlayerInfoPane {
         //initialize player text
         username = new Label(player.getUsername());
         username.setStyle("-fx-text-fill: " + convertPlayerColorIntoHexCode(player.getColor()) + ";" + "-fx-font-weight: bold;" + "-fx-background-radius: 5px;" + "-fx-background-color: #FFFFFF;");
-        username.setFont(new Font("Cambria Math", 12));
+        username.setFont(loadFontLiberationSerifRegular(12.5));
         username.setPrefHeight(15);
         username.setPadding(new Insets(7));
         username.setLayoutX(7);

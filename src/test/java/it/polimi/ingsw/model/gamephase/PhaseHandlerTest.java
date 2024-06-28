@@ -1,8 +1,8 @@
-package it.polimi.ingsw.model.gamePhase;
+package it.polimi.ingsw.model.gamephase;
 
 import it.polimi.ingsw.model.card.*;
-import it.polimi.ingsw.model.card.Color.CardColor;
-import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.card.color.CardColor;
+import it.polimi.ingsw.model.card.color.PlayerColor;
 import it.polimi.ingsw.model.player.Player;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

@@ -7,11 +7,11 @@ import it.polimi.ingsw.model.board.Availability;
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.*;
-import it.polimi.ingsw.model.card.Color.InvalidColorException;
-import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.card.color.InvalidColorException;
+import it.polimi.ingsw.model.card.color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
-import it.polimi.ingsw.model.gamePhase.GamePhase;
+import it.polimi.ingsw.model.gamephase.GamePhase;
 import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
 import it.polimi.ingsw.network.VirtualServer;
 import it.polimi.ingsw.network.client.Client;
@@ -319,7 +319,8 @@ public class ClientController implements ClientActions {
                 } else {
                     System.err.println("There are requests not sent to the server");
                 }
-            } catch (InterruptedException ignored) {}
+            } catch (InterruptedException ignored) {
+            }
         }
     }
 
@@ -468,7 +469,7 @@ public class ClientController implements ClientActions {
      * @param currentPlayerIdx index of the current player
      * @param phase            in which the current player is.
      */
-    public synchronized void  updateCurrentPlayer(int currentPlayerIdx, GamePhase phase) {
+    public synchronized void updateCurrentPlayer(int currentPlayerIdx, GamePhase phase) {
         game.setCurrentPlayerIdx(currentPlayerIdx);
         game.setCurrentPhase(phase);
     }
@@ -618,8 +619,18 @@ public class ClientController implements ClientActions {
             }
         }
 
-
         return rank;
+    }
+
+    public synchronized List<String> getAllUsernames(){
+
+        List<String> usernames = new ArrayList<>();
+
+        for(ClientPlayer player : game.getPlayers()){
+            usernames.add(player.getUsername());
+        }
+
+        return usernames;
     }
 
     public synchronized void setMainPlayerUsername(String name) {

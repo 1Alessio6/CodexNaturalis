@@ -2,16 +2,15 @@ package it.polimi.ingsw.model.card;
 
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.card.Color.CardColor;
+import it.polimi.ingsw.model.card.color.CardColor;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
 /**
  * Corresponds to the card that gives points to the player when the player places them in accordance with the pattern.
  */
-public class ObjectivePositionCard extends ObjectiveCard {
+public final class ObjectivePositionCard extends ObjectiveCard {
     private final Map<Position, CardColor> condition;
 
     /**
@@ -57,16 +56,16 @@ public class ObjectivePositionCard extends ObjectiveCard {
      * @return true if there is a card in the given position with the specified color on the playground, false otherwise
      */
     private boolean matchRequirement(Playground playground, Position requiredPosition, CardColor requiredColor) {
-        if (!playground.contains(requiredPosition)) {
-            return false;
+        CardColor color;
+        try {
+            color = playground.getTile(requiredPosition).getFace().getColor();
+        } catch (NullPointerException e) {
+            color = null; // no color: tile is empty
         }
-        Face f = playground.getTile(requiredPosition).getFace();
-        // it's a position related to an empty/notavailable tile
-        if (f == null) {
-            return false;
-        }
-        CardColor color = f.getColor();
-        return color != null && color.equals(requiredColor);
+
+        return playground.contains(requiredPosition)
+                &&
+                (color != null && color.equals(requiredColor));
     }
 
     /**

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.client.view.gui.util;
 
-import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.card.color.PlayerColor;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -13,8 +13,6 @@ import javafx.scene.text.Font;
  * GUIUtil is the class that facilitates GUIs realization
  */
 public class GUIUtil {
-
-    public static final String CAMBRIA_MATH = "Cambria Math";
 
     public static final double startedGameSceneHeight = 755.0;
 
@@ -53,6 +51,36 @@ public class GUIUtil {
     }
 
     /**
+     * Loads liberation sans regular font in the given <code>size</code>
+     *
+     * @param size the size of the font
+     * @return the required font
+     */
+    public static Font loadFontLiberationSansRegular(double size) {
+        return Font.loadFont(GUIUtil.class.getResourceAsStream("/gui/fonts/LiberationSans-Regular.ttf"), size);
+    }
+
+    /**
+     * Loads liberation serif regular font in the given <code>size</code>
+     *
+     * @param size the size of the font
+     * @return the required font
+     */
+    public static Font loadFontLiberationSerifRegular(double size) {
+        return Font.loadFont(GUIUtil.class.getResourceAsStream("/gui/fonts/LiberationSerif-Regular.ttf"), size);
+    }
+
+    /**
+     * Loads liberation serif regular font in the given <code>size</code>
+     *
+     * @param size the size of the font
+     * @return the required font
+     */
+    public static Font loadFontLiberationSerifBold(double size) {
+        return Font.loadFont(GUIUtil.class.getResourceAsStream("/gui/fonts/LiberationSerif-Bold.ttf"), size);
+    }
+
+    /**
      * Initializes the icon found in the given <code>path</code> and adjusts it to the given <code>fitSize</code>
      *
      * @param path    the icon path
@@ -85,7 +113,7 @@ public class GUIUtil {
                 return Color.web("#0000FF");
             }
             case GREEN -> { //todo replace with a darker green
-                return Color.web("#00FF00");
+                return Color.web("#32CD32");
             }
             case YELLOW -> {
                 return Color.web("#FCBA03");
@@ -112,7 +140,7 @@ public class GUIUtil {
                 return "#0000FF";
             }
             case GREEN -> {
-                return "#00FF00";
+                return "#32CD32";
             }
             case YELLOW -> {
                 return "#FCBA03"; //other possible solution #DAA520, #FFD700

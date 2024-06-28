@@ -2,20 +2,20 @@ package it.polimi.ingsw.model;
 
 import com.google.gson.reflect.TypeToken;
 import it.polimi.ingsw.jsondeserializer.DeserializationHandler;
-import it.polimi.ingsw.model.Deck.Deck;
-import it.polimi.ingsw.model.Deck.DeckType;
+import it.polimi.ingsw.model.deck.Deck;
+import it.polimi.ingsw.model.deck.DeckType;
 import it.polimi.ingsw.model.board.*;
 import it.polimi.ingsw.model.card.*;
-import it.polimi.ingsw.model.card.Color.InvalidColorException;
-import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.card.color.InvalidColorException;
+import it.polimi.ingsw.model.card.color.PlayerColor;
 import it.polimi.ingsw.model.chat.ChatDatabase;
-import it.polimi.ingsw.model.gamePhase.GamePhase;
+import it.polimi.ingsw.model.gamephase.GamePhase;
 import it.polimi.ingsw.model.listenerhandler.ListenerHandler;
 import it.polimi.ingsw.model.loader.CardsLoader;
 import it.polimi.ingsw.model.lobby.InvalidUsernameException;
 import it.polimi.ingsw.model.player.InvalidPlayerActionException;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.gamePhase.PhaseHandler;
+import it.polimi.ingsw.model.gamephase.PhaseHandler;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.network.client.model.ClientGame;
@@ -67,6 +67,7 @@ public class Game {
     // chat database containing the history of all sent messages
     private ChatDatabase chatDatabase;
 
+    //todo no usage check if could be removed
     private List<Card> createCardList(List<Front> fronts, List<Back> backs) {
         assert fronts.size() == backs.size();
 
@@ -488,12 +489,15 @@ public class Game {
         if (!isActive) {
             throw new SuspendedGameException();
         }
-        if (phase != GamePhase.PlaceNormal && phase != GamePhase.PlaceAdditional) {
-            throw new InvalidGamePhaseException();
-        }
-        Player currentPlayer = getPlayerByUsername(username);
+
+        // first check if user is correct
+        Player currentPlayer = getCurrentPlayer();
         if (!currentPlayer.getUsername().equals(username)) {
             throw new InvalidPlayerActionException();
+        }
+
+        if (phase != GamePhase.PlaceNormal && phase != GamePhase.PlaceAdditional) {
+            throw new InvalidGamePhaseException();
         }
 
         int newScore = currentPlayer.placeCard(card, side, position);
@@ -759,7 +763,9 @@ public class Game {
         List<Player> winners = new ArrayList<>();
 
         for (Player player : players) {
-            int finalPoints = min(maxPointNormalTurns, player.getPoints()) + player.calculateExtraPoints(commonObjects);
+            int finalPoints = min(maxPointNormalTurns, player.getPoints()) +
+                    player.calculateExtraPoints(commonObjects) +
+                    player.calculateExtraPoints(player.getObjectives()); // private objective
             boolean win = false;
             boolean tie = false;
 

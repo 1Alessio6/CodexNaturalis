@@ -1,7 +1,7 @@
 package it.polimi.ingsw.network.client.model.card;
 
 import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.card.Color.CardColor;
+import it.polimi.ingsw.model.card.color.CardColor;
 import it.polimi.ingsw.model.card.ObjectiveCard;
 import it.polimi.ingsw.model.card.Symbol;
 

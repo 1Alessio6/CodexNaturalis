@@ -43,9 +43,9 @@ public enum Icon {
      */
     RETURN("/gui/png/icons/return-to-menu.png"),
     /**
-     * SERVER is the icon that allows the player to change server
+     * CONNECT is the icon that allows the player to connect
      */
-    SERVER("/gui/png/icons/server.png"),
+    CONNECT("/gui/png/icons/connect.png"),
     /**
      * FULLSCREEN is the icon that allows the player to enter in fullscreen mode
      */
@@ -53,7 +53,12 @@ public enum Icon {
     /**
      * LOGOUT is the icon that allows the player to close the application
      */
-    LOGOUT("/gui/png/icons/logout.png");
+    LOGOUT("/gui/png/icons/logout.png"),
+
+    /**
+     * CROWN is the icon representing the winners
+     */
+    CROWN("/gui/png/icons/crown.png");
 
     private final String path;
 

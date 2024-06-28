@@ -7,7 +7,7 @@ import it.polimi.ingsw.controller.PlainGameListener;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.*;
-import it.polimi.ingsw.model.card.Color.CardColor;
+import it.polimi.ingsw.model.card.color.CardColor;
 import it.polimi.ingsw.model.card.strategies.CalculateNoCondition;
 import it.polimi.ingsw.model.card.strategies.CalculatePoints;
 import it.polimi.ingsw.model.card.strategies.CalculateResources;

@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.gamePhase;
+package it.polimi.ingsw.model.gamephase;
 
 /**
  * Class that handles the game's phases.

@@ -2,8 +2,8 @@ package it.polimi.ingsw.network.client.view.tui;
 
 import it.polimi.ingsw.model.board.Position;
 import it.polimi.ingsw.model.card.*;
-import it.polimi.ingsw.model.card.Color.CardColor;
-import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.card.color.CardColor;
+import it.polimi.ingsw.model.card.color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.Message;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.board.ClientTile;
@@ -114,6 +114,10 @@ public class ClientUtil {
             ██ ▄▄ ▄█▀▄ ▐█· ▐█▌▐▀▀▪▄ ·██·     ▐█▐▐▌▄█▀▀█  ▐█.▪█▌▐█▌▐▀▀▄ ▄█▀▀█ ██▪  ▐█·▄▀▀▀█▄   \s
             ▐███▌▐█▌.▐▌██. ██ ▐█▄▄▌▪▐█·█▌    ██▐█▌▐█ ▪▐▌ ▐█▌·▐█▄█▌▐█•█▌▐█ ▪▐▌▐█▌▐▌▐█▌▐█▄▪▐█   \s
             ·▀▀▀  ▀█▄▀▪▀▀▀▀▀•  ▀▀▀ •▀▀ ▀▀    ▀▀ █▪ ▀  ▀  ▀▀▀  ▀▀▀ .▀  ▀ ▀  ▀ .▀▀▀ ▀▀▀ ▀▀▀▀ \s""";
+
+    public static void printTitleAtStart() {
+        printToLineColumn(20,60, title);
+    }
 
     /**
      * Prints the consented commands after the help command call.
@@ -842,10 +846,14 @@ public class ClientUtil {
         int x = GameScreenArea.HAND_CARDS.getScreenPosition().getX();
         int y = GameScreenArea.HAND_CARDS.getScreenPosition().getY();
 
+        // clear player hand area
+        printToLineColumn(y, x,
+                createEmptyArea(GameScreenArea.HAND_CARDS.getHeight(), GameScreenArea.HAND_CARDS.getWidth()));
+
+
         List<ClientFace> faces = hand.stream().map(c -> c.getFace(side)).toList();
 
-        for (int i = 0; i < 3; i++) {
-            ClientFace face = i < faces.size() ? faces.get(i) : null;
+        for (ClientFace face : faces){
             printCardOutsidePlayground(x, y, face);
             // move cursor after padding
             x += cardWidth + areaPadding;
@@ -1374,18 +1382,6 @@ public class ClientUtil {
             System.out.print("\033[" + onGoingLine + ";" + column + "H" + s);
             ++onGoingLine;
         }
-
-        //for (int i = 0; i < string.length(); i++) {
-        //    char currChar = string.charAt(i);
-        //    if (cnt == availableSpace || currChar == '\n') {
-        //        onGoingLine++;
-        //        cnt = 0;
-        //    }
-
-        //    System.out.print("\033[" + onGoingLine + ";" + (column + cnt) + "H" + string.charAt(i));
-
-        //    cnt++;
-        //}
     }
 
     /**
@@ -1492,5 +1488,13 @@ public class ClientUtil {
     public static Position printPlayground(ClientPlayground playground, Position currOffset)
             throws UndrawablePlaygroundException {
         return printPlayground(playground, currOffset, new Position(0,0));
+    }
+
+    /**
+     * Method used to have just the title in the middle of the screen
+     */
+    public static void printFirstScreen() {
+        clearScreen();
+        printTitleAtStart();
     }
 }

@@ -5,14 +5,14 @@ import it.polimi.ingsw.model.InvalidGamePhaseException;
 import it.polimi.ingsw.model.SuspendedGameException;
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.card.Color.InvalidColorException;
-import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.card.color.InvalidColorException;
+import it.polimi.ingsw.model.card.color.PlayerColor;
 import it.polimi.ingsw.model.card.EmptyDeckException;
 import it.polimi.ingsw.model.card.NotExistingFaceUp;
 import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
-import it.polimi.ingsw.model.gamePhase.GamePhase;
+import it.polimi.ingsw.model.gamephase.GamePhase;
 import it.polimi.ingsw.model.lobby.InvalidPlayersNumberException;
 import it.polimi.ingsw.network.client.UnReachableServerException;
 import it.polimi.ingsw.network.client.controller.ClientController;
@@ -251,6 +251,15 @@ public class ClientTUI implements View {
         //ClientUtil.putCursorToInputArea();
     }
 
+    private void printAvailableColorList() {
+        String availableColors = String.join(",", controller.getAvailableColors()
+                .stream().map(PlayerColor::toString)
+                .toList());
+
+        // could have been any area
+        ClientUtil.printExceptions("Available colors: " + availableColors);
+    }
+
     /**
      * Receives the color chosen by the player.
      *
@@ -260,8 +269,6 @@ public class ClientTUI implements View {
      * @throws TUIException              if the player enters an invalid color.
      */
     private void chooseColor(String colorName) throws InvalidColorException, InvalidGamePhaseException, SuspendedGameException, IllegalArgumentException, TUIException {
-        //ClientUtil.printCommand("Choose color: ");
-
         try {
             PlayerColor color = PlayerColor.valueOf(colorName.toUpperCase());
             controller.chooseColor(color);
@@ -517,7 +524,7 @@ public class ClientTUI implements View {
      */
     @Override
     public void runView() {
-        ClientUtil.clearScreen();
+        ClientUtil.printFirstScreen();
         ClientUtil.printCommand("Welcome.\nTo play connect to the server: type connect <ip> <port>");
         new Thread(this::parseCommands).start();
     }
@@ -626,7 +633,6 @@ public class ClientTUI implements View {
      */
     @Override
     public synchronized void showUpdatePlayersInLobby() {
-        // print scoreboard (even though there are no points)
         ClientUtil.printWaitingList(controller.getUsernames());
 
         ClientUtil.putCursorToInputArea();
@@ -651,7 +657,7 @@ public class ClientTUI implements View {
      */
     @Override
     public synchronized void showUpdateAfterLobbyCrash() {
-        ClientUtil.printCommand("Lobby crashed! You will be disconnected. Please restart the client...");
+        ClientUtil.printCommand("Lobby crashed! You will be disconnected. Please connect again...");
         setActionsForClosingTheApplication();
     }
 
@@ -775,8 +781,14 @@ public class ClientTUI implements View {
         synchronized (controller) {
             ClientUtil.printScoreboard(this.controller.getPlayers());
 
-            if (controller.getMainPlayerUsername().equals(username)) {
+            // don't print if main player has already chosen the color
+            if (controller.getMainColor() == null)
+                printAvailableColorList();
+
+            if (controller.getMainPlayerUsername().equals(username)){
                 setAvailableActions();
+                // remove color list if present
+                ClientUtil.clearExceptionSpace();
             }
 
             ClientUtil.putCursorToInputArea();
@@ -907,11 +919,13 @@ public class ClientTUI implements View {
      */
     @Override
     public synchronized void showWinners(List<String> winners) {
-        ClientUtil.printCommand("Winners: ");
-        ClientUtil.printCommand(winners.getFirst());
-        for (int i = 2; i < winners.size(); ++i) {
-            ClientUtil.printCommand(", " + winners.get(i));
+        StringBuilder winnerList = new StringBuilder("Winners: ");
+        for (String i : winners) {
+            winnerList.append("Player: ").append(i)
+                    .append(", Points: ").append(controller.getPlayer(i).getScore()).append("\n");
         }
+
+        ClientUtil.printCommand(winnerList.toString());
         availableActions.clear();
         availableActions.add(TUIActions.HELP);
         availableActions.add(TUIActions.QUIT);

@@ -1,12 +1,10 @@
 package it.polimi.ingsw.network.client.model;
 
-import it.polimi.ingsw.model.Deck.DeckType;
+import it.polimi.ingsw.model.deck.DeckType;
 import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.card.Card;
-import it.polimi.ingsw.model.card.Color.PlayerColor;
-import it.polimi.ingsw.model.card.ObjectiveCard;
+import it.polimi.ingsw.model.card.color.PlayerColor;
 import it.polimi.ingsw.model.chat.message.Message;
-import it.polimi.ingsw.model.gamePhase.GamePhase;
+import it.polimi.ingsw.model.gamephase.GamePhase;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.client.model.board.ClientBoard;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;

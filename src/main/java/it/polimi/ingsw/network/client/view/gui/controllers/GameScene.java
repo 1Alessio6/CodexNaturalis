@@ -5,12 +5,11 @@ import it.polimi.ingsw.model.SuspendedGameException;
 import it.polimi.ingsw.model.board.Availability;
 import it.polimi.ingsw.model.board.Playground;
 import it.polimi.ingsw.model.board.Position;
-import it.polimi.ingsw.model.card.Color.PlayerColor;
+import it.polimi.ingsw.model.card.color.PlayerColor;
 import it.polimi.ingsw.model.card.Side;
 import it.polimi.ingsw.model.chat.message.InvalidMessageException;
 import it.polimi.ingsw.model.chat.message.Message;
-import it.polimi.ingsw.model.gamePhase.GamePhase;
-import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.gamephase.GamePhase;
 import it.polimi.ingsw.network.client.controller.ClientController;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
@@ -20,7 +19,6 @@ import it.polimi.ingsw.network.client.view.gui.util.BoardPane;
 import it.polimi.ingsw.network.client.view.gui.util.PlayerInfoPane;
 import it.polimi.ingsw.network.client.view.gui.util.PlaygroundInfoPane;
 import it.polimi.ingsw.network.client.view.gui.util.chat.Chat;
-import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.EventHandler;
@@ -38,7 +36,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
@@ -127,7 +124,6 @@ public class GameScene extends SceneController {
                         m.isBroadcast();
     }
 
-    //todo check if font Cambria math is more readable for lighter color
     private void appendMessage(Message m) {
         ClientController controller = gui.getController();
         String myName = controller.getMainPlayerUsername();
@@ -153,7 +149,7 @@ public class GameScene extends SceneController {
                     convertPlayerColorIntoHexCode(controller.getPlayer(user).getColor())
             );
         }
-        Text content = new Text(": " + m.getContent() + "\n");
+        Text content = new Text(" : " + m.getContent() + "\n");
         sentMessages.getChildren().addAll(new Text(preposition + " "), userText, content);
     }
 
@@ -200,11 +196,17 @@ public class GameScene extends SceneController {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void removeUpdatePaneFromMainPane(StackPane errorPane) {
         mainPane.getChildren().remove(errorPane);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showError(String details) {
         StackPane errorPane = generateError(details);
@@ -215,13 +217,13 @@ public class GameScene extends SceneController {
 
     private void initializeCurrentPlayerUsernameText() {
         Text currentPlayerText = new Text("Current Player: ");
-        currentPlayerText.setFont(new Font(CAMBRIA_MATH, 15));
-        currentPlayerText.setLayoutX(10);
+        currentPlayerText.setFont(loadFontLiberationSerifRegular(15.5));
+        currentPlayerText.setLayoutX(8);
         currentPlayerText.setLayoutY(25);
 
         currentPlayerUsername = new Text();
         updateCurrentPlayerUsername();
-        currentPlayerUsername.setLayoutX(115);
+        currentPlayerUsername.setLayoutX(109);
         currentPlayerUsername.setLayoutY(25);
 
         currentPlayerPane.getChildren().add(currentPlayerText);
@@ -231,13 +233,13 @@ public class GameScene extends SceneController {
     private void initializeCurrentPhaseText() {
 
         Text currentPhaseTitle = new Text("Current Phase: ");
-        currentPhaseTitle.setFont(new Font(CAMBRIA_MATH, 15));
-        currentPhaseTitle.setLayoutX(10);
+        currentPhaseTitle.setFont(loadFontLiberationSerifRegular(15.5));
+        currentPhaseTitle.setLayoutX(8);
         currentPhaseTitle.setLayoutY(50);
 
         currentPhase = new Text();
         updateCurrentPhase();
-        currentPhase.setLayoutX(110);
+        currentPhase.setLayoutX(105);
         currentPhase.setLayoutY(50);
 
         currentPlayerPane.getChildren().add(currentPhase);
@@ -253,14 +255,14 @@ public class GameScene extends SceneController {
         if (controller.isGameActive()) {
             showCurrentPlayerUpdatePane();
         }
-        currentPlayerUsername.setFont(new Font(CAMBRIA_MATH, 13));
+        currentPlayerUsername.setFont(loadFontLiberationSerifRegular(13.5));
     }
 
     private void showCurrentPlayerUpdatePane() {
         ClientController controller = gui.getController();
 
         if (controller.getCurrentPlayerUsername().equals(controller.getMainPlayerUsername())) {
-            StackPane currentPlayerUpdatePane = generateUpdatePane("It's your\n    Turn");
+            StackPane currentPlayerUpdatePane = generateUpdatePane("It's your turn");
             currentPlayerUpdatePane.setStyle("-fx-background-color: #3CB371;" + "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0.2, 0, 0);" + " -fx-background-radius: 10px;");
             currentPlayerUpdatePane.setLayoutY((getSceneWindowHeight() - updatePaneHeight - 10) / 2);
             mainPane.getChildren().add(currentPlayerUpdatePane);
@@ -289,7 +291,7 @@ public class GameScene extends SceneController {
                 mainPane.getChildren().add(phaseUpdatePane);
                 currentPhase.setFill(convertPlayerColor(PlayerColor.BLUE));
             }
-            currentPhase.setFont(new Font(CAMBRIA_MATH, 13));
+            currentPhase.setFont(loadFontLiberationSerifRegular(13.5));
         }
     }
 
@@ -315,8 +317,8 @@ public class GameScene extends SceneController {
         StackPane updatePane = new StackPane();
         updatePane.setPrefSize(updatePaneWidth, updatePaneHeight);
         Label updateMessageLabel = new Label();
-        updateMessageLabel.setStyle("-fx-text-fill: #000000;" + "-fx-font-weight: bold;");
-        updateMessageLabel.setFont(new Font(CAMBRIA_MATH, 20));
+        updateMessageLabel.setStyle("-fx-text-fill: #000000;");
+        updateMessageLabel.setFont(loadFontLiberationSerifBold(20.5));
         updateMessageLabel.setWrapText(true);
         updatePane.getChildren().add(updateMessageLabel);
         StackPane.setAlignment(updateMessageLabel, Pos.CENTER);
@@ -388,13 +390,13 @@ public class GameScene extends SceneController {
         mainPlayerCardsPane = new Pane();
 
         Text secretObjectiveTitle = new Text();
-        secretObjectiveTitle.setFont(new Font(CAMBRIA_MATH, 15));
+        secretObjectiveTitle.setFont(loadFontLiberationSerifRegular(15.5));
         secretObjectiveTitle.setLayoutY(630.5);
         secretObjectiveTitle.setLayoutX(345);
         secretObjectiveTitle.setText("Secret Objective");
 
         Text playerCardsTitle = new Text();
-        playerCardsTitle.setFont(new Font(CAMBRIA_MATH, 15));
+        playerCardsTitle.setFont(loadFontLiberationSerifRegular(15.5));
         playerCardsTitle.setLayoutY(630.5);
         playerCardsTitle.setLayoutX(545);
         playerCardsTitle.setText("Your Cards");
@@ -755,10 +757,16 @@ public class GameScene extends SceneController {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public double getSceneWindowWidth() {
         return startedGameSceneWidth;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public double getSceneWindowHeight() {
         return startedGameSceneHeight;
     }

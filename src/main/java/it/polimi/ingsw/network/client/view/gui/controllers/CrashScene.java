@@ -1,15 +1,16 @@
 package it.polimi.ingsw.network.client.view.gui.controllers;
 
-import it.polimi.ingsw.network.client.view.gui.SceneType;
 import it.polimi.ingsw.network.client.view.gui.util.Icon;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
@@ -20,16 +21,16 @@ import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.connectionSce
  */
 public class CrashScene extends SceneController {
 
-    @FXML
     private Text message;
+
     @FXML
     private Pane mainPane;
 
     @FXML
-    private Button returnButton;
+    private Button exitButton;
 
     @FXML
-    private Button changeServer;
+    private Pane textPane;
 
     public CrashScene() {
     }
@@ -39,29 +40,30 @@ public class CrashScene extends SceneController {
      */
     public void initialize() {
         mainPane.setBackground(createMainBackground());
-        ImageView returnImage = (new ImageView(Icon.RETURN.getPath()));
-        returnImage.setFitHeight(30);
-        returnImage.setFitWidth(30);
-        returnButton.setGraphic(returnImage);
-        returnButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        message = new Text("SERVER CRASHED");
+        message.setFont(loadFontLiberationSerifBold(24));
+        message.setFill(Color.web("#dd2d2a"));
+        message.setLayoutX(59);
+        message.setLayoutY(55);
+        Label connectionLostMessage = new Label();
+        connectionLostMessage.setFont(loadFontLiberationSansRegular(14));
+        connectionLostMessage.setText("Connection lost, please close the application\n                          and try again");
+        connectionLostMessage.setLayoutY(99);
+        connectionLostMessage.setLayoutX(35);
+        textPane.getChildren().add(connectionLostMessage);
+        textPane.getChildren().add(message);
+
+        exitButton.setFont(loadFontLiberationSerifRegular(15.5));
+        ImageView logoutImage = (new ImageView(Icon.LOGOUT.getPath()));
+        logoutImage.setFitHeight(20);
+        logoutImage.setFitWidth(20);
+        exitButton.setGraphic(logoutImage);
+
+        exitButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 if (isClicked(mouseEvent, MouseButton.PRIMARY)) {
-                    gui.loadScene(SceneType.SELECT_USERNAME);
-                }
-            }
-        });
-
-        ImageView changeServerImage = (new ImageView(Icon.SERVER.getPath()));
-        changeServerImage.setFitHeight(25);
-        changeServerImage.setFitWidth(25);
-
-        changeServer.setGraphic(changeServerImage);
-        changeServer.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                if (isClicked(mouseEvent, MouseButton.PRIMARY)) {
-                    gui.loadScene(SceneType.CONNECTION);
+                    System.exit(0);
                 }
             }
         });
@@ -77,11 +79,17 @@ public class CrashScene extends SceneController {
         addButtonPane(mainPane, buttonPane, 860, 650);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void removeUpdatePaneFromMainPane(StackPane errorPane) {
         mainPane.getChildren().remove(errorPane);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showError(String details) {
         StackPane errorPane = generateError(details);
@@ -90,10 +98,16 @@ public class CrashScene extends SceneController {
         mainPane.getChildren().add(errorPane);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public double getSceneWindowWidth() {
         return connectionSceneWidth;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public double getSceneWindowHeight() {
         return connectionSceneHeight;
     }
@@ -105,6 +119,7 @@ public class CrashScene extends SceneController {
      */
     public void setReason(String reason) {
         message.setText(reason);
+        message.setStyle("-fx-text-fill: #dd2d2a");
     }
 
 

@@ -1,19 +1,12 @@
 package it.polimi.ingsw.network.client.view.gui.util;
 
-import it.polimi.ingsw.model.card.Color.PlayerColor;
-import it.polimi.ingsw.model.card.Symbol;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 
-
-import java.util.Map;
 
 import static it.polimi.ingsw.network.client.view.gui.util.GUIUtil.*;
-import static javax.swing.text.StyleConstants.setBackground;
 
 /**
  * PlaygroundInfoPane represents the pane in which player's playground resides.
@@ -59,7 +52,7 @@ public class PlaygroundInfoPane {
 
         playGroundOwner.setLayoutY(9);
         playGroundOwner.setLayoutX(5);
-        playGroundOwner.setFont(new Font(CAMBRIA_MATH, 12));
+        playGroundOwner.setFont(loadFontLiberationSerifRegular(12));
         playGroundOwner.setPrefWidth(143);
         playGroundOwner.setWrapText(true);
 
@@ -93,7 +86,7 @@ public class PlaygroundInfoPane {
             rank.getMainPane().setVisible(true);
             returnToMainPlayground.setVisible(false);
         }
-        playGroundOwner.setFont(new Font(CAMBRIA_MATH, 12));
+        playGroundOwner.setFont(loadFontLiberationSerifRegular(12));
 
         resourcePane.updateResources(player.getPlayground().getResources());
     }

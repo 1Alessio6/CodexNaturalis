@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.card.Color;
+package it.polimi.ingsw.model.card.color;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -22,13 +22,15 @@ public class LobbyScene extends SceneController {
     private TextArea connectedPlayers;
 
     @FXML
-    private TextArea setNumberRequest;
+    private Text setNumberRequest;
 
     @FXML
     private ComboBox<Integer> numberPlayerCatcher;
 
-    @FXML
     private Text requiredPlayer;
+
+    @FXML
+    private Text connectedPlayerText;
 
 
     public LobbyScene() {
@@ -39,19 +41,24 @@ public class LobbyScene extends SceneController {
      */
     @Override
     public void initialize() {
+        requiredPlayer = new Text();
+        requiredPlayer.setLayoutX(580.0);
+        requiredPlayer.setLayoutY(520.0);
+        mainPane.getChildren().add(requiredPlayer);
         numberPlayerCatcher.getItems().addAll(2, 3, 4);
         Text title = new Text("Lobby");
-        title.setFont(loadTitleFont(60));
-        title.setLayoutY(180);
-        title.setLayoutX(580);
+        title.setFont(loadTitleFont(50));
+        title.setLayoutY(94);
+        title.setLayoutX(600);
         title.setStrokeType(StrokeType.OUTSIDE);
         mainPane.getChildren().add(title);
-        //connectedPlayers.setText("1 - " + gui.getController().getMainPlayerUsername());
         numberPlayerCatcher.setVisible(false);
         setNumberRequest.setVisible(false);
         mainPane.setBackground(createMainBackground());
-
-        //todo fix when fullScreen
+        connectedPlayers.setFont(loadFontLiberationSerifBold(15));
+        connectedPlayerText.setFont(loadFontLiberationSerifRegular(15));
+        setNumberRequest.setFont(loadFontLiberationSerifRegular(15));
+        requiredPlayer.setFont(loadFontLiberationSerifRegular(15));
     }
 
     /**
@@ -62,22 +69,28 @@ public class LobbyScene extends SceneController {
         addButtonPane(mainPane, buttonPane, 1028, 637);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void removeUpdatePaneFromMainPane(StackPane errorPane) {
         mainPane.getChildren().remove(errorPane);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showError(String details) {
         StackPane errorPane = generateError(details);
-        errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth)/2);
+        errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth) / 2);
         errorPane.setLayoutY(10);
         mainPane.getChildren().add(errorPane);
     }
 
 
     /**
-     * Method used to show the players required to start the game
+     * Method used to show the players required to start the game.
      */
     public void showRequiredPlayers() {
         //todo requiredPlayer.setText("Player required to play: " + gui.getController().getRequiredPlayer);
@@ -85,7 +98,7 @@ public class LobbyScene extends SceneController {
     }
 
     /**
-     * Initializes the creator scene, makes <code>numberPlayerCatcher</code> and <code>setNumberRequest</code> visible
+     * Initializes the creator scene, makes <code>numberPlayerCatcher</code> and <code>setNumberRequest</code> visible.
      */
     public void initializeCreatorScene() {
         numberPlayerCatcher.setVisible(true);
@@ -93,20 +106,21 @@ public class LobbyScene extends SceneController {
     }
 
     /**
-     * Sets the player connected
+     * Write the username of the player connected into the main text area.
      *
-     * @param usernames the usernames of the connected players
+     * @param usernames the usernames of the connected players.
      */
     public void setPlayerConnected(List<String> usernames) {
         connectedPlayers.clear();
         for (int i = 0; i < usernames.size(); i++) {
-            connectedPlayers.setText(i + " - " + usernames.get(i));
+            int playerNumber = i + 1;
+            connectedPlayers.appendText(playerNumber + " - " + usernames.get(i));
 
             if (usernames.get(i).equals(gui.getController().getMainPlayerUsername())) {
-                connectedPlayers.setText(" LEADER");
+                connectedPlayers.appendText(" (You)");
             }
 
-            connectedPlayers.setText("\n");
+            connectedPlayers.appendText("\n");
         }
     }
 
@@ -120,15 +134,22 @@ public class LobbyScene extends SceneController {
 
         numberPlayerCatcher.setVisible(false);
         setNumberRequest.setVisible(false);
-        requiredPlayer.setText("Player required to play: " + numberPlayerCatcher.getValue());
+        int numberRequiredPlayer = numberPlayerCatcher.getValue();
+        requiredPlayer.setText("Player required to play: " + numberRequiredPlayer + " ");
         requiredPlayer.setVisible(true);
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public double getSceneWindowWidth() {
         return startedGameSceneWidth;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public double getSceneWindowHeight() {
         return startedGameSceneHeight;
     }
