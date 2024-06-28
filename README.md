@@ -49,12 +49,13 @@ This project complies with **all the rules** established by the game, **TUI**, *
 ## How to use
 
 ### Before starting
-If you are a windows user and you want to use our TUI interface, please follow these steps:
+* If you are a windows user and you want to use our TUI interface, please follow these steps:
 
 1. Open your command prompt
 2. Change the code page using the command: chcp 65001
 3. Use a character size equal to 8.5
 
+* If you are a Linux user, please, open your screen in full screen mode and make sure that the number of lines is greater or equal to 50 and that the number of columns is greater or equal to 190
 
 
 ## Documentation
@@ -66,6 +67,7 @@ The following documentation can be found:
 * [communication protocol][8].
 * [Peer-reviews][9].
 * [javadoc][]
+* [view documentation][14]
 
  ## Credits
  * [Gson][10]
@@ -84,3 +86,4 @@ The following documentation can be found:
 [10]:https://github.com/google/gson/commit/e8cdabf296cd4c2c1550ed76cf27a1a8e0c4ec59
 [11]:https://www.overleaf.com/
 [12]:https://junit.org/junit5/
+[14]:https://github.com/RiccardoCerberi/IS24-AM34/tree/main/deliveries/view%20documentation
