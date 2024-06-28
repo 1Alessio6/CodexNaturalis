@@ -89,8 +89,6 @@ public class PlayerInfoPane {
         playerCardsPane = new Pane();
         playerCardsPane.setPrefSize(cardsPaneWidth, cardsPaneHeight);
 
-        //todo remove this line and pass player cards
-
         List<ClientCard> cards = player.getPlayerCards();
 
 
