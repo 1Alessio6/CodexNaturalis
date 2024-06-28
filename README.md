@@ -38,7 +38,6 @@ This project complies with **all the rules** established by the game, **TUI**, *
 
 | Feature                      | State |
 |------------------------------|:-----:|
-| Persistence                  |  ✔️   |
 | Resilience to disconnections |  ✔️   |
 | Chat                         |  ✔️   |
 
