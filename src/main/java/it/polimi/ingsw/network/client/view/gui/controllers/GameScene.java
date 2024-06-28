@@ -276,7 +276,6 @@ public class GameScene extends SceneController {
         ClientController controller = gui.getController();
         GamePhase phase = controller.getGamePhase();
 
-        //todo check the behaviour if phase == end it should load another scene\
         if (controller.isGameActive()) {
             if ((phase == GamePhase.PlaceNormal || phase == GamePhase.DrawNormal) && !currentPhase.getText().equals("Normal Turn")) {
                 StackPane phaseUpdatePane = generateUpdatePane("Normal Phase");
@@ -434,15 +433,12 @@ public class GameScene extends SceneController {
         return new ImagePattern(new Image(path));
     }
 
-    //todo needs to be called after every place in order to have the correct association between cards and images
     private void initializeMainPlayerCards() {
 
         for (Rectangle card : mainPlayerCards) {
             mainPlayerCardsPane.getChildren().remove(card);
         }
         mainPlayerCards.clear();
-
-        //todo you should remove from main pain too
 
         double layoutX = 200;
         List<ClientCard> cards = new ArrayList<>(gui.getController().getMainPlayerCards());
@@ -588,7 +584,6 @@ public class GameScene extends SceneController {
                             selectedCardHandPosition = -1;
                         }
 
-                        //todo check if this line moved in showUpdateAfterPlace causes trouble
                         //selectedCardHandPosition = -1;
 
                         for (Rectangle availableTile : availablePositions) {
@@ -621,7 +616,6 @@ public class GameScene extends SceneController {
                     try {
                         gui.getController().draw(idToDraw);
                     } catch (Exception e) {
-                        //todo complete error handling
                         System.out.println(e.getMessage());
                     }
                 }
@@ -634,7 +628,6 @@ public class GameScene extends SceneController {
      *
      * @param username the username of the player
      */
-    //todo add Images/ empty rectangles for deck and faceUp empty
     public void updateAfterDraw(String username) {
         ClientController controller = gui.getController();
         synchronized (controller) {
