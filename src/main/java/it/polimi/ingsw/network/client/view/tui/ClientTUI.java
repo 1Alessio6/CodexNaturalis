@@ -739,11 +739,6 @@ public class ClientTUI implements View {
         }
     }
 
-    @Override
-    public void showInitialPlayerStatus() {
-
-    }
-
     /**
      * {@inheritDoc}
      */

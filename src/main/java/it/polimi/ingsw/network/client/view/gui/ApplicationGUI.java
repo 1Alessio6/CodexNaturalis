@@ -206,12 +206,6 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         }
     }
 
-    //todo check if it can be removed
-    @Override
-    public void showInitialPlayerStatus() {
-
-    }
-
     /**
      * {@inheritDoc}
      */
