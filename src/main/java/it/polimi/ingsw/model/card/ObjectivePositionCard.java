@@ -57,11 +57,16 @@ public class ObjectivePositionCard extends ObjectiveCard {
      * @return true if there is a card in the given position with the specified color on the playground, false otherwise
      */
     private boolean matchRequirement(Playground playground, Position requiredPosition, CardColor requiredColor) {
+        if (!playground.contains(requiredPosition)) {
+            return false;
+        }
         Face f = playground.getTile(requiredPosition).getFace();
+        // it's a position related to an empty/notavailable tile
+        if (f == null) {
+            return false;
+        }
         CardColor color = f.getColor();
-        return playground.contains(requiredPosition)
-                &&
-                (color != null && color.equals(requiredColor));
+        return color != null && color.equals(requiredColor);
     }
 
     /**
@@ -81,7 +86,7 @@ public class ObjectivePositionCard extends ObjectiveCard {
 
         Set<Position> alreadyVisitedPositions = new HashSet<>();
 
-        for(Position p : playground.getAllPositions()){
+        for(Position p : playground.getOccupiedPositions()){
 
             boolean isSatisfied = true;
 
