@@ -135,14 +135,16 @@ public class Lobby {
      * Sets the maximum number of players in the lobby
      *
      * @param numPlayersToStartTheGame the maximum number of players in the lobby
-     * @throws IllegalArgumentException if the specified number doesn't respect the game's constraint: min 2 players, max 4 players.
+     * @throws InvalidPlayersNumberException if the specified number doesn't respect the game's constraint: min 2 players, max 4 players.
      */
     public void setNumPlayersToStartTheGame(int numPlayersToStartTheGame) throws InvalidPlayersNumberException {
         if (numPlayersToStartTheGame < MIN_NUMBER || numPlayersToStartTheGame > MAX_NUMBER) {
             throw new InvalidPlayersNumberException();
         }
-        // method is called once.
-        this.numPlayersToStartTheGame = numPlayersToStartTheGame;
+        // ensure only one set per lobby
+        if (this.numPlayersToStartTheGame == INVALID_NUM_PLAYERS) {
+            this.numPlayersToStartTheGame = numPlayersToStartTheGame;
+        }
     }
 
 }
