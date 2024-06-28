@@ -16,7 +16,7 @@ class LobbyTest {
 
     // could have been a socket handler. RMI as example
     private RMIHandler createRMIHandler (String username) {
-        return new RMIHandler(server, new ClientRMI(), username);
+        return new RMIHandler(server, new ClientRMI("127.0.0.1"), username);
     }
 
     @BeforeEach
