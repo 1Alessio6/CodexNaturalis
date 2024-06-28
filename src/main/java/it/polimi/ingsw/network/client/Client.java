@@ -76,15 +76,6 @@ public abstract class Client implements VirtualView {
         return controller;
     }
 
-    /**
-     * Runs the view.
-     *
-     * @throws RemoteException in the event of an error occurring during the execution of a remote method.
-     */
-    public void runView() throws RemoteException {
-        clientView.runView();
-    }
-
     public void handleServerCrash() {
         synchronized (lockOnNetworkStatus) {
             if (isConnected) {
@@ -201,7 +192,7 @@ public abstract class Client implements VirtualView {
         synchronized (lockOnNetworkStatus) {
             if (isConnected) {
                 controller.updateObjectiveCard(chosenObjective, username);
-                //todo: if the objective card isn't of the main player the view should not show the card
+                //if the objective card isn't of the main player the view should not show the card
                 if (controller.getMainPlayerUsername().equals(username)) {
                     clientView.showUpdateObjectiveCard();
                 }
