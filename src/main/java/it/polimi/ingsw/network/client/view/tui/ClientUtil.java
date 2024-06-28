@@ -87,7 +87,6 @@ public class ClientUtil {
     static String quill = "\uD83E\uDEB6";
     static String bigSpace = "  ";
     static String thinSpace = "\u2009";
-    static String doubleThinSpace = "\u2009\u2009";
     static String doubleHairSpace = "\u200A" + "\u200A";
     static String hairSpace = "\u200A";
     static String corner = "\uD83D\uDCCB";
@@ -914,7 +913,6 @@ public class ClientUtil {
             setupTable.add(i, tableLine);
         }
 
-        // todo: fix for last element
         Symbol key = entry.getKey();
         Integer value = entry.getValue();
 
@@ -1039,7 +1037,6 @@ public class ClientUtil {
      * Puts the cursor in the input area.
      */
     public static void putCursorToInputArea() {
-        // todo: put correct values
         moveCursor(Position.sum(new Position(1,1),
                 new Position(GameScreenArea.INPUT_AREA.getScreenPosition().getY(),
                         GameScreenArea.INPUT_AREA.getScreenPosition().getX())));
@@ -1141,10 +1138,8 @@ public class ClientUtil {
      * @param realLimitPositions of the real playground
      * @return the requested offset, normalized
      */
-    // todo: permit requested offset only along overflowing sizes
     private static Position normalizeRequestedOffset(Position requestedOffset, DrawablePlayground dp,
                                                      Position[] realLimitPositions) {
-        //Position offsetPos = Position.sum(currentOffset, requestedOffset);
         int[] normalizedPosArr = new int[2];
 
         // this is the temporary position where printable playground starts
@@ -1216,7 +1211,6 @@ public class ClientUtil {
      * @param pos available position
      * @return a card containing of the position
      */
-    // todo: please update card representation
     public static String[][] drawAvailablePosition(Position pos) {
         int matrixCardLength = cardWidth - 2;
         String[][] placeHolder = createEmptyArea(cardHeight, matrixCardLength);
