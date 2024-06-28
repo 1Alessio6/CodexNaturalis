@@ -919,13 +919,7 @@ public class ClientTUI implements View {
      */
     @Override
     public synchronized void showWinners(List<String> winners) {
-        StringBuilder winnerList = new StringBuilder("Winners: ");
-        for (String i : winners) {
-            winnerList.append("Player: ").append(i)
-                    .append(", Points: ").append(controller.getPlayer(i).getScore()).append("\n");
-        }
-
-        ClientUtil.printCommand(winnerList.toString());
+        ClientUtil.printCommand("Winners:\n" + String.join("\n", winners) + "\nQuit to play again");
         availableActions.clear();
         availableActions.add(TUIActions.HELP);
         availableActions.add(TUIActions.QUIT);
