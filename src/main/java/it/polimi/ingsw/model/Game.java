@@ -67,6 +67,7 @@ public class Game {
     // chat database containing the history of all sent messages
     private ChatDatabase chatDatabase;
 
+    //todo no usage check if could be removed
     private List<Card> createCardList(List<Front> fronts, List<Back> backs) {
         assert fronts.size() == backs.size();
 

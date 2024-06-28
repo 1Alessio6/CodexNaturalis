@@ -79,11 +79,17 @@ public class CrashScene extends SceneController {
         addButtonPane(mainPane, buttonPane, 860, 650);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void removeUpdatePaneFromMainPane(StackPane errorPane) {
         mainPane.getChildren().remove(errorPane);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showError(String details) {
         StackPane errorPane = generateError(details);
@@ -92,10 +98,16 @@ public class CrashScene extends SceneController {
         mainPane.getChildren().add(errorPane);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public double getSceneWindowWidth() {
         return connectionSceneWidth;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public double getSceneWindowHeight() {
         return connectionSceneHeight;
     }

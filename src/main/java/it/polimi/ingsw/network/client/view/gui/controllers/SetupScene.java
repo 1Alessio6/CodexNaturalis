@@ -105,11 +105,17 @@ public class SetupScene extends SceneController {
         addButtonPane(mainPane, buttonPane, 1028, 637);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void removeUpdatePaneFromMainPane(StackPane errorPane) {
         mainPane.getChildren().remove(errorPane);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showError(String details) {
         StackPane errorPane = generateError(details);
@@ -258,10 +264,16 @@ public class SetupScene extends SceneController {
         updateObjectiveCard();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public double getSceneWindowWidth() {
         return startedGameSceneWidth;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public double getSceneWindowHeight() {
         return startedGameSceneHeight;
     }

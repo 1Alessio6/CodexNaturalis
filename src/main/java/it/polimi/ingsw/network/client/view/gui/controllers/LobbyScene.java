@@ -69,22 +69,28 @@ public class LobbyScene extends SceneController {
         addButtonPane(mainPane, buttonPane, 1028, 637);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void removeUpdatePaneFromMainPane(StackPane errorPane) {
         mainPane.getChildren().remove(errorPane);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void showError(String details) {
         StackPane errorPane = generateError(details);
-        errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth)/2);
+        errorPane.setLayoutX((getSceneWindowWidth() - errorPaneWidth) / 2);
         errorPane.setLayoutY(10);
         mainPane.getChildren().add(errorPane);
     }
 
 
     /**
-     * Method used to show the players required to start the game
+     * Method used to show the players required to start the game.
      */
     public void showRequiredPlayers() {
         //todo requiredPlayer.setText("Player required to play: " + gui.getController().getRequiredPlayer);
@@ -92,7 +98,7 @@ public class LobbyScene extends SceneController {
     }
 
     /**
-     * Initializes the creator scene, makes <code>numberPlayerCatcher</code> and <code>setNumberRequest</code> visible
+     * Initializes the creator scene, makes <code>numberPlayerCatcher</code> and <code>setNumberRequest</code> visible.
      */
     public void initializeCreatorScene() {
         numberPlayerCatcher.setVisible(true);
@@ -100,9 +106,9 @@ public class LobbyScene extends SceneController {
     }
 
     /**
-     * Sets the player connected
+     * Write the username of the player connected into the main text area.
      *
-     * @param usernames the usernames of the connected players
+     * @param usernames the usernames of the connected players.
      */
     public void setPlayerConnected(List<String> usernames) {
         connectedPlayers.clear();
@@ -134,10 +140,16 @@ public class LobbyScene extends SceneController {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public double getSceneWindowWidth() {
         return startedGameSceneWidth;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public double getSceneWindowHeight() {
         return startedGameSceneHeight;
     }

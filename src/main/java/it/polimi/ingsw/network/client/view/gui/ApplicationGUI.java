@@ -94,7 +94,6 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
     public void showServerCrash() {
         Platform.runLater(() -> {
             loadScene(SceneType.CRASH);
-            //todo set crash message
             currentScene = SceneType.CRASH;
         });
     }
