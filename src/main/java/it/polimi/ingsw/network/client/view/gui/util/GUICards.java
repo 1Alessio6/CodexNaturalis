@@ -35,7 +35,6 @@ public class GUICards {
      * @param distanceBetweenCards the distance between each card
      * @param flipButton           the button that flips over tha cards
      */
-    //todo modify with usernames
     public static void initializePlayerCards(Pane playerPane, List<ClientCard> cards, int cardWidth, int cardHeight, int distanceBetweenCards, MouseButton flipButton) {
 
         double layoutX = 0.0;
