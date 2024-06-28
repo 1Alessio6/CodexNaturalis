@@ -64,7 +64,6 @@ public class ClientTUI implements View {
      * Parses the player's commands.
      */
     private void parseCommands() {
-        // TODO: command condition should be changed
         while (console.hasNextLine()) {
             // split command with spaces and analyze the first word
             String[] nextCommand = console.nextLine().toLowerCase().split(" ", 4);
@@ -88,7 +87,7 @@ public class ClientTUI implements View {
                             case PLACE -> place(Integer.parseInt(nextCommand[1]), nextCommand[2], nextCommand[3]);
                             case QUIT -> quit();
                             case LOBBYSIZE ->
-                                    setupLobbyPlayerNumber(Integer.parseInt(nextCommand.length == 2 ? nextCommand[1] : "0")); //todo: could be done in a better way?
+                                    setupLobbyPlayerNumber(Integer.parseInt(nextCommand.length == 2 ? nextCommand[1] : "0"));
                             case OBJECTIVE -> chooseObjective(Integer.parseInt(nextCommand[1]));
                             case STARTER -> placeStarter(nextCommand[1]);
                             case RULEBOOK -> displayRulebook(Integer.parseInt(nextCommand[1]));
@@ -218,21 +217,6 @@ public class ClientTUI implements View {
 
         controller.placeObjectiveCard(objectiveIdx - 1);
         ClientUtil.printCommandSquare();
-        //try {
-        //    ClientUtil.printCommand("Choose objective idx: ");
-        //    int objectiveIdx = Integer.parseInt(console.nextLine()); // starting from 1
-
-        //    if (objectiveIdx == 1 || objectiveIdx == 2) {
-        //        controller.placeObjectiveCard(objectiveIdx - 1);
-        //    } else
-        //        throw new TUIException(ExceptionsTUI.INVALID_IDX);
-
-        //    // clear input area
-        //    ClientUtil.printCommandSquare();
-        //    //ClientUtil.putCursorToInputArea();
-        //} catch (NumberFormatException e) {
-        //    throw new TUIException(ExceptionsTUI.INVALID_IDX);
-        //}
     }
 
     /**
@@ -338,12 +322,7 @@ public class ClientTUI implements View {
      * @throws TUIException                 if the player inserts an inappropriate argument.
      */
     private void draw(int drawFromId) throws InvalidIdForDrawingException, EmptyDeckException, NotExistingFaceUp, InvalidGamePhaseException, SuspendedGameException, TUIException {
-        //ClientUtil.printCommand("Insert the position of the card you want to draw: ");
-        ////int drawFromId = Integer.parseInt(console.nextLine()) - 1;
-        //controller.draw(drawFromId);
         try {
-            //ClientUtil.printCommand("Insert the position of the card you want to draw: ");
-            //int drawFromId = Integer.parseInt(console.nextLine()) - 1;
             controller.draw(drawFromId - 1);
 
             // clear input area
@@ -407,63 +386,6 @@ public class ClientTUI implements View {
     }
 
     /**
-     * Receives the side of the card that is to be placed.
-     *
-     * @return the side of the card.
-     * @throws TUIException if the player enters an invalid card side.
-     */
-    private Side receiveSide() throws TUIException {
-        try {
-            ClientUtil.printCommand("What side of the card you want to place, front or back? ");
-            return Side.valueOf(console.nextLine().toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new TUIException(ExceptionsTUI.INVALID_SIDE);
-        }
-    }
-
-    /**
-     * Receives the position of the card in the player's hand.
-     *
-     * @return the position of the card if it is valid, a TUIException otherwise.
-     * @throws TUIException if the player enters an invalid card position.
-     */
-    private int receivePlayerCardPosition() throws TUIException {
-        ClientUtil.printCommand("Enter card position in your hand");
-        try {
-            int cardPosition = Integer.parseInt(console.nextLine());
-
-            // ClientUtil.putCursorToInputArea();
-
-            if (cardPosition >= 1 && cardPosition <= 3) return cardPosition - 1;
-            else throw new TUIException(ExceptionsTUI.INVALID_CARD_POSITION);
-        } catch (InputMismatchException | IllegalArgumentException e) {
-
-            throw new TUIException(ExceptionsTUI.INVALID_CARD_POSITION);
-        }
-
-    }
-
-    /**
-     * Receives a position of the playground.
-     *
-     * @return the position.
-     * @throws TUIException if the player enters an invalid playground position.
-     */
-    private Position receivePosition() throws TUIException {
-        try {
-            ClientUtil.printCommand("Insert position, with x and y, comma separated: ");
-            Position requestedPos = stringToPos(console.nextLine());
-
-            // clear input area
-            ClientUtil.printCommandSquare();
-
-            return requestedPos;
-        } catch (InputMismatchException e) {
-            throw new TUIException(ExceptionsTUI.INVALID_CARD_POSITION);
-        }
-    }
-
-    /**
      * Displays the rulebook on the screen.
      *
      * @param numberOfPage the page number of the manual to be printed on the screen.
@@ -485,31 +407,15 @@ public class ClientTUI implements View {
         //ClientUtil.putCursorToInputArea();
     }
 
-    /**
-     * Receives the number of the page to display.
-     *
-     * @return the number of the page.
-     * @throws TUIException if the player enters an invalid number of page.
-     */
-    private int receivePlayerRulebookPage() throws TUIException {
-        ClientUtil.printCommand("Insert page (1 or 2): ");
-        int numberOfPage = Integer.parseInt(console.nextLine());
-
-        if (numberOfPage == 1 || numberOfPage == 2) {
-            return numberOfPage;
-        } else
-            throw new TUIException(ExceptionsTUI.INVALID_PAGE);
-    }
-
     private void connect(String ip, Integer port) throws UnReachableServerException {
         controller.configureClient(this, ip, port);
         availableActions.remove(TUIActions.CONNECT);
         availableActions.add(TUIActions.SELECTUSERNAME);
-        ClientUtil.printCommand("Insert your username: type <selectusername> <your username> (max 12 characters):");
+        ClientUtil.printCommand("Insert your username: type `selectusername <your username>` (max 12 characters):");
     }
 
     private void selectUsername(String username) throws TUIException {
-        if (username.length() > 12) {
+        if (username.length() > 12) { // max username length
             throw new TUIException(ExceptionsTUI.INVALID_USERNAME);
         }
         this.currentWatchingPlayer = username;
@@ -739,11 +645,6 @@ public class ClientTUI implements View {
         }
     }
 
-    @Override
-    public void showInitialPlayerStatus() {
-
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -919,13 +820,7 @@ public class ClientTUI implements View {
      */
     @Override
     public synchronized void showWinners(List<String> winners) {
-        StringBuilder winnerList = new StringBuilder("Winners: ");
-        for (String i : winners) {
-            winnerList.append("Player: ").append(i)
-                    .append(", Points: ").append(controller.getPlayer(i).getScore()).append("\n");
-        }
-
-        ClientUtil.printCommand(winnerList.toString());
+        ClientUtil.printCommand("Winners:\n" + String.join("\n", winners) + "\nQuit to play again");
         availableActions.clear();
         availableActions.add(TUIActions.HELP);
         availableActions.add(TUIActions.QUIT);

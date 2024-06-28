@@ -45,7 +45,7 @@ public class ClientController implements ClientActions {
     private Client client;
     private final ExecutorService requestsForTheServer;
 
-    private String mainPlayerUsername = ""; // todo. set by the view after user's input
+    private String mainPlayerUsername = "";
 
     //public ClientController(VirtualServer server) {
     //    this.server = server;
@@ -458,7 +458,6 @@ public class ClientController implements ClientActions {
      *
      * @param message the new message to be added to the chat.
      */
-    //todo check if other players discard private message of others or if they save them but the view avoid the to show to the players
     public synchronized void updateChat(Message message) {
         game.getMessages().add(message);
     }

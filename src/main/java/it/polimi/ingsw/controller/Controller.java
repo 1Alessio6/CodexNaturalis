@@ -23,7 +23,7 @@ import java.util.*;
  * It also allows the player to make moves in the playground and to choose his/her own username and token color
  * before the start of a game.
  */
-public class Controller implements EventListener, GameRequest {
+public class Controller implements GameRequest {
     private Lobby lobby;
     private Game game;
     private Timer timerForSuspendedGame;

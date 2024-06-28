@@ -9,7 +9,6 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.client.model.board.ClientBoard;
 import it.polimi.ingsw.network.client.model.board.ClientPlayground;
 import it.polimi.ingsw.network.client.model.card.ClientCard;
-import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 
 import java.io.Serializable;
@@ -23,10 +22,8 @@ import java.util.Set;
  */
 public class ClientGame implements Serializable {
 
-    private List<ClientCard> faceUpCards;
-    private List<ClientObjectiveCard> commonObjects;
     private int currentPlayerIdx; // index in the current player list.
-    private List<ClientPlayer> players;
+    private final List<ClientPlayer> players;
     private List<Message> messages;
     private ClientBoard clientBoard;
     private GamePhase currentPhase;
@@ -69,23 +66,12 @@ public class ClientGame implements Serializable {
         return null;
     }
 
-    //todo update get main player
-
-
     public void setCurrentPlayerIdx(int currentPlayerIdx) {
         this.currentPlayerIdx = currentPlayerIdx;
     }
 
     public void setCurrentPhase(GamePhase currentPhase) {
         this.currentPhase = currentPhase;
-    }
-
-    public List<ClientCard> getFaceUpCards() {
-        return faceUpCards;
-    }
-
-    public List<ClientObjectiveCard> getCommonObjects() {
-        return commonObjects;
     }
 
     public int getCurrentPlayerIdx() {
@@ -108,7 +94,6 @@ public class ClientGame implements Serializable {
      * @param game on the server
      */
     public ClientGame(Game game) {
-       // System.err.println("Creating a copy of the game");
         this.currentPlayerIdx = game.getCurrentPlayerIdx();
         this.players = new ArrayList<>();
         for (Player player : game.getPlayers()) {
@@ -132,14 +117,6 @@ public class ClientGame implements Serializable {
         for (String username : usernames) {
             players.add(new ClientPlayer(username));
         }
-    }
-
-    public boolean isGoldenDeckEmpty() {
-        return clientBoard.isGoldenDeckEmpty();
-    }
-
-    public boolean isResourceDeckEmpty() {
-        return clientBoard.isResourceDeckEmpty();
     }
 
     public ClientCard getFaceUpCard(int index) {
@@ -168,19 +145,6 @@ public class ClientGame implements Serializable {
         return alreadyTakenColors;
     }
 
-    public Set<PlayerColor> getRemainingColors() {
-        Set<PlayerColor> remainingColors = new HashSet<>();
-        Set<PlayerColor> alreadyTakenColors = getAlreadyTakenColors();
-
-        for (PlayerColor color : PlayerColor.values()) {
-            if (!alreadyTakenColors.contains(color)) {
-                remainingColors.add(color);
-            }
-        }
-
-        return remainingColors;
-    }
-
     /**
      * Checks if a <code>username</code> is among the players in the current game.
      *
@@ -207,16 +171,6 @@ public class ClientGame implements Serializable {
     public ClientPlayer getCurrentPlayer() {
         return players.get(currentPlayerIdx);
     }
-
-    /**
-     * Adds a <code>newMessage</code> sent by author.
-     *
-     * @param newMessage to be added.
-     */
-    public void addMessage(Message newMessage) {
-        messages.add(newMessage);
-    }
-
 }
 
 

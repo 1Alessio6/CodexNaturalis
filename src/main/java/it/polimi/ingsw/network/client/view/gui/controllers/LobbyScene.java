@@ -90,14 +90,6 @@ public class LobbyScene extends SceneController {
 
 
     /**
-     * Method used to show the players required to start the game.
-     */
-    public void showRequiredPlayers() {
-        //todo requiredPlayer.setText("Player required to play: " + gui.getController().getRequiredPlayer);
-        requiredPlayer.setVisible(true);
-    }
-
-    /**
      * Initializes the creator scene, makes <code>numberPlayerCatcher</code> and <code>setNumberRequest</code> visible.
      */
     public void initializeCreatorScene() {

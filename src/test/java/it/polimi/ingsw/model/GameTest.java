@@ -228,7 +228,6 @@ public class GameTest {
         }
 
         // test current
-        // todo: check for correct deck type
 
         assertDoesNotThrow(() -> game.drawFromDeck(currentPlayer.getUsername(), DeckType.GOLDEN));
 

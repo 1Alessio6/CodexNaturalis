@@ -28,14 +28,14 @@ import static it.polimi.ingsw.network.client.view.tui.ClientUtil.cardWidth;
  */
 enum GameScreenArea {
     // Matrix (12-1) * (20-1) cards (considering last not overlapping)
-    PLAYGROUND(97, 41, new Position(28, 2)),
+    PLAYGROUND(97, 41, new Position(27, 2)),
     FACE_UP_CARDS(24, 14, new Position(146, 2)),
     HAND_CARDS(2* ClientUtil.areaPadding + 3* cardWidth, cardHeight, new Position(62 ,44)),
     DECKS(24, 5, new Position(18, 149)),
     CHAT(62, 11, new Position(23, 126)),
     INPUT_AREA(62,12,new Position(35,126)),
     TITLE(80,5,new Position(2,55)),
-    SCOREBOARD(10, 26, new Position(2, 2)),
+    SCOREBOARD(10, 24, new Position(2, 2)),
     PRIVATE_OBJECTIVE(ClientUtil.objectiveCardWidth, ClientUtil.objectiveCardHeight, new Position(35, 2)),
     COMMON_OBJECTIVE(2 + 2 * ClientUtil.objectiveCardWidth, ClientUtil.objectiveCardHeight, new Position(42, 2)),
     RESOURCES(26, 15, new Position(14, 2));
@@ -72,7 +72,7 @@ public class ClientUtil {
     public final static int objectiveCardWidth = 11;
     public final static int objectiveCardHeight = 5;
     final static int areaPadding = 2;
-    final static int maxUsernameLength=15;
+    final static int maxUsernameLength=12;
     final static int maxPointsLength=8;
     final static int resourceBoardColumnSpace = 5;
     final static int requirementsHeight = 2;
@@ -87,7 +87,6 @@ public class ClientUtil {
     static String quill = "\uD83E\uDEB6";
     static String bigSpace = "  ";
     static String thinSpace = "\u2009";
-    static String doubleThinSpace = "\u2009\u2009";
     static String doubleHairSpace = "\u200A" + "\u200A";
     static String hairSpace = "\u200A";
     static String corner = "\uD83D\uDCCB";
@@ -914,7 +913,6 @@ public class ClientUtil {
             setupTable.add(i, tableLine);
         }
 
-        // todo: fix for last element
         Symbol key = entry.getKey();
         Integer value = entry.getValue();
 
@@ -1039,7 +1037,6 @@ public class ClientUtil {
      * Puts the cursor in the input area.
      */
     public static void putCursorToInputArea() {
-        // todo: put correct values
         moveCursor(Position.sum(new Position(1,1),
                 new Position(GameScreenArea.INPUT_AREA.getScreenPosition().getY(),
                         GameScreenArea.INPUT_AREA.getScreenPosition().getX())));
@@ -1141,10 +1138,8 @@ public class ClientUtil {
      * @param realLimitPositions of the real playground
      * @return the requested offset, normalized
      */
-    // todo: permit requested offset only along overflowing sizes
     private static Position normalizeRequestedOffset(Position requestedOffset, DrawablePlayground dp,
                                                      Position[] realLimitPositions) {
-        //Position offsetPos = Position.sum(currentOffset, requestedOffset);
         int[] normalizedPosArr = new int[2];
 
         // this is the temporary position where printable playground starts
@@ -1216,7 +1211,6 @@ public class ClientUtil {
      * @param pos available position
      * @return a card containing of the position
      */
-    // todo: please update card representation
     public static String[][] drawAvailablePosition(Position pos) {
         int matrixCardLength = cardWidth - 2;
         String[][] placeHolder = createEmptyArea(cardHeight, matrixCardLength);

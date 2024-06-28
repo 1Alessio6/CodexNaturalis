@@ -112,7 +112,7 @@ public class GUIUtil {
             case BLUE -> {
                 return Color.web("#0000FF");
             }
-            case GREEN -> { //todo replace with a darker green
+            case GREEN -> {
                 return Color.web("#32CD32");
             }
             case YELLOW -> {

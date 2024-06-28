@@ -83,7 +83,6 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
      */
     @Override
     public void runView() {
-        // todo. change scene to the one that requires ip/port
         loadScene(SceneType.CONNECTION);
         this.primaryStage.setTitle("Codex Naturalis");
     }
@@ -146,7 +145,6 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
 
         Platform.runLater(() -> {
             loadScene(SceneType.CRASH);
-            //todo set crash message
             currentScene = SceneType.CRASH;
             ((CrashScene) currentSceneController).setReason("LOBBY CRASHED");
         });
@@ -204,12 +202,6 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
         if (currentScene == SceneType.GAME) {
             ((GameScene)currentSceneController).updatePlayersStatus();
         }
-    }
-
-    //todo check if it can be removed
-    @Override
-    public void showInitialPlayerStatus() {
-
     }
 
     /**
@@ -288,7 +280,6 @@ public class ApplicationGUI extends Application implements View, ClientApplicati
     public void showUpdateCurrentPlayer() {
         Platform.runLater(() -> {
 
-            //todo check if the first two if could be removed
             if (currentScene == SceneType.SETUP) {
                 currentScene = SceneType.GAME;
                 loadScene(SceneType.GAME);

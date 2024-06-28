@@ -1,7 +1,5 @@
 package it.polimi.ingsw.model;
 
-import com.google.gson.reflect.TypeToken;
-import it.polimi.ingsw.jsondeserializer.DeserializationHandler;
 import it.polimi.ingsw.model.deck.Deck;
 import it.polimi.ingsw.model.deck.DeckType;
 import it.polimi.ingsw.model.board.*;
@@ -23,7 +21,6 @@ import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.card.ClientFace;
 import it.polimi.ingsw.network.client.model.card.ClientObjectiveCard;
 
-import java.io.FileNotFoundException;
 import java.util.*;
 
 import static java.lang.Math.min;
@@ -66,36 +63,6 @@ public class Game {
 
     // chat database containing the history of all sent messages
     private ChatDatabase chatDatabase;
-
-    //todo no usage check if could be removed
-    private List<Card> createCardList(List<Front> fronts, List<Back> backs) {
-        assert fronts.size() == backs.size();
-
-        List<Card> cards = new ArrayList<>();
-
-        for (int i = 0; i < fronts.size(); ++i) {
-            cards.add(new Card(fronts.get(i), backs.get(i)));
-        }
-
-        return cards;
-    }
-
-    private List<ObjectiveCard> createObjectiveCardList(List<ObjectivePositionCard> objectivePositions, List<ObjectiveResourceCard> objectiveResources) {
-        List<ObjectiveCard> objectiveCards = new ArrayList<>();
-
-        objectiveCards.addAll(objectivePositions);
-
-        objectiveCards.addAll(objectiveResources);
-
-        return objectiveCards;
-    }
-
-    private List<Front> frontFromGoldenList(String goldenFrontCardsPath) throws FileNotFoundException {
-        List<GoldenFront> gFronts =
-                new DeserializationHandler<GoldenFront>().jsonToList(goldenFrontCardsPath, new TypeToken<>() {
-                });
-        return new ArrayList<>(gFronts);
-    }
 
     private void loadAvailableColors() {
         this.availableColors = new HashSet<>(

@@ -57,9 +57,6 @@ public interface View {
      */
     void showUpdatePlayerStatus();
 
-    void showInitialPlayerStatus();
-
-
     /**
      * Method used to show starter placement, and update availableActions for the player notified.
      * This is a broadcast update
