@@ -66,9 +66,6 @@ public class ClientGame implements Serializable {
         return null;
     }
 
-    //todo update get main player
-
-
     public void setCurrentPlayerIdx(int currentPlayerIdx) {
         this.currentPlayerIdx = currentPlayerIdx;
     }
