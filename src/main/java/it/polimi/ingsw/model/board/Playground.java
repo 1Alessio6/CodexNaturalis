@@ -127,12 +127,21 @@ public class Playground {
 
 
     /**
-     * Returns all the available position.
+     * Returns all the available positions.
      *
-     * @return a list containing all the position stored in the playground associated to an empty tile.
+     * @return a list containing all the positions stored in the playground associated to an empty tile.
      */
     public List<Position> getAvailablePositions() {
         return this.area.keySet().stream().filter(x -> this.area.get(x).sameAvailability(Availability.EMPTY)).collect(Collectors.toList());
+    }
+
+    /**
+     * Returns all the occupied positions.
+     *
+     * @return a list containing all the positions stored in the playground associated to an occupied tile.
+     */
+    public List<Position> getOccupiedPositions() {
+        return this.area.keySet().stream().filter(x -> this.area.get(x).sameAvailability(Availability.OCCUPIED)).collect(Collectors.toList());
     }
 
     /**
