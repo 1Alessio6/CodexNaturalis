@@ -5,7 +5,6 @@ package it.polimi.ingsw.network.client.view.gui.util;
  */
 public enum Icon {
 
-    //todo add credits icons8 and flatIcons for 4th place
     /**
      * OBSERVE_PLAYGROUND is the icon that allows the player to see other players' playground
      */
