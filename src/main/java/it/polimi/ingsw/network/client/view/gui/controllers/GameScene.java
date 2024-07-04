@@ -732,8 +732,6 @@ public class GameScene extends SceneController {
 
             } catch (InvalidMessageException e) {
                 showError("Invalid message\n" + e.getMessage());
-            } catch (RemoteException e) {
-                // todo. add notification for server crashed
             }
             text.setText("");
         }
