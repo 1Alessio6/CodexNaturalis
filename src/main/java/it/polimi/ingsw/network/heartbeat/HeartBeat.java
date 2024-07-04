@@ -1,9 +1,10 @@
 package it.polimi.ingsw.network.heartbeat;
 
+import com.google.common.util.concurrent.AtomicDouble;
+
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The HeartBeat class keeps track of the existence of the remote endpoint which can be the server for the client or the client for the server.
@@ -15,11 +16,10 @@ public class HeartBeat extends Thread {
     private String listenerName;
     private HeartBeatHandler heartBeatHandler;
     private HeartBeatListener heartBeatListener;
-    private static final int MAX_DELTA = 10; // 3
+    private static final double MAX_DELTA_MILLISECONDS = 10000; // it's in milliseconds
     private static final int HEART_BEAT_PERIOD = 1000;
     private static final int MAX_DELAY = 10000; // 5000
-    private AtomicInteger mostRecentReceivedId;
-    private Integer lastSentId;
+    private AtomicDouble mostRecentReceivedId;
     private AtomicBoolean isActive;
 
 
@@ -37,8 +37,7 @@ public class HeartBeat extends Thread {
         this.heartBeatListener = heartBeatListener;
         this.handlerNameLock = new Object();
         this.listenerName = listenerName;
-        this.mostRecentReceivedId = new AtomicInteger();
-        this.lastSentId = 0;
+        this.mostRecentReceivedId = new AtomicDouble();
         isActive = new AtomicBoolean(true);
     }
 
@@ -57,6 +56,7 @@ public class HeartBeat extends Thread {
      * Starts sending the heart beat to the remote end point.
      */
     public void startHeartBeat() {
+        mostRecentReceivedId.set(System.currentTimeMillis());
         this.start();
     }
 
@@ -75,15 +75,14 @@ public class HeartBeat extends Thread {
     @Override
     public void run() {
         while (!isInterrupted()) {
-            lastSentId += 1;
             HeartBeatMessage ping;
             synchronized (handlerNameLock) {
-                ping = new HeartBeatMessage(handlerName, lastSentId);
+                ping = new HeartBeatMessage(handlerName, System.currentTimeMillis());
             }
-            int delta = ping.getId() - mostRecentReceivedId.get();
+            double delta = ping.getId() - mostRecentReceivedId.get();
             System.err.println("Current delta: " + delta + " for " + handlerName + " to " + listenerName);
 
-            if (delta <= MAX_DELTA) {
+            if (delta <= MAX_DELTA_MILLISECONDS) {
                 try {
                     Timer timerDelayForSendingPing = new Timer();
                     timerDelayForSendingPing.schedule(new TimerTask() {

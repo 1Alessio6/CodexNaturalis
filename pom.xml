@@ -52,6 +52,14 @@
             <scope>compile</scope>
         </dependency>
 
+
+        <!-- enable guava -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>33.2.1-jre</version>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>
