@@ -37,6 +37,7 @@ public class Server implements HeartBeatHandler, GameActions {
     private int portForSocket;
     private int portForRMI;
     private final Object lockOnConnections;
+    private ServerRMI serverRMI;
 
     public Server(String ip, int portForSocket, int portForRMI) {
         this.lockOnConnections = new Object();
@@ -105,6 +106,8 @@ public class Server implements HeartBeatHandler, GameActions {
         }
 
         System.out.println("ServerRMI is ready: IP = " + ip + " port = " + portForRMI);
+        // make the reference persistent to avoid the DGB from destroying the reference
+        serverRMI = myServer;
     }
 
     /**
