@@ -66,32 +66,33 @@ public class ClientTUI implements View {
     private void parseCommands() {
         while (console.hasNextLine()) {
             // split command with spaces and analyze the first word
-            String[] nextCommand = console.nextLine().toLowerCase().split(" ", 4);
+            String input = console.nextLine();
 
             synchronized (this) {
                 try {
-                    if (availableActions.contains(TUIActions.valueOf(nextCommand[0].toUpperCase()))) {
+                    String[] commands = input.split(" ");
+                    if (availableActions.contains(TUIActions.valueOf(commands[0].toUpperCase()))) {
                         // before running command
                         ClientUtil.clearExceptionSpace();
 
-                        switch (TUIActions.valueOf(nextCommand[0].toUpperCase())) {
-                            case CONNECT -> connect(nextCommand[1], Integer.parseInt(nextCommand[2]));
-                            case SELECTUSERNAME -> selectUsername(nextCommand[1]);
+                        switch (TUIActions.valueOf(commands[0].toUpperCase())) {
+                            case CONNECT -> connect(commands[1], Integer.parseInt(commands[2]));
+                            case SELECTUSERNAME -> selectUsername(commands[1]);
                             case BACK -> goBack();
-                            case COLOR -> chooseColor(nextCommand[1]);
+                            case COLOR -> chooseColor(commands[1]);
                             case FLIP -> flip();
                             case HELP -> printHelp();
-                            case SPY -> spy(nextCommand[1]);
-                            case M, PM -> sendMessage(nextCommand);
-                            case DRAW -> draw(Integer.parseInt(nextCommand[1]));
-                            case PLACE -> place(Integer.parseInt(nextCommand[1]), nextCommand[2], nextCommand[3]);
+                            case SPY -> spy(commands[1]);
+                            case M, PM -> sendMessage(commands);
+                            case DRAW -> draw(Integer.parseInt(commands[1]));
+                            case PLACE -> place(Integer.parseInt(commands[1]), commands[2], commands[3]);
                             case QUIT -> quit();
                             case LOBBYSIZE ->
-                                    setupLobbyPlayerNumber(Integer.parseInt(nextCommand.length == 2 ? nextCommand[1] : "0"));
-                            case OBJECTIVE -> chooseObjective(Integer.parseInt(nextCommand[1]));
-                            case STARTER -> placeStarter(nextCommand[1]);
-                            case RULEBOOK -> displayRulebook(Integer.parseInt(nextCommand[1]));
-                            case MVPG -> movePlayground(nextCommand[1]);
+                                    setupLobbyPlayerNumber(Integer.parseInt(commands.length == 2 ? commands[1] : "0"));
+                            case OBJECTIVE -> chooseObjective(Integer.parseInt(commands[1]));
+                            case STARTER -> placeStarter(commands[1]);
+                            case RULEBOOK -> displayRulebook(Integer.parseInt(commands[1]));
+                            case MVPG -> movePlayground(commands[1]);
                         }
                     } else {
                         ClientUtil.printExceptions(ExceptionsTUI.INVALID_GAME_COMMAND.getMessage());
@@ -268,16 +269,24 @@ public class ClientTUI implements View {
     /**
      * Sends a message.
      *
-     * @param command an array of strings containing the message and the form in which the message is to be transmitted.
+     * @param commands an array of strings containing the message and the form in which the message is to be transmitted.
      * @throws InvalidMessageException if the author doesn't match the author or the recipient doesn't exist.
      * @throws TUIException            if the player attempts to send a message incorrectly, that means, not following
      *                                 the sending message structure.
      */
-    private void sendMessage(String[] command) throws InvalidMessageException, TUIException {
+    private void sendMessage(String[] commands) throws InvalidMessageException, TUIException {
         try {
-            String commandContent = command[0].equals("pm") ? command[1].concat(" " + command[2]) : command[1];
-            Message myMessage = command[0].equals("pm") ? createPrivateMessage(commandContent) : createBroadcastMessage(commandContent);
-            controller.sendMessage(myMessage);
+            boolean isPrivate = commands[0].toUpperCase().equals(TUIActions.PM.toString());
+            Message messageToSend;
+            if (isPrivate) {
+                String recipient = commands[1];
+                String content = String.join(" ", Arrays.copyOfRange(commands, 2, commands.length));
+                messageToSend = new Message(controller.getMainPlayerUsername(), recipient, content);
+            } else {
+                String content = String.join(" ", Arrays.copyOfRange(commands, 1, commands.length));
+                messageToSend = new Message(controller.getMainPlayerUsername(), content);
+            }
+            controller.sendMessage(messageToSend);
 
             // clear input area
             ClientUtil.printCommandSquare();
@@ -683,8 +692,9 @@ public class ClientTUI implements View {
             ClientUtil.printScoreboard(this.controller.getPlayers());
 
             // don't print if main player has already chosen the color
-            if (controller.getMainColor() == null)
+            if (controller.getMainColor() == null) {
                 printAvailableColorList();
+            }
 
             if (controller.getMainPlayerUsername().equals(username)){
                 setAvailableActions();
