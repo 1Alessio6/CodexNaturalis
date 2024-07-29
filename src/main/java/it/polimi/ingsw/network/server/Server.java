@@ -249,11 +249,25 @@ public class Server implements HeartBeatHandler, GameActions {
     }
 
     public static void main(String[] args) {
-        String ip = args[0];
-        int portSocket = Integer.parseInt(args[1]);
-        int portRMI = Integer.parseInt(args[2]);
+        String ip = "127.0.0.1";
+        int portSocket = 1234;
+        int portRMI = 1235;
+
+        if (args.length < 3) {
+            System.out.println("Running default configuration: " + "server ip: " + ip + " port for socket: " + portSocket + " port for rmi: " + portRMI);
+        } else {
+            ip = args[0];
+            try {
+                portSocket = Integer.parseInt(args[1]);
+                portRMI = Integer.parseInt(args[2]);
+            } catch (NumberFormatException numberFormatException) {
+                System.out.println("Port must be an integer");
+                System.exit(1);
+            }
+        }
+
         Server server = new Server(ip, portSocket, portRMI);
-        server.exportRMIServer();
         server.startServerSocket();
+        server.exportRMIServer();
     }
 }
