@@ -104,7 +104,7 @@ The following documentation can be found:
 * [communication protocol][communication-protocol].
 * [peer-reviews][peer-reviews].
 * [javadoc][javadoc]
-* [user Interface documentation][user-interface-doc]
+* [user interface documentation][user-interface-doc]
 
  ## Credits
  * [Gson][gson]
