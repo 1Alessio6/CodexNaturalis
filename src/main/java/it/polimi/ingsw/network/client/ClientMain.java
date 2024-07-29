@@ -46,49 +46,51 @@ public class ClientMain {
     public static void main(String[] args) {
         String typeConnection = OPTION_SOCKET;
         String typeView = OPTION_GUI;
-        String clientIp = "";
-        try {
-            int maxArgs = 3; // <connectionType> + <client_ip> + <viewType>
-            if (args.length > 0 && args.length <= maxArgs) {
-                if (args[0].equals(OPTION_RMI)) {
-                    typeConnection = OPTION_RMI;
-                } else {
-                    typeConnection = OPTION_SOCKET;
-                }
+        String clientIp = "127.0.0.1";
 
-                clientIp = args[1];
-
-                if (args[2].equals("tui")) {
-                    typeView = OPTION_TUI;
-                } else {
-                    typeView = OPTION_GUI;
-                }
-
-                if (typeView.equals(OPTION_TUI)) {
-                    try {
-                        System.setErr(new PrintStream(new FileOutputStream("log.txt",true)));
-                    } catch (FileNotFoundException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-
-            } else if (args.length > maxArgs) {
-                ClientUtil.argsHelper("Too many arguments");
+        if (args.length < 3) {
+            System.out.println("Running default configuration: " + "communication protocol: " + typeConnection + " client ip: " + clientIp + " user interface: " +  typeView);
+        } else {
+            if (args[0].equals(OPTION_RMI)) {
+                typeConnection = OPTION_RMI;
+            } else if (args[0].equals(OPTION_SOCKET)){
+                typeConnection = OPTION_SOCKET;
+            } else {
+                System.out.println("Invalid type of connection. Please, select rmi or socket");
+                System.exit(1);
             }
+
+            clientIp = args[1];
+
+            if (args[2].equals(OPTION_TUI)) {
+                typeView = OPTION_TUI;
+            } else if (args[2].equals(OPTION_GUI)){
+                typeView = OPTION_GUI;
+            } else {
+                System.out.println("Invalid type of user interface. Please, select tui or gui");
+                System.exit(1);
+            }
+
+            if (typeView.equals(OPTION_TUI)) {
+                try {
+                    System.setErr(new PrintStream(new FileOutputStream("log.txt",true)));
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+        }
+
+        try {
             ClientApplication application;
-            if (typeView.equals("tui")) {
+            if (typeView.equals(OPTION_TUI)) {
                 application = new ApplicationTUI();
             } else {
                 application = new ApplicationGUI();
             }
-            //application.run(typeConnection, host, port);
             application.run(typeConnection, clientIp);
         } catch (UnReachableServerException | RemoteException e) {
             System.err.println(e.getMessage());
-            System.exit(1);
-        }
-        catch (IndexOutOfBoundsException e) {
-            ClientUtil.argsHelper(e.getMessage());
             System.exit(1);
         }
     }
