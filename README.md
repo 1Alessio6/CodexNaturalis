@@ -45,9 +45,50 @@ This project complies with **all the rules** established by the game, **TUI**, *
 ➖ Implementing
 ✔️ Implemented
 
+**Meaning:**
+
+- Resilience to disconnections: If players are disconnected from the game due to network issues or a client crash, they can rejoin and recover all their information. During their disconnection, their turns are skipped. If only one player remains connected, the game will pause and a timer will start. When the game resumes, the timer will be canceled. If the timer runs out, the remaining player (if any) will be declared the winner.
+
+- Chat: a chat is available to allow players to communicate with each other.
+
 ## How to use
 
-### Before starting
+### Overview 
+
+The project is a distributed system based on a client-server model. The server manages the game's data, while the client handles the user's input, which is then sent to the server for processing.
+
+### Run the server
+
+To run the server, the following options must be provided, in order:
+- Server IP 
+- Port for socket communication
+- Port for rmi communication
+
+For example, the command 
+
+    java -jar AM34-1.0-SNAPSHOT-server.jar 127.0.0.1 1234 1235
+
+sets the server ip to 127.0.0.1 (localhost) and the socket and rmi port to 1234 and 1235, respectively.
+
+If no arguments are provided, by default the application starts with the options indicated above.
+
+### Run the client
+
+To run the client, the following options must be provided, in order:
+- Communication protocol, either *rmi* or *socket*
+- Client IP 
+- User interface, either *gui* or *tui* 
+
+For example, the command 
+
+    java -jar AM34-1.0-SNAPSHOT-client.jar socket 127.0.0.1 gui
+
+specifies the socket protocol, the client ip 127.0.0.1 and the graphical user interface.
+
+If no arguments are provided, by default the application starts with the options indicated above.
+
+#### Settings for the TUI
+
 * If you are a windows user and you want to use our TUI interface, please follow these steps:
 
 1. Open your command prompt
@@ -55,7 +96,6 @@ This project complies with **all the rules** established by the game, **TUI**, *
 3. Use a character size equal to 8.5
 
 * If you are a Linux user, please, open your screen in full screen mode and make sure that the number of lines is greater or equal to 50 and that the number of columns is greater or equal to 190
-
 
 ## Documentation
 
