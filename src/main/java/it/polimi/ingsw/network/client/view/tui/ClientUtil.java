@@ -42,9 +42,9 @@ enum GameScreenArea {
     COMMON_OBJECTIVE(2 + 2 * ClientUtil.objectiveCardWidth, ClientUtil.objectiveCardHeight, new Position(42, 2)),
     RESOURCES(26, 15, new Position(14, 2));
 
-    private final int width;
-    private final int height;
-    private final Position screenPosition;
+    final int width;
+    final int height;
+    final Position screenPosition;
 
     GameScreenArea(int width, int height, Position screenPosition) {
         this.width = width;
@@ -1347,8 +1347,7 @@ public class ClientUtil {
     }
 
     private static List<String> splitText(String text) {
-        // todo. see maybe chat.width might be used
-        String regex = ".{1,60}|\n";
+        String regex = ".{1," + GameScreenArea.CHAT.width + "}|\n";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(text);
 
