@@ -267,7 +267,7 @@ public class Server implements HeartBeatHandler, GameActions {
         }
 
         Server server = new Server(ip, portSocket, portRMI);
-        server.startServerSocket();
         server.exportRMIServer();
+        server.startServerSocket();
     }
 }
