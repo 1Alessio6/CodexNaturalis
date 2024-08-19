@@ -619,6 +619,7 @@ public class ClientTUI implements View {
             ClientUtil.printFaceUpCards(this.controller.getFaceUpCards());
             ClientUtil.printCommandSquare();
             ClientUtil.printChatSquare();
+            ClientUtil.printChat(controller.getMessages(), controller.getMainPlayer());
             // print decks
             ClientUtil.printDecks(controller.getGoldenDeckTopBack(), controller.getResourceDeckTopBack());
 

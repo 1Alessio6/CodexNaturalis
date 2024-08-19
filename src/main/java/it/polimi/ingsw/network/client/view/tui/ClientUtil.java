@@ -1381,7 +1381,7 @@ public class ClientUtil {
     }
 
     /**
-     * Prints the chat on the screen.
+     * Prints the messages that fit in the chat box.
      *
      * @param messages the messages in the game.
      */
