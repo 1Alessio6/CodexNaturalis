@@ -159,7 +159,7 @@ public class ClientTUI implements View {
      * Restores the current playing area of the player.
      */
     private void goBack() throws UnInitializedPlaygroundException, FittablePlaygroundException,
-                                              InvalidCardRepresentationException, InvalidCardDimensionException {
+                                 InvalidCardRepresentationException, InvalidCardDimensionException {
         synchronized (controller) {
             // so updates arrive correctly to main player
             currentWatchingPlayer = controller.getMainPlayerUsername();
@@ -534,8 +534,10 @@ public class ClientTUI implements View {
 
                         availableActions.add(TUIActions.SPY);
                     }
-                    case null -> {}
-                    case End -> {}
+                    case null -> {
+                    }
+                    case End -> {
+                    }
                 }
             }
         }
@@ -617,6 +619,7 @@ public class ClientTUI implements View {
             ClientUtil.printFaceUpCards(this.controller.getFaceUpCards());
             ClientUtil.printCommandSquare();
             ClientUtil.printChatSquare();
+            ClientUtil.printChat(controller.getMessages(), controller.getMainPlayer());
             // print decks
             ClientUtil.printDecks(controller.getGoldenDeckTopBack(), controller.getResourceDeckTopBack());
 
@@ -696,7 +699,7 @@ public class ClientTUI implements View {
                 printAvailableColorList();
             }
 
-            if (controller.getMainPlayerUsername().equals(username)){
+            if (controller.getMainPlayerUsername().equals(username)) {
                 setAvailableActions();
                 // remove color list if present
                 ClientUtil.clearExceptionSpace();
@@ -777,9 +780,7 @@ public class ClientTUI implements View {
     @Override
     public synchronized void showUpdateChat() {
         List<Message> messages;
-        synchronized (controller) {
-            messages = new ArrayList<>(controller.getMessages());
-        }
+        messages = new ArrayList<>(controller.getMessages());
         ClientUtil.printChat(messages, controller.getMainPlayer());
 
         ClientUtil.putCursorToInputArea();
