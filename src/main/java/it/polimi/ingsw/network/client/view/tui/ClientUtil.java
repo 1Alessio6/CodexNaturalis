@@ -1362,19 +1362,23 @@ public class ClientUtil {
         return matches;
     }
 
-    private static List<String> getTextPerLine(List<Message> messages, ClientPlayer mainPlayer) {
+    private static List<String> getTextPerLine(List<Message> messages, ClientPlayer mainPlayer, int maxLines) {
         boolean spaceAvailableForANewLine = true;
-        int maxLine = 9;
         List<String> text = new ArrayList<>();
         for (int i = messages.size() - 1; i >= 0 && spaceAvailableForANewLine; --i) {
-            String messageAsText = messages.get(i).toString();
-            List<String> messageSplitInLines = splitText(messageAsText);
-            // add lines backward to maintain the chronology
-            for (int j = messageSplitInLines.size()-1; j >= 0 && text.size() < maxLine; --j) {
-                text.addFirst(messageSplitInLines.get(j));
-            }
-            if (text.size() == maxLine) {
-                spaceAvailableForANewLine = false;
+            Message message = messages.get(i);
+            if (message.getSender().equals(mainPlayer.getUsername())
+                    || message.getRecipient().equals(mainPlayer.getUsername())
+                    || message.getRecipient().equals("Everyone")) {
+                String messageAsText = message.toString();
+                List<String> messageSplitInLines = splitText(messageAsText);
+                // add lines backward to maintain the chronology
+                for (int j = messageSplitInLines.size() - 1; j >= 0 && text.size() < maxLines; --j) {
+                    text.addFirst(messageSplitInLines.get(j));
+                }
+                if (text.size() == maxLines) {
+                    spaceAvailableForANewLine = false;
+                }
             }
         }
         return text;
@@ -1387,7 +1391,7 @@ public class ClientUtil {
      */
     public static void printChat(List<Message> messages, ClientPlayer mainPlayer) {
         ClientUtil.printChatSquare();
-        List<String> textPerLine = getTextPerLine(messages, mainPlayer);
+        List<String> textPerLine = getTextPerLine(messages, mainPlayer, 9);
         for (int lineNum = 0; lineNum < textPerLine.size(); ++lineNum) {
             writeLine(GameScreenArea.CHAT.getScreenPosition().getX() + 1 + lineNum,
                     GameScreenArea.CHAT.getScreenPosition().getY() + 1,
