@@ -4,13 +4,12 @@ import it.polimi.ingsw.network.client.rmi.ClientRMI;
 import it.polimi.ingsw.network.client.socket.ClientSocket;
 import it.polimi.ingsw.network.client.view.gui.ApplicationGUI;
 import it.polimi.ingsw.network.client.view.tui.ApplicationTUI;
-import it.polimi.ingsw.network.client.view.tui.ClientUtil;
+import it.polimi.ingsw.network.client.view.tui.terminal.TerminalException;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.rmi.RemoteException;
-import java.util.Arrays;
 
 /**
  * ClientMain is the class that starts the client in a GUI/TUI interface and in an RMI/Socket communication
@@ -90,8 +89,10 @@ public class ClientMain {
             }
             application.run(typeConnection, clientIp);
         } catch (UnReachableServerException | RemoteException e) {
-            System.err.println(e.getMessage());
+            System.out.println("Error in launching the client application. Reason: " + e.getMessage());
             System.exit(1);
+        } catch (TerminalException e ){
+            System.out.println("Error in setting the terminal. Reason: " + e.getMessage());
         }
     }
 }

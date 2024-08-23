@@ -201,6 +201,12 @@ public class ClientTUI implements View {
         controller.disconnect(controller.getMainPlayerUsername());
 
         ClientUtil.clearScreen();
+        try {
+            Terminal.getInstance().disableRawMode();
+        } catch (TerminalException e) {
+            System.err.println("Received exception from Terminal when trying to disable the raw mode. Exception is " + e.getMessage());
+            System.exit(-1);
+        }
         System.exit(0);
     }
 

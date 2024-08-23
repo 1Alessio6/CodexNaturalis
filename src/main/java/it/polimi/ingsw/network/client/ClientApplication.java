@@ -1,5 +1,7 @@
 package it.polimi.ingsw.network.client;
 
+import it.polimi.ingsw.network.client.view.tui.terminal.TerminalException;
+
 import java.rmi.RemoteException;
 
 /**
@@ -14,5 +16,5 @@ public interface ClientApplication {
      * @throws UnReachableServerException if the server isn't reachable.
      * @throws RemoteException            in the event of an error occurring during the execution of a remote method.
      */
-    void run(String typeConnection, String clientIp) throws UnReachableServerException, RemoteException;
+    void run(String typeConnection, String clientIp) throws UnReachableServerException, RemoteException, TerminalException;
 }
