@@ -88,7 +88,7 @@ public class HeartBeat extends Thread {
                     timerDelayForSendingPing.schedule(new TimerTask() {
                         @Override
                         public void run() {
-                            System.out.println("Timer for sending ping of " + listenerName + " has expired");
+                            System.err.println("Timer for sending ping of " + listenerName + " has expired");
                             heartBeatHandler.handleUnresponsiveness(listenerName);
                         }
                     }, MAX_DELAY);
