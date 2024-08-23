@@ -943,11 +943,14 @@ public class ClientUtil {
 
     private static String[] createWaitingList(List<String> usernames) {
         int rows = usernames.size() + 1;
-        List<String> setupTable = createEmptyTable(rows, 1, Collections.singletonList(maxUsernameLength));
+        String title = "USERS CONNECTED";
+        int longestStringInCell = Math.max(maxUsernameLength, title.length());
+
+        List<String> setupTable = createEmptyTable(rows, 1, Collections.singletonList(longestStringInCell));
         String separator = "║";
 
         String tableLine = separator +
-                centeredString(maxUsernameLength, "USERS CONNECTED") +
+                centeredString(longestStringInCell, title) +
                 separator;
 
         setupTable.add(1, tableLine);
@@ -955,7 +958,7 @@ public class ClientUtil {
         int i = 3;
         for (String username : usernames) {
             tableLine = separator +
-                    centeredString(maxUsernameLength, username) +
+                    centeredString(longestStringInCell, username) +
                     separator;
 
             setupTable.add(i, tableLine);
