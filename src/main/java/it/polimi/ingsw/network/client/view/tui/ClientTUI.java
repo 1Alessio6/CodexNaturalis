@@ -21,7 +21,10 @@ import it.polimi.ingsw.network.client.model.card.ClientCard;
 import it.polimi.ingsw.network.client.model.player.ClientPlayer;
 import it.polimi.ingsw.network.client.view.View;
 import it.polimi.ingsw.network.client.view.tui.drawplayground.*;
+import it.polimi.ingsw.network.client.view.tui.terminal.Terminal;
+import it.polimi.ingsw.network.client.view.tui.terminal.TerminalException;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.regex.PatternSyntaxException;
 
@@ -41,6 +44,9 @@ public class ClientTUI implements View {
 
     /* saves the current watching player, so updates are correctly applied */
     private String currentWatchingPlayer;
+
+    /* last cursor position on input area, useful to restore the cursor position after printing updates */
+    private Position lastCursorPos;
 
     /**
      * Constructs clientTUI with the <code>controller</code> provided.
