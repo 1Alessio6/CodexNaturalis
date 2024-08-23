@@ -22,48 +22,6 @@ import java.util.regex.Pattern;
 
 import static it.polimi.ingsw.model.card.Symbol.*;
 import static it.polimi.ingsw.network.client.view.tui.ANSIColor.*;
-import static it.polimi.ingsw.network.client.view.tui.ClientUtil.cardHeight;
-import static it.polimi.ingsw.network.client.view.tui.ClientUtil.cardWidth;
-
-/**
- * This enum represents the space and position of each area in the screen
- */
-enum GameScreenArea {
-    // Matrix (12-1) * (20-1) cards (considering last not overlapping)
-    PLAYGROUND(97, 41, new Position(27, 2)),
-    FACE_UP_CARDS(24, 14, new Position(146, 2)),
-    HAND_CARDS(2 * ClientUtil.areaPadding + 3 * cardWidth, cardHeight, new Position(62, 44)),
-    DECKS(24, 5, new Position(18, 149)),
-    CHAT(62, 11, new Position(23, 126)),
-    INPUT_AREA(62, 12, new Position(35, 126)),
-    TITLE(80, 5, new Position(2, 55)),
-    SCOREBOARD(10, 24, new Position(2, 2)),
-    PRIVATE_OBJECTIVE(ClientUtil.objectiveCardWidth, ClientUtil.objectiveCardHeight, new Position(35, 2)),
-    COMMON_OBJECTIVE(2 + 2 * ClientUtil.objectiveCardWidth, ClientUtil.objectiveCardHeight, new Position(42, 2)),
-    RESOURCES(26, 15, new Position(14, 2));
-
-    final int width;
-    final int height;
-    final Position screenPosition;
-
-    GameScreenArea(int width, int height, Position screenPosition) {
-        this.width = width;
-        this.height = height;
-        this.screenPosition = screenPosition;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public Position getScreenPosition() {
-        return screenPosition;
-    }
-}
 
 /**
  * ClientUtil is the class that facilitates TUIs printing
@@ -203,6 +161,42 @@ public class ClientUtil {
         System.out.println("Example:\trmi 127.0.0.1 gui");
     }
 
+    /**
+     * Prints the provided <code>text</code> from the specified cursor position respecting the <code>area</code>dimension
+     *
+     * @param cursorPos cursor position from which the text is printed
+     * @param area      the area where the text is printed
+     * @param text      the text to print
+     */
+    public static void printTextInSpecifiedArea(Position cursorPos, GameScreenArea area, String text) {
+        String[] lines = text.split("\n");
+        int xCursor = cursorPos.getX();
+        int yCursor = cursorPos.getY();
+        StringBuilder toPrint = new StringBuilder();
+
+        for (String line : lines) {
+            int i = 0;
+            while (i < line.length()) {
+                String stringWithinTheArea = line.substring(i, Math.min(line.length(), i + (area.getScreenPosition().getY() + area.width - yCursor)));
+                toPrint.append("\033[").append(xCursor).append(";").append(yCursor).append("H").append(stringWithinTheArea);
+
+                yCursor += stringWithinTheArea.length();
+                if (yCursor == area.getScreenPosition().getY() + area.width) {
+                    yCursor = area.getScreenPosition().getY() + 1;
+                    xCursor++;
+                }
+                i += stringWithinTheArea.length();
+            }
+            if (yCursor != area.getScreenPosition().getY() + 1) {
+                yCursor = area.getScreenPosition().getY() + 1;
+                xCursor++;
+            }
+        }
+
+        System.out.print(toPrint);
+    }
+
+
     // Main methods
 
     /**
@@ -239,7 +233,8 @@ public class ClientUtil {
      */
     // this takes a string as input
     public static void printToLineColumn(int lineCoordinate, int columnCoordinate, String str) {
-        String[] lines = str.split("\n");
+        // regex to retain the new line
+        String[] lines = str.split("(?<=\n)");
         printToLineColumn(lineCoordinate, columnCoordinate, lines);
     }
 
@@ -254,10 +249,12 @@ public class ClientUtil {
     // this takes an array of string as input
     public static void printToLineColumn(int lineCoordinate, int columnCoordinate, String[] str) {
         int ongoingLine = lineCoordinate;
+        StringBuilder toPrint = new StringBuilder();
         for (String line : str) {
-            System.out.println("\033[" + ongoingLine + ";" + columnCoordinate + "H" + line);
+            toPrint.append("\033[").append(ongoingLine).append(";").append(columnCoordinate).append("H").append(line);
             ongoingLine++;
         }
+        System.out.print(toPrint);
     }
 
     /**
