@@ -143,7 +143,7 @@ public class ServerHandler extends Thread implements VirtualServer {
                 }
                 line = in.readLine();
             }
-            System.out.println("Closed connection from server");
+            System.err.println("Closed connection from server");
             clientSocket.handleServerCrash();
         } catch (IOException e) {
             System.err.println("Stop hearing: channel has been closed");
