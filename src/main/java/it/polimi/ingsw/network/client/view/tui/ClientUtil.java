@@ -95,19 +95,32 @@ public class ClientUtil {
         }
     }
 
-    /**
-     * Prints exception <code>string</code> bellow of the input area.
-     *
-     * @param string the message to be printed.
-     */
-    public static void printExceptions(String string) {
-        ClientUtil.clearExceptionSpace();
+    private static void printInNotificationArea(String text, String ansiCode) {
+        ClientUtil.printTextInSpecifiedArea(new Position(GameScreenArea.NOTIFICATIONS.getScreenPosition().getX(),
+                        GameScreenArea.NOTIFICATIONS.getScreenPosition().getY()),
+                GameScreenArea.NOTIFICATIONS,
+                centeredString(GameScreenArea.NOTIFICATIONS.width, ansiCode + text + "\033[0m"));
+    }
 
-        ClientUtil.writeLine(GameScreenArea.INPUT_AREA.getScreenPosition().getX() +
-                        GameScreenArea.INPUT_AREA.getHeight(),
-                GameScreenArea.INPUT_AREA.getScreenPosition().getY() + 1,
-                GameScreenArea.INPUT_AREA.getWidth() - 2,
-                string);
+    /**
+     * Prints notification <code>notification</code> related to the game flow on the screen.
+     *
+     * @param notification the notification to be printed.
+     */
+    public static void printGameEvent(String notification) {
+        ClientUtil.clearNotificationArea();
+
+        printInNotificationArea(notification, "\033[1m");
+    }
+
+    /**
+     * Prints an error <code>error</code> on the screen.
+     *
+     * @param error the error to display
+     */
+    public static void printError(String error) {
+        int red = 31;
+        printInNotificationArea(error, "\033[" + red + "m");
     }
 
     /**
@@ -117,12 +130,14 @@ public class ClientUtil {
      */
     public static void printCommand(String string) {
         printCommandSquare();
-        writeLine(GameScreenArea.INPUT_AREA.getScreenPosition().getX() + 2,
-                GameScreenArea.INPUT_AREA.getScreenPosition().getY() + 1,
-                GameScreenArea.INPUT_AREA.getWidth() - 2, string);
+        printTextInSpecifiedArea(
+                new Position(GameScreenArea.INPUT_AREA.getScreenPosition().getX() + 2,
+                        GameScreenArea.INPUT_AREA.getScreenPosition().getY() + 1),
+                GameScreenArea.INPUT_AREA, string
+        );
 
         // reposition cursor to input area, in order to write in the correct place
-        ClientUtil.putCursorToInputArea();
+        ClientUtil.moveCursor(GameScreenArea.INPUT_AREA.screenPosition.getX(), GameScreenArea.INPUT_AREA.screenPosition.getY());
     }
 
     /**
@@ -326,12 +341,13 @@ public class ClientUtil {
     /**
      * Clears the area where exceptions are displayed.
      */
-    public static void clearExceptionSpace() {
-        writeLine(GameScreenArea.INPUT_AREA.getScreenPosition().getX() +
-                        GameScreenArea.INPUT_AREA.getHeight(),
-                GameScreenArea.INPUT_AREA.getScreenPosition().getY() + 1,
-                GameScreenArea.INPUT_AREA.getWidth() - 2,
-                " ".repeat(120));
+    public static void clearNotificationArea() {
+        ClientUtil.printTextInSpecifiedArea(
+                new Position(GameScreenArea.NOTIFICATIONS.getScreenPosition().getX(),
+                        GameScreenArea.NOTIFICATIONS.getScreenPosition().getY()),
+                GameScreenArea.NOTIFICATIONS,
+                " ".repeat(GameScreenArea.NOTIFICATIONS.getWidth() - 1)
+        );
     }
 
     /**
@@ -845,7 +861,7 @@ public class ClientUtil {
 
         // clear player hand area
         printToLineColumn(y, x,
-                createEmptyArea(GameScreenArea.HAND_CARDS.getHeight(), GameScreenArea.HAND_CARDS.getWidth()));
+                createEmptyArea(GameScreenArea.HAND_CARDS.getHeight() + 5, GameScreenArea.HAND_CARDS.getWidth()));
 
 
         List<ClientFace> faces = hand.stream().map(c -> c.getFace(side)).toList();
@@ -1025,20 +1041,13 @@ public class ClientUtil {
     /**
      * Moves the cursor to the specified <code>line</code> and <code>column</code>.
      *
-     * @param screenPos is screen position, relative to upper left corner
+     * @param line   the line to which move the cursor
+     * @param column the column to which move the cursor
      */
-    public static void moveCursor(Position screenPos) {
-        System.out.print("\033[" + screenPos.getY() + ";" + screenPos.getX() + "H");
+    public static void moveCursor(int line, int column) {
+        System.out.print("\033[" + line + ";" + column + "H");
     }
 
-    /**
-     * Puts the cursor in the input area.
-     */
-    public static void putCursorToInputArea() {
-        moveCursor(Position.sum(new Position(1, 1),
-                new Position(GameScreenArea.INPUT_AREA.getScreenPosition().getY(),
-                        GameScreenArea.INPUT_AREA.getScreenPosition().getX())));
-    }
 
     /**
      * Method used to build the drawable playground.
@@ -1390,37 +1399,12 @@ public class ClientUtil {
         ClientUtil.printChatSquare();
         List<String> textPerLine = getTextPerLine(messages, mainPlayer, 9);
         for (int lineNum = 0; lineNum < textPerLine.size(); ++lineNum) {
-            writeLine(GameScreenArea.CHAT.getScreenPosition().getX() + 1 + lineNum,
-                    GameScreenArea.CHAT.getScreenPosition().getY() + 1,
-                    GameScreenArea.CHAT.getWidth() - 2,
-                    textPerLine.get(lineNum));
-        }
-    }
-
-    /**
-     * Writes a <code>string</code> in an <code>availableSpace</code> in a specific <code>line</code> and
-     * <code>column</code>.
-     *
-     * @param line           the line on which the <code>string</code> is written.
-     * @param column         the column on which the <code>string</code> is written.
-     * @param availableSpace total space available for writing.
-     * @param string         the string to be written.
-     */
-    public static void writeLine(int line, int column, int availableSpace, String string) {
-        List<String> split = Arrays.stream(string.split("\n")).map(sub -> {
-            List<String> tmp = new ArrayList<>();
-            int len = sub.length();
-            for (int i = 0; i < len; i += availableSpace) {
-                tmp.add(sub.substring(i, i + Math.min(len - i, availableSpace)));
-            }
-
-            return tmp;
-        }).flatMap(Collection::stream).toList();
-
-        int onGoingLine = line;
-        for (String s : split) {
-            System.out.print("\033[" + onGoingLine + ";" + column + "H" + s);
-            ++onGoingLine;
+            printTextInSpecifiedArea(
+                    new Position(GameScreenArea.CHAT.getScreenPosition().getX() + 1 + lineNum,
+                            GameScreenArea.CHAT.getScreenPosition().getY() + 1),
+                    GameScreenArea.CHAT,
+                    textPerLine.get(lineNum)
+            );
         }
     }
 
@@ -1432,7 +1416,7 @@ public class ClientUtil {
         printToLineColumn(GameScreenArea.TITLE.getScreenPosition().getX(),
                 GameScreenArea.TITLE.getScreenPosition().getY(),
                 ClientUtil.title);
-        System.out.println("\n");
+        System.out.print("\r\n");
         try {
             InputStream rulebookStream = numberOfPage == 1 ? ClientUtil.class.getClassLoader().getResourceAsStream("tui/CODEX_NATURALIS_RULEBOOK_1.txt") :
                     ClientUtil.class.getClassLoader().getResourceAsStream("tui/CODEX_NATURALIS_RULEBOOK_2.txt");
@@ -1441,11 +1425,13 @@ public class ClientUtil {
                 bufferedReader = new BufferedReader(new InputStreamReader(rulebookStream));
             }
             String string;
+            StringBuilder toPrint = new StringBuilder();
             if (bufferedReader != null) {
                 while ((string = bufferedReader.readLine()) != null) {
-                    System.out.println(string);
+                    toPrint.append(string).append("\r\n");
                 }
             }
+            System.out.print(toPrint);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
