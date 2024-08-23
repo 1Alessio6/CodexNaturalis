@@ -221,7 +221,7 @@ public class ClientTUI implements View {
                     String[] commands = input.split(" ");
                     if (availableActions.contains(TUIActions.valueOf(commands[0].toUpperCase()))) {
                         // before running command
-                        ClientUtil.clearExceptionSpace();
+                        ClientUtil.clearNotificationArea();
 
                         switch (TUIActions.valueOf(commands[0].toUpperCase())) {
                             case CONNECT -> connect(commands[1], Integer.parseInt(commands[2]));
@@ -243,9 +243,7 @@ public class ClientTUI implements View {
                             case MVPG -> movePlayground(commands[1]);
                         }
                     } else {
-                        ClientUtil.printExceptions(ExceptionsTUI.INVALID_GAME_COMMAND.getMessage());
-                        // print help for consented commands
-                        ClientUtil.printHelpCommands(availableActions);
+                        invalidCommandError = ExceptionsTUI.INVALID_GAME_COMMAND.getMessage();
                     }
                 } catch (UndrawablePlaygroundException |
                          InvalidPlayersNumberException |
@@ -253,27 +251,25 @@ public class ClientTUI implements View {
                          InvalidColorException | NotExistingFaceUp | Playground.UnavailablePositionException |
                          Playground.NotEnoughResourcesException | InvalidGamePhaseException | SuspendedGameException |
                          TUIException e) {
-
-                    ClientUtil.printExceptions(e.getMessage());
-                    // print help for consented commands
-                    ClientUtil.printHelpCommands(availableActions);
+                    invalidCommandError = e.getMessage();
                 } catch (IllegalArgumentException e) {
-                    ClientUtil.printExceptions(ExceptionsTUI.INVALID_GAME_COMMAND.getMessage());
-                    // print help for consented commands
-                    ClientUtil.printHelpCommands(availableActions);
+                    invalidCommandError = ExceptionsTUI.INVALID_GAME_COMMAND.getMessage();
                 } catch (IndexOutOfBoundsException e) {
-                    ClientUtil.printExceptions("few arguments");
-                    //ClientUtil.printExceptions(ExceptionsTUI.INVALID_SPY_INPUT.getMessage());
-                    // print help for consented commands
-                    ClientUtil.printHelpCommands(availableActions);
+                    invalidCommandError = "few arguments";
                 } catch (UnReachableServerException e) {
-                    ClientUtil.printExceptions("Server is down, please connect to another server");
+                    ClientUtil.printGameEvent("Server is down, please connect to another server");
                     availableActions.clear();
                     availableActions.add(TUIActions.HELP);
                     availableActions.add(TUIActions.QUIT);
                     availableActions.add(TUIActions.CONNECT);
                 } finally {
-                    ClientUtil.putCursorToInputArea();
+
+                    if (!invalidCommandError.isEmpty()) {
+                        ClientUtil.printError(invalidCommandError);
+                        ClientUtil.printHelpCommands(availableActions);
+                    }
+
+                    ClientUtil.moveCursor(lastCursorPos.getX(), lastCursorPos.getY());
                 }
             }
         }
@@ -301,6 +297,7 @@ public class ClientTUI implements View {
 
         // clear input area
         ClientUtil.printCommandSquare();
+        ClientUtil.moveCursor(lastCursorPos.getX(), lastCursorPos.getY());
     }
 
     /**
@@ -317,6 +314,7 @@ public class ClientTUI implements View {
             showUpdateAfterConnection();
             // clear input area
             ClientUtil.printCommandSquare();
+            ClientUtil.moveCursor(lastCursorPos.getX(), lastCursorPos.getY());
         }
     }
 
@@ -387,7 +385,7 @@ public class ClientTUI implements View {
         availableActions.remove(TUIActions.LOBBYSIZE);
 
         ClientUtil.printCommandSquare();
-        //ClientUtil.putCursorToInputArea();
+        ClientUtil.moveCursor(lastCursorPos.getX(), lastCursorPos.getY());
     }
 
     private void printAvailableColorList() {
@@ -396,7 +394,7 @@ public class ClientTUI implements View {
                 .toList());
 
         // could have been any area
-        ClientUtil.printExceptions("Available colors: " + availableColors);
+        ClientUtil.printGameEvent("Available colors: " + availableColors);
     }
 
     /**
@@ -417,7 +415,6 @@ public class ClientTUI implements View {
 
         // clear input area
         ClientUtil.printCommandSquare();
-        //ClientUtil.putCursorToInputArea();
     }
 
     /**
@@ -444,7 +441,7 @@ public class ClientTUI implements View {
 
             // clear input area
             ClientUtil.printCommandSquare();
-            //ClientUtil.putCursorToInputArea();
+            ClientUtil.moveCursor(lastCursorPos.getX(), lastCursorPos.getY());
         } catch (IndexOutOfBoundsException e) {
             throw new TUIException(ExceptionsTUI.INVALID_MESSAGE_INPUT);
         }
@@ -490,7 +487,7 @@ public class ClientTUI implements View {
 
             // clear input area
             ClientUtil.printCommandSquare();
-            //ClientUtil.putCursorToInputArea();
+            ClientUtil.moveCursor(lastCursorPos.getX(), lastCursorPos.getY());
         } catch (IllegalArgumentException e) {
             throw new TUIException(ExceptionsTUI.INVALID_CARD_POSITION);
         }
@@ -545,7 +542,7 @@ public class ClientTUI implements View {
         }
         // clear input area
         ClientUtil.printCommandSquare();
-        //ClientUtil.putCursorToInputArea();
+        ClientUtil.moveCursor(lastCursorPos.getX(), lastCursorPos.getY());
     }
 
     /**
@@ -567,14 +564,14 @@ public class ClientTUI implements View {
         availableActions.add(TUIActions.QUIT);
         availableActions.add(TUIActions.BACK);
         availableActions.add(TUIActions.RULEBOOK);
-        //ClientUtil.putCursorToInputArea();
+        ClientUtil.moveCursor(lastCursorPos.getX(), lastCursorPos.getY());
     }
 
     private void connect(String ip, Integer port) throws UnReachableServerException {
         controller.configureClient(this, ip, port);
         availableActions.remove(TUIActions.CONNECT);
         availableActions.add(TUIActions.SELECTUSERNAME);
-        ClientUtil.printCommand("Insert your username: type `selectusername <your username>` (max 12 characters):");
+        ClientUtil.printCommand("Insert your username: type `selectusername <your username>` (max 12 characters)");
     }
 
     private void selectUsername(String username) throws TUIException {
@@ -594,7 +591,9 @@ public class ClientTUI implements View {
     @Override
     public void runView() {
         ClientUtil.printFirstScreen();
-        ClientUtil.printCommand("Welcome.\nTo play connect to the server: type connect <ip> <port>");
+        ClientUtil.printCommandSquare();
+        ClientUtil.printCommand("Welcome. To play connect to the server: type connect <ip> <port>");
+        ClientUtil.moveCursor(lastCursorPos.getX(), lastCursorPos.getY());
         new Thread(this::parseCommands).start();
     }
 
@@ -638,7 +637,8 @@ public class ClientTUI implements View {
      */
     @Override
     public synchronized void showServerCrash() {
-        ClientUtil.printCommand("Server is crashed");
+        ClientUtil.printGameEvent("Server is crashed");
+        ClientUtil.moveCursor(lastCursorPos.getX(), lastCursorPos.getY());
         availableActions.clear();
         setActionsForClosingTheApplication();
     }
@@ -706,7 +706,7 @@ public class ClientTUI implements View {
     public synchronized void showUpdatePlayersInLobby() {
         ClientUtil.printWaitingList(controller.getUsernames());
 
-        ClientUtil.putCursorToInputArea();
+        ClientUtil.moveCursor(lastCursorPos.getX(), lastCursorPos.getY());
     }
 
     /**
@@ -714,10 +714,7 @@ public class ClientTUI implements View {
      */
     @Override
     public synchronized void showUpdateCreator() {
-        ClientUtil.printCommand("""
-                Welcome to the new lobby!
-                Please set the lobby size (2 to 4 players allowed)
-                Type 'lobbysize <number>' to set the lobby size""");
+        ClientUtil.printCommand("Welcome to the new lobby! Please set the lobby size (2 to 4 players allowed)");
 
         // add manually: only creator has this command
         availableActions.add(TUIActions.LOBBYSIZE);
@@ -728,7 +725,7 @@ public class ClientTUI implements View {
      */
     @Override
     public synchronized void showUpdateAfterLobbyCrash() {
-        ClientUtil.printCommand("Lobby crashed! You will be disconnected. Please connect again...");
+        ClientUtil.printGameEvent("Lobby crashed! You will be disconnected. Please connect again...");
         setActionsForClosingTheApplication();
     }
 
@@ -737,7 +734,7 @@ public class ClientTUI implements View {
      */
     @Override
     public synchronized void showUpdateExceedingPlayer() {
-        ClientUtil.printCommand("You're an exceeding player!");
+        ClientUtil.printGameEvent("You're an exceeding player!");
         setActionsForClosingTheApplication();
     }
 
@@ -745,13 +742,13 @@ public class ClientTUI implements View {
      * {@inheritDoc}
      */
     @Override
-    public void showInvalidLogin(String details) {
+    public synchronized void showInvalidLogin(String details) {
         /*
         Synchronization not needed here because the thread from the server is blocked until this operation finishes and the heartbeat thread
         is never activated in case of login failure.
          */
-        ClientUtil.printExceptions("Invalid username! Reason: " + details);
-        ClientUtil.printCommand("Please insert a new username with the command <selectusername> <your name>");
+        ClientUtil.printError("Invalid username! Reason: " + details);
+        ClientUtil.moveCursor(lastCursorPos.getX(), lastCursorPos.getY());
         availableActions.add(TUIActions.SELECTUSERNAME);
     }
 
@@ -785,9 +782,9 @@ public class ClientTUI implements View {
             try {
                 currOffset = ClientUtil.printPlayground(playerPlayground, currOffset);
             } catch (UndrawablePlaygroundException e) {
-                ClientUtil.writeLine(GameScreenArea.INPUT_AREA.getScreenPosition().getX() + 11,
-                        GameScreenArea.INPUT_AREA.getScreenPosition().getY() + 1,
-                        GameScreenArea.INPUT_AREA.getWidth() - 2,
+                ClientUtil.printTextInSpecifiedArea(new Position(GameScreenArea.INPUT_AREA.getScreenPosition().getX() + 11,
+                                GameScreenArea.INPUT_AREA.getScreenPosition().getY() + 1),
+                        GameScreenArea.INPUT_AREA,
                         e.getMessage());
             }
             // check if there is any occupied tile: it means starter has been placed
@@ -795,7 +792,7 @@ public class ClientTUI implements View {
                             Collections.singletonList(this.controller.getMainPlayerStarter()) :
                             controller.getMainPlayerCards(),
                     cardSide);
-            ClientUtil.putCursorToInputArea();
+            ClientUtil.moveCursor(lastCursorPos.getX(), lastCursorPos.getY());
             setAvailableActions();
         }
     }
@@ -807,7 +804,7 @@ public class ClientTUI implements View {
     public synchronized void showUpdatePlayerStatus() {
         synchronized (controller) {
             ClientUtil.printScoreboard(this.controller.getPlayers());
-            ClientUtil.putCursorToInputArea();
+            ClientUtil.moveCursor(lastCursorPos.getX(), lastCursorPos.getY());
         }
     }
 
@@ -828,14 +825,16 @@ public class ClientTUI implements View {
                 try {
                     currOffset = ClientUtil.printPlayground(this.controller.getMainPlayerPlayground(), currOffset);
                 } catch (UndrawablePlaygroundException e) {
-                    ClientUtil.writeLine(GameScreenArea.INPUT_AREA.getScreenPosition().getX() + 11,
-                            GameScreenArea.INPUT_AREA.getScreenPosition().getY() + 1,
-                            GameScreenArea.INPUT_AREA.getWidth() - 2,
-                            e.getMessage());
+                    ClientUtil.printTextInSpecifiedArea(
+                            new Position(GameScreenArea.INPUT_AREA.getScreenPosition().getX() + 11,
+                                    GameScreenArea.INPUT_AREA.getScreenPosition().getY() + 1),
+                            GameScreenArea.INPUT_AREA,
+                            e.getMessage()
+                    );
                 }
                 ClientUtil.printPlayerHand(controller.getMainPlayerCards(), cardSide);
 
-                ClientUtil.putCursorToInputArea();
+                ClientUtil.moveCursor(lastCursorPos.getX(), lastCursorPos.getY());
             }
         }
     }
@@ -856,10 +855,10 @@ public class ClientTUI implements View {
             if (controller.getMainPlayerUsername().equals(username)) {
                 setAvailableActions();
                 // remove color list if present
-                ClientUtil.clearExceptionSpace();
+                ClientUtil.clearNotificationArea();
             }
 
-            ClientUtil.putCursorToInputArea();
+            ClientUtil.moveCursor(lastCursorPos.getX(), lastCursorPos.getY());
         }
     }
 
@@ -877,7 +876,7 @@ public class ClientTUI implements View {
             setAvailableActions();
         }
 
-        ClientUtil.putCursorToInputArea();
+        ClientUtil.moveCursor(lastCursorPos.getX(), lastCursorPos.getY());
     }
 
     /**
@@ -895,17 +894,19 @@ public class ClientTUI implements View {
                 try {
                     currOffset = ClientUtil.printPlayground(controller.getPlaygroundByUsername(username), currOffset);
                 } catch (UndrawablePlaygroundException e) {
-                    ClientUtil.writeLine(GameScreenArea.INPUT_AREA.getScreenPosition().getX() + 11,
-                            GameScreenArea.INPUT_AREA.getScreenPosition().getY() + 1,
-                            GameScreenArea.INPUT_AREA.getWidth() - 2,
-                            e.getMessage());
+                    ClientUtil.printTextInSpecifiedArea(
+                            new Position(GameScreenArea.INPUT_AREA.getScreenPosition().getX() + 11,
+                                    GameScreenArea.INPUT_AREA.getScreenPosition().getY() + 1),
+                            GameScreenArea.INPUT_AREA,
+                            e.getMessage()
+                    );
                 }
                 // resources may have changed
                 ClientUtil.printResourcesArea(controller.getPlaygroundByUsername(username).getResources());
-                ClientUtil.putCursorToInputArea();
-
                 setAvailableActions();
             }
+
+            ClientUtil.moveCursor(lastCursorPos.getX(), lastCursorPos.getY());
         }
     }
 
@@ -924,7 +925,7 @@ public class ClientTUI implements View {
 
             setAvailableActions();
 
-            ClientUtil.putCursorToInputArea();
+            ClientUtil.moveCursor(lastCursorPos.getX(), lastCursorPos.getY());
         }
     }
 
@@ -937,14 +938,14 @@ public class ClientTUI implements View {
         messages = new ArrayList<>(controller.getMessages());
         ClientUtil.printChat(messages, controller.getMainPlayer());
 
-        ClientUtil.putCursorToInputArea();
+        ClientUtil.moveCursor(lastCursorPos.getX(), lastCursorPos.getY());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void showUpdateCurrentPlayer() {
+    public synchronized void showUpdateCurrentPlayer() {
         String currentUsername = controller.getCurrentPlayerUsername();
         String myUsername = controller.getMainPlayerUsername();
         // return to my playground if it's my turn, and I'm spying someone
@@ -956,9 +957,9 @@ public class ClientTUI implements View {
 
         String currentPlayerPrint = myUsername.equals(currentUsername) ?
                 "your" : currentUsername + "'s";
-        ClientUtil.printCommand("It's " + currentPlayerPrint + " turn");
+        ClientUtil.printGameEvent("It's " + currentPlayerPrint + " turn");
         setAvailableActions();
-        ClientUtil.putCursorToInputArea();
+        ClientUtil.moveCursor(lastCursorPos.getX(), lastCursorPos.getY());
     }
 
     /**
@@ -970,12 +971,12 @@ public class ClientTUI implements View {
             ClientUtil.printScoreboard(this.controller.getPlayers());
             boolean isActive = controller.isGameActive();
             if (isActive) {
-                ClientUtil.printCommand(" GAME IS NOW ACTIVE \n");
+                ClientUtil.printGameEvent(" GAME IS NOW ACTIVE \n");
             } else {
-                ClientUtil.printCommand(" SUSPENDED GAME \n");
+                ClientUtil.printGameEvent(" SUSPENDED GAME \n");
             }
         }
-        ClientUtil.putCursorToInputArea();
+        ClientUtil.moveCursor(lastCursorPos.getX(), lastCursorPos.getY());
 
         setAvailableActions();
     }
@@ -985,7 +986,8 @@ public class ClientTUI implements View {
      */
     @Override
     public synchronized void showWinners(List<String> winners) {
-        ClientUtil.printCommand("Winners:\n" + String.join("\n", winners) + "\nQuit to play again");
+        ClientUtil.printGameEvent("Winners: " + String.join(" ", winners) + " ".repeat(8) + "Quit to play again");
+        ClientUtil.moveCursor(lastCursorPos.getX(), lastCursorPos.getY());
         availableActions.clear();
         availableActions.add(TUIActions.HELP);
         availableActions.add(TUIActions.QUIT);
@@ -996,12 +998,12 @@ public class ClientTUI implements View {
      */
     @Override
     public synchronized void reportError(String details) {
-        ClientUtil.printCommand("Error: " + details);
+        ClientUtil.printError("Error: " + details);
     }
 
     @Override
     public synchronized void showConnectionLost() {
-        ClientUtil.printCommand("Connection lost");
+        ClientUtil.printGameEvent("Connection lost");
         setActionsForClosingTheApplication();
     }
 }
