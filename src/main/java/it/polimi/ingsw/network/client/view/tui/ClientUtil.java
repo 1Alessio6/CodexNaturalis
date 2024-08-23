@@ -1313,50 +1313,8 @@ public class ClientUtil {
         return sender + " -> " + recipient + ": " + content;
     }
 
-    /**
-     * Searches for the last messages whose dimension in lines is maximum 9.
-     *
-     * @param messages the messages in the game.
-     * @return the last messages with maximum 9 lines.
-     */
-    private static List<String> searchForLastNineLineMessages(List<Message> messages, ClientPlayer mainPlayer) {
-        int i = messages.size() - 1, j = 0;
-        List<String> messagesToPrint = new ArrayList<>();
-        int linesOccupiedByLastMessage;
-        String lastSender;
-        String lastMessage;
-        String lastRecipient;
-
-        while (i >= 0) {
-            lastMessage = messages.get(i).getContent();
-            lastSender = messages.get(i).getSender();
-            lastRecipient = messages.get(i).getRecipient();
-            linesOccupiedByLastMessage =
-                    (int) Math.ceil(
-                            (double) (
-                                    lastMessage.length()
-                                            + lastSender.length()
-                                            + lastRecipient.length() + 6
-                            )
-                                    / GameScreenArea.CHAT.getWidth()
-                                    - 2
-                    );
-            if (j + linesOccupiedByLastMessage > 9) {
-                break;
-            }
-            if (lastSender.equals(mainPlayer.getUsername())
-                    || lastRecipient.equals(mainPlayer.getUsername())
-                    || lastRecipient.equals("Everyone")) {
-                messagesToPrint.add(messageModifier(lastSender, lastRecipient, lastMessage));
-            }
-            j += linesOccupiedByLastMessage;
-            i--;
-        }
-        return messagesToPrint;
-    }
-
     private static List<String> splitText(String text) {
-        String regex = ".{1," + GameScreenArea.CHAT.width + "}|\n";
+        String regex = ".{1," + (GameScreenArea.CHAT.width - 1) + "}|\n";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(text);
 
