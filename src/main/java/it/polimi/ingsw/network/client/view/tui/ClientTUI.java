@@ -32,7 +32,6 @@ import java.util.regex.PatternSyntaxException;
  * Client TUI represents the client that uses a Text-based user interface
  */
 public class ClientTUI implements View {
-    private final Scanner console;
     private final Set<TUIActions> availableActions = new HashSet<>();
 
     private Side cardSide = Side.FRONT;
@@ -55,10 +54,13 @@ public class ClientTUI implements View {
      */
     public ClientTUI(ClientController controller) {
         this.controller = controller;
-        this.console = new Scanner(System.in);
         availableActions.add(TUIActions.HELP);
         availableActions.add(TUIActions.QUIT);
         availableActions.add(TUIActions.CONNECT);
+        lastCursorPos = new Position(
+                GameScreenArea.INPUT_AREA.getScreenPosition().getX() + 1,
+                GameScreenArea.INPUT_AREA.getScreenPosition().getY() + 1
+        );
     }
 
     private void setActionsForClosingTheApplication() {
@@ -66,13 +68,153 @@ public class ClientTUI implements View {
         availableActions.add(TUIActions.QUIT);
     }
 
+    // return the integer representing the sequence being pressed or -1 indicating an unknown sequence has been received
+    private int getSequence() throws IOException {
+        int nextKey = System.in.read();
+        // unsupported operation
+        if (nextKey != '[') {
+            System.err.println("Unknown sequence: failed to receive [");
+            return -1;
+        }
+
+        int yetAnotherKey = System.in.read();
+        return switch (yetAnotherKey) {
+            case 'A' -> Terminal.UP_ARROW;
+            case 'B' -> Terminal.DOWN_ARROW;
+            case 'C' -> Terminal.RIGHT_ARROW;
+            case 'D' -> Terminal.LEFT_ARROW;
+            default -> -1;
+        };
+    }
+
+    private String getInput() throws IOException {
+        int firstCellInFrame = 0;
+        int cursorIdx = 0;
+        StringBuilder command = new StringBuilder();
+
+        int xOrig = GameScreenArea.INPUT_AREA.getScreenPosition().getX() + 1;
+        int yOrig = GameScreenArea.INPUT_AREA.getScreenPosition().getY() + 1;
+        int numColumnForChars = GameScreenArea.INPUT_AREA.width - 1;
+        int numRowsForChars = GameScreenArea.INPUT_AREA.height - 2;
+        boolean commandEntered = false;
+
+        while (!commandEntered) {
+            int key = System.in.read();
+            int newCursorIdx = -1;
+            int begIdxToRePrint = -1;
+
+            switch (key) {
+                case Terminal.ENTER -> commandEntered = true;
+                case Terminal.ESC -> {
+                    int seq = getSequence();
+                    switch (seq) {
+                        case Terminal.UP_ARROW -> newCursorIdx = cursorIdx - numColumnForChars;
+                        case Terminal.DOWN_ARROW -> newCursorIdx = Math.min(cursorIdx + numColumnForChars, command.length());
+                        case Terminal.LEFT_ARROW -> newCursorIdx = cursorIdx - 1;
+                        case Terminal.RIGHT_ARROW -> newCursorIdx = cursorIdx + 1;
+                        default -> System.err.println("Unknown combination pressed");
+                    }
+                }
+                case Terminal.DEL -> {
+                    newCursorIdx = cursorIdx - 1;
+                    if (newCursorIdx >= 0) {
+                        command.deleteCharAt(newCursorIdx);
+                        //command.append(' '); // append space to remove the last character (deletion implies a shift by one towards the beginning of the screen
+                        begIdxToRePrint = newCursorIdx;
+                    }
+                }
+                default -> {
+                    if (command.isEmpty()) {
+                        ClientUtil.printCommandSquare();
+                    }
+                    // insertion of a character
+                    char c = (char) key;
+                    command.insert(cursorIdx, c);
+                    begIdxToRePrint = cursorIdx;
+                    newCursorIdx = cursorIdx + 1;
+                }
+            }
+
+            if (newCursorIdx >= 0 && newCursorIdx <= command.length()) {
+                if (newCursorIdx < firstCellInFrame) {
+                    firstCellInFrame = Math.max(0, firstCellInFrame - numRowsForChars * numColumnForChars);
+                    begIdxToRePrint = firstCellInFrame;
+                }
+                if (newCursorIdx - firstCellInFrame >= numRowsForChars * numColumnForChars) {
+                    firstCellInFrame += numColumnForChars;
+                    begIdxToRePrint = firstCellInFrame;
+                }
+                cursorIdx = newCursorIdx;
+            }
+
+            // display the text
+            int repAsMatrix = cursorIdx - firstCellInFrame;
+            int xCursor = xOrig + (repAsMatrix / numColumnForChars);
+            int yCursor = yOrig + (repAsMatrix % numColumnForChars);
+
+            if (begIdxToRePrint == firstCellInFrame) {
+                ClientUtil.printCommandSquare();
+            }
+
+            synchronized (this) {
+                if (begIdxToRePrint != -1) {
+                    int xStartPrinting = xOrig + ((begIdxToRePrint - firstCellInFrame) / numColumnForChars);
+                    int yStartPrinting = yOrig + ((begIdxToRePrint - firstCellInFrame) % numColumnForChars);
+                    Position startingPos = new Position(xStartPrinting, yStartPrinting);
+                    int lastIdxToFillAllInputArea =
+                            begIdxToRePrint + (numRowsForChars * numColumnForChars - (begIdxToRePrint - firstCellInFrame));
+                /*
+                In this way is possible to replace the last character after a deletion that otherwise would be left on the screen.
+                For example, if the text was "abcd" and the cursor on 'c' after pressing DEL I would obtain "acd" where the fourth letter ('d')
+                from the previous printing being replaced by ' '; if I didn't do that, the screen would be "acdd" because the last letter would
+                be left unchanged.
+                 */
+                    if (command.length() < lastIdxToFillAllInputArea) {
+                        ClientUtil.printTextInSpecifiedArea(
+                                startingPos,
+                                GameScreenArea.INPUT_AREA,
+                                command.substring(
+                                        begIdxToRePrint,
+                                        command.length()
+                                ) + " "
+                        );
+                    } else {
+                        ClientUtil.printTextInSpecifiedArea(
+                                startingPos,
+                                GameScreenArea.INPUT_AREA,
+                                command.substring(
+                                        begIdxToRePrint,
+                                        lastIdxToFillAllInputArea)
+                        );
+                    }
+                }
+
+                lastCursorPos = new Position(xCursor, yCursor);
+                ClientUtil.moveCursor(xCursor, yCursor);
+            }
+        }
+
+        synchronized (this) {
+            ClientUtil.printCommandSquare();
+            lastCursorPos = new Position(xOrig, yOrig);
+        }
+
+        return command.toString();
+    }
+
     /**
      * Parses the player's commands.
      */
     private void parseCommands() {
-        while (console.hasNextLine()) {
+        while (true) {
             // split command with spaces and analyze the first word
-            String input = console.nextLine();
+            String input;
+            String invalidCommandError = "";
+            try {
+                input = getInput();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
 
             synchronized (this) {
                 try {
