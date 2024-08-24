@@ -124,9 +124,6 @@ public class ClientTUI implements View {
                     }
                 }
                 default -> {
-                    if (command.isEmpty()) {
-                        ClientUtil.printCommandSquare();
-                    }
                     // insertion of a character
                     char c = (char) key;
                     command.insert(cursorIdx, c);
@@ -163,6 +160,10 @@ public class ClientTUI implements View {
                     Position startingPos = new Position(xStartPrinting, yStartPrinting);
                     int lastIdxToFillAllInputArea =
                             begIdxToRePrint + (numRowsForChars * numColumnForChars - (begIdxToRePrint - firstCellInFrame));
+
+                    if (command.isEmpty()) {
+                        ClientUtil.printCommandSquare();
+                    }
                 /*
                 In this way is possible to replace the last character after a deletion that otherwise would be left on the screen.
                 For example, if the text was "abcd" and the cursor on 'c' after pressing DEL I would obtain "acd" where the fourth letter ('d')

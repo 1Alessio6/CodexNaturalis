@@ -161,22 +161,6 @@ public class ClientUtil {
     }
 
     /**
-     * Displays the available args after an args input error.
-     *
-     * @param error to be displayed.
-     */
-    public static void argsHelper(String error) {
-        System.out.println(error);
-
-        System.out.println("Codex Naturalis: codexnaturalis [ARGS]");
-        System.out.println("Insert in order the following args:");
-        System.out.println("<communication_protocol>: rmi or socket");
-        System.out.println("<client_ip>");
-        System.out.println("<application_type>: gui or tui");
-        System.out.println("Example:\trmi 127.0.0.1 gui");
-    }
-
-    /**
      * Prints the provided <code>text</code> from the specified cursor position respecting the <code>area</code>dimension
      *
      * @param cursorPos cursor position from which the text is printed
@@ -248,8 +232,7 @@ public class ClientUtil {
      */
     // this takes a string as input
     public static void printToLineColumn(int lineCoordinate, int columnCoordinate, String str) {
-        // regex to retain the new line
-        String[] lines = str.split("(?<=\n)");
+        String[] lines = str.split("\n");
         printToLineColumn(lineCoordinate, columnCoordinate, lines);
     }
 
@@ -388,7 +371,7 @@ public class ClientUtil {
     private static String appendVerticalLines(int numberOfLines, int width) {
         StringBuilder str = new StringBuilder();
         for (int i = 0; i < numberOfLines; i++) {
-            str.append("║").repeat(" ", width).append("║\n");
+            str.append("║").repeat(" ", width).append("║\r\n");
         }
         return str.toString();
     }
